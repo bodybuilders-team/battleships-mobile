@@ -3,9 +3,9 @@ package pt.isel.pdm.battleships.domain
 /**
  * Represents the ship class in the game.
  *
- * @param size the size of the ship
- * @param shipName the name of the ship
- * @param points the points that the ship is worth
+ * @property size the size of the ship
+ * @property shipName the name of the ship
+ * @property points the points that the ship is worth
  */
 enum class ShipType(val size: Int, val shipName: String, val points: Int) {
     CARRIER(5, "Carrier", 50),

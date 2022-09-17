@@ -2,23 +2,30 @@ package pt.isel.pdm.battleships.domain
 
 /**
  * Represents a cell in the board.
+ *
+ * @property coordinate the coordinate of the cell
  */
-sealed class Cell
+sealed class Cell(open val coordinate: Coordinate)
 
 /**
  * Represents a cell that has not been hit yet.
  */
-class EmptyCell : Cell()
+data class WaterCell(override val coordinate: Coordinate) : Cell(coordinate)
 
 /**
- * Represents a cell that has been hit and contains a ship.
+ * Represents a cell that contains a ship.
  *
- * @param ship the ship that is in this cell
- * @param wasHit true if the ship has been hit, false otherwise
+ * @property ship the ship that is in this cell
+ * @property wasHit true if the ship has been hit, false otherwise
  */
-class ShipCell(val ship: Ship, val wasHit: Boolean) : Cell()
+data class ShipCell(
+    override val coordinate: Coordinate,
+    val ship: Ship,
+    val wasHit: Boolean = false
+) :
+    Cell(coordinate)
 
 /**
  * Represents a cell that has been hit and does not contain a ship.
  */
-class MissCell : Cell()
+data class MissCell(override val coordinate: Coordinate) : Cell(coordinate)

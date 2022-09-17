@@ -16,6 +16,6 @@ data class Coordinate(val col: Char, val row: Int) {
 
     companion object {
         val COLS_RANGE = 'A'..'J'
-        val ROWS_RANGE = 1..10
+        val ROWS_RANGE = 1..Board.BOARD_SIDE_LENGTH
     }
 }
