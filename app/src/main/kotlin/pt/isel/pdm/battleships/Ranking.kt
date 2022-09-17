@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 private val SEARCH_PLAYER_TEXT_FIELD_HEIGHT = 60.dp
 
 /**
- * Raking screen.
+ * Ranking screen.
  * Shows the rankings/leaderboard of the players.
  *
  * @param backToMenuCallback callback to be invoked when the user wants to go back to the menu
