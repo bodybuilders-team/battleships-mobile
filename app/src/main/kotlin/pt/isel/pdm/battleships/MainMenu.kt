@@ -16,6 +16,9 @@ private enum class Page {
     ABOUT_DEVS
 }
 
+/**
+ * The main menu of the application.
+ */
 @Composable
 fun MainMenu() {
     val currentPage = remember { mutableStateOf(Page.MAIN_MENU) }
@@ -44,10 +47,8 @@ fun MainMenu() {
         Page.RANKING -> Ranking {
             currentPage.value = Page.MAIN_MENU
         }
-        Page.ABOUT_DEVS -> AboutDevelopers(
-            backToMenuCallback = {
-                currentPage.value = Page.MAIN_MENU
-            }
-        )
+        Page.ABOUT_DEVS -> AboutDevelopers {
+            currentPage.value = Page.MAIN_MENU
+        }
     }
 }

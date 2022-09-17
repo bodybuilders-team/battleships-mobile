@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import pt.isel.pdm.battleships.utils.Hyperlink
 
 /**
- * To show after clicking the "About the developers" button in the main menu.
+ * Screen shown after clicking the "About the developers" button in the main menu.
  *
  * Information shown for each developer:
  * - Student number

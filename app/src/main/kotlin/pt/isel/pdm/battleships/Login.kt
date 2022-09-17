@@ -7,6 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
+/**
+ * Login screen.
+ * This screen is responsible for the user login, asking for the user name and password.
+ *
+ * @param backToMenuCallback callback to be called when the user wants to go back to the main menu
+ */
 @Composable
 fun Login(backToMenuCallback: () -> Unit) {
     val username = remember { mutableStateOf("") }

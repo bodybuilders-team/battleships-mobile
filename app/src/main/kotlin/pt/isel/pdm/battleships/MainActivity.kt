@@ -15,6 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
+/**
+ * This activity is the main entry point of the application.
+ * It is responsible for creating the main view and the view model.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
