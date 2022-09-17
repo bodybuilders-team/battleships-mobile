@@ -21,6 +21,8 @@ class Board(
         // TODO: Validations
     }
 
+    constructor() : this(generateRandomMatrix())
+
     val fleet: List<Ship>
         get() = matrix.filterIsInstance<ShipCell>().map { it.ship }.distinct()
 
@@ -29,7 +31,7 @@ class Board(
      *
      * @return the matrix index obtained from the coordinate
      */
-    private fun Coordinate.toIndex() =
+    fun Coordinate.toIndex() =
         (BOARD_SIDE_LENGTH - row) * BOARD_SIDE_LENGTH + (col - Coordinate.COLS_RANGE.first)
 
     /**
@@ -41,14 +43,28 @@ class Board(
     fun getCell(coordinate: Coordinate) = matrix[coordinate.toIndex()]
 
     /**
+     * Checks if it is possible to place a ship in its coordinates.
+     *
+     * @param ship ship to check
+     * @return true if it is possible to place the ship in its coordinates, false otherwise
+     */
+    fun canPlaceShip(ship: Ship) = ship.coordinates.all { getCell(it) is WaterCell }
+
+    /**
      * Places a ship in the board.
      *
      * @param ship the ship to place
      * @return the new board with the ship placed
      */
-    fun placeShip(ship: Ship): Board {
-        // TODO: to be implemented
-    }
+    fun placeShip(ship: Ship) = Board(
+        matrix.map {
+            if (it.coordinate in ship.coordinates) {
+                ShipCell(it.coordinate, ship)
+            } else {
+                it
+            }
+        }
+    )
 
     /**
      * Attacks the cell in [coordinate].
@@ -59,7 +75,9 @@ class Board(
      * If the cell is a ship cell and the cell is not hit, the cell is changed to a hit cell.
      *
      * @param coordinate coordinate to attack
+     *
      * @return the board after the attack
+     * @throws InvalidAttackException if the attack is invalid
      */
     fun attack(coordinate: Coordinate): Board =
         when (val cell = getCell(coordinate)) {
@@ -88,5 +106,49 @@ class Board(
     companion object {
         const val BOARD_SIDE_LENGTH = 10
         const val NUMBER_OF_SHIPS = 5
+
+        /**
+         * Generates a matrix of cells with the ships placed randomly.
+         *
+         * @return the matrix
+         */
+        private fun generateRandomMatrix(): List<Cell> {
+            val matrix = MutableList(BOARD_SIDE_LENGTH * BOARD_SIDE_LENGTH) { index ->
+                val row = BOARD_SIDE_LENGTH - index / BOARD_SIDE_LENGTH
+                val col = Coordinate.COLS_RANGE.first + index % BOARD_SIDE_LENGTH
+
+                WaterCell(Coordinate(col, row))
+            }
+
+            /*ShipType.values().forEach { shipType ->
+                val coordinate = Coordinate(
+                    Coordinate.COLS_RANGE.random(),
+                    Coordinate.ROWS_RANGE.random()
+                )
+
+                val vertical = Random.nextBoolean()
+
+                val coordinates = mutableListOf(coordinate)
+                for (i in 1 until shipType.size) {
+                    try {
+                        coordinates.add(
+                            if (vertical) {
+                                Coordinate(coordinate.col, coordinate.row + i)
+                            } else {
+                                Coordinate(coordinate.col + i, coordinate.row)
+                            }
+                        )
+                    } catch (e: IllegalArgumentException) {
+                        return@forEach
+                    }
+                }
+                val ship = Ship(shipType, coordinates)
+                coordinates.forEach { coordinate ->
+                    matrix[coordinate.toIndex()] = ShipCell(coordinate, ship)
+                }
+            }*/
+
+            return matrix
+        }
     }
 }
