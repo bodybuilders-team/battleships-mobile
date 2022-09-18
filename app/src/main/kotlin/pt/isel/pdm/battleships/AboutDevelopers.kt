@@ -57,7 +57,7 @@ fun AboutDevelopers(backToMenuCallback: () -> Unit) {
  * @param githubLink personal github profile link
  */
 @Composable
-fun DeveloperInfo(number: String, name: String, githubLink: String) {
+private fun DeveloperInfo(number: String, name: String, githubLink: String) {
     Text(text = "$number - $name")
     Hyperlink("Github", githubLink)
     Hyperlink("Email\n", "mailto:A$number@alunos.isel.pt")
