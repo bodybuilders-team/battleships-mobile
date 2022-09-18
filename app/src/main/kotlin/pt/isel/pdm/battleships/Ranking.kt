@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,12 +66,12 @@ fun Ranking(backToMenuCallback: () -> Unit) {
  */
 @Composable
 private fun SearchPlayerField(searchButtonCallback: () -> Unit) {
-    val playerSearched = remember { mutableStateOf("") }
+    var playerSearched by remember { mutableStateOf("") }
 
     Row {
         TextField(
-            value = playerSearched.value,
-            onValueChange = { playerSearched.value = it },
+            value = playerSearched,
+            onValueChange = { playerSearched = it },
             placeholder = { Text(text = "Search player") },
             modifier = Modifier.height(SEARCH_PLAYER_TEXT_FIELD_HEIGHT)
         )

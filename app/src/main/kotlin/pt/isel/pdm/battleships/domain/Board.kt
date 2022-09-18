@@ -3,6 +3,9 @@ package pt.isel.pdm.battleships.domain
 import pt.isel.pdm.battleships.domain.exceptions.InvalidAttackException
 import pt.isel.pdm.battleships.utils.replace
 
+import java.util.*
+import kotlin.collections.ArrayList
+
 /**
  * Represents a board in the game.
  * The boards are typically square – usually 10×10 – and the individual squares in the grid are identified by letter and number.
@@ -16,7 +19,7 @@ class Board(
     init {
         val boardSize = BOARD_SIDE_LENGTH * BOARD_SIDE_LENGTH
         require(matrix.size == boardSize) { "Board must have $boardSize cells" }
-        require(fleet.size == NUMBER_OF_SHIPS) { "Board must have $NUMBER_OF_SHIPS ships" }
+//        require(fleet.size == NUMBER_OF_SHIPS) { "Board must have $NUMBER_OF_SHIPS ships" }
 
         // TODO: Validations
     }
@@ -152,3 +155,4 @@ class Board(
         }
     }
 }
+
