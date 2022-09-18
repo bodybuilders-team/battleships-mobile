@@ -78,7 +78,7 @@ fun UnplacedShipView(
                 (TILE_SIZE * if (orientation == Orientation.VERTICAL) size else 1).dp
             )
             .background(Color.Black)
-            .pointerInput(Unit) {
+            .pointerInput(size, orientation) {
                 this.detectDragGestures(
                     onDragStart = { dragging = true },
                     onDragEnd = {
