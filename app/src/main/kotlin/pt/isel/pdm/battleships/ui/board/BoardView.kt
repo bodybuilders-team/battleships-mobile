@@ -11,28 +11,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.domain.board.Board
-import pt.isel.pdm.battleships.ui.ShipView
+import pt.isel.pdm.battleships.ui.ship.ShipView
+import pt.isel.pdm.battleships.ui.theme.DarkBlue
 
 const val TILE_SIZE = 35.0f
+private const val TILE_BORDER_SIZE = 1
 
 /**
  * The view that shows the board of the game.
+ *
+ * @param board the board to be shown
  */
 @Composable
 fun BoardView(board: Board) {
     Box {
         Column {
-            repeat(Board.BOARD_SIDE_LENGTH) { y ->
+            repeat(Board.BOARD_SIDE_LENGTH) {
                 Row {
-                    repeat(Board.BOARD_SIDE_LENGTH) { x ->
+                    repeat(Board.BOARD_SIDE_LENGTH) {
                         Column {
                             Box(
                                 Modifier
                                     .size(TILE_SIZE.dp)
-                                    .background(Color.Blue)
-                                    .border(1.dp, Color.Cyan)
-                            ) {
-                            }
+                                    .background(DarkBlue)
+                                    .border(TILE_BORDER_SIZE.dp, Color.LightGray)
+                            )
                         }
                     }
                 }

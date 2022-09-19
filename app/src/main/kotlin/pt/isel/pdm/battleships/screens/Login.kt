@@ -1,18 +1,30 @@
-package pt.isel.pdm.battleships
+package pt.isel.pdm.battleships.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import pt.isel.pdm.battleships.LoginStatus
+import pt.isel.pdm.battleships.MockApi
+import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.RegisterStatus
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
+
+private const val LOGIN_TITLE_PADDING = 8
 
 /**
  * Login/Register page.
@@ -41,8 +53,19 @@ fun Login(backToMenuCallback: () -> Unit) {
     val registerMessageUserExists = stringResource(id = R.string.register_message_user_exists)
     val registerMessageSuccessful = stringResource(id = R.string.register_message_successful)
 
-    Column {
-        LoginTextFields(username.value, password.value,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(R.string.login_title),
+            style = MaterialTheme.typography.h4,
+            modifier = Modifier.padding(LOGIN_TITLE_PADDING.dp)
+        )
+
+        LoginTextFields(
+            username.value,
+            password.value,
             onUsernameChangeCallback = { username.value = it },
             onPasswordChangeCallback = { password.value = it }
         )
@@ -50,7 +73,8 @@ fun Login(backToMenuCallback: () -> Unit) {
         LoginButtons(
             onLoginClickCallback = {
                 validateFields(
-                    username.value, password.value,
+                    username.value,
+                    password.value,
                     loginMessageInvalidUsername,
                     loginMessageInvalidPassword
                 )?.let {
@@ -63,15 +87,17 @@ fun Login(backToMenuCallback: () -> Unit) {
                 // Send username and hashed password to the server api
 
                 when (MockApi.login(username.value, hashedPassword)) {
-                    LoginStatus.USERNAME_NOT_FOUND -> loginMessage.value =
-                        loginMessageUsernameNotFound
+                    LoginStatus.USERNAME_NOT_FOUND ->
+                        loginMessage.value =
+                            loginMessageUsernameNotFound
                     LoginStatus.WRONG_PASSWORD -> loginMessage.value = loginMessageWrongPassword
                     LoginStatus.SUCCESSFUL -> loginMessage.value = loginMessageSuccessful
                 }
             },
             onRegisterClickCallback = {
                 validateFields(
-                    username.value, password.value,
+                    username.value,
+                    password.value,
                     loginMessageInvalidUsername,
                     loginMessageInvalidPassword
                 )?.let {
@@ -112,14 +138,16 @@ fun Login(backToMenuCallback: () -> Unit) {
  */
 @Composable
 fun LoginTextFields(
-    username: String, password: String,
+    username: String,
+    password: String,
     onUsernameChangeCallback: (String) -> Unit,
     onPasswordChangeCallback: (String) -> Unit
 ) {
     TextField(
         value = username,
         onValueChange = onUsernameChangeCallback,
-        placeholder = { Text(text = stringResource(id = R.string.login_username_placeholder_text)) }
+        placeholder = { Text(text = stringResource(id = R.string.login_username_placeholder_text)) },
+        modifier = Modifier.padding(bottom = 8.dp)
     )
 
     TextField(
@@ -141,7 +169,10 @@ fun LoginTextFields(
 @Composable
 fun LoginButtons(onLoginClickCallback: () -> Unit, onRegisterClickCallback: () -> Unit) {
     Row {
-        Button(onClick = onLoginClickCallback) {
+        Button(
+            onClick = onLoginClickCallback,
+            modifier = Modifier.padding(end = 8.dp)
+        ) {
             Text(text = stringResource(id = R.string.login_login_button_text))
         }
 
@@ -211,7 +242,6 @@ private fun hashPassword(password: String): String {
     return sb.toString()
 }
 
-
 /**
  * Validates fields, returning a message in case of failure.
  *
@@ -221,8 +251,10 @@ private fun hashPassword(password: String): String {
  * @param invalidPasswordMessage message to show in case of invalid password
  */
 private fun validateFields(
-    username: String, password: String,
-    invalidUsernameMessage: String, invalidPasswordMessage: String
+    username: String,
+    password: String,
+    invalidUsernameMessage: String,
+    invalidPasswordMessage: String
 ): String? {
     if (!validateUsername(username)) {
         return invalidUsernameMessage

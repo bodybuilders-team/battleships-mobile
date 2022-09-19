@@ -1,39 +1,38 @@
 package pt.isel.pdm.battleships.domain.ship
 
 import pt.isel.pdm.battleships.domain.board.Coordinate
-import pt.isel.pdm.battleships.ui.toPoint
 
 /**
  * Represents a ship in the game.
  *
  * @property type the type of the ship
- * @property coordinates the coordinates of the ship cells
+ * @property coordinate the coordinate of the ship
+ * @property orientation the orientation of the ship
  * @property lives the number of lives of the ship
  *
+ * @property coordinates list of coordinates occupied by the ship
  * @property isSunk true if the ship is sunk, false otherwise
  */
 data class Ship(
     val type: ShipType,
-    val coordinates: List<Coordinate>,
+    val coordinate: Coordinate,
+    val orientation: Orientation,
     val lives: Int = type.size
 ) {
-    init {
-        require(coordinates.size == type.size) { "Invalid number of cells for ship type" }
-    }
+    val coordinates: List<Coordinate> = run {
+        val coordinates = mutableListOf<Coordinate>()
 
-    val position = run {
-        val minIndex = coordinates.map {
-            val point = it.toPoint()
-            point.first + point.second
-        }.withIndex().minByOrNull { it.value }?.index
-            ?: throw IllegalStateException("Coordinates list must not be empty")
-        coordinates[minIndex]
-    }
+        repeat(type.size) { i ->
+            coordinates.add(
+                Coordinate(
+                    col = coordinate.col + if (orientation.isHorizontal()) i else 0,
+                    row = coordinate.row + if (orientation.isVertical()) i else 0
+                )
+            )
+        }
 
-    val orientation =
-        if (coordinates[0].col == coordinates[1].col) {
-            Orientation.VERTICAL
-        } else Orientation.HORIZONTAL
+        coordinates
+    }
 
     val isSunk = lives == 0
 }

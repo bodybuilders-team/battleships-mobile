@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
@@ -16,9 +17,10 @@ import androidx.compose.ui.unit.TextUnit
  *
  * @param text the text to show
  * @param link the actual link
+ * @param style the style of the text
  */
 @Composable
-fun Hyperlink(text: String, link: String = text) {
+fun Hyperlink(text: String, link: String = text, style: TextStyle) {
     val uriHandler = LocalUriHandler.current
 
     ClickableText(
@@ -33,6 +35,7 @@ fun Hyperlink(text: String, link: String = text) {
         ),
         onClick = {
             uriHandler.openUri(link)
-        }
+        },
+        style = style
     )
 }

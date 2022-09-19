@@ -4,9 +4,11 @@
     <string name="main_menu_play_button_text">Jogar</string>
     <string name="main_menu_login_button_text">Login</string>
     <string name="main_menu_ranking_button_text">Ranking</string>
-    <string name="main_menu_about_devs_button_text">Sobre os desenvolvedores</string>
+    <string name="main_menu_about_devs_button_text">Sobre os Desenvolvedores</string>
+    <string name="about_devs_title">Desenvolvedores</string>
     <string name="about_devs_repo_github_text">"O código desta aplicação está disponível aqui: "</string>
-    <string name="back_to_menu_button_text">Voltar ao menu</string>
+    <string name="back_to_menu_button_text">Voltar ao Menu</string>
+    <string name="login_title">Login/Registo</string>
     <string name="login_message_invalid_username">Username deve ter pelo menos 3 caracteres.</string>
     <string name="login_message_invalid_password">Palavra-passe deve ter pelo menos 4 caracteres.</string>
     <string name="login_message_username_not_found">Username não existe.</string>
@@ -14,6 +16,7 @@
     <string name="login_message_successful">Login realizado um sucesso.</string>
     <string name="register_message_user_exists">Username já existe.</string>
     <string name="register_message_successful">Utilizador registado com sucesso.</string>
+    <string name="ranking_title">Ranking</string>
     <string name="ranking_search_player_placeholder_text">Procurar jogador</string>
     <string name="ranking_table_label_position">Posição</string>
     <string name="ranking_table_label_username">Username</string>
@@ -23,4 +26,5 @@
     <string name="login_password_placeholder_text">Palavra-passe</string>
     <string name="login_login_button_text">Login</string>
     <string name="login_register_button_text">Registar</string>
+    <string name="gameplay_change_orientation_button_text">Mudar Orientação</string>
 </resources>

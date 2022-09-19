@@ -11,6 +11,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import pt.isel.pdm.battleships.screens.MainMenu
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
@@ -27,9 +29,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Column {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         Text(
-                            text = "Battleships\n",
+                            text = stringResource(R.string.app_name),
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         Box {

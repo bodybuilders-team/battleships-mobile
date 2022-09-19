@@ -1,32 +1,55 @@
-package pt.isel.pdm.battleships
+package pt.isel.pdm.battleships.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import pt.isel.pdm.battleships.MockApi
+import pt.isel.pdm.battleships.Player
+import pt.isel.pdm.battleships.R
 
-private val SEARCH_PLAYER_TEXT_FIELD_HEIGHT = 60.dp
+private const val RANKING_TITLE_PADDING = 8
+private const val RANKING_TABLE_BORDER_WIDTH = 1
+private const val RANKING_TABLE_CELL_WIDTH = 100 // TODO: Make responsive
+private const val RANKING_TABLE_CELL_HEIGHT = 30
+private val SEARCH_PLAYER_TEXT_FIELD_HEIGHT = 56.dp
 private val RANKING_CELL_OFFSET = 5.dp
+private const val SEARCH_PLAYER_FIELD_PADDING = 12
+private const val SEARCH_PLAYER_FIELD_WIDTH_FACTOR = 0.6f
+
+// TODO: Add constants and make responsive
 
 private val rankingTableCellModifier =
     Modifier
-        .width(100.dp)
-        .height(30.dp)
+        .width(RANKING_TABLE_CELL_WIDTH.dp)
+        .height(RANKING_TABLE_CELL_HEIGHT.dp)
         .border(
-            1.dp,
-            color = Color.Red
+            width = RANKING_TABLE_BORDER_WIDTH.dp,
+            color = Color.Black
         )
 
 private val Color.Companion.Gold
-    get() = Color(0xFFFFDF00)
+    get() = Color(0xFFFFCC33)
 private val Color.Companion.Silver
     get() = Color(0xFFB5B7BB)
 private val Color.Companion.Bronze
@@ -44,14 +67,21 @@ private val Color.Companion.Bronze
 fun Ranking(backToMenuCallback: () -> Unit) {
     val players = MockApi.getPlayers().sortedByDescending { it.points }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(R.string.ranking_title),
+            style = MaterialTheme.typography.h4,
+            modifier = Modifier.padding(RANKING_TITLE_PADDING.dp)
+        )
+
         SearchPlayerField {
-            // Go to searched player's position
+            // TODO: Go to searched player's position
         }
 
-        Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            RankingTable(players)
-        }
+        RankingTable(players)
 
         Button(onClick = backToMenuCallback) {
             Text(text = stringResource(id = R.string.back_to_menu_button_text))
@@ -72,12 +102,12 @@ private fun SearchPlayerField(searchButtonCallback: () -> Unit) {
         stringResource(id = R.string.ranking_search_player_placeholder_text)
     val searchPlayerButtonText = stringResource(id = R.string.ranking_search_player_button_text)
 
-    Row {
+    Row(modifier = Modifier.padding(bottom = SEARCH_PLAYER_FIELD_PADDING.dp)) {
         TextField(
             value = playerSearched,
             onValueChange = { playerSearched = it },
             placeholder = { Text(text = searchPlayerPlaceholderText) },
-            modifier = Modifier.height(SEARCH_PLAYER_TEXT_FIELD_HEIGHT)
+            modifier = Modifier.fillMaxWidth(SEARCH_PLAYER_FIELD_WIDTH_FACTOR)
         )
 
         Button(
@@ -148,7 +178,9 @@ private fun RankingTable(players: List<Player>) {
                     Box(modifier = rankingTableCellModifier) {
                         Text(
                             text = player.username,
-                            modifier = Modifier.offset(RANKING_CELL_OFFSET)
+                            modifier = Modifier
+                                .offset(RANKING_CELL_OFFSET)
+                                .align(Alignment.Center)
                         )
                     }
 
@@ -156,7 +188,9 @@ private fun RankingTable(players: List<Player>) {
                     Box(modifier = rankingTableCellModifier) {
                         Text(
                             text = player.points.toString(),
-                            modifier = Modifier.offset(RANKING_CELL_OFFSET)
+                            modifier = Modifier
+                                .offset(RANKING_CELL_OFFSET)
+                                .align(Alignment.Center)
                         )
                     }
                 }

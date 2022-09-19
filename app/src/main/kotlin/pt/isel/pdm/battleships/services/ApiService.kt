@@ -1,5 +1,8 @@
 package pt.isel.pdm.battleships.services
 
+/**
+ * Represents the service that provides the game logic from the API.
+ */
 interface ApiService {
 
     // User
