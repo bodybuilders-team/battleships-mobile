@@ -1,10 +1,12 @@
-package pt.isel.pdm.battleships.domain
+package pt.isel.pdm.battleships.domain.board
 
+import pt.isel.pdm.battleships.domain.Cell
+import pt.isel.pdm.battleships.domain.MissCell
+import pt.isel.pdm.battleships.domain.ShipCell
+import pt.isel.pdm.battleships.domain.WaterCell
 import pt.isel.pdm.battleships.domain.exceptions.InvalidAttackException
+import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.utils.replace
-
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Represents a board in the game.
@@ -24,7 +26,24 @@ class Board(
         // TODO: Validations
     }
 
-    constructor() : this(generateRandomMatrix())
+    /**
+     * Generates a board with the given type.
+     *
+     * @param type the type of the board
+     */
+    constructor(type: BoardType = BoardType.EMPTY) : this(
+        when (type) {
+            BoardType.EMPTY -> generateEmptyMatrix()
+            BoardType.RANDOM -> generateRandomMatrix()
+        }
+    )
+
+    /**
+     * Represents the board types.
+     */
+    enum class BoardType {
+        EMPTY, RANDOM
+    }
 
     val fleet: List<Ship>
         get() = matrix.filterIsInstance<ShipCell>().map { it.ship }.distinct()
@@ -111,6 +130,21 @@ class Board(
         const val NUMBER_OF_SHIPS = 5
 
         /**
+         * Generates a matrix only with water cells.
+         *
+         * @return generated matrix
+         */
+        private fun generateEmptyMatrix() =
+            List(BOARD_SIDE_LENGTH * BOARD_SIDE_LENGTH) {
+                WaterCell(
+                    Coordinate(
+                        row = BOARD_SIDE_LENGTH - it / BOARD_SIDE_LENGTH,
+                        col = Coordinate.COLS_RANGE.first + it % BOARD_SIDE_LENGTH
+                    )
+                )
+            }
+
+        /**
          * Generates a matrix of cells with the ships placed randomly.
          *
          * @return the matrix
@@ -155,4 +189,3 @@ class Board(
         }
     }
 }
-

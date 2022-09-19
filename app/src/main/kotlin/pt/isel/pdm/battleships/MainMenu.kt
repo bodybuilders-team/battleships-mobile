@@ -8,6 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Represents the available pages in the application.
+ */
 private enum class Page {
     MAIN_MENU,
     GAMEPLAY,
@@ -22,6 +25,13 @@ private enum class Page {
 @Composable
 fun MainMenu() {
     val currentPage = remember { mutableStateOf(Page.MAIN_MENU) }
+
+    /*Image(
+        painter = painterResource(
+            R.drawable.logo
+        ),
+        contentDescription = "Battleships Logo"
+    )*/
 
     when (currentPage.value) {
         Page.MAIN_MENU -> Column {

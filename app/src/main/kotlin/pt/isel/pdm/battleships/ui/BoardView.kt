@@ -14,29 +14,28 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import pt.isel.pdm.battleships.domain.Board
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.geometry.Offset
-import pt.isel.pdm.battleships.domain.Coordinate
-import pt.isel.pdm.battleships.domain.Orientation
-import pt.isel.pdm.battleships.domain.Ship
-import pt.isel.pdm.battleships.domain.ShipType
-import pt.isel.pdm.battleships.domain.WaterCell
+import pt.isel.pdm.battleships.domain.board.Board
+import pt.isel.pdm.battleships.domain.board.Coordinate
+import pt.isel.pdm.battleships.domain.game.GameState
+import pt.isel.pdm.battleships.domain.ship.Orientation
+import pt.isel.pdm.battleships.domain.ship.Ship
+import pt.isel.pdm.battleships.domain.ship.ShipType
 
 const val TILE_SIZE = 35.0f
 
-enum class GameStatus {
-    PLACING_SHIPS, FINISHED, RUNNING
-}
-
+/**
+ * The view that shows the board of the game.
+ */
 @Composable
 @Preview
 fun BoardView() {
@@ -45,14 +44,7 @@ fun BoardView() {
     }
 
     var board by remember {
-        val matrix = MutableList(Board.BOARD_SIDE_LENGTH * Board.BOARD_SIDE_LENGTH) { index ->
-            val row = Board.BOARD_SIDE_LENGTH - index / Board.BOARD_SIDE_LENGTH
-            val col = Coordinate.COLS_RANGE.first + index % Board.BOARD_SIDE_LENGTH
-
-            WaterCell(Coordinate(col, row))
-        }
-
-        mutableStateOf(Board(matrix))
+        mutableStateOf(Board())
     }
 
     val shipTypes by remember {
@@ -68,7 +60,7 @@ fun BoardView() {
     }
 
     var gameStatus by remember {
-        mutableStateOf(GameStatus.PLACING_SHIPS)
+        mutableStateOf(GameState.PLACING_SHIPS)
     }
 
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -78,20 +70,18 @@ fun BoardView() {
                     Row {
                         repeat(Board.BOARD_SIDE_LENGTH) { x ->
                             Column {
-
                                 Box(
                                     Modifier
                                         .size(TILE_SIZE.dp)
                                         .background(Color.Blue)
                                         .border(1.dp, Color.Cyan)
                                 ) {
-
                                 }
                             }
                         }
                     }
                 }
-                if (gameStatus == GameStatus.PLACING_SHIPS)
+                if (gameStatus == GameState.PLACING_SHIPS) {
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -99,19 +89,22 @@ fun BoardView() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(Modifier.weight(2.0f)) {
-
                         }
-                        Button(modifier = Modifier.weight(1.0f),
+                        Button(
+                            modifier = Modifier.weight(1.0f),
                             onClick = {
                                 selectedOrientation =
-                                    if (selectedOrientation == Orientation.HORIZONTAL)
+                                    if (selectedOrientation == Orientation.HORIZONTAL) {
                                         Orientation.VERTICAL
-                                    else
+                                    } else {
                                         Orientation.HORIZONTAL
-                            }) {
+                                    }
+                            }
+                        ) {
                             Text("Change Orientation")
                         }
                     }
+                }
             }
 
             for (ship in placedShips) {
@@ -131,12 +124,12 @@ fun BoardView() {
                 )
             }
 
-            if (gameStatus == GameStatus.PLACING_SHIPS)
+            if (gameStatus == GameState.PLACING_SHIPS) {
                 UnplacedShipView(
                     initialOffset = Offset(
                         if (selectedOrientation == Orientation.VERTICAL) 2 * TILE_SIZE else TILE_SIZE,
                         TILE_SIZE * Board.BOARD_SIDE_LENGTH + (TILE_SIZE * 5 + 10) / 2 -
-                                if (selectedOrientation == Orientation.VERTICAL) 2.5f * TILE_SIZE else TILE_SIZE
+                            if (selectedOrientation == Orientation.VERTICAL) 2.5f * TILE_SIZE else TILE_SIZE
                     ),
                     orientation = selectedOrientation,
                     size = currentShipType.size,
@@ -146,11 +139,12 @@ fun BoardView() {
                         repeat(currentShipType.size) { i ->
                             coordinateList.add(
                                 Coordinate(
-                                    shipCoord.col + if (selectedOrientation == Orientation.HORIZONTAL)
+                                    shipCoord.col + if (selectedOrientation == Orientation.HORIZONTAL) {
                                         i
-                                    else 0,
-                                    shipCoord.row + if (selectedOrientation == Orientation.VERTICAL)
-                                        i else 0
+                                    } else 0,
+                                    shipCoord.row + if (selectedOrientation == Orientation.VERTICAL) {
+                                        i
+                                    } else 0
                                 )
                             )
                         }
@@ -162,14 +156,16 @@ fun BoardView() {
                             board = board.placeShip(newShip)
                             placedShips += newShip
 
-                            if (shipTypes.size == currentShipType.ordinal + 1)
-                                gameStatus = GameStatus.RUNNING
-                            else
+                            if (shipTypes.size == currentShipType.ordinal + 1) {
+                                gameStatus = GameState.RUNNING
+                            } else {
                                 currentShipType = shipTypes[currentShipType.ordinal + 1]
+                            }
                         }
                         canPlace
                     }
                 )
+            }
         }
     }
 }

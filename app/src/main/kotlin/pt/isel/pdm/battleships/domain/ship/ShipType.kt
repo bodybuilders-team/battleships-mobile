@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.domain
+package pt.isel.pdm.battleships.domain.ship
 
 /**
  * Represents the ship class in the game.

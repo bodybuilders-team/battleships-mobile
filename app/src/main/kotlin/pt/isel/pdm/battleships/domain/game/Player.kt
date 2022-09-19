@@ -1,4 +1,6 @@
-package pt.isel.pdm.battleships.domain
+package pt.isel.pdm.battleships.domain.game
+
+import pt.isel.pdm.battleships.domain.board.Board
 
 /**
  * Represents a player in the game.

@@ -17,17 +17,19 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import pt.isel.pdm.battleships.domain.Board
-import pt.isel.pdm.battleships.domain.Coordinate
-import pt.isel.pdm.battleships.domain.Orientation
+import pt.isel.pdm.battleships.domain.board.Board
+import pt.isel.pdm.battleships.domain.board.Coordinate
+import pt.isel.pdm.battleships.domain.ship.Orientation
 import java.security.InvalidParameterException
 import kotlin.math.roundToInt
 
 fun Coordinate.Companion.fromPoint(col: Int, row: Int): Coordinate {
-    if (col !in 0 until Board.BOARD_SIDE_LENGTH)
+    if (col !in 0 until pt.isel.pdm.battleships.domain.board.Board.BOARD_SIDE_LENGTH) {
         throw InvalidParameterException("Invalid Coordinate: x out of range")
-    if (row !in 0 until Board.BOARD_SIDE_LENGTH)
+    }
+    if (row !in 0 until pt.isel.pdm.battleships.domain.board.Board.BOARD_SIDE_LENGTH) {
         throw InvalidParameterException("Invalid Coordinate: y out of range")
+    }
 
     return Coordinate(COLS_RANGE.toList()[col], row + 1)
 }
@@ -41,9 +43,8 @@ fun UnplacedShipView(
     orientation: Orientation = Orientation.HORIZONTAL,
     initialOffset: Offset = Offset.Zero,
     size: Int,
-    onShipPlacedCallback: (Coordinate) -> Boolean,
+    onShipPlacedCallback: (Coordinate) -> Boolean
 ) {
-
     var dragging by remember {
         mutableStateOf(false)
     }
@@ -54,14 +55,20 @@ fun UnplacedShipView(
     val d = LocalDensity.current
 
     fun getOffset() = Offset(
-        initialOffset.x + (if (dragging)
-            dragOffset.x
-        else
-            0f) / d.density,
-        initialOffset.y + (if (dragging)
-            dragOffset.y
-        else
-            0f) / d.density
+        initialOffset.x + (
+            if (dragging) {
+                dragOffset.x
+            } else {
+                0f
+            }
+            ) / d.density,
+        initialOffset.y + (
+            if (dragging) {
+                dragOffset.y
+            } else {
+                0f
+            }
+            ) / d.density
 
     )
 
@@ -88,28 +95,33 @@ fun UnplacedShipView(
                         val currCol = (currOffset.x / TILE_SIZE).roundToInt()
                         val currRow = (currOffset.y / TILE_SIZE).roundToInt()
 
-                        if ((orientation == Orientation.HORIZONTAL &&
-                                    (currCol until currCol + size).all {
-                                        it in 0 until Board.BOARD_SIDE_LENGTH
-                                    } &&
-                                    currRow in 0 until Board.BOARD_SIDE_LENGTH)
-                            ||
-                            (orientation == Orientation.VERTICAL &&
+                        if ((
+                            orientation == Orientation.HORIZONTAL &&
+                                (currCol until currCol + size).all {
+                                    it in 0 until Board.BOARD_SIDE_LENGTH
+                                } &&
+                                currRow in 0 until Board.BOARD_SIDE_LENGTH
+                            ) ||
+                            (
+                                orientation == Orientation.VERTICAL &&
                                     (currRow until currRow + size).all {
                                         it in 0 until Board.BOARD_SIDE_LENGTH
                                     } &&
-                                    currCol in 0 until Board.BOARD_SIDE_LENGTH)
-                        )
+                                    currCol in 0 until Board.BOARD_SIDE_LENGTH
+                                )
+                        ) {
                             onShipPlacedCallback(
                                 Coordinate.fromPoint(currCol, currRow)
                             )
+                        }
 
                         dragOffset = Offset.Zero
                     },
                     onDragCancel = {
                         dragging = false
                         dragOffset = Offset.Zero
-                    }) { change, dragAmount ->
+                    }
+                ) { change, dragAmount ->
                     change.consumeAllChanges()
 
                     dragOffset += dragAmount
@@ -117,7 +129,5 @@ fun UnplacedShipView(
             }
 
     ) {
-
-
     }
 }

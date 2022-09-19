@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.domain
+package pt.isel.pdm.battleships.domain.game
 
 /**
  * Represents a battleship game.

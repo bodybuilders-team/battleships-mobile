@@ -15,7 +15,7 @@ import pt.isel.pdm.battleships.ui.BoardView
 fun Gameplay(backToMenuCallback: () -> Unit) {
     // TODO: Implement the gameplay screen
 
-    Column(){
+    Column {
         BoardView()
         Button(onClick = backToMenuCallback) {
             Text(text = "Back to menu")

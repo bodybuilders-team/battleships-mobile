@@ -12,18 +12,27 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 private val SEARCH_PLAYER_TEXT_FIELD_HEIGHT = 60.dp
+private val RANKING_CELL_OFFSET = 5.dp
 
-private val rankingTableCellModifier = Modifier.width(100.dp).height(30.dp).border(
-    1.dp,
-    color = Color.Red
-)
+private val rankingTableCellModifier =
+    Modifier
+        .width(100.dp)
+        .height(30.dp)
+        .border(
+            1.dp,
+            color = Color.Red
+        )
 
 private val Color.Companion.Gold
     get() = Color(0xFFFFDF00)
@@ -92,8 +101,8 @@ private fun SearchPlayerField(searchButtonCallback: () -> Unit) {
  */
 @Composable
 private fun RankingTable(players: List<Player>) {
-    // TODO Allow for scrolling (Lazy column?)
-    // TODO Allow for pagination AND/OR infinite scrolling (Lazy column?)
+    // TODO Allow for scrolling (Lazy column? Yes, that's the one)
+    // TODO Allow for pagination AND/OR infinite scrolling (Lazy column? Yes, that's the one)
 
     Column {
         // Label row
@@ -127,7 +136,7 @@ private fun RankingTable(players: List<Player>) {
                         Text(
                             text = (index + 1).toString(),
                             modifier = Modifier
-                                .offset(5.dp)
+                                .offset(RANKING_CELL_OFFSET)
                                 .align(Alignment.Center),
                             color = when (index) {
                                 in 0..2 -> Color.Black
@@ -140,7 +149,7 @@ private fun RankingTable(players: List<Player>) {
                     Box(modifier = rankingTableCellModifier) {
                         Text(
                             text = player.username,
-                            modifier = Modifier.offset(5.dp)
+                            modifier = Modifier.offset(RANKING_CELL_OFFSET)
                         )
                     }
 
@@ -148,7 +157,7 @@ private fun RankingTable(players: List<Player>) {
                     Box(modifier = rankingTableCellModifier) {
                         Text(
                             text = player.points.toString(),
-                            modifier = Modifier.offset(5.dp)
+                            modifier = Modifier.offset(RANKING_CELL_OFFSET)
                         )
                     }
                 }

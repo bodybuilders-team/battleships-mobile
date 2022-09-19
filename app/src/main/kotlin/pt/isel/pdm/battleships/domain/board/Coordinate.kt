@@ -1,6 +1,4 @@
-package pt.isel.pdm.battleships.domain
-
-import java.security.InvalidParameterException
+package pt.isel.pdm.battleships.domain.board
 
 /**
  * Coordinate of each board cell.
@@ -19,6 +17,5 @@ data class Coordinate(val col: Char, val row: Int) {
     companion object {
         val COLS_RANGE = 'A'..'J'
         val ROWS_RANGE = 1..Board.BOARD_SIDE_LENGTH
-
     }
 }

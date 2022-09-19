@@ -1,10 +1,7 @@
-package pt.isel.pdm.battleships.domain
+package pt.isel.pdm.battleships.domain.ship
 
+import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.ui.toPoint
-
-enum class Orientation {
-    VERTICAL, HORIZONTAL
-}
 
 /**
  * Represents a ship in the game.
@@ -33,9 +30,9 @@ data class Ship(
     }
 
     val orientation =
-        if (coordinates[0].col == coordinates[1].col)
+        if (coordinates[0].col == coordinates[1].col) {
             Orientation.VERTICAL
-        else Orientation.HORIZONTAL
+        } else Orientation.HORIZONTAL
 
     val isSunk = lives == 0
 }

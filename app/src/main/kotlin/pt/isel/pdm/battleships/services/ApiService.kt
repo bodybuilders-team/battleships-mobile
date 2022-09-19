@@ -1,8 +1,19 @@
 package pt.isel.pdm.battleships.services
 
-object ApiService {
+interface ApiService {
 
-    const val API_URI = "http://..."
+    // User
 
-    // TODO: Add service methods
+    // suspend fun getUser(username: String): User
+
+    // suspend fun createUser(user: User): User
+
+    suspend fun getUserRanking(username: String): RankingEntry
+
+    // suspend fun registerUser(username: String, hashedPassword: String): User
+
+    // suspend fun loginUser(username: String, hashedPassword: String): User
+
+    // Ranking
+    suspend fun getRanking(): List<RankingEntry>
 }

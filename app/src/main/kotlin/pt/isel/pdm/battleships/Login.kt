@@ -19,7 +19,7 @@ import java.security.MessageDigest
  * asking for the user name and password.
  *
  * Password is visually protected by [PasswordVisualTransformation].
- * TODO this protection is fake because the keyboard listener will remember the keys and show them to the user
+ * TODO: this protection is fake because the keyboard listener will remember the keys and show them to the user
  *
  * @param backToMenuCallback callback to be called when the user wants to go back to the main menu
  */
@@ -103,11 +103,14 @@ fun Login(backToMenuCallback: () -> Unit) {
  * Validates the username.
  *
  * @param username username
+ * @return true if the username is valid, false otherwise
  */
 private fun validateUsername(username: String): Boolean {
     if (username.length < 3) {
         return false
     }
+
+    // TODO: Add more validation rules
 
     return true
 }
@@ -116,11 +119,14 @@ private fun validateUsername(username: String): Boolean {
  * Validates the password.
  *
  * @param password password
+ * @return true if the password is valid, false otherwise
  */
 private fun validatePassword(password: String): Boolean {
     if (password.length < 4) {
         return false
     }
+
+    // TODO: Add more validation rules
 
     return true
 }
@@ -128,7 +134,7 @@ private fun validatePassword(password: String): Boolean {
 /**
  * Hashes a password.
  *
- * TODO salt (username?)
+ * TODO: salt (username?)
  *
  * @param password to hash
  * @return hashed password
@@ -136,13 +142,13 @@ private fun validatePassword(password: String): Boolean {
 private fun hashPassword(password: String): String {
     // Hash using SHA-256
     val digest = MessageDigest.getInstance("SHA-256")
-    val encodedhash = digest.digest(
+    val encodedHash = digest.digest(
         password.toByteArray(StandardCharsets.UTF_8)
     )
 
     // Convert to hexadecimal
     val sb = StringBuilder()
-    for (b in encodedhash) {
+    for (b in encodedHash) {
         val hex = Integer.toHexString(b.toInt() and 0xff)
         if (hex.length == 1) {
             sb.append('0')

@@ -2,8 +2,11 @@ package pt.isel.pdm.battleships
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.utils.Hyperlink
 
 /**
@@ -18,8 +21,9 @@ import pt.isel.pdm.battleships.utils.Hyperlink
  * Also shows the github link of the app's repository.
  */
 @Composable
-fun AboutDevelopers(backToMenuCallback: () -> Unit) {
-    Column {
+@Preview
+fun AboutDevelopers(backToMenuCallback: () -> Unit = {}) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         DeveloperInfo(
             "48089",
             "André Páscoa",
@@ -58,7 +62,10 @@ fun AboutDevelopers(backToMenuCallback: () -> Unit) {
  */
 @Composable
 private fun DeveloperInfo(number: String, name: String, githubLink: String) {
-    Text(text = "$number - $name")
+    Text(
+        text = "$number - $name",
+        style = MaterialTheme.typography.h6
+    )
     Hyperlink("Github", githubLink)
     Hyperlink("Email\n", "mailto:A$number@alunos.isel.pt")
 }
