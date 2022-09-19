@@ -1,11 +1,11 @@
 package pt.isel.pdm.battleships.domain
 
-import pt.isel.pdm.battleships.domain.board.Coordinate
-import pt.isel.pdm.battleships.domain.ship.Ship
-import pt.isel.pdm.battleships.domain.ship.ShipType
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import pt.isel.pdm.battleships.domain.board.Coordinate
+import pt.isel.pdm.battleships.domain.ship.Ship
+import pt.isel.pdm.battleships.domain.ship.ShipType
 
 class ShipTests {
 

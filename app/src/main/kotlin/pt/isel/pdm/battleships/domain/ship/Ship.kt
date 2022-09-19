@@ -17,9 +17,10 @@ data class Ship(
     val coordinates: List<Coordinate>,
     val lives: Int = type.size
 ) {
-    //    init {
-//        require(coordinates.size == type.size) { "Invalid number of cells for ship type" }
-//    }
+    init {
+        require(coordinates.size == type.size) { "Invalid number of cells for ship type" }
+    }
+
     val position = run {
         val minIndex = coordinates.map {
             val point = it.toPoint()
