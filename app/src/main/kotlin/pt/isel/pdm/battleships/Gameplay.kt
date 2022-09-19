@@ -1,22 +1,13 @@
 package pt.isel.pdm.battleships
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
@@ -93,9 +84,9 @@ fun Gameplay(backToMenuCallback: () -> Unit) {
                         2 * TILE_SIZE
                     } else TILE_SIZE,
                     TILE_SIZE * Board.BOARD_SIDE_LENGTH + (TILE_SIZE * 5 + 10) / 2 -
-                        if (selectedOrientation == Orientation.VERTICAL) {
-                            2.5f * TILE_SIZE
-                        } else TILE_SIZE
+                            if (selectedOrientation == Orientation.VERTICAL) {
+                                2.5f * TILE_SIZE
+                            } else TILE_SIZE
                 )
 
                 if (gameStatus == GameState.PLACING_SHIPS) {
@@ -110,13 +101,13 @@ fun Gameplay(backToMenuCallback: () -> Unit) {
                                 coordinateList.add(
                                     Coordinate(
                                         shipCoord.col +
-                                            if (selectedOrientation == Orientation.HORIZONTAL) {
-                                                i
-                                            } else 0,
+                                                if (selectedOrientation == Orientation.HORIZONTAL) {
+                                                    i
+                                                } else 0,
                                         shipCoord.row +
-                                            if (selectedOrientation == Orientation.VERTICAL) {
-                                                i
-                                            } else 0
+                                                if (selectedOrientation == Orientation.VERTICAL) {
+                                                    i
+                                                } else 0
                                     )
                                 )
                             }
@@ -141,7 +132,7 @@ fun Gameplay(backToMenuCallback: () -> Unit) {
         }
 
         Button(onClick = backToMenuCallback) {
-            Text(text = "Back to menu")
+            Text(text = stringResource(id = R.string.back_to_menu_button_text))
         }
     }
 }

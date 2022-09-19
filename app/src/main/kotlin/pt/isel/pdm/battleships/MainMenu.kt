@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 
 /**
  * Represents the available pages in the application.
@@ -18,6 +19,7 @@ private enum class Page {
     RANKING,
     ABOUT_DEVS
 }
+
 
 /**
  * The main menu of the application.
@@ -33,19 +35,24 @@ fun MainMenu() {
         contentDescription = "Battleships Logo"
     )*/
 
+    val playButtonText = stringResource(id = R.string.main_menu_play_button_text)
+    val loginButtonText = stringResource(id = R.string.main_menu_login_button_text)
+    val rankingButtonText = stringResource(id = R.string.main_menu_ranking_button_text)
+    val aboutDevsButtonText = stringResource(id = R.string.main_menu_about_devs_button_text)
+
     when (currentPage.value) {
         Page.MAIN_MENU -> Column {
             Button(onClick = { currentPage.value = Page.GAMEPLAY }) {
-                Text(text = "Play", color = Color.Black)
+                Text(text = playButtonText, color = Color.Black)
             }
             Button(onClick = { currentPage.value = Page.LOGIN }) {
-                Text(text = "Login", color = Color.Black)
+                Text(text = loginButtonText, color = Color.Black)
             }
             Button(onClick = { currentPage.value = Page.RANKING }) {
-                Text(text = "Ranking", color = Color.Black)
+                Text(text = rankingButtonText, color = Color.Black)
             }
             Button(onClick = { currentPage.value = Page.ABOUT_DEVS }) {
-                Text(text = "About the developers", color = Color.Black)
+                Text(text = aboutDevsButtonText, color = Color.Black)
             }
         }
         Page.GAMEPLAY -> Gameplay {

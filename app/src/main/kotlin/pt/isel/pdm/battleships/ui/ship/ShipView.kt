@@ -24,16 +24,16 @@ fun ShipView(ship: Ship) {
             )
             .size(
                 (
-                    TILE_SIZE * if (ship.orientation == Orientation.HORIZONTAL) {
-                        ship.type.size
-                    } else 1
-                    ).dp,
+                        TILE_SIZE * if (ship.orientation == Orientation.HORIZONTAL) {
+                            ship.type.size
+                        } else 1
+                        ).dp,
 
                 (
-                    TILE_SIZE * if (ship.orientation == Orientation.VERTICAL) {
-                        ship.type.size
-                    } else 1
-                    ).dp
+                        TILE_SIZE * if (ship.orientation == Orientation.VERTICAL) {
+                            ship.type.size
+                        } else 1
+                        ).dp
             )
             .background(Color.Black)
     )

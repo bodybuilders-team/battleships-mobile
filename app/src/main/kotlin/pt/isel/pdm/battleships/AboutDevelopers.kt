@@ -5,8 +5,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.utils.Hyperlink
 
 /**
@@ -21,9 +20,8 @@ import pt.isel.pdm.battleships.utils.Hyperlink
  * Also shows the github link of the app's repository.
  */
 @Composable
-@Preview
-fun AboutDevelopers(backToMenuCallback: () -> Unit = {}) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun AboutDevelopers(backToMenuCallback: () -> Unit) {
+    Column {
         DeveloperInfo(
             "48089",
             "André Páscoa",
@@ -42,11 +40,11 @@ fun AboutDevelopers(backToMenuCallback: () -> Unit = {}) {
             "https://github.com/Nyckoka"
         )
 
-        Text(text = "The code for this app is available at: ")
+        Text(text = stringResource(id = R.string.about_devs_repo_github_text))
         Hyperlink("https://github.com/bodybuilders-team/battleships")
 
         Button(onClick = backToMenuCallback) {
-            Text(text = "Back to menu")
+            Text(text = stringResource(id = R.string.back_to_menu_button_text))
         }
     }
 }

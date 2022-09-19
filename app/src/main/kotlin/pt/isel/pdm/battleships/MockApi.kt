@@ -4,6 +4,17 @@ private class User(val username: String, val hashedPassword: String, val points:
 
 data class Player(val username: String, val points: Int)
 
+enum class RegisterStatus {
+    USERNAME_EXISTS,
+    SUCCESSFUL
+}
+
+enum class LoginStatus {
+    USERNAME_NOT_FOUND,
+    WRONG_PASSWORD,
+    SUCCESSFUL
+}
+
 object MockApi {
     private val users = mutableListOf<User>(
         User("joe", "mama", 69),
@@ -14,22 +25,22 @@ object MockApi {
     fun getPlayers(): List<Player> =
         users.map { Player(it.username, it.points) }
 
-    fun register(username: String, hashedPassword: String): String {
+    fun register(username: String, hashedPassword: String): RegisterStatus {
         if (users.find { player -> player.username == username } != null) {
-            return "USERNAME_EXISTS"
+            return RegisterStatus.USERNAME_EXISTS
         }
 
         users.add(User(username, hashedPassword, 0))
 
-        return "SUCCESSFUL"
+        return RegisterStatus.SUCCESSFUL
     }
 
-    fun login(username: String, hashedPassword: String): String {
+    fun login(username: String, hashedPassword: String): LoginStatus {
         val player = users.find { player -> player.username == username }
-            ?: return "NO_USERNAME"
+            ?: return LoginStatus.USERNAME_NOT_FOUND
 
         return if (player.hashedPassword == hashedPassword) {
-            "SUCCESSFUL"
-        } else "WRONG_PASSWORD"
+            LoginStatus.SUCCESSFUL
+        } else LoginStatus.WRONG_PASSWORD
     }
 }

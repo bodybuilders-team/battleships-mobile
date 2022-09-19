@@ -9,6 +9,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
@@ -25,34 +26,36 @@ import java.security.MessageDigest
  */
 @Composable
 fun Login(backToMenuCallback: () -> Unit) {
+    val loginMessage = remember { mutableStateOf<String?>(null) }
+
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
+    val loginMessageInvalidUsername = stringResource(id = R.string.login_message_invalid_username)
+    val loginMessageInvalidPassword = stringResource(id = R.string.login_message_invalid_password)
+    val loginMessageUsernameNotFound =
+        stringResource(id = R.string.login_message_username_not_found)
+    val loginMessageWrongPassword = stringResource(id = R.string.login_message_wrong_password)
+    val loginMessageSuccessful = stringResource(id = R.string.login_message_successful)
+
+    val registerMessageUserExists = stringResource(id = R.string.register_message_user_exists)
+    val registerMessageSuccessful = stringResource(id = R.string.register_message_successful)
+
     Column {
-        TextField(
-            value = username.value,
-            onValueChange = { username.value = it },
-            placeholder = { Text(text = "Username") }
+        LoginTextFields(username.value, password.value,
+            onUsernameChangeCallback = { username.value = it },
+            onPasswordChangeCallback = { password.value = it }
         )
 
-        TextField(
-            value = password.value,
-            onValueChange = { password.value = it },
-            placeholder = { Text(text = "Password") },
-            visualTransformation = PasswordVisualTransformation()
-        )
-
-        val loginMessage = remember { mutableStateOf<String?>(null) }
-
-        Row {
-            Button(onClick = {
-                if (!validateUsername(username.value)) {
-                    loginMessage.value = "Username should have at least 3 characters."
-                    return@Button
-                }
-                if (!validatePassword(password.value)) {
-                    loginMessage.value = "Password should have at least 4 characters."
-                    return@Button
+        LoginButtons(
+            onLoginClickCallback = {
+                validateFields(
+                    username.value, password.value,
+                    loginMessageInvalidUsername,
+                    loginMessageInvalidPassword
+                )?.let {
+                    loginMessage.value = it
+                    return@LoginButtons
                 }
 
                 val hashedPassword = hashPassword(password.value)
@@ -60,32 +63,30 @@ fun Login(backToMenuCallback: () -> Unit) {
                 // Send username and hashed password to the server api
 
                 when (MockApi.login(username.value, hashedPassword)) {
-                    "NO_USERNAME" -> loginMessage.value = "Username does not exist."
-                    "WRONG_PASSWORD" -> loginMessage.value = "Password is wrong."
-                    "SUCCESSFUL" -> loginMessage.value = "Login was successful."
+                    LoginStatus.USERNAME_NOT_FOUND -> loginMessage.value =
+                        loginMessageUsernameNotFound
+                    LoginStatus.WRONG_PASSWORD -> loginMessage.value = loginMessageWrongPassword
+                    LoginStatus.SUCCESSFUL -> loginMessage.value = loginMessageSuccessful
                 }
-            }) {
-                Text(text = "Login")
-            }
-
-            Button(onClick = {
-                if (!validateUsername(username.value)) {
-                    loginMessage.value = "Username should have at least 3 characters."
-                }
-                if (!validatePassword(password.value)) {
-                    loginMessage.value = "Password should have at least 4 characters."
+            },
+            onRegisterClickCallback = {
+                validateFields(
+                    username.value, password.value,
+                    loginMessageInvalidUsername,
+                    loginMessageInvalidPassword
+                )?.let {
+                    loginMessage.value = it
+                    return@LoginButtons
                 }
 
                 val hashedPassword = hashPassword(password.value)
 
                 when (MockApi.register(username.value, hashedPassword)) {
-                    "USERNAME_EXISTS" -> loginMessage.value = "Username already exists."
-                    "SUCCESSFUL" -> loginMessage.value = "User registered successfully."
+                    RegisterStatus.USERNAME_EXISTS -> loginMessage.value = registerMessageUserExists
+                    RegisterStatus.SUCCESSFUL -> loginMessage.value = registerMessageSuccessful
                 }
-            }) {
-                Text(text = "Register instead")
             }
-        }
+        )
 
         loginMessage.value?.let {
             AnimatedVisibility(visible = true) {
@@ -94,7 +95,58 @@ fun Login(backToMenuCallback: () -> Unit) {
         }
 
         Button(onClick = backToMenuCallback) {
-            Text(text = "Back to menu")
+            Text(text = stringResource(id = R.string.back_to_menu_button_text))
+        }
+    }
+}
+
+/**
+ * The text fields for the login operation on the login page:
+ * - Username field
+ * - Password field
+ *
+ * @param username username to show
+ * @param password password to show
+ * @param onUsernameChangeCallback callback to be invoked when the username text is changed
+ * @param onPasswordChangeCallback callback to be invoked when the password text is changed
+ */
+@Composable
+fun LoginTextFields(
+    username: String, password: String,
+    onUsernameChangeCallback: (String) -> Unit,
+    onPasswordChangeCallback: (String) -> Unit
+) {
+    TextField(
+        value = username,
+        onValueChange = onUsernameChangeCallback,
+        placeholder = { Text(text = stringResource(id = R.string.login_username_placeholder_text)) }
+    )
+
+    TextField(
+        value = password,
+        onValueChange = onPasswordChangeCallback,
+        placeholder = { Text(text = stringResource(id = R.string.login_password_placeholder_text)) },
+        visualTransformation = PasswordVisualTransformation()
+    )
+}
+
+/**
+ * Buttons for the login operation:
+ * - Login button
+ * - Register button
+ *
+ * @param onLoginClickCallback callback to be invoked when the login button is clicked
+ * @param onRegisterClickCallback callback to be invoked when the register button is clicked
+ */
+@Composable
+fun LoginButtons(onLoginClickCallback: () -> Unit, onRegisterClickCallback: () -> Unit) {
+    Row {
+        Button(onClick = onLoginClickCallback) {
+            Text(text = stringResource(id = R.string.login_login_button_text))
+        }
+
+        Button(onClick = onRegisterClickCallback) {
+            Text(text = stringResource(id = R.string.login_register_button_text))
         }
     }
 }
@@ -157,4 +209,27 @@ private fun hashPassword(password: String): String {
     }
 
     return sb.toString()
+}
+
+
+/**
+ * Validates fields, returning a message in case of failure.
+ *
+ * @param username username to validate
+ * @param password password to validate
+ * @param invalidUsernameMessage message to show in case of invalid username
+ * @param invalidPasswordMessage message to show in case of invalid password
+ */
+private fun validateFields(
+    username: String, password: String,
+    invalidUsernameMessage: String, invalidPasswordMessage: String
+): String? {
+    if (!validateUsername(username)) {
+        return invalidUsernameMessage
+    }
+    if (!validatePassword(password)) {
+        return invalidPasswordMessage
+    }
+
+    return null
 }
