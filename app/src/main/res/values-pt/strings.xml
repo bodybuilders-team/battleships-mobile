@@ -29,4 +29,5 @@
     <string name="gameplay_change_orientation_button_text">Mudar Orientação</string>
     <string name="github_logo_content_description">Logo do Github</string>
     <string name="email_icon_content_description">Ícone de email</string>
+    <string name="gameplay_random_board_button_text">Grealha Aleatório</string>
 </resources>

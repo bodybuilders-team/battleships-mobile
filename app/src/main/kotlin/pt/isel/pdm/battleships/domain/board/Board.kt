@@ -5,23 +5,24 @@ import pt.isel.pdm.battleships.domain.MissCell
 import pt.isel.pdm.battleships.domain.ShipCell
 import pt.isel.pdm.battleships.domain.WaterCell
 import pt.isel.pdm.battleships.domain.exceptions.InvalidAttackException
+import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
+import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.utils.replace
 
 /**
  * Represents a board in the game.
  * The boards are typically square – usually 10×10 – and the individual squares in the grid are identified by letter and number.
  *
- * @property matrix the matrix of cells
+ * @property grid the matrix of cells
  * @property fleet the fleet of ships
  */
 class Board(
-    private val matrix: List<Cell>
+    private val grid: List<Cell>
 ) {
     init {
         val boardSize = BOARD_SIDE_LENGTH * BOARD_SIDE_LENGTH
-        require(matrix.size == boardSize) { "Board must have $boardSize cells" }
-//        require(fleet.size == NUMBER_OF_SHIPS) { "Board must have $NUMBER_OF_SHIPS ships" }
+        require(grid.size == boardSize) { "Board must have $boardSize cells" }
 
         // TODO: Validations
     }
@@ -46,15 +47,7 @@ class Board(
     }
 
     val fleet: List<Ship>
-        get() = matrix.filterIsInstance<ShipCell>().map { it.ship }.distinct()
-
-    /**
-     * Returns the matrix index obtained from the coordinate.
-     *
-     * @return the matrix index obtained from the coordinate
-     */
-    fun Coordinate.toIndex() =
-        (BOARD_SIDE_LENGTH - row) * BOARD_SIDE_LENGTH + (col - Coordinate.COLS_RANGE.first)
+        get() = grid.filterIsInstance<ShipCell>().map { it.ship }.distinct()
 
     /**
      * Returns the cell in [coordinate].
@@ -62,7 +55,7 @@ class Board(
      * @param coordinate coordinate to get cell of
      * @return cell in [coordinate]
      */
-    fun getCell(coordinate: Coordinate) = matrix[coordinate.toIndex()]
+    fun getCell(coordinate: Coordinate) = grid[coordinate.toIndex()]
 
     /**
      * Checks if it is possible to place a ship in its coordinates.
@@ -79,7 +72,7 @@ class Board(
      * @return the new board with the ship placed
      */
     fun placeShip(ship: Ship) = Board(
-        matrix.map {
+        grid.map {
             if (it.coordinate in ship.coordinates) {
                 ShipCell(it.coordinate, ship)
             } else {
@@ -89,7 +82,7 @@ class Board(
     )
 
     /**
-     * Attacks the cell in [coordinate].
+     * Shoots the cell in [coordinate].
      * If the cell is a ship cell, the ship is hit.
      * If the cell is a hit cell, the attack is invalid.
      * If the cell is a miss cell, the attack is invalid.
@@ -101,7 +94,7 @@ class Board(
      * @return the board after the attack
      * @throws InvalidAttackException if the attack is invalid
      */
-    fun attack(coordinate: Coordinate): Board =
+    fun shoot(coordinate: Coordinate): Board =
         when (val cell = getCell(coordinate)) {
             is ShipCell -> {
                 if (cell.wasHit) throw InvalidAttackException("Cell $coordinate was already hit")
@@ -110,7 +103,7 @@ class Board(
                 val newShip = ship.copy(lives = ship.lives - 1)
 
                 Board(
-                    matrix.map { currCell ->
+                    grid.map { currCell ->
                         when (currCell) {
                             is ShipCell -> currCell.copy(
                                 ship = newShip,
@@ -122,19 +115,18 @@ class Board(
                 )
             }
             is MissCell -> throw InvalidAttackException("Cell $coordinate was already hit")
-            is WaterCell -> Board(matrix.replace(coordinate.toIndex(), MissCell(coordinate)))
+            is WaterCell -> Board(grid.replace(coordinate.toIndex(), MissCell(coordinate)))
         }
 
     companion object {
         const val BOARD_SIDE_LENGTH = 10
-        const val NUMBER_OF_SHIPS = 5
 
         /**
          * Generates a matrix only with water cells.
          *
          * @return generated matrix
          */
-        private fun generateEmptyMatrix() =
+        private fun generateEmptyMatrix(): List<Cell> =
             List(BOARD_SIDE_LENGTH * BOARD_SIDE_LENGTH) {
                 WaterCell(
                     Coordinate(
@@ -145,45 +137,60 @@ class Board(
             }
 
         /**
+         * Returns the matrix index obtained from the coordinate.
+         *
+         * @return the matrix index obtained from the coordinate
+         */
+        fun Coordinate.toIndex() =
+            (BOARD_SIDE_LENGTH - row) * BOARD_SIDE_LENGTH + (col - Coordinate.COLS_RANGE.first)
+
+        /**
          * Generates a matrix of cells with the ships placed randomly.
          *
          * @return the matrix
          */
         private fun generateRandomMatrix(): List<Cell> {
-            val matrix = MutableList(BOARD_SIDE_LENGTH * BOARD_SIDE_LENGTH) { index ->
-                val row = BOARD_SIDE_LENGTH - index / BOARD_SIDE_LENGTH
-                val col = Coordinate.COLS_RANGE.first + index % BOARD_SIDE_LENGTH
+            val matrix = generateEmptyMatrix().toMutableList()
 
-                WaterCell(Coordinate(col, row))
-            }
+            ShipType.values().forEach { shipType ->
+                val possibleCombinations: List<Pair<List<Coordinate>, Orientation>> = matrix
+                    .filterIsInstance<WaterCell>()
+                    .flatMap { cell ->
+                        Orientation.values()
+                            .fold(emptyList()) { acc, orientation ->
+                                if (Ship.isValidShipCoordinate(
+                                        cell.coordinate.col - Coordinate.COLS_RANGE.first,
+                                        cell.coordinate.row,
+                                        orientation,
+                                        shipType.size
+                                    )
+                                ) {
+                                    acc + Pair(
+                                        Ship.getCoordinates(
+                                            shipType,
+                                            cell.coordinate,
+                                            orientation
+                                        ),
+                                        orientation
+                                    )
+                                } else acc
+                            }
+                    }
 
-            /*ShipType.values().forEach { shipType ->
-                val coordinate = Coordinate(
-                    Coordinate.COLS_RANGE.random(),
-                    Coordinate.ROWS_RANGE.random()
+                val coordinates = possibleCombinations
+                    .filter { (coord, _) -> coord.all { matrix[it.toIndex()] is WaterCell } }
+                    .random()
+
+                val ship = Ship(
+                    shipType,
+                    coordinate = coordinates.first.first(),
+                    orientation = coordinates.second
                 )
 
-                val vertical = Random.nextBoolean()
-
-                val coordinates = mutableListOf(coordinate)
-                for (i in 1 until shipType.size) {
-                    try {
-                        coordinates.add(
-                            if (vertical) {
-                                Coordinate(coordinate.col, coordinate.row + i)
-                            } else {
-                                Coordinate(coordinate.col + i, coordinate.row)
-                            }
-                        )
-                    } catch (e: IllegalArgumentException) {
-                        return@forEach
-                    }
+                coordinates.first.forEach {
+                    matrix[it.toIndex()] = ShipCell(it, ship)
                 }
-                val ship = Ship(shipType, coordinates)
-                coordinates.forEach { coordinate ->
-                    matrix[coordinate.toIndex()] = ShipCell(coordinate, ship)
-                }
-            }*/
+            }
 
             return matrix
         }

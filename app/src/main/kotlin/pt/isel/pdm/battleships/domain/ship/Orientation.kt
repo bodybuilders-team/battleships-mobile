@@ -9,12 +9,14 @@ enum class Orientation {
 
     /**
      * Checks if the orientation is vertical.
+     *
      * @return true if the orientation is vertical, false otherwise.
      */
     fun isVertical() = this == VERTICAL
 
     /**
      * Checks if the orientation is horizontal.
+     *
      * @return true if the orientation is horizontal, false otherwise.
      */
     fun isHorizontal() = this == HORIZONTAL

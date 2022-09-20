@@ -11,7 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import pt.isel.pdm.battleships.screens.MainMenu
+import pt.isel.pdm.battleships.ui.screens.MainMenu
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**

@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.screens
+package pt.isel.pdm.battleships.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -14,6 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.ui.screens.aboutDevelopers.AboutDevelopers
+import pt.isel.pdm.battleships.ui.screens.gameplay.Gameplay
+import pt.isel.pdm.battleships.ui.screens.login.Login
+import pt.isel.pdm.battleships.ui.screens.ranking.Ranking
 
 /**
  * Represents the available pages in the application.

@@ -1,10 +1,11 @@
-package pt.isel.pdm.battleships.domain.game
+package pt.isel.pdm.battleships.domain.exceptions.game
 
 /**
  * Represents the state of the game.
  */
 enum class GameState {
+    WAITING_FOR_PLAYERS,
     PLACING_SHIPS,
-    RUNNING,
+    IN_PROGRESS,
     FINISHED
 }

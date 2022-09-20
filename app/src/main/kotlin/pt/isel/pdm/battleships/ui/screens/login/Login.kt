@@ -1,14 +1,12 @@
-package pt.isel.pdm.battleships.screens
+package pt.isel.pdm.battleships.ui.screens.login
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,8 +19,6 @@ import pt.isel.pdm.battleships.LoginStatus
 import pt.isel.pdm.battleships.MockApi
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.RegisterStatus
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 
 private const val LOGIN_TITLE_PADDING = 8
 
@@ -124,144 +120,4 @@ fun Login(backToMenuCallback: () -> Unit) {
             Text(text = stringResource(id = R.string.back_to_menu_button_text))
         }
     }
-}
-
-/**
- * The text fields for the login operation on the login page:
- * - Username field
- * - Password field
- *
- * @param username username to show
- * @param password password to show
- * @param onUsernameChangeCallback callback to be invoked when the username text is changed
- * @param onPasswordChangeCallback callback to be invoked when the password text is changed
- */
-@Composable
-fun LoginTextFields(
-    username: String,
-    password: String,
-    onUsernameChangeCallback: (String) -> Unit,
-    onPasswordChangeCallback: (String) -> Unit
-) {
-    TextField(
-        value = username,
-        onValueChange = onUsernameChangeCallback,
-        placeholder = { Text(text = stringResource(id = R.string.login_username_placeholder_text)) },
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
-
-    TextField(
-        value = password,
-        onValueChange = onPasswordChangeCallback,
-        placeholder = { Text(text = stringResource(id = R.string.login_password_placeholder_text)) },
-        visualTransformation = PasswordVisualTransformation()
-    )
-}
-
-/**
- * Buttons for the login operation:
- * - Login button
- * - Register button
- *
- * @param onLoginClickCallback callback to be invoked when the login button is clicked
- * @param onRegisterClickCallback callback to be invoked when the register button is clicked
- */
-@Composable
-fun LoginButtons(onLoginClickCallback: () -> Unit, onRegisterClickCallback: () -> Unit) {
-    Row {
-        Button(
-            onClick = onLoginClickCallback,
-            modifier = Modifier.padding(end = 8.dp)
-        ) {
-            Text(text = stringResource(id = R.string.login_login_button_text))
-        }
-
-        Button(onClick = onRegisterClickCallback) {
-            Text(text = stringResource(id = R.string.login_register_button_text))
-        }
-    }
-}
-
-/**
- * Validates the username.
- *
- * @param username username
- * @return true if the username is valid, false otherwise
- */
-private fun validateUsername(username: String): Boolean {
-    if (username.length < 3) {
-        return false
-    }
-
-    // TODO: Add more validation rules
-
-    return true
-}
-
-/**
- * Validates the password.
- *
- * @param password password
- * @return true if the password is valid, false otherwise
- */
-private fun validatePassword(password: String): Boolean {
-    if (password.length < 4) {
-        return false
-    }
-
-    // TODO: Add more validation rules
-
-    return true
-}
-
-/**
- * Hashes a password.
- *
- * TODO: salt (username?)
- *
- * @param password to hash
- * @return hashed password
- */
-private fun hashPassword(password: String): String {
-    // Hash using SHA-256
-    val digest = MessageDigest.getInstance("SHA-256")
-    val encodedHash = digest.digest(
-        password.toByteArray(StandardCharsets.UTF_8)
-    )
-
-    // Convert to hexadecimal
-    val sb = StringBuilder()
-    for (b in encodedHash) {
-        val hex = Integer.toHexString(b.toInt() and 0xff)
-        if (hex.length == 1) {
-            sb.append('0')
-        }
-        sb.append(hex)
-    }
-
-    return sb.toString()
-}
-
-/**
- * Validates fields, returning a message in case of failure.
- *
- * @param username username to validate
- * @param password password to validate
- * @param invalidUsernameMessage message to show in case of invalid username
- * @param invalidPasswordMessage message to show in case of invalid password
- */
-private fun validateFields(
-    username: String,
-    password: String,
-    invalidUsernameMessage: String,
-    invalidPasswordMessage: String
-): String? {
-    if (!validateUsername(username)) {
-        return invalidUsernameMessage
-    }
-    if (!validatePassword(password)) {
-        return invalidPasswordMessage
-    }
-
-    return null
 }

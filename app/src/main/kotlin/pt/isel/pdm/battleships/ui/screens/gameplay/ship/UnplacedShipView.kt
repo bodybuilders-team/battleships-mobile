@@ -1,10 +1,11 @@
-package pt.isel.pdm.battleships.ui.ship
+package pt.isel.pdm.battleships.ui.screens.gameplay.ship
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
@@ -21,7 +23,8 @@ import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
-import pt.isel.pdm.battleships.ui.board.TILE_SIZE
+import pt.isel.pdm.battleships.domain.ship.Ship
+import pt.isel.pdm.battleships.ui.screens.gameplay.board.TILE_SIZE
 import java.security.InvalidParameterException
 import kotlin.math.roundToInt
 
@@ -30,6 +33,7 @@ import kotlin.math.roundToInt
  *
  * @param orientation the orientation of the ship
  * @param initialOffset the initial offset of the ship
+ * @param boardOffset the offset of the board
  * @param size the size of the ship
  * @param onShipPlacedCallback the callback to be called when the ship is placed on the board
  */
@@ -37,6 +41,7 @@ import kotlin.math.roundToInt
 fun UnplacedShipView(
     orientation: Orientation = Orientation.HORIZONTAL,
     initialOffset: Offset = Offset.Zero,
+    boardOffset: Offset = Offset.Zero,
     size: Int,
     onShipPlacedCallback: (Coordinate) -> Boolean
 ) {
@@ -70,28 +75,23 @@ fun UnplacedShipView(
                 width = (TILE_SIZE * if (orientation == Orientation.HORIZONTAL) size else 1).dp,
                 height = (TILE_SIZE * if (orientation == Orientation.VERTICAL) size else 1).dp
             )
-            .background(Color.Black)
+            .clip(RoundedCornerShape(UNPLACED_SHIP_CORNER_RADIUS.dp))
+            .background(Color.DarkGray)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = { dragging = true },
                     onDragEnd = {
                         dragging = false
-                        val currCol = (offset.x / TILE_SIZE).roundToInt()
-                        val currRow = (offset.y / TILE_SIZE).roundToInt()
+                        val currCol = ((offset.x - boardOffset.x) / TILE_SIZE).roundToInt()
+                        val currRow = ((offset.y - boardOffset.y) / TILE_SIZE).roundToInt()
 
-                        // TODO: Clean this up (maybe create functions?)
                         if (
-                            (
-                                currentOrientation == Orientation.HORIZONTAL &&
-                                    (currCol until currCol + currentSize)
-                                        .all { it in 0 until Board.BOARD_SIDE_LENGTH } &&
-                                    currRow in 0 until Board.BOARD_SIDE_LENGTH
-                                ) || (
-                                currentOrientation == Orientation.VERTICAL &&
-                                    (currRow until currRow + currentSize)
-                                        .all { it in 0 until Board.BOARD_SIDE_LENGTH } &&
-                                    currCol in 0 until Board.BOARD_SIDE_LENGTH
-                                )
+                            Ship.isValidShipCoordinate(
+                                currCol,
+                                currRow,
+                                currentOrientation,
+                                currentSize
+                            )
                         ) {
                             onShipPlacedCallback(Coordinate.fromPoint(currCol, currRow))
                         }
@@ -111,6 +111,8 @@ fun UnplacedShipView(
     )
 }
 
+private const val UNPLACED_SHIP_CORNER_RADIUS = 16
+
 /**
  * Gets a coordinate from a point.
  *
@@ -121,14 +123,14 @@ fun UnplacedShipView(
  */
 fun Coordinate.Companion.fromPoint(col: Int, row: Int): Coordinate {
     if (col !in 0 until Board.BOARD_SIDE_LENGTH) {
-        throw InvalidParameterException("Invalid Coordinate: x out of range")
+        throw InvalidParameterException("Invalid Coordinate: col out of range")
     }
 
     if (row !in 0 until Board.BOARD_SIDE_LENGTH) {
-        throw InvalidParameterException("Invalid Coordinate: y out of range")
+        throw InvalidParameterException("Invalid Coordinate: row out of range")
     }
 
-    return Coordinate(COLS_RANGE.toList()[col], row + 1)
+    return Coordinate(COLS_RANGE.first + col, row + 1)
 }
 
 /**

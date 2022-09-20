@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.domain.game
+package pt.isel.pdm.battleships.domain.exceptions.game
 
 import pt.isel.pdm.battleships.domain.board.Board
 

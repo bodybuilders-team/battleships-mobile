@@ -9,3 +9,7 @@ val Teal200 = Color(0xFF03DAC5)
 
 val LightBlue = Color(0xFF03A9F4)
 val DarkBlue = Color(0xFF025DA5)
+
+val Gold = Color(0xFFFFCC33)
+val Silver = Color(0xFFB5B7BB)
+val Bronze = Color(0xFFA05822)
