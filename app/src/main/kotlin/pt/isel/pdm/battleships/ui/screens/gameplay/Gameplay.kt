@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
-import pt.isel.pdm.battleships.domain.exceptions.game.GameState
+import pt.isel.pdm.battleships.domain.game.GameState
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType

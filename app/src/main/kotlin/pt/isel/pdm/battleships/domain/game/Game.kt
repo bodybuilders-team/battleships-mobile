@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.domain.exceptions.game
+package pt.isel.pdm.battleships.domain.game
 
 /**
  * Represents a battleship game.
