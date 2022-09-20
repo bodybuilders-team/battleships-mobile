@@ -90,7 +90,8 @@ fun UnplacedShipView(
                                 currCol,
                                 currRow,
                                 currentOrientation,
-                                currentSize
+                                currentSize,
+                                size
                             )
                         ) {
                             onShipPlacedCallback(Coordinate.fromPoint(currCol, currRow))

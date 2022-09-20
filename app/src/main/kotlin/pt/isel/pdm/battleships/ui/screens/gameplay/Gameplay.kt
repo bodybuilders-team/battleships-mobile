@@ -45,7 +45,7 @@ fun Gameplay(backToMenuCallback: () -> Unit) {
         modifier = Modifier.fillMaxSize()
     ) {
         // Box to allow dragging the ships
-        Box(modifier = Modifier.width((TILE_SIZE * (Board.BOARD_SIDE_LENGTH + 1)).dp)) {
+        Box(modifier = Modifier.width((TILE_SIZE * (board.size + 1)).dp)) {
             Column {
                 BoardView(board)
 
@@ -67,10 +67,10 @@ fun Gameplay(backToMenuCallback: () -> Unit) {
             if (gameStatus == GameState.PLACING_SHIPS) {
                 UnplacedShipView(
                     initialOffset = Offset(
-                        x = SHIP_SLOTS_WIDTH / 2 - TILE_SIZE / 2 *
+                        x = ((board.size + 1) * TILE_SIZE * SHIP_SLOTS_FACTOR) / 2 - TILE_SIZE / 2 *
                             if (selectedOrientation.isVertical()) 1 else currentShipType.size,
-                        y = (Board.BOARD_SIDE_LENGTH + 1) * TILE_SIZE + PLACING_MENU_PADDING +
-                            SHIP_SLOTS_HEIGHT / 2 - TILE_SIZE / 2 *
+                        y = (board.size + 1) * TILE_SIZE + PLACING_MENU_PADDING +
+                            ((board.size + 1) * TILE_SIZE * SHIP_SLOTS_FACTOR) / 2 - TILE_SIZE / 2 *
                             if (selectedOrientation.isHorizontal()) 1 else currentShipType.size
                     ),
                     boardOffset = Offset(x = TILE_SIZE, y = TILE_SIZE),

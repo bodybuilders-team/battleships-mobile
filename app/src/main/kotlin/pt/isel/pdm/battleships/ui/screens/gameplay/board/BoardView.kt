@@ -15,8 +15,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.domain.board.Board
-import pt.isel.pdm.battleships.domain.board.Board.Companion.BOARD_SIDE_LENGTH
-import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 import pt.isel.pdm.battleships.ui.theme.DarkBlue
 
@@ -32,11 +30,11 @@ private const val TILE_BORDER_SIZE = 1
 fun BoardView(board: Board) {
     Box {
         Column {
-            ColumnsIdentifierView()
-            repeat(BOARD_SIDE_LENGTH) {
+            ColumnsIdentifierView(board.size)
+            repeat(board.size) {
                 Row {
                     RowIdentifierBox(it)
-                    repeat(BOARD_SIDE_LENGTH) {
+                    repeat(board.size) {
                         Box(
                             Modifier
                                 .size(TILE_SIZE.dp)
@@ -55,18 +53,20 @@ fun BoardView(board: Board) {
 
 /**
  * Composable used to display board column letters.
+ *
+ * @param boardSize the size of the board
  */
 @Composable
-private fun ColumnsIdentifierView() {
+private fun ColumnsIdentifierView(boardSize: Int) {
     Row(modifier = Modifier.offset(x = TILE_SIZE.dp)) {
-        repeat(BOARD_SIDE_LENGTH) {
+        repeat(boardSize) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(TILE_SIZE.dp)
             ) {
                 Text(
-                    "${Coordinate.COLS_RANGE.first + it}"
+                    "${Board.getColumnsRange(boardSize).first + it}"
                 )
             }
         }
