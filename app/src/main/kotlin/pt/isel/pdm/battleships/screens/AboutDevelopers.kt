@@ -4,7 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -75,7 +79,7 @@ fun AboutDevelopers(backToMenuCallback: () -> Unit) {
         Text(text = stringResource(id = R.string.about_devs_repo_github_text))
         Image(
             painter = githubIcon,
-            contentDescription = "Github logo",
+            contentDescription = stringResource(id = R.string.github_logo_content_description),
             modifier = Modifier
                 .clickable { uriHandler.openUri("https://github.com/bodybuilders-team/battleships") }
                 .padding(IMAGE_PADDING.dp)
@@ -121,14 +125,14 @@ private fun DeveloperInfo(number: String, name: String, githubLink: String) {
 
             Image(
                 painter = githubIcon,
-                contentDescription = "Github logo",
+                contentDescription = stringResource(id = R.string.github_logo_content_description),
                 modifier = Modifier
                     .clickable { uriHandler.openUri(githubLink) }
                     .padding(IMAGE_PADDING.dp)
             )
             Image(
                 painter = painterResource(id = R.drawable.email), // TODO: Have dark mode option
-                contentDescription = "Email icon",
+                contentDescription = stringResource(id = R.string.email_icon_content_description),
                 modifier = Modifier
                     .clickable { uriHandler.openUri("mailto:A$number@alunos.isel.pt") }
                     .padding(IMAGE_PADDING.dp)

@@ -29,14 +29,12 @@ fun BoardView(board: Board) {
             repeat(Board.BOARD_SIDE_LENGTH) {
                 Row {
                     repeat(Board.BOARD_SIDE_LENGTH) {
-                        Column {
-                            Box(
-                                Modifier
-                                    .size(TILE_SIZE.dp)
-                                    .background(DarkBlue)
-                                    .border(TILE_BORDER_SIZE.dp, Color.LightGray)
-                            )
-                        }
+                        Box(
+                            Modifier
+                                .size(TILE_SIZE.dp)
+                                .background(DarkBlue)
+                                .border(TILE_BORDER_SIZE.dp, Color.LightGray)
+                        )
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package pt.isel.pdm.battleships.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
@@ -39,40 +40,42 @@ fun MainMenu() {
     val rankingButtonText = stringResource(id = R.string.main_menu_ranking_button_text)
     val aboutDevsButtonText = stringResource(id = R.string.main_menu_about_devs_button_text)
 
-    when (currentPage.value) {
-        Page.MAIN_MENU -> Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(R.drawable.logo),
-                contentDescription = "Battleships Logo",
-                modifier = Modifier.fillMaxSize(LOGO_MAX_SIZE_FACTOR)
-            )
+    Box {
+        when (currentPage.value) {
+            Page.MAIN_MENU -> Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = "Battleships Logo",
+                    modifier = Modifier.fillMaxSize(LOGO_MAX_SIZE_FACTOR)
+                )
 
-            Button(onClick = { currentPage.value = Page.GAMEPLAY }) {
-                Text(text = playButtonText)
+                Button(onClick = { currentPage.value = Page.GAMEPLAY }) {
+                    Text(text = playButtonText)
+                }
+                Button(onClick = { currentPage.value = Page.LOGIN }) {
+                    Text(text = loginButtonText)
+                }
+                Button(onClick = { currentPage.value = Page.RANKING }) {
+                    Text(text = rankingButtonText)
+                }
+                Button(onClick = { currentPage.value = Page.ABOUT_DEVS }) {
+                    Text(text = aboutDevsButtonText)
+                }
             }
-            Button(onClick = { currentPage.value = Page.LOGIN }) {
-                Text(text = loginButtonText)
+            Page.GAMEPLAY -> Gameplay {
+                currentPage.value = Page.MAIN_MENU
             }
-            Button(onClick = { currentPage.value = Page.RANKING }) {
-                Text(text = rankingButtonText)
+            Page.LOGIN -> Login {
+                currentPage.value = Page.MAIN_MENU
             }
-            Button(onClick = { currentPage.value = Page.ABOUT_DEVS }) {
-                Text(text = aboutDevsButtonText)
+            Page.RANKING -> Ranking {
+                currentPage.value = Page.MAIN_MENU
             }
-        }
-        Page.GAMEPLAY -> Gameplay {
-            currentPage.value = Page.MAIN_MENU
-        }
-        Page.LOGIN -> Login {
-            currentPage.value = Page.MAIN_MENU
-        }
-        Page.RANKING -> Ranking {
-            currentPage.value = Page.MAIN_MENU
-        }
-        Page.ABOUT_DEVS -> AboutDevelopers {
-            currentPage.value = Page.MAIN_MENU
+            Page.ABOUT_DEVS -> AboutDevelopers {
+                currentPage.value = Page.MAIN_MENU
+            }
         }
     }
 }
