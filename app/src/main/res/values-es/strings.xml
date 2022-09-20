@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Battleships</string>
+    <string name="main_menu_login_button_text">Login</string>
+    <string name="login_password_placeholder_text">Contraseña</string>
+    <string name="login_login_button_text">Login</string>
+</resources>

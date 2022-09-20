@@ -3,11 +3,8 @@ package pt.isel.pdm.battleships.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -71,10 +68,13 @@ fun AboutDevelopers(backToMenuCallback: () -> Unit) {
         )
 
         val uriHandler = LocalUriHandler.current
+        val githubIcon = if (isSystemInDarkTheme()) {
+            painterResource(id = R.drawable.github_mark_light_120px_plus)
+        } else painterResource(id = R.drawable.github_mark_120px_plus)
 
         Text(text = stringResource(id = R.string.about_devs_repo_github_text))
         Image(
-            painter = painterResource(id = R.drawable.github_mark_120px_plus), // TODO: Have dark mode option
+            painter = githubIcon,
             contentDescription = "Github logo",
             modifier = Modifier
                 .clickable { uriHandler.openUri("https://github.com/bodybuilders-team/battleships") }
@@ -115,8 +115,12 @@ private fun DeveloperInfo(number: String, name: String, githubLink: String) {
             style = MaterialTheme.typography.h6
         )
         Row {
+            val githubIcon = if (isSystemInDarkTheme()) {
+                painterResource(id = R.drawable.github_mark_light_120px_plus)
+            } else painterResource(id = R.drawable.github_mark_120px_plus)
+
             Image(
-                painter = painterResource(id = R.drawable.github_mark_120px_plus), // TODO: Have dark mode option
+                painter = githubIcon,
                 contentDescription = "Github logo",
                 modifier = Modifier
                     .clickable { uriHandler.openUri(githubLink) }

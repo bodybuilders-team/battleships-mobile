@@ -34,8 +34,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Text(
-                            text = stringResource(R.string.app_name),
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                            text = stringResource(R.string.app_name)
                         )
                         Box {
                             MainMenu()
