@@ -1,6 +1,6 @@
 package pt.isel.pdm.battleships.domain
 
-import pt.isel.pdm.battleships.domain.board.Board.Coordinate
+import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Ship
 
 /**

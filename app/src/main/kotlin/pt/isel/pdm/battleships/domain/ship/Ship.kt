@@ -1,7 +1,6 @@
 package pt.isel.pdm.battleships.domain.ship
 
-import pt.isel.pdm.battleships.domain.board.Board
-import pt.isel.pdm.battleships.domain.board.Board.Coordinate
+import pt.isel.pdm.battleships.domain.board.Coordinate
 
 /**
  * Represents a ship in the game.
@@ -38,8 +37,7 @@ data class Ship(
         fun getCoordinates(
             shipType: ShipType,
             coordinate: Coordinate,
-            orientation: Orientation,
-            boardSize: Int
+            orientation: Orientation
         ): List<Coordinate> {
             val coordinates = mutableListOf<Coordinate>()
 
@@ -47,11 +45,7 @@ data class Ship(
                 val col = coordinate.col + if (orientation.isHorizontal()) i else 0
                 val row = coordinate.row + if (orientation.isVertical()) i else 0
 
-                if (col in Board.getColumnsRange(boardSize) && row in Board.getRowsRange(boardSize)) {
-                    coordinates.add(Coordinate(col, row))
-                } else {
-                    throw IllegalArgumentException("Ship out of bounds")
-                }
+                coordinates.add(Coordinate(col, row))
             }
 
             return coordinates
@@ -64,7 +58,7 @@ data class Ship(
          * @param row the row of the coordinate
          * @param orientation the orientation of the ship
          * @param size the size of the ship
-         * @param gridSize the size of the grid
+         * @param boardSize the size of the grid
          *
          * @return true if the coordinate is valid, false otherwise
          */
@@ -73,17 +67,17 @@ data class Ship(
             row: Int,
             orientation: Orientation,
             size: Int,
-            gridSize: Int
+            boardSize: Int
         ) = (
             orientation == Orientation.HORIZONTAL &&
                 (col until col + size)
-                    .all { it in 0 until gridSize } &&
-                row in 0 until gridSize
+                    .all { it in 0 until boardSize } &&
+                row in 0 until boardSize
             ) || (
             orientation == Orientation.VERTICAL &&
                 (row until row + size)
-                    .all { it in 0 until gridSize } &&
-                col in 0 until gridSize
+                    .all { it in 0 until boardSize } &&
+                col in 0 until boardSize
             )
     }
 }
