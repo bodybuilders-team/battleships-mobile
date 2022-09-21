@@ -56,7 +56,7 @@ fun Gameplay(backToMenuCallback: () -> Unit) {
                             selectedOrientation = selectedOrientation.opposite()
                         },
                         onRandomBoardButtonClick = {
-                            board = Board(Board.BoardType.RANDOM)
+                            board = Board(board.size)
                             gameStatus = GameState.IN_PROGRESS
                         }
                     )
@@ -76,6 +76,7 @@ fun Gameplay(backToMenuCallback: () -> Unit) {
                     boardOffset = Offset(x = TILE_SIZE, y = TILE_SIZE),
                     orientation = selectedOrientation,
                     size = currentShipType.size,
+                    boardSize = board.size,
                     onShipPlacedCallback = { shipCoordinate ->
                         val newShip = Ship(currentShipType, shipCoordinate, selectedOrientation)
                         val canPlace = board.canPlaceShip(newShip)

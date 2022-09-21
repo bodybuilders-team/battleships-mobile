@@ -25,7 +25,6 @@ import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.TILE_SIZE
-import java.security.InvalidParameterException
 import kotlin.math.roundToInt
 
 /**
@@ -35,6 +34,7 @@ import kotlin.math.roundToInt
  * @param initialOffset the initial offset of the ship
  * @param boardOffset the offset of the board
  * @param size the size of the ship
+ * @param boardSize the size of the board
  * @param onShipPlacedCallback the callback to be called when the ship is placed on the board
  */
 @Composable
@@ -43,6 +43,7 @@ fun UnplacedShipView(
     initialOffset: Offset = Offset.Zero,
     boardOffset: Offset = Offset.Zero,
     size: Int,
+    boardSize: Int,
     onShipPlacedCallback: (Coordinate) -> Boolean
 ) {
     val currentSize by rememberUpdatedState(size)
@@ -91,7 +92,7 @@ fun UnplacedShipView(
                                 currRow,
                                 currentOrientation,
                                 currentSize,
-                                size
+                                boardSize
                             )
                         ) {
                             onShipPlacedCallback(Coordinate.fromPoint(currCol, currRow))
@@ -122,21 +123,11 @@ private const val UNPLACED_SHIP_CORNER_RADIUS = 16
  *
  * @return the coordinate
  */
-fun Coordinate.Companion.fromPoint(col: Int, row: Int): Coordinate {
-    if (col !in 0 until Board.BOARD_SIDE_LENGTH) {
-        throw InvalidParameterException("Invalid Coordinate: col out of range")
-    }
-
-    if (row !in 0 until Board.BOARD_SIDE_LENGTH) {
-        throw InvalidParameterException("Invalid Coordinate: row out of range")
-    }
-
-    return Coordinate(COLS_RANGE.first + col, row + 1)
-}
+fun Coordinate.Companion.fromPoint(col: Int, row: Int) = Coordinate(Board.FIRST_COL + col, row + 1)
 
 /**
  * Converts a Coordinate to a point.
  *
  * @return a pair of integers representing the point
  */
-fun Coordinate.toPoint(): Pair<Int, Int> = Pair(col - Coordinate.COLS_RANGE.first, row - 1)
+fun Coordinate.toPoint(): Pair<Int, Int> = Pair(col - Board.FIRST_COL, row - 1)

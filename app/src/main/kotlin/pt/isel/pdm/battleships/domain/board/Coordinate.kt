@@ -1,8 +1,10 @@
 package pt.isel.pdm.battleships.domain.board
 
-import pt.isel.pdm.battleships.domain.board.BoardTrue.Companion.FIRST_COL
-import pt.isel.pdm.battleships.domain.board.BoardTrue.Companion.FIRST_ROW
-import pt.isel.pdm.battleships.domain.board.BoardTrue.Companion.MAX_BOARD_SIZE
+import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
+import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_ROW
+import pt.isel.pdm.battleships.domain.board.Board.Companion.MAX_BOARD_SIZE
+import pt.isel.pdm.battleships.domain.board.Coordinate.Companion.maxColsRange
+import pt.isel.pdm.battleships.domain.board.Coordinate.Companion.maxRowsRange
 
 /**
  * Coordinate of each board cell.
