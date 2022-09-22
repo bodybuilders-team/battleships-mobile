@@ -30,4 +30,5 @@
     <string name="github_logo_content_description">Logo do Github</string>
     <string name="email_icon_content_description">Ícone de email</string>
     <string name="gameplay_random_board_button_text">Grealha Aleatório</string>
+    <string name="game_config_title">Configuração do Jogo</string>
 </resources>

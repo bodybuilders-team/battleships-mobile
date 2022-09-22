@@ -29,4 +29,5 @@
     <string name="gameplay_random_board_button_text">Random Board</string>
     <string name="github_logo_content_description">Github logo</string>
     <string name="email_icon_content_description">Email icon</string>
+    <string name="game_config_title">Game Configuration</string>
 </resources>
