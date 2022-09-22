@@ -28,6 +28,8 @@ data class Coordinate(val col: Char, val row: Int) { // TODO Rename to column?
     companion object {
         val maxColsRange = FIRST_COL until FIRST_COL + MAX_BOARD_SIZE
         val maxRowsRange = FIRST_ROW..MAX_BOARD_SIZE
+
+        fun isValid(col: Char, row: Int) = col in maxColsRange && row in maxRowsRange
     }
 
     override fun toString() = "$col$row"

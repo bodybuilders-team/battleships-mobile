@@ -20,11 +20,11 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import pt.isel.pdm.battleships.domain.board.Board
+import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
-import pt.isel.pdm.battleships.ui.screens.gameplay.board.TILE_SIZE
+import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
 import kotlin.math.roundToInt
 
 /**
@@ -35,7 +35,7 @@ import kotlin.math.roundToInt
  * @param boardOffset the offset of the board
  * @param size the size of the ship
  * @param boardSize the size of the board
- * @param onShipPlacedCallback the callback to be called when the ship is placed on the board
+ * @param onShipPlaced what to do when the ship is placed on the board
  */
 @Composable
 fun UnplacedShipView(
@@ -44,13 +44,15 @@ fun UnplacedShipView(
     boardOffset: Offset = Offset.Zero,
     size: Int,
     boardSize: Int,
-    onShipPlacedCallback: (Coordinate) -> Boolean
+    onShipPlaced: (Coordinate) -> Boolean
 ) {
     val currentSize by rememberUpdatedState(size)
     val currentOrientation by rememberUpdatedState(orientation)
 
     var dragging by remember { mutableStateOf(false) }
     var dragOffset by remember { mutableStateOf(Offset.Zero) }
+
+    val tileSize = getTileSize(boardSize)
 
     val d = LocalDensity.current
 
@@ -73,8 +75,8 @@ fun UnplacedShipView(
                 y = offset.y.dp
             )
             .size(
-                width = (TILE_SIZE * if (orientation == Orientation.HORIZONTAL) size else 1).dp,
-                height = (TILE_SIZE * if (orientation == Orientation.VERTICAL) size else 1).dp
+                width = (tileSize * if (orientation == Orientation.HORIZONTAL) size else 1).dp,
+                height = (tileSize * if (orientation == Orientation.VERTICAL) size else 1).dp
             )
             .clip(RoundedCornerShape(UNPLACED_SHIP_CORNER_RADIUS.dp))
             .background(Color.DarkGray)
@@ -83,20 +85,22 @@ fun UnplacedShipView(
                     onDragStart = { dragging = true },
                     onDragEnd = {
                         dragging = false
-                        val currCol = ((offset.x - boardOffset.x) / TILE_SIZE).roundToInt()
-                        val currRow = ((offset.y - boardOffset.y) / TILE_SIZE).roundToInt()
+                        val currCol = ((offset.x - boardOffset.x) / tileSize).roundToInt()
+                        val currRow = ((offset.y - boardOffset.y) / tileSize).roundToInt()
 
-                        if (
-                            Ship.isValidShipCoordinate(
-                                currCol,
-                                currRow,
-                                currentOrientation,
-                                currentSize,
-                                boardSize
-                            )
-                        ) {
-                            onShipPlacedCallback(Coordinate.fromPoint(currCol, currRow))
-                        }
+                        Coordinate.fromPointOrNull(currCol, currRow)
+                            ?.let { coordinate ->
+                                if (
+                                    Ship.isValidShipCoordinate(
+                                        coordinate,
+                                        currentOrientation,
+                                        currentSize,
+                                        boardSize
+                                    )
+                                ) {
+                                    onShipPlaced(coordinate)
+                                }
+                            }
 
                         dragOffset = Offset.Zero
                     },
@@ -123,11 +127,26 @@ private const val UNPLACED_SHIP_CORNER_RADIUS = 16
  *
  * @return the coordinate
  */
-fun Coordinate.Companion.fromPoint(col: Int, row: Int) = Coordinate(Board.FIRST_COL + col, row + 1)
+fun Coordinate.Companion.fromPoint(col: Int, row: Int) = Coordinate(FIRST_COL + col, row + 1)
+
+/**
+ * Gets a coordinate from a point or null if it isn't valid.
+ *
+ * @param col the column of the point
+ * @param row the row of the point
+ *
+ * @return the coordinate or null if it isn't valid
+ */
+fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate? {
+    return when {
+        isValid(FIRST_COL + col, row + 1) -> fromPoint(col, row)
+        else -> null
+    }
+}
 
 /**
  * Converts a Coordinate to a point.
  *
  * @return a pair of integers representing the point
  */
-fun Coordinate.toPoint(): Pair<Int, Int> = Pair(col - Board.FIRST_COL, row - 1)
+fun Coordinate.toPoint(): Pair<Int, Int> = Pair(col - FIRST_COL, row - 1)

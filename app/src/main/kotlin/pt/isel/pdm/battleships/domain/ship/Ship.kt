@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.domain.ship
 
+import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 
 /**
@@ -54,8 +55,7 @@ data class Ship(
         /**
          * Checks if the given coordinate is valid for the given ship information.
          *
-         * @param col the column of the coordinate
-         * @param row the row of the coordinate
+         * @param coordinate the coordinate
          * @param orientation the orientation of the ship
          * @param size the size of the ship
          * @param boardSize the size of the grid
@@ -63,21 +63,23 @@ data class Ship(
          * @return true if the coordinate is valid, false otherwise
          */
         fun isValidShipCoordinate(
-            col: Int,
-            row: Int,
+            coordinate: Coordinate,
             orientation: Orientation,
             size: Int,
             boardSize: Int
-        ) = (
-            orientation == Orientation.HORIZONTAL &&
-                (col until col + size)
-                    .all { it in 0 until boardSize } &&
-                row in 0 until boardSize
-            ) || (
-            orientation == Orientation.VERTICAL &&
-                (row until row + size)
-                    .all { it in 0 until boardSize } &&
-                col in 0 until boardSize
-            )
+        ): Boolean {
+            val colsRange = Board.getColumnsRange(boardSize)
+            val rowsRange = Board.getRowsRange(boardSize)
+
+            return (
+                orientation == Orientation.HORIZONTAL &&
+                    (coordinate.col + size - 1) in colsRange &&
+                    coordinate.row in rowsRange
+                ) || (
+                orientation == Orientation.VERTICAL &&
+                    (coordinate.row + size - 1) in rowsRange &&
+                    coordinate.col in colsRange
+                )
+        }
     }
 }

@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,48 +39,50 @@ private const val LOGO_MAX_SIZE_FACTOR = 0.6f
  */
 @Composable
 fun MainMenu() {
-    val currentPage = remember { mutableStateOf(Page.MAIN_MENU) }
+    var currentPage by remember { mutableStateOf(Page.MAIN_MENU) }
 
     val playButtonText = stringResource(id = R.string.main_menu_play_button_text)
     val loginButtonText = stringResource(id = R.string.main_menu_login_button_text)
     val rankingButtonText = stringResource(id = R.string.main_menu_ranking_button_text)
     val aboutDevsButtonText = stringResource(id = R.string.main_menu_about_devs_button_text)
+    val exitButtonText = stringResource(id = R.string.main_menu_exit_button_text)
 
     Box {
-        when (currentPage.value) {
-            Page.MAIN_MENU -> Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        when (currentPage) {
+            Page.MAIN_MENU -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     painter = painterResource(R.drawable.logo),
                     contentDescription = "Battleships Logo",
                     modifier = Modifier.fillMaxSize(LOGO_MAX_SIZE_FACTOR)
                 )
 
-                Button(onClick = { currentPage.value = Page.GAMEPLAY }) {
+                Button(onClick = { currentPage = Page.GAMEPLAY }) {
                     Text(text = playButtonText)
                 }
-                Button(onClick = { currentPage.value = Page.LOGIN }) {
+                Button(onClick = { currentPage = Page.LOGIN }) {
                     Text(text = loginButtonText)
                 }
-                Button(onClick = { currentPage.value = Page.RANKING }) {
+                Button(onClick = { currentPage = Page.RANKING }) {
                     Text(text = rankingButtonText)
                 }
-                Button(onClick = { currentPage.value = Page.ABOUT_DEVS }) {
+                Button(onClick = { currentPage = Page.ABOUT_DEVS }) {
                     Text(text = aboutDevsButtonText)
+                }
+                Button(onClick = { }) {
+                    Text(text = exitButtonText)
                 }
             }
             Page.GAMEPLAY -> Gameplay {
-                currentPage.value = Page.MAIN_MENU
+                currentPage = Page.MAIN_MENU
             }
             Page.LOGIN -> Login {
-                currentPage.value = Page.MAIN_MENU
+                currentPage = Page.MAIN_MENU
             }
             Page.RANKING -> Ranking {
-                currentPage.value = Page.MAIN_MENU
+                currentPage = Page.MAIN_MENU
             }
             Page.ABOUT_DEVS -> AboutDevelopers {
-                currentPage.value = Page.MAIN_MENU
+                currentPage = Page.MAIN_MENU
             }
         }
     }

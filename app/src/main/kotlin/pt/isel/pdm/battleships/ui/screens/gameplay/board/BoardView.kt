@@ -1,7 +1,5 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.board
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,14 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import pt.isel.pdm.battleships.domain.board.Board
+import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
-import pt.isel.pdm.battleships.ui.theme.DarkBlue
 
-const val TILE_SIZE = 32.0f
-private const val TILE_BORDER_SIZE = 1
+const val BOARD_VIEW_BOX_SIZE = 320.0f
+const val FULL_BOARD_VIEW_BOX_SIZE = BOARD_VIEW_BOX_SIZE + DEFAULT_TILE_SIZE
+
+const val COL_IDENTIFIER_FONT_SIZE_FACTOR = 0.4f
 
 /**
  * The view that shows the board of the game.
@@ -28,26 +28,23 @@ private const val TILE_BORDER_SIZE = 1
  */
 @Composable
 fun BoardView(board: Board) {
-    Box {
+    val tileSize = getTileSize(board.size)
+
+    Box(modifier = Modifier.size(FULL_BOARD_VIEW_BOX_SIZE.dp)) {
         Column {
             ColumnsIdentifierView(board.size)
             repeat(board.size) {
                 Row {
-                    RowIdentifierBox(it)
+                    RowIdentifierBox(it, tileSize)
                     repeat(board.size) {
-                        Box(
-                            Modifier
-                                .size(TILE_SIZE.dp)
-                                .background(DarkBlue)
-                                .border(TILE_BORDER_SIZE.dp, Color.LightGray)
-                        )
+                        TileView(tileSize)
                     }
                 }
             }
         }
 
         for (ship in board.fleet)
-            ShipView(ship, Offset(x = TILE_SIZE, y = TILE_SIZE))
+            ShipView(ship, tileSize, Offset(x = tileSize, y = tileSize))
     }
 }
 
@@ -58,15 +55,18 @@ fun BoardView(board: Board) {
  */
 @Composable
 private fun ColumnsIdentifierView(boardSize: Int) {
-    Row(modifier = Modifier.offset(x = TILE_SIZE.dp)) {
+    val tileSize = getTileSize(boardSize)
+
+    Row(modifier = Modifier.offset(x = tileSize.dp)) {
         repeat(boardSize) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(TILE_SIZE.dp)
+                    .size(tileSize.dp)
             ) {
                 Text(
-                    "${Board.getColumnsRange(boardSize).first + it}"
+                    text = "${FIRST_COL + it}",
+                    fontSize = tileSize.sp * COL_IDENTIFIER_FONT_SIZE_FACTOR
                 )
             }
         }
@@ -79,12 +79,22 @@ private fun ColumnsIdentifierView(boardSize: Int) {
  * @param row the row number to be displayed
  */
 @Composable
-private fun RowIdentifierBox(row: Int) {
+private fun RowIdentifierBox(row: Int, tileSize: Float) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(TILE_SIZE.dp)
+            .size(tileSize.dp)
     ) {
-        Text("${row + 1}")
+        Text(
+            text = "${row + 1}",
+            fontSize = tileSize.sp * COL_IDENTIFIER_FONT_SIZE_FACTOR
+        )
     }
 }
+
+/**
+ * Gets the tile size based on the board size.
+ *
+ * @param boardSize the size of the board
+ */
+fun getTileSize(boardSize: Int) = FULL_BOARD_VIEW_BOX_SIZE / (boardSize + 1)

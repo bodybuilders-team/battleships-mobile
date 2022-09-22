@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Battleships</string>
+    <string name="app_name" translatable="false">Battleships</string>
     <string name="main_menu_play_button_text">Play</string>
     <string name="main_menu_login_button_text">Login</string>
     <string name="main_menu_ranking_button_text">Ranking</string>
@@ -30,4 +30,10 @@
     <string name="github_logo_content_description">Github logo</string>
     <string name="email_icon_content_description">Email icon</string>
     <string name="game_config_title">Game Configuration</string>
+    <string name="game_config_grid_size_text">Grid Size</string>
+    <string name="gameplay_new_game_button_text">New Game</string>
+    <string name="gameplay_search_game_button_text">Search Game</string>
+    <string name="game_config_configure_board_button_text">Configure board</string>
+    <string name="back_button_text">Back</string>
+    <string name="main_menu_exit_button_text">Exit</string>
 </resources>

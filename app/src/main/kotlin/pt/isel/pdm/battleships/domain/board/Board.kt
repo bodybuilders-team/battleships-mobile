@@ -37,8 +37,6 @@ data class Board(
         }
     }
 
-    constructor(size: Int) : this(size, generateRandomMatrix(size))
-
     /**
      * Returns the cell in [coordinate].
      *
@@ -55,7 +53,7 @@ data class Board(
      *
      * @return new board with the cell in [at] coordinate replaced by [cell]
      */
-    fun setCell(at: Coordinate, cell: Cell) = Board(size, grid.replace(at.toIndex(size), cell))
+    fun setCell(at: Coordinate, cell: Cell) = copy(grid = grid.replace(at.toIndex(size), cell))
 
     /**
      * Checks if it is possible to place a ship in its coordinates.
@@ -143,22 +141,6 @@ data class Board(
         fun getRowsRange(size: Int) = FIRST_ROW..size
 
         /**
-         * Generates a matrix only with water cells.
-         *
-         * @param size the size of the matrix
-         * @return generated matrix
-         */
-        private fun generateEmptyMatrix(size: Int): List<Cell> =
-            List(size * size) {
-                WaterCell(
-                    Coordinate(
-                        row = size - it / size,
-                        col = getColumnsRange(size).first + it % size
-                    )
-                )
-            }
-
-        /**
          * Returns the matrix index obtained from the coordinate.
          *
          * @param size the size of the matrix
@@ -181,6 +163,29 @@ data class Board(
         }
 
         /**
+         * Returns a random board of [size].
+         *
+         * @param size size of the board
+         */
+        fun random(size: Int) = Board(size, generateRandomMatrix(size))
+
+        /**
+         * Generates a matrix only with water cells.
+         *
+         * @param size the size of the matrix
+         * @return generated matrix
+         */
+        private fun generateEmptyMatrix(size: Int): List<Cell> =
+            List(size * size) {
+                WaterCell(
+                    Coordinate(
+                        row = size - it / size,
+                        col = getColumnsRange(size).first + it % size
+                    )
+                )
+            }
+
+        /**
          * Generates a matrix of cells with the ships placed randomly.
          *
          * @param size the size of the matrix
@@ -190,42 +195,33 @@ data class Board(
             val grid = generateEmptyMatrix(size).toMutableList()
 
             ShipType.values().forEach { shipType ->
-                val possibleCombinations: List<Pair<List<Coordinate>, Orientation>> = grid
+                val ship = grid
                     .filterIsInstance<WaterCell>()
-                    .flatMap { cell ->
+                    .flatMap<WaterCell, Ship> { cell ->
                         Orientation.values()
                             .fold(emptyList()) { acc, orientation ->
+                                val coordinates = Ship.getCoordinates(
+                                    shipType,
+                                    cell.coordinate,
+                                    orientation
+                                )
                                 if (Ship.isValidShipCoordinate(
-                                        cell.coordinate.col - getColumnsRange(size).first,
-                                        cell.coordinate.row,
+                                        cell.coordinate,
                                         orientation,
                                         shipType.size,
                                         size
-                                    )
+                                    ) &&
+                                    coordinates.all { coordinate ->
+                                        grid[coordinate.toIndex(size)] is WaterCell
+                                    }
                                 ) {
-                                    acc + Pair(
-                                        Ship.getCoordinates(
-                                            shipType,
-                                            cell.coordinate,
-                                            orientation
-                                        ),
-                                        orientation
-                                    )
+                                    acc + Ship(shipType, coordinates.first(), orientation)
                                 } else acc
                             }
                     }
-
-                val coordinates = possibleCombinations
-                    .filter { (coord, _) -> coord.all { grid[it.toIndex(size)] is WaterCell } }
                     .random()
 
-                val ship = Ship(
-                    shipType,
-                    coordinate = coordinates.first.first(),
-                    orientation = coordinates.second
-                )
-
-                coordinates.first.forEach {
+                ship.coordinates.forEach {
                     grid[it.toIndex(size)] = ShipCell(it, ship)
                 }
             }

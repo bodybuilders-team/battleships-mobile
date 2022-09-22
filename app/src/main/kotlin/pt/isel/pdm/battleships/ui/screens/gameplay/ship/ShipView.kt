@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
-import pt.isel.pdm.battleships.ui.screens.gameplay.board.TILE_SIZE
 
 private const val SHIP_CORNER_RADIUS = 16
 
@@ -24,23 +23,23 @@ private const val SHIP_CORNER_RADIUS = 16
  * @param offset the offset of the ship
  */
 @Composable
-fun ShipView(ship: Ship, offset: Offset = Offset.Zero) {
+fun ShipView(ship: Ship, tileSize: Float, offset: Offset = Offset.Zero) {
     val point = ship.coordinate.toPoint()
 
     Box(
         Modifier
             .offset(
-                x = (offset.x + point.first * TILE_SIZE).dp,
-                y = (offset.y + point.second * TILE_SIZE).dp
+                x = (offset.x + point.first * tileSize).dp,
+                y = (offset.y + point.second * tileSize).dp
             )
             .size(
                 width = (
-                    TILE_SIZE *
+                    tileSize *
                         if (ship.orientation == Orientation.HORIZONTAL) ship.type.size else 1
                     ).dp,
 
                 height = (
-                    TILE_SIZE *
+                    tileSize *
                         if (ship.orientation == Orientation.VERTICAL) ship.type.size else 1
                     ).dp
             )

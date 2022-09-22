@@ -31,9 +31,11 @@ const val IMAGE_PADDING = 8
  * - Email contact
  *
  * Also shows the github link of the app's repository.
+ *
+ * @param onBackToMenuButtonPress what to do when the "Back to menu" button is pressed
  */
 @Composable
-fun AboutDevelopers(backToMenuCallback: () -> Unit) {
+fun AboutDevelopers(onBackToMenuButtonPress: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
@@ -79,7 +81,7 @@ fun AboutDevelopers(backToMenuCallback: () -> Unit) {
         )
 
         Button(
-            onClick = backToMenuCallback
+            onClick = onBackToMenuButtonPress
         ) {
             Text(text = stringResource(id = R.string.back_to_menu_button_text))
         }
