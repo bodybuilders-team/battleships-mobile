@@ -36,4 +36,7 @@
     <string name="game_config_configure_board_button_text">Configure board</string>
     <string name="back_button_text">Back</string>
     <string name="main_menu_exit_button_text">Exit</string>
+    <string name="game_config_shots_per_turn_text">Shots per Turn</string>
+    <string name="game_config_time_per_turn_text">Time per Turn</string>
+    <string name="game_config_time_for_board_config_text">Board Configuration Time</string>
 </resources>

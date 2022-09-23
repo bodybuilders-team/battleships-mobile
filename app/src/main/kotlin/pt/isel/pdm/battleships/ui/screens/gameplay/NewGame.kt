@@ -15,11 +15,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Board.Companion.DEFAULT_BOARD_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.BoardConfiguration
-import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.GridSizeSelector
+import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.IntSelector
+import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.TimeSelector
 
 private const val GAME_CONFIG_TITLE_PADDING = 8
+private const val DEFAULT_SHOTS_PER_TURN = 1
+
+private const val MIN_TIME_PER_TURN = 10 // Seconds
+private const val MAX_TIME_PER_TURN = 120 // Seconds
+private const val DEFAULT_TIME_PER_TURN = 30 // Seconds
+
+private const val MIN_TIME_FOR_BOARD_CONFIG = 10 // Seconds
+private const val MAX_TIME_FOR_BOARD_CONFIG = 120 // Seconds
+private const val DEFAULT_TIME_FOR_BOARD_CONFIG = 60 // Seconds
+
+private const val MIN_SHOTS_PER_TURN = 1
+private const val MAX_SHOTS_PER_TURN = 5
 
 /**
  * Screen that allows the user to configure a new game before starting it.
@@ -29,6 +43,9 @@ private const val GAME_CONFIG_TITLE_PADDING = 8
 @Composable
 fun NewGame(onBackButtonPressed: () -> Unit) {
     var boardSize by remember { mutableStateOf(DEFAULT_BOARD_SIZE) }
+    var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
+    var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }
+    var timeForBoardConfig by remember { mutableStateOf(DEFAULT_TIME_FOR_BOARD_CONFIG) }
     var configureBoard by remember { mutableStateOf(false) }
 
     Column {
@@ -43,7 +60,38 @@ fun NewGame(onBackButtonPressed: () -> Unit) {
                     modifier = Modifier.padding(GAME_CONFIG_TITLE_PADDING.dp)
                 )
 
-                GridSizeSelector(boardSize) { boardSize = it }
+                // Grid Size Selector
+                IntSelector(
+                    defaultValue = boardSize,
+                    valueRange = Board.MIN_BOARD_SIZE..Board.MAX_BOARD_SIZE,
+                    label = stringResource(R.string.game_config_grid_size_text),
+                    valueLabel = { "$it x $it" },
+                    onValueChange = { boardSize = it }
+                )
+
+                // Board Configuration Time
+                TimeSelector(
+                    defaultTime = timeForBoardConfig,
+                    timeRange = MIN_TIME_FOR_BOARD_CONFIG..MAX_TIME_FOR_BOARD_CONFIG,
+                    label = stringResource(R.string.game_config_time_for_board_config_text),
+                    onTimeChange = { timeForBoardConfig = it }
+                )
+
+                // Shots Per Turn Selector
+                IntSelector(
+                    defaultValue = shotsPerTurn,
+                    valueRange = MIN_SHOTS_PER_TURN..MAX_SHOTS_PER_TURN,
+                    label = stringResource(R.string.game_config_shots_per_turn_text),
+                    onValueChange = { shotsPerTurn = it }
+                )
+
+                // Time Per Turn Selector
+                TimeSelector(
+                    defaultTime = timePerTurn,
+                    timeRange = MIN_TIME_PER_TURN..MAX_TIME_PER_TURN,
+                    label = stringResource(R.string.game_config_time_per_turn_text),
+                    onTimeChange = { timePerTurn = it }
+                )
 
                 Button(onClick = { configureBoard = true }) {
                     Text(stringResource(id = R.string.game_config_configure_board_button_text))

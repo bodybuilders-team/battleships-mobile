@@ -36,4 +36,7 @@
     <string name="game_config_configure_board_button_text">Configurar tabuleiro</string>
     <string name="back_button_text">Voltar</string>
     <string name="main_menu_exit_button_text">Sair</string>
+    <string name="game_config_shots_per_turn_text">Tiros por Turno</string>
+    <string name="game_config_time_per_turn_text">Tempo por Turno</string>
+    <string name="game_config_time_for_board_config_text">Tempo para configuração do tabuleiro</string>
 </resources>
