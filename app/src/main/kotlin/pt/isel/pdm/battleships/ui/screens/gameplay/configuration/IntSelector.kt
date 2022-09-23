@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 
 private const val INT_SELECTOR_WIDTH_FACTOR = 0.5f
 
@@ -45,7 +46,8 @@ fun IntSelector(
         ) {
             Text(
                 text = label,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.h6,
+                textAlign = TextAlign.Center
             )
             Text(
                 text = valueLabel(currentValue),

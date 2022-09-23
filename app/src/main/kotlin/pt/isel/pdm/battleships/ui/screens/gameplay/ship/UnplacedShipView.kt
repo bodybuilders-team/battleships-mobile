@@ -1,11 +1,9 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.ship
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,9 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -24,6 +20,7 @@ import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
+import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
 import kotlin.math.roundToInt
 
@@ -33,7 +30,7 @@ import kotlin.math.roundToInt
  * @param orientation the orientation of the ship
  * @param initialOffset the initial offset of the ship
  * @param boardOffset the offset of the board
- * @param size the size of the ship
+ * @param type the type of the ship
  * @param boardSize the size of the board
  * @param onShipPlaced what to do when the ship is placed on the board
  */
@@ -42,11 +39,11 @@ fun UnplacedShipView(
     orientation: Orientation = Orientation.HORIZONTAL,
     initialOffset: Offset = Offset.Zero,
     boardOffset: Offset = Offset.Zero,
-    size: Int,
+    type: ShipType,
     boardSize: Int,
     onShipPlaced: (Coordinate) -> Boolean
 ) {
-    val currentSize by rememberUpdatedState(size)
+    val currentSize by rememberUpdatedState(type.size)
     val currentOrientation by rememberUpdatedState(orientation)
 
     var dragging by remember { mutableStateOf(false) }
@@ -75,11 +72,9 @@ fun UnplacedShipView(
                 y = offset.y.dp
             )
             .size(
-                width = (tileSize * if (orientation == Orientation.HORIZONTAL) size else 1).dp,
-                height = (tileSize * if (orientation == Orientation.VERTICAL) size else 1).dp
+                width = (tileSize * if (orientation == Orientation.HORIZONTAL) type.size else 1).dp,
+                height = (tileSize * if (orientation == Orientation.VERTICAL) type.size else 1).dp
             )
-            .clip(RoundedCornerShape(UNPLACED_SHIP_CORNER_RADIUS.dp))
-            .background(Color.DarkGray)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = { dragging = true },
@@ -88,7 +83,8 @@ fun UnplacedShipView(
                         val currCol = ((offset.x - boardOffset.x) / tileSize).roundToInt()
                         val currRow = ((offset.y - boardOffset.y) / tileSize).roundToInt()
 
-                        Coordinate.fromPointOrNull(currCol, currRow)
+                        Coordinate
+                            .fromPointOrNull(currCol, currRow)
                             ?.let { coordinate ->
                                 if (
                                     Ship.isValidShipCoordinate(
@@ -113,11 +109,13 @@ fun UnplacedShipView(
                     dragOffset += dragAmount
                 }
             }
-
-    )
+    ) {
+        ShipImage(
+            type = type,
+            orientation = orientation
+        )
+    }
 }
-
-private const val UNPLACED_SHIP_CORNER_RADIUS = 16
 
 /**
  * Gets a coordinate from a point.

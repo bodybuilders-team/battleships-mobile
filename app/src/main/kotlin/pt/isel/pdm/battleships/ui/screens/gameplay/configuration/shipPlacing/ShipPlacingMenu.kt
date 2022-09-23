@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.gameplay
+package pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

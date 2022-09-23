@@ -19,7 +19,6 @@ import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Board.Companion.DEFAULT_BOARD_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.BoardConfiguration
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.IntSelector
-import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.TimeSelector
 
 private const val GAME_CONFIG_TITLE_PADDING = 8
 private const val DEFAULT_SHOTS_PER_TURN = 1
@@ -70,11 +69,11 @@ fun NewGame(onBackButtonPressed: () -> Unit) {
                 )
 
                 // Board Configuration Time
-                TimeSelector(
-                    defaultTime = timeForBoardConfig,
-                    timeRange = MIN_TIME_FOR_BOARD_CONFIG..MAX_TIME_FOR_BOARD_CONFIG,
+                IntSelector(
+                    defaultValue = timeForBoardConfig,
+                    valueRange = MIN_TIME_FOR_BOARD_CONFIG..MAX_TIME_FOR_BOARD_CONFIG,
                     label = stringResource(R.string.game_config_time_for_board_config_text),
-                    onTimeChange = { timeForBoardConfig = it }
+                    onValueChange = { timeForBoardConfig = it }
                 )
 
                 // Shots Per Turn Selector
@@ -86,11 +85,12 @@ fun NewGame(onBackButtonPressed: () -> Unit) {
                 )
 
                 // Time Per Turn Selector
-                TimeSelector(
-                    defaultTime = timePerTurn,
-                    timeRange = MIN_TIME_PER_TURN..MAX_TIME_PER_TURN,
+                IntSelector(
+                    defaultValue = timePerTurn,
+                    valueRange = MIN_TIME_PER_TURN..MAX_TIME_PER_TURN,
                     label = stringResource(R.string.game_config_time_per_turn_text),
-                    onTimeChange = { timePerTurn = it }
+                    valueLabel = { "$it s" },
+                    onValueChange = { timePerTurn = it }
                 )
 
                 Button(onClick = { configureBoard = true }) {

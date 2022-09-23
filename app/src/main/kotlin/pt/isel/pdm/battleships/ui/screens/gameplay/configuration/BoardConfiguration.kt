@@ -22,12 +22,12 @@ import pt.isel.pdm.battleships.domain.game.GameState
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
-import pt.isel.pdm.battleships.ui.screens.gameplay.PLACING_MENU_PADDING
-import pt.isel.pdm.battleships.ui.screens.gameplay.SHIP_SLOTS_FACTOR
-import pt.isel.pdm.battleships.ui.screens.gameplay.ShipPlacingMenu
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
+import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.PLACING_MENU_PADDING
+import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.SHIP_SLOTS_FACTOR
+import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.ShipPlacingMenu
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.UnplacedShipView
 
 /**
@@ -82,7 +82,7 @@ fun BoardConfiguration(boardSize: Int, onBackButtonPressed: () -> Unit) {
                     ),
                     boardOffset = Offset(x = tileSize, y = tileSize),
                     orientation = selectedOrientation,
-                    size = currentShipType.size,
+                    type = currentShipType,
                     boardSize = board.size,
                     onShipPlaced = { shipCoordinate ->
                         val newShip = Ship(currentShipType, shipCoordinate, selectedOrientation)
