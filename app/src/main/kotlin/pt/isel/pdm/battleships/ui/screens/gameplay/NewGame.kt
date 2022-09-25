@@ -73,6 +73,7 @@ fun NewGame(onBackButtonPressed: () -> Unit) {
                     defaultValue = timeForBoardConfig,
                     valueRange = MIN_TIME_FOR_BOARD_CONFIG..MAX_TIME_FOR_BOARD_CONFIG,
                     label = stringResource(R.string.game_config_time_for_board_config_text),
+                    valueLabel = { "$it s" },
                     onValueChange = { timeForBoardConfig = it }
                 )
 
