@@ -42,9 +42,9 @@ fun Gameplay(onBackToMenuButtonPress: () -> Unit) {
             }
         }
 
-        Page.NEW_GAME -> NewGame {
+        Page.NEW_GAME -> NewGame(onBackButtonPressed = {
             currentPage = Page.MENU
-        }
+        })
 
         Page.SEARCH_GAME -> SearchGame() /*{
             currentPage = Page.MENU

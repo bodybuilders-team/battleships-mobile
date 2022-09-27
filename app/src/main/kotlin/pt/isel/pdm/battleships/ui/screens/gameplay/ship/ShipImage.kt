@@ -4,8 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.ShipType
@@ -14,7 +14,6 @@ import pt.isel.pdm.battleships.domain.ship.ShipType
  * Draws the ship image.
  *
  * @param type the type of the ship
- * @param orientation the orientation of the ship
  */
 @Composable
 fun ShipImage(
@@ -24,16 +23,20 @@ fun ShipImage(
     Image(
         painter = painterResource(
             id = when (type) {
-                ShipType.BATTLESHIP -> R.drawable.ship_battleship
-                ShipType.CARRIER -> R.drawable.ship_carrier
-                ShipType.CRUISER -> R.drawable.ship_cruiser
-                ShipType.DESTROYER -> R.drawable.ship_destroyer
-                ShipType.SUBMARINE -> R.drawable.ship_submarine
+                ShipType.BATTLESHIP -> if (orientation.isVertical()) R.drawable.ship_battleship_v
+                else R.drawable.ship_battleship_h
+                ShipType.CARRIER -> if (orientation.isVertical()) R.drawable.ship_carrier_v
+                else R.drawable.ship_carrier_h
+                ShipType.CRUISER -> if (orientation.isVertical()) R.drawable.ship_cruiser_v
+                else R.drawable.ship_cruiser_h
+                ShipType.DESTROYER -> if (orientation.isVertical()) R.drawable.ship_destroyer_v
+                else R.drawable.ship_destroyer_h
+                ShipType.SUBMARINE -> if (orientation.isVertical()) R.drawable.ship_submarine_v
+                else R.drawable.ship_submarine_h
             }
         ),
-        contentDescription = "Ship",
+        contentDescription = stringResource(id = R.string.ship_image_content_description),
         modifier = Modifier
-            .rotate(degrees = if (orientation == Orientation.VERTICAL) 0f else 90f)
-            .fillMaxSize() // FIXME: ships are still small in horizontal orientation
+            .fillMaxSize()
     )
 }

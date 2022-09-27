@@ -26,6 +26,7 @@ const val PLACING_MENU_PADDING = 6
  */
 @Composable
 fun ShipPlacingMenu(
+    tileSize: Float,
     onSelectedOrientation: () -> Unit,
     onRandomBoardButtonClick: () -> Unit
 ) {
@@ -35,7 +36,7 @@ fun ShipPlacingMenu(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        ShipSlots()
+        ShipSlots(tileSize)
 
         // Buttons
         Column(

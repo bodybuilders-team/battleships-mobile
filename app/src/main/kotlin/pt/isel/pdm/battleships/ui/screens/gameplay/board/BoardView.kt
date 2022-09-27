@@ -9,17 +9,50 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
-import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
+import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_ROW
+import pt.isel.pdm.battleships.ui.screens.gameplay.ship.PlacedShipView
 
 const val BOARD_VIEW_BOX_SIZE = 320.0f
 const val FULL_BOARD_VIEW_BOX_SIZE = BOARD_VIEW_BOX_SIZE + DEFAULT_TILE_SIZE
 
 const val COL_IDENTIFIER_FONT_SIZE_FACTOR = 0.4f
+
+/**
+ * The view that shows the board of the game with column and row identifiers.
+ *
+ * @param board the board to be shown
+ */
+@Composable
+fun BoardViewWithIdentifiers(board: Board) {
+    IdentifiersWrapper(boardSize = board.size) {
+        BoardView(board = board)
+    }
+}
+
+/**
+ * The view that shows the column and row identifiers.
+ *
+ * @param boardSize the size of the board
+ * @param content the content to be shown
+ */
+@Composable
+fun IdentifiersWrapper(boardSize: Int, content: @Composable () -> Unit) {
+    Box {
+        Column {
+            ColumnsIdentifierView(boardSize)
+            Row {
+                RowsIdentifierView(boardSize)
+                Box {
+                    content()
+                }
+            }
+        }
+    }
+}
 
 /**
  * The view that shows the board of the game.
@@ -30,21 +63,19 @@ const val COL_IDENTIFIER_FONT_SIZE_FACTOR = 0.4f
 fun BoardView(board: Board) {
     val tileSize = getTileSize(board.size)
 
-    Box(modifier = Modifier.size(FULL_BOARD_VIEW_BOX_SIZE.dp)) {
+    Box {
         Column {
-            ColumnsIdentifierView(board.size)
             repeat(board.size) {
                 Row {
-                    RowIdentifierBox(it, tileSize)
                     repeat(board.size) {
                         TileView(tileSize)
                     }
                 }
             }
         }
-
-        for (ship in board.fleet)
-            ShipView(ship, tileSize, Offset(x = tileSize, y = tileSize))
+        board.fleet.forEach { ship ->
+            PlacedShipView(ship, tileSize)
+        }
     }
 }
 
@@ -74,21 +105,27 @@ private fun ColumnsIdentifierView(boardSize: Int) {
 }
 
 /**
- * Composable used to display board row number.
+ * Composable used to display board column letters.
  *
- * @param row the row number to be displayed
+ * @param boardSize the size of the board
  */
 @Composable
-private fun RowIdentifierBox(row: Int, tileSize: Float) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(tileSize.dp)
-    ) {
-        Text(
-            text = "${row + 1}",
-            fontSize = tileSize.sp * COL_IDENTIFIER_FONT_SIZE_FACTOR
-        )
+private fun RowsIdentifierView(boardSize: Int) {
+    val tileSize = getTileSize(boardSize)
+
+    Column {
+        repeat(boardSize) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(tileSize.dp)
+            ) {
+                Text(
+                    text = "${FIRST_ROW + it}",
+                    fontSize = tileSize.sp * COL_IDENTIFIER_FONT_SIZE_FACTOR
+                )
+            }
+        }
     }
 }
 

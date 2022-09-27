@@ -39,4 +39,5 @@
     <string name="game_config_shots_per_turn_text">Shots per Turn</string>
     <string name="game_config_time_per_turn_text">Time per Turn</string>
     <string name="game_config_time_for_board_config_text">Board Configuration Time</string>
+    <string name="ship_image_content_description">Ship</string>
 </resources>

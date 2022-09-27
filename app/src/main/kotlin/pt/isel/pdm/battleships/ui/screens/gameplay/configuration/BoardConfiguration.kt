@@ -1,6 +1,6 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.configuration
 
-import androidx.compose.foundation.layout.Box
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
@@ -24,6 +24,7 @@ import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZE
+import pt.isel.pdm.battleships.ui.screens.gameplay.board.IdentifiersWrapper
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.PLACING_MENU_PADDING
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.SHIP_SLOTS_FACTOR
@@ -51,55 +52,54 @@ fun BoardConfiguration(boardSize: Int, onBackButtonPressed: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        // Box to allow dragging the ships
-        Box(modifier = Modifier.width(FULL_BOARD_VIEW_BOX_SIZE.dp)) {
-            Column {
-                BoardView(board)
+        Column(modifier = Modifier.width(FULL_BOARD_VIEW_BOX_SIZE.dp)) {
+            IdentifiersWrapper(boardSize = board.size) {
+                Column {
+                    BoardView(board = board)
 
-                // Placing Menu
+                    // Placing Menu
+                    if (gameStatus == GameState.PLACING_SHIPS) {
+                        ShipPlacingMenu(
+                            tileSize = tileSize,
+                            onSelectedOrientation = {
+                                selectedOrientation = selectedOrientation.opposite()
+                            },
+                            onRandomBoardButtonClick = {
+                                board = Board.random(board.size)
+                                gameStatus = GameState.IN_PROGRESS
+                            }
+                        )
+                    }
+                }
+
+                // UnplacedShipView
                 if (gameStatus == GameState.PLACING_SHIPS) {
-                    ShipPlacingMenu(
-                        onSelectedOrientation = {
-                            selectedOrientation = selectedOrientation.opposite()
-                        },
-                        onRandomBoardButtonClick = {
-                            board = Board.random(board.size)
-                            gameStatus = GameState.IN_PROGRESS
+                    UnplacedShipView(
+                        type = currentShipType,
+                        orientation = selectedOrientation,
+                        initialOffset = Offset(
+                            x = (board.size * tileSize * SHIP_SLOTS_FACTOR) / 2 - tileSize / 2,
+                            y = board.size * tileSize + PLACING_MENU_PADDING +
+                                (board.size * tileSize * SHIP_SLOTS_FACTOR) / 2 - tileSize / 2 *
+                                currentShipType.size
+                        ),
+                        boardSize = board.size,
+                        onShipPlaced = { shipCoordinate ->
+                            val newShip = Ship(currentShipType, shipCoordinate, selectedOrientation)
+                            val canPlace = board.canPlaceShip(newShip)
+
+                            if (canPlace) {
+                                board = board.placeShip(newShip)
+
+                                if (shipTypes.size == currentShipType.ordinal + 1) {
+                                    gameStatus = GameState.IN_PROGRESS
+                                } else {
+                                    currentShipType = shipTypes[currentShipType.ordinal + 1]
+                                }
+                            }
                         }
                     )
                 }
-            }
-
-            // UnplacedShipView
-            if (gameStatus == GameState.PLACING_SHIPS) {
-                UnplacedShipView(
-                    initialOffset = Offset(
-                        x = ((board.size + 1) * tileSize * SHIP_SLOTS_FACTOR) / 2 - tileSize / 2 *
-                            if (selectedOrientation.isVertical()) 1 else currentShipType.size,
-                        y = (board.size + 1) * tileSize + PLACING_MENU_PADDING +
-                            ((board.size + 1) * tileSize * SHIP_SLOTS_FACTOR) / 2 - tileSize / 2 *
-                            if (selectedOrientation.isHorizontal()) 1 else currentShipType.size
-                    ),
-                    boardOffset = Offset(x = tileSize, y = tileSize),
-                    orientation = selectedOrientation,
-                    type = currentShipType,
-                    boardSize = board.size,
-                    onShipPlaced = { shipCoordinate ->
-                        val newShip = Ship(currentShipType, shipCoordinate, selectedOrientation)
-                        val canPlace = board.canPlaceShip(newShip)
-
-                        if (canPlace) {
-                            board = board.placeShip(newShip)
-
-                            if (shipTypes.size == currentShipType.ordinal + 1) {
-                                gameStatus = GameState.IN_PROGRESS
-                            } else {
-                                currentShipType = shipTypes[currentShipType.ordinal + 1]
-                            }
-                        }
-                        canPlace
-                    }
-                )
             }
         }
 

@@ -1,9 +1,10 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.ship
 
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +13,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -27,26 +29,23 @@ import kotlin.math.roundToInt
 /**
  * A composable that represents a ship not yet placed on the board.
  *
+ * @param type the type of the ship
  * @param orientation the orientation of the ship
  * @param initialOffset the initial offset of the ship
- * @param boardOffset the offset of the board
- * @param type the type of the ship
  * @param boardSize the size of the board
  * @param onShipPlaced what to do when the ship is placed on the board
  */
 @Composable
 fun UnplacedShipView(
-    orientation: Orientation = Orientation.HORIZONTAL,
-    initialOffset: Offset = Offset.Zero,
-    boardOffset: Offset = Offset.Zero,
     type: ShipType,
+    orientation: Orientation,
+    initialOffset: Offset,
     boardSize: Int,
-    onShipPlaced: (Coordinate) -> Boolean
+    onShipPlaced: (Coordinate) -> Unit
 ) {
     val currentSize by rememberUpdatedState(type.size)
     val currentOrientation by rememberUpdatedState(orientation)
 
-    var dragging by remember { mutableStateOf(false) }
     var dragOffset by remember { mutableStateOf(Offset.Zero) }
 
     val tileSize = getTileSize(boardSize)
@@ -59,29 +58,28 @@ fun UnplacedShipView(
      * @return the offset
      */
     fun getOffset(): Offset = Offset(
-        x = initialOffset.x + (if (dragging) dragOffset.x else 0f) / d.density,
-        y = initialOffset.y + (if (dragging) dragOffset.y else 0f) / d.density
+        x = initialOffset.x + dragOffset.x / d.density,
+        y = initialOffset.y + dragOffset.y / d.density
     )
 
     val offset by rememberUpdatedState(getOffset())
 
-    Box(
-        Modifier
+    ShipView(
+        type = type,
+        orientation = orientation,
+        tileSize = tileSize,
+        modifier = Modifier
             .offset(
                 x = offset.x.dp,
                 y = offset.y.dp
             )
-            .size(
-                width = (tileSize * if (orientation == Orientation.HORIZONTAL) type.size else 1).dp,
-                height = (tileSize * if (orientation == Orientation.VERTICAL) type.size else 1).dp
-            )
             .pointerInput(Unit) {
+                Log.v("POINTER_INPUT", "Coroutine launched")
                 detectDragGestures(
-                    onDragStart = { dragging = true },
+                    onDragStart = { },
                     onDragEnd = {
-                        dragging = false
-                        val currCol = ((offset.x - boardOffset.x) / tileSize).roundToInt()
-                        val currRow = ((offset.y - boardOffset.y) / tileSize).roundToInt()
+                        val currCol = (offset.x / tileSize).roundToInt()
+                        val currRow = (offset.y / tileSize).roundToInt()
 
                         Coordinate
                             .fromPointOrNull(currCol, currRow)
@@ -101,20 +99,16 @@ fun UnplacedShipView(
                         dragOffset = Offset.Zero
                     },
                     onDragCancel = {
-                        dragging = false
                         dragOffset = Offset.Zero
                     }
                 ) { change, dragAmount ->
+                    Log.v("DRAG", "Orientation: $orientation")
                     change.consumeAllChanges()
                     dragOffset += dragAmount
                 }
             }
-    ) {
-        ShipImage(
-            type = type,
-            orientation = orientation
-        )
-    }
+            .border(2.dp, Color.Red)
+    )
 }
 
 /**
@@ -141,10 +135,3 @@ fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate? {
         else -> null
     }
 }
-
-/**
- * Converts a Coordinate to a point.
- *
- * @return a pair of integers representing the point
- */
-fun Coordinate.toPoint(): Pair<Int, Int> = Pair(col - FIRST_COL, row - 1)
