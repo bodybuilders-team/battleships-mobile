@@ -33,7 +33,8 @@
     <string name="game_config_grid_size_text">Grid Size</string>
     <string name="gameplay_new_game_button_text">New Game</string>
     <string name="gameplay_search_game_button_text">Search Game</string>
-    <string name="game_config_configure_board_button_text">Configure board</string>
+    <string name="game_config_create_game_button_text">Create Game</string>
+    <string name="game_config_confirm_board_button_text">Confirm Board</string>
     <string name="back_button_text">Back</string>
     <string name="main_menu_exit_button_text">Exit</string>
     <string name="game_config_shots_per_turn_text">Shots per Turn</string>

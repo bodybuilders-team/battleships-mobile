@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.aboutDevelopers.AboutDevelopers
-import pt.isel.pdm.battleships.ui.screens.gameplay.Gameplay
+import pt.isel.pdm.battleships.ui.screens.gameplay.GameplayMenu
 import pt.isel.pdm.battleships.ui.screens.login.Login
 import pt.isel.pdm.battleships.ui.screens.ranking.Ranking
 
@@ -72,7 +72,7 @@ fun MainMenu() {
                     Text(text = exitButtonText)
                 }
             }
-            Page.GAMEPLAY -> Gameplay {
+            Page.GAMEPLAY -> GameplayMenu {
                 currentPage = Page.MAIN_MENU
             }
             Page.LOGIN -> Login {

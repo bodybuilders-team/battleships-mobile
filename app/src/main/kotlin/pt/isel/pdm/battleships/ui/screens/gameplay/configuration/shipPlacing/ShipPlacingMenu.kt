@@ -21,14 +21,16 @@ const val PLACING_MENU_PADDING = 6
  * A composable that represents the ship placing menu.
  * It contains the ship slots and some buttons.
  *
- * @param onSelectedOrientation the callback to be invoked when the user clicks the change orientation button
- * @param onRandomBoardButtonClick the callback to be invoked when the user clicks the random board button
+ * @param onChangeOrientationButtonPressed the callback to be invoked when the user presses the change orientation button
+ * @param onRandomBoardButtonPressed the callback to be invoked when the user presses the random board button
+ * @param onConfirmBoardButtonPressed the callback to be invoked when the user presses the confirm board button
  */
 @Composable
 fun ShipPlacingMenu(
     tileSize: Float,
-    onSelectedOrientation: () -> Unit,
-    onRandomBoardButtonClick: () -> Unit
+    onChangeOrientationButtonPressed: () -> Unit,
+    onRandomBoardButtonPressed: () -> Unit,
+    onConfirmBoardButtonPressed: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -42,14 +44,17 @@ fun ShipPlacingMenu(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = onSelectedOrientation) {
+            Button(onClick = onChangeOrientationButtonPressed) {
                 Text(
                     textAlign = TextAlign.Center,
                     text = stringResource(R.string.gameplay_change_orientation_button_text)
                 )
             }
-            Button(onClick = onRandomBoardButtonClick) {
+            Button(onClick = onRandomBoardButtonPressed) {
                 Text(stringResource(R.string.gameplay_random_board_button_text))
+            }
+            Button(onClick = onConfirmBoardButtonPressed) {
+                Text(stringResource(R.string.game_config_confirm_board_button_text))
             }
         }
     }

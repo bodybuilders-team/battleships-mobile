@@ -1,7 +1,6 @@
 package pt.isel.pdm.battleships.domain.board
 
 import pt.isel.pdm.battleships.domain.Cell
-import pt.isel.pdm.battleships.domain.MissCell
 import pt.isel.pdm.battleships.domain.ShipCell
 import pt.isel.pdm.battleships.domain.WaterCell
 import pt.isel.pdm.battleships.domain.exceptions.InvalidShotException
@@ -61,7 +60,9 @@ data class Board(
      * @param ship ship to check
      * @return true if it is possible to place the ship in its coordinates, false otherwise
      */
-    fun canPlaceShip(ship: Ship) = ship.coordinates.all { getCell(it) is WaterCell }
+    fun canPlaceShip(ship: Ship) = ship.coordinates.all {
+        getCell(it).let { cell -> !cell.wasHit && cell is WaterCell }
+    }
 
     /**
      * Places a ship in the board.
@@ -75,29 +76,28 @@ data class Board(
         return copy(
             grid = grid.replaceIf(
                 predicate = { ship.coordinates.contains(it.coordinate) },
-                new = { ShipCell(it.coordinate, ship) }
+                new = { ShipCell(it.coordinate, it.wasHit, ship) }
             )
         )
     }
 
     /**
      * Shoots the cell in [coordinate].
-     * If the cell is a ship cell, the ship is hit.
-     * If the cell is a hit cell, the attack is invalid.
-     * If the cell is a miss cell, the attack is invalid.
-     * If the cell is a water cell, the cell is changed to a miss cell.
-     * If the cell is a ship cell and the cell is not hit, the cell is changed to a hit cell.
+     * If the cell is already hit, the attack is invalid.
+     * Otherwise, the cell becomes hit.
      *
      * @param coordinate coordinate to attack
      *
      * @return the board after the attack
      * @throws InvalidShotException if the attack is invalid
      */
-    fun shoot(coordinate: Coordinate): Board =
-        when (val cell = getCell(coordinate)) {
-            is ShipCell -> {
-                if (cell.wasHit) throw InvalidShotException("Cell $coordinate was already hit")
+    fun shoot(coordinate: Coordinate): Board {
+        val cell = getCell(coordinate)
 
+        if (cell.wasHit) throw InvalidShotException("Cell $coordinate was already hit")
+
+        return when (cell) {
+            is ShipCell -> {
                 val ship = cell.ship
                 val newShip = ship.copy(lives = ship.lives - 1)
 
@@ -113,9 +113,9 @@ data class Board(
                     )
                 )
             }
-            is MissCell -> throw InvalidShotException("Cell $coordinate was already hit")
-            is WaterCell -> setCell(coordinate, MissCell(coordinate))
+            is WaterCell -> setCell(coordinate, cell.copy(wasHit = true))
         }
+    }
 
     companion object {
         const val DEFAULT_BOARD_SIZE = 10
@@ -175,13 +175,14 @@ data class Board(
          * @param size the size of the matrix
          * @return generated matrix
          */
-        private fun generateEmptyMatrix(size: Int): List<Cell> =
+        fun generateEmptyMatrix(size: Int): List<Cell> =
             List(size * size) {
                 WaterCell(
                     Coordinate(
                         row = size - it / size,
                         col = getColumnsRange(size).first + it % size
-                    )
+                    ),
+                    wasHit = false
                 )
             }
 
@@ -222,7 +223,7 @@ data class Board(
                     .random()
 
                 ship.coordinates.forEach {
-                    grid[it.toIndex(size)] = ShipCell(it, ship)
+                    grid[it.toIndex(size)] = ShipCell(coordinate = it, wasHit = false, ship = ship)
                 }
             }
 

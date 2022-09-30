@@ -31,9 +31,9 @@
     <string name="gameplay_random_board_button_text">Tabuleiro Aleatório</string>
     <string name="game_config_title">Configuração do Jogo</string>
     <string name="game_config_grid_size_text">Tamanho da grelha</string>
-    <string name="gameplay_new_game_button_text">Novo jogo</string>
-    <string name="gameplay_search_game_button_text">Procurar jogo</string>
-    <string name="game_config_configure_board_button_text">Configurar tabuleiro</string>
+    <string name="gameplay_new_game_button_text">Novo Jogo</string>
+    <string name="gameplay_search_game_button_text">Procurar Jogo</string>
+    <string name="game_config_create_game_button_text">Criar Jogo</string>
     <string name="back_button_text">Voltar</string>
     <string name="main_menu_exit_button_text">Sair</string>
     <string name="game_config_shots_per_turn_text">Tiros por Turno</string>

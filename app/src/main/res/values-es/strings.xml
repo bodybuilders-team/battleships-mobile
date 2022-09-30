@@ -31,9 +31,9 @@
     <string name="main_menu_play_button_text">Jugar</string>
     <string name="game_config_grid_size_text">Tamaño de la cuadrícula</string>
     <string name="game_config_title">Configuracíon del juego</string>
-    <string name="gameplay_new_game_button_text">Nuevo juejo</string>
-    <string name="gameplay_search_game_button_text">Buscar juego</string>
-    <string name="game_config_configure_board_button_text">Configurar tablero</string>
+    <string name="gameplay_new_game_button_text">Nuevo Juejo</string>
+    <string name="gameplay_search_game_button_text">Buscar Juego</string>
+    <string name="game_config_create_game_button_text">Criar Juego</string>
     <string name="back_button_text">Volver</string>
     <string name="main_menu_exit_button_text">Salir</string>
 </resources>

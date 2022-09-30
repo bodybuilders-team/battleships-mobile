@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Board.Companion.DEFAULT_BOARD_SIZE
-import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.BoardConfiguration
+import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.IntSelector
 
 private const val GAME_CONFIG_TITLE_PADDING = 8
@@ -37,70 +37,76 @@ private const val MAX_SHOTS_PER_TURN = 5
 /**
  * Screen that allows the user to configure a new game before starting it.
  *
+ * @param onGameConfigured Callback that is called when the user finishes configuring the game
  * @param onBackButtonPressed what to do when the back button is pressed
  */
 @Composable
-fun NewGame(onBackButtonPressed: () -> Unit) {
+fun NewGame(onGameConfigured: (GameConfig) -> Unit, onBackButtonPressed: () -> Unit) {
     var boardSize by remember { mutableStateOf(DEFAULT_BOARD_SIZE) }
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
     var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }
     var timeForBoardConfig by remember { mutableStateOf(DEFAULT_TIME_FOR_BOARD_CONFIG) }
-    var configureBoard by remember { mutableStateOf(false) }
 
     Column {
-        when (configureBoard) {
-            true -> BoardConfiguration(boardSize) {
-                configureBoard = false
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = stringResource(R.string.game_config_title),
+                style = MaterialTheme.typography.h4,
+                modifier = Modifier.padding(GAME_CONFIG_TITLE_PADDING.dp)
+            )
+
+            // Grid Size Selector
+            IntSelector(
+                defaultValue = boardSize,
+                valueRange = Board.MIN_BOARD_SIZE..Board.MAX_BOARD_SIZE,
+                label = stringResource(R.string.game_config_grid_size_text),
+                valueLabel = { "$it x $it" },
+                onValueChange = { boardSize = it }
+            )
+
+            // Board Configuration Time
+            IntSelector(
+                defaultValue = timeForBoardConfig,
+                valueRange = MIN_TIME_FOR_BOARD_CONFIG..MAX_TIME_FOR_BOARD_CONFIG,
+                label = stringResource(R.string.game_config_time_for_board_config_text),
+                valueLabel = { "$it s" },
+                onValueChange = { timeForBoardConfig = it }
+            )
+
+            // Shots Per Turn Selector
+            IntSelector(
+                defaultValue = shotsPerTurn,
+                valueRange = MIN_SHOTS_PER_TURN..MAX_SHOTS_PER_TURN,
+                label = stringResource(R.string.game_config_shots_per_turn_text),
+                onValueChange = { shotsPerTurn = it }
+            )
+
+            // Time Per Turn Selector
+            IntSelector(
+                defaultValue = timePerTurn,
+                valueRange = MIN_TIME_PER_TURN..MAX_TIME_PER_TURN,
+                label = stringResource(R.string.game_config_time_per_turn_text),
+                valueLabel = { "$it s" },
+                onValueChange = { timePerTurn = it }
+            )
+
+            Button(
+                onClick = {
+                    onGameConfigured(
+                        GameConfig(
+                            boardSize,
+                            shotsPerTurn,
+                            timePerTurn,
+                            timeForBoardConfig
+                        )
+                    )
+                }
+            ) {
+                Text(stringResource(id = R.string.game_config_create_game_button_text))
             }
-            false -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = stringResource(R.string.game_config_title),
-                    style = MaterialTheme.typography.h4,
-                    modifier = Modifier.padding(GAME_CONFIG_TITLE_PADDING.dp)
-                )
 
-                // Grid Size Selector
-                IntSelector(
-                    defaultValue = boardSize,
-                    valueRange = Board.MIN_BOARD_SIZE..Board.MAX_BOARD_SIZE,
-                    label = stringResource(R.string.game_config_grid_size_text),
-                    valueLabel = { "$it x $it" },
-                    onValueChange = { boardSize = it }
-                )
-
-                // Board Configuration Time
-                IntSelector(
-                    defaultValue = timeForBoardConfig,
-                    valueRange = MIN_TIME_FOR_BOARD_CONFIG..MAX_TIME_FOR_BOARD_CONFIG,
-                    label = stringResource(R.string.game_config_time_for_board_config_text),
-                    valueLabel = { "$it s" },
-                    onValueChange = { timeForBoardConfig = it }
-                )
-
-                // Shots Per Turn Selector
-                IntSelector(
-                    defaultValue = shotsPerTurn,
-                    valueRange = MIN_SHOTS_PER_TURN..MAX_SHOTS_PER_TURN,
-                    label = stringResource(R.string.game_config_shots_per_turn_text),
-                    onValueChange = { shotsPerTurn = it }
-                )
-
-                // Time Per Turn Selector
-                IntSelector(
-                    defaultValue = timePerTurn,
-                    valueRange = MIN_TIME_PER_TURN..MAX_TIME_PER_TURN,
-                    label = stringResource(R.string.game_config_time_per_turn_text),
-                    valueLabel = { "$it s" },
-                    onValueChange = { timePerTurn = it }
-                )
-
-                Button(onClick = { configureBoard = true }) {
-                    Text(stringResource(id = R.string.game_config_configure_board_button_text))
-                }
-
-                Button(onClick = onBackButtonPressed) {
-                    Text(text = stringResource(id = R.string.back_button_text))
-                }
+            Button(onClick = onBackButtonPressed) {
+                Text(text = stringResource(id = R.string.back_button_text))
             }
         }
     }
