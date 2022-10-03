@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.aboutDevelopers
+package pt.isel.pdm.battleships.ui.screens.about
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

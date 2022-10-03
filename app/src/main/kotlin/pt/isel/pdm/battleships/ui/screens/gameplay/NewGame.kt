@@ -14,11 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Board.Companion.DEFAULT_BOARD_SIZE
 import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.IntSelector
+import pt.isel.pdm.battleships.ui.utils.BackButton
 
 private const val GAME_CONFIG_TITLE_PADDING = 8
 private const val DEFAULT_SHOTS_PER_TURN = 1
@@ -37,11 +39,14 @@ private const val MAX_SHOTS_PER_TURN = 5
 /**
  * Screen that allows the user to configure a new game before starting it.
  *
+ * @param navController the navigation controller to be used to navigate to the game screen
  * @param onGameConfigured Callback that is called when the user finishes configuring the game
- * @param onBackButtonPressed what to do when the back button is pressed
  */
 @Composable
-fun NewGame(onGameConfigured: (GameConfig) -> Unit, onBackButtonPressed: () -> Unit) {
+fun NewGame(
+    navController: NavController,
+    onGameConfigured: (GameConfig) -> Unit
+) {
     var boardSize by remember { mutableStateOf(DEFAULT_BOARD_SIZE) }
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
     var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }
@@ -105,9 +110,7 @@ fun NewGame(onGameConfigured: (GameConfig) -> Unit, onBackButtonPressed: () -> U
                 Text(stringResource(id = R.string.game_config_create_game_button_text))
             }
 
-            Button(onClick = onBackButtonPressed) {
-                Text(text = stringResource(id = R.string.back_button_text))
-            }
+            BackButton(navController)
         }
     }
 }

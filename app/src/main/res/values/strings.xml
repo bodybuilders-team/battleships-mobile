@@ -3,9 +3,9 @@
     <string name="main_menu_play_button_text">Play</string>
     <string name="main_menu_login_button_text">Login</string>
     <string name="main_menu_ranking_button_text">Ranking</string>
-    <string name="main_menu_about_devs_button_text">About the Developers</string>
-    <string name="about_devs_title">Developers</string>
-    <string name="about_devs_repo_github_text">"The code for this app is available at: "</string>
+    <string name="main_menu_about_button_text">About</string>
+    <string name="about_title">Developers</string>
+    <string name="about_repo_github_text">"The code for this app is available at: "</string>
     <string name="back_to_menu_button_text">Back to Menu</string>
     <string name="login_title">Login/Register</string>
     <string name="login_message_invalid_username">Username should have at least 3 characters.</string>
@@ -41,4 +41,5 @@
     <string name="game_config_time_per_turn_text">Time per Turn</string>
     <string name="game_config_time_for_board_config_text">Board Configuration Time</string>
     <string name="ship_image_content_description">Ship</string>
+    <string name="logo_content_description" translatable="false">Battleships Logo</string>
 </resources>

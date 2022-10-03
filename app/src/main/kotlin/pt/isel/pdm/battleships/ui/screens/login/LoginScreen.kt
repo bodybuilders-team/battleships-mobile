@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -15,10 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import pt.isel.pdm.battleships.LoginStatus
 import pt.isel.pdm.battleships.MockApi
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.RegisterStatus
+import pt.isel.pdm.battleships.ui.utils.BackButton
 
 private const val LOGIN_TITLE_PADDING = 8
 
@@ -30,10 +31,10 @@ private const val LOGIN_TITLE_PADDING = 8
  * Password is visually protected by [PasswordVisualTransformation].
  * TODO: this protection is fake because the keyboard listener will remember the keys and show them to the user
  *
- * @param backToMenuCallback callback to be called when the user wants to go back to the main menu
+ * @param navController the navigation controller
  */
 @Composable
-fun Login(backToMenuCallback: () -> Unit) {
+fun LoginScreen(navController: NavController) {
     val loginMessage = remember { mutableStateOf<String?>(null) }
 
     val username = remember { mutableStateOf("") }
@@ -116,8 +117,6 @@ fun Login(backToMenuCallback: () -> Unit) {
             }
         }
 
-        Button(onClick = backToMenuCallback) {
-            Text(text = stringResource(id = R.string.back_to_menu_button_text))
-        }
+        BackButton(navController)
     }
 }

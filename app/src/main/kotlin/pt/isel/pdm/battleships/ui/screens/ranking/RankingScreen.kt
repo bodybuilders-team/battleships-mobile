@@ -3,7 +3,6 @@ package pt.isel.pdm.battleships.ui.screens.ranking
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -11,8 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import pt.isel.pdm.battleships.MockApi
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.ui.utils.BackButton
 
 private const val RANKING_TITLE_PADDING = 8
 
@@ -22,10 +23,10 @@ private const val RANKING_TITLE_PADDING = 8
  *
  * The position is based of the player's points.
  *
- * @param backToMenuCallback callback to be invoked when the user wants to go back to the menu
+ * @param navController the navigation controller
  */
 @Composable
-fun Ranking(backToMenuCallback: () -> Unit) {
+fun RankingScreen(navController: NavController) {
     val players = MockApi.getPlayers().sortedByDescending { it.points }
 
     Column(
@@ -44,8 +45,6 @@ fun Ranking(backToMenuCallback: () -> Unit) {
 
         RankingTable(players)
 
-        Button(onClick = backToMenuCallback) {
-            Text(text = stringResource(id = R.string.back_to_menu_button_text))
-        }
+        BackButton(navController)
     }
 }

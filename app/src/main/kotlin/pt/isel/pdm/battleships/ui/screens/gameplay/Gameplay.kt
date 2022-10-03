@@ -9,17 +9,18 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import pt.isel.pdm.battleships.R
+import androidx.navigation.NavController
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZE
+import pt.isel.pdm.battleships.ui.utils.BackButton
 
 /**
  * The gameplay screen.
  *
+ * @param navController the navigation controller
  * @param myBoard the player's board
  * @param opponentBoard the opponent's board
  * @param selectedCells the cells that are currently selected
@@ -30,13 +31,13 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZ
  */
 @Composable
 fun Gameplay(
+    navController: NavController,
     myBoard: Board,
     opponentBoard: Board,
     selectedCells: List<Coordinate>,
     onCellSelected: (Coordinate) -> Unit,
     onShootButtonPressed: () -> Unit,
-    onResetShotsButtonPressed: () -> Unit,
-    onBackButtonPressed: () -> Unit
+    onResetShotsButtonPressed: () -> Unit
 ) {
     Column(
         modifier = Modifier.width(FULL_BOARD_VIEW_BOX_SIZE.dp),
@@ -73,8 +74,6 @@ fun Gameplay(
             }
         }
 
-        Button(onClick = onBackButtonPressed) {
-            Text(text = stringResource(id = R.string.back_button_text))
-        }
+        BackButton(navController)
     }
 }

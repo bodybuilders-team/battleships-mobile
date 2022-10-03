@@ -1,6 +1,6 @@
 # battleships ⚓
 
-> Battleship game.
+> Battleship game in Android.
 
 ---
 
@@ -14,5 +14,5 @@ Professor: Eng. Paulo Pereira
 
 @ISEL<br>
 Bachelor in Computer Science and Computer Engineering<br>
-Mobile Devices Programming - LEIC51D - Group 03<br>
+Mobile Devices Programming - LEIC51D - Group 13<br>
 Winter Semester of 2022/2023

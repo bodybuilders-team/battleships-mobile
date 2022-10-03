@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.aboutDevelopers
+package pt.isel.pdm.battleships.ui.screens.about
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -6,7 +6,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +15,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.ui.utils.BackButton
 
 private const val ABOUT_DEVS_TITLE_PADDING = 8
 const val IMAGE_PADDING = 8
@@ -31,17 +32,15 @@ const val IMAGE_PADDING = 8
  * - Email contact
  *
  * Also shows the github link of the app's repository.
- *
- * @param onBackToMenuButtonPress what to do when the "Back to menu" button is pressed
  */
 @Composable
-fun AboutDevelopers(onBackToMenuButtonPress: () -> Unit) {
+fun AboutScreen(navController: NavController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            text = stringResource(R.string.about_devs_title),
+            text = stringResource(R.string.about_title),
             style = MaterialTheme.typography.h4,
             modifier = Modifier.padding(ABOUT_DEVS_TITLE_PADDING.dp)
         )
@@ -71,7 +70,7 @@ fun AboutDevelopers(onBackToMenuButtonPress: () -> Unit) {
             painterResource(id = R.drawable.github_mark_120px_plus)
         }
 
-        Text(text = stringResource(id = R.string.about_devs_repo_github_text))
+        Text(text = stringResource(id = R.string.about_repo_github_text))
         Image(
             painter = githubIcon,
             contentDescription = stringResource(id = R.string.github_logo_content_description),
@@ -80,10 +79,6 @@ fun AboutDevelopers(onBackToMenuButtonPress: () -> Unit) {
                 .padding(IMAGE_PADDING.dp)
         )
 
-        Button(
-            onClick = onBackToMenuButtonPress
-        ) {
-            Text(text = stringResource(id = R.string.back_to_menu_button_text))
-        }
+        BackButton(navController)
     }
 }

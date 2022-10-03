@@ -11,7 +11,14 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import pt.isel.pdm.battleships.ui.screens.MainMenu
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import pt.isel.pdm.battleships.ui.screens.MainMenuScreen
+import pt.isel.pdm.battleships.ui.screens.about.AboutScreen
+import pt.isel.pdm.battleships.ui.screens.gameplay.GameplayMenuScreen
+import pt.isel.pdm.battleships.ui.screens.login.LoginScreen
+import pt.isel.pdm.battleships.ui.screens.ranking.RankingScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
@@ -32,11 +39,29 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        Text(
-                            text = stringResource(R.string.app_name)
-                        )
+                        Text(text = stringResource(R.string.app_name))
 
-                        MainMenu()
+                        val navController = rememberNavController()
+                        NavHost(
+                            navController = navController,
+                            startDestination = "menu"
+                        ) {
+                            composable("menu") {
+                                MainMenuScreen(navController)
+                            }
+                            composable("gameplay") {
+                                GameplayMenuScreen(navController)
+                            }
+                            composable("login") {
+                                LoginScreen(navController)
+                            }
+                            composable("ranking") {
+                                RankingScreen(navController)
+                            }
+                            composable("about") {
+                                AboutScreen(navController)
+                            }
+                        }
                     }
                 }
             }

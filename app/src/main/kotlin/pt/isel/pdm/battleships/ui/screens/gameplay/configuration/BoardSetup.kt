@@ -3,8 +3,6 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,9 +11,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import pt.isel.pdm.battleships.R
+import androidx.navigation.NavController
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
@@ -28,19 +25,20 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.PLA
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.SHIP_SLOTS_FACTOR
 import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.ShipPlacingMenu
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.UnplacedShipView
+import pt.isel.pdm.battleships.ui.utils.BackButton
 
 /**
  * Board configuration page. Allows the user to place their ships on the board how they like.
  *
+ * @param navController the navigation controller
  * @param boardSize the size of the board
  * @param onBoardSetupFinished what to do when the board finished being setup
- * @param onBackButtonPressed what to do when the back button is pressed
  */
 @Composable
 fun BoardSetup(
+    navController: NavController,
     boardSize: Int,
-    onBoardSetupFinished: (Board) -> Unit,
-    onBackButtonPressed: () -> Unit
+    onBoardSetupFinished: (Board) -> Unit
 ) {
     var board by remember { mutableStateOf(Board(boardSize)) }
     val shipTypes by remember { mutableStateOf(ShipType.values()) }
@@ -103,8 +101,6 @@ fun BoardSetup(
             }
         }
 
-        Button(onClick = onBackButtonPressed) {
-            Text(text = stringResource(id = R.string.back_button_text))
-        }
+        BackButton(navController)
     }
 }
