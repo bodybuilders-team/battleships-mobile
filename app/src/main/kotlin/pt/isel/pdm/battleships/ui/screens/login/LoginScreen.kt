@@ -2,9 +2,7 @@ package pt.isel.pdm.battleships.ui.screens.login
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -13,15 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import pt.isel.pdm.battleships.LoginStatus
 import pt.isel.pdm.battleships.MockApi
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.RegisterStatus
-import pt.isel.pdm.battleships.ui.utils.BackButton
-
-private const val LOGIN_TITLE_PADDING = 8
+import pt.isel.pdm.battleships.ui.utils.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
 /**
  * Login/Register page.
@@ -52,13 +48,9 @@ fun LoginScreen(navController: NavController) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxSize()
     ) {
-        Text(
-            text = stringResource(R.string.login_title),
-            style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(LOGIN_TITLE_PADDING.dp)
-        )
+        ScreenTitle(title = stringResource(R.string.login_title))
 
         LoginTextFields(
             username.value,
@@ -115,6 +107,6 @@ fun LoginScreen(navController: NavController) {
             }
         }
 
-        BackButton(navController)
+        GoBackButton(navController)
     }
 }

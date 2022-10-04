@@ -168,7 +168,7 @@ data class Board(
          * @param size size of the board
          * @return random board of [size]
          */
-        fun random(size: Int) = Board(size, generateRandomMatrix(size))
+        fun random(size: Int = DEFAULT_BOARD_SIZE) = Board(size, generateRandomMatrix(size))
 
         /**
          * Generates a matrix only with water cells.

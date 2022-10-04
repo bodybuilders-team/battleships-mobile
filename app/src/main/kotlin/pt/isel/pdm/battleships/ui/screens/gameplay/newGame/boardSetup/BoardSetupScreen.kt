@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.gameplay.configuration
+package pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,11 +21,11 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.IdentifiersWrapper
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
-import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.PLACING_MENU_PADDING
-import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.SHIP_SLOTS_FACTOR
-import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing.ShipPlacingMenu
+import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.PLACING_MENU_PADDING
+import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.SHIP_SLOTS_FACTOR
+import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.ShipPlacingMenuView
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.UnplacedShipView
-import pt.isel.pdm.battleships.ui.utils.BackButton
+import pt.isel.pdm.battleships.ui.utils.GoBackButton
 
 /**
  * Board configuration page. Allows the user to place their ships on the board how they like.
@@ -35,7 +35,7 @@ import pt.isel.pdm.battleships.ui.utils.BackButton
  * @param onBoardSetupFinished what to do when the board finished being setup
  */
 @Composable
-fun BoardSetup(
+fun BoardSetupScreen(
     navController: NavController,
     boardSize: Int,
     onBoardSetupFinished: (Board) -> Unit
@@ -64,7 +64,7 @@ fun BoardSetup(
                 Column {
                     BoardView(board = board, selectedCells = emptyList(), onTileClicked = {})
 
-                    ShipPlacingMenu(
+                    ShipPlacingMenuView(
                         tileSize = tileSize,
                         onChangeOrientationButtonPressed = {
                             selectedOrientation = selectedOrientation.opposite()
@@ -101,6 +101,6 @@ fun BoardSetup(
             }
         }
 
-        BackButton(navController)
+        GoBackButton(navController)
     }
 }

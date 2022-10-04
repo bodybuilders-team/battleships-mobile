@@ -23,7 +23,6 @@
     <string name="login_message_invalid_password">Contraseña debe tener al menos 4 caracteres.</string>
     <string name="login_message_invalid_username">Nombre de usuario debe tener al menos 3 caracteres.</string>
     <string name="login_title">Login/Registro</string>
-    <string name="back_to_menu_button_text">Volver al Menú</string>
     <string name="about_repo_github_text">El código de esta aplicación está disponible aquí:</string>
     <string name="about_title">Desarrolladores</string>
     <string name="main_menu_about_button_text">Sobre los Desarrolladores</string>
@@ -43,4 +42,9 @@
     <string name="ship_image_content_description">Barco</string>
     <string name="opponent_board_description">Cuadrícula Oponente</string>
     <string name="my_board_description">Mi Cyadrícula</string>
+    <string name="search_game_title">Buscar Juegos</string>
+    <string name="gameplay_menu_title">Menú de Juego</string>
+    <string name="gameplay_search_game_button_description">Botón para buscar juegos</string>
+    <string name="gameplay_new_game_button_description">Botón para crear un nuevo juego</string>
+    <string name="main_menu_about_button_content_description">Botón para acerca de la pantalla</string>
 </resources>

@@ -17,9 +17,7 @@ import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZE
-import pt.isel.pdm.battleships.ui.utils.BackButton
-
-/* TODO: check the composables names, maybe use ...Screen when the composable is the whole screen and ...View when it's just a part of the screen */
+import pt.isel.pdm.battleships.ui.utils.GoBackButton
 
 /**
  * The gameplay screen.
@@ -34,7 +32,7 @@ import pt.isel.pdm.battleships.ui.utils.BackButton
  * reset shots button
  */
 @Composable
-fun Gameplay(
+fun GameplayScreen(
     navController: NavController,
     myBoard: Board,
     opponentBoard: Board,
@@ -78,7 +76,7 @@ fun Gameplay(
             }
         }
 
-        BackButton(navController)
+        GoBackButton(navController)
     }
 }
 

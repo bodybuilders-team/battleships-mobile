@@ -14,6 +14,7 @@ import pt.isel.pdm.battleships.domain.ship.ShipType
  * Draws the ship image.
  *
  * @param type the type of the ship
+ * @param orientation the orientation of the ship
  */
 @Composable
 fun ShipImage(

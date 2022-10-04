@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing
+package pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,7 @@ const val SHIP_SLOTS_FACTOR = 0.6f
  * Contains the slots for each ship type.
  */
 @Composable
-fun ShipSlots(tileSize: Float) {
+fun ShipSlotsView(tileSize: Float) {
     Box(
         modifier = Modifier
             .fillMaxWidth(SHIP_SLOTS_FACTOR)
@@ -32,17 +32,17 @@ fun ShipSlots(tileSize: Float) {
             .background(Color.LightGray)
     ) {
         Row {
-            ShipSlot(ShipType.BATTLESHIP, tileSize)
-            ShipSlot(ShipType.CARRIER, tileSize)
-            ShipSlot(ShipType.CRUISER, tileSize)
-            ShipSlot(ShipType.DESTROYER, tileSize)
-            ShipSlot(ShipType.SUBMARINE, tileSize)
+            ShipSlotView(ShipType.BATTLESHIP, tileSize)
+            ShipSlotView(ShipType.CARRIER, tileSize)
+            ShipSlotView(ShipType.CRUISER, tileSize)
+            ShipSlotView(ShipType.DESTROYER, tileSize)
+            ShipSlotView(ShipType.SUBMARINE, tileSize)
         }
     }
 }
 
 @Composable
-fun ShipSlot(type: ShipType, tileSize: Float) {
+private fun ShipSlotView(type: ShipType, tileSize: Float) {
     // TODO: put the "ship sillouette" / empty slot image
     // ShipImage(type = type, orientation = Orientation.VERTICAL)
 }

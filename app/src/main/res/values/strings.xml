@@ -6,7 +6,6 @@
     <string name="main_menu_about_button_text">About</string>
     <string name="about_title">Developers</string>
     <string name="about_repo_github_text">"The code for this app is available at: "</string>
-    <string name="back_to_menu_button_text">Back to Menu</string>
     <string name="login_title">Login/Register</string>
     <string name="login_message_invalid_username">Username should have at least 3 characters.</string>
     <string name="login_message_invalid_password">Password should have at least 4 characters.</string>
@@ -35,13 +34,18 @@
     <string name="gameplay_search_game_button_text">Search Game</string>
     <string name="game_config_create_game_button_text">Create Game</string>
     <string name="game_config_confirm_board_button_text">Confirm Board</string>
-    <string name="back_button_text">Back</string>
+    <string name="back_button_text">Go Back</string>
     <string name="main_menu_exit_button_text">Exit</string>
     <string name="game_config_shots_per_turn_text">Shots per Turn</string>
     <string name="game_config_time_per_turn_text">Time per Turn</string>
-    <string name="game_config_time_for_board_config_text">Board Configuration Time</string>
+    <string name="game_config_time_for_board_config_text">Board Layout Time</string>
     <string name="ship_image_content_description">Ship</string>
     <string name="logo_content_description" translatable="false">Battleships Logo</string>
     <string name="opponent_board_description">Opponent Board</string>
     <string name="my_board_description">My Board</string>
+    <string name="main_menu_about_button_content_description">Button to about screen</string>
+    <string name="gameplay_new_game_button_description">Button to create a new game</string>
+    <string name="gameplay_search_game_button_description">Button to search games</string>
+    <string name="gameplay_menu_title">Gameplay Menu</string>
+    <string name="search_game_title">Search Games</string>
 </resources>

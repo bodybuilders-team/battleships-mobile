@@ -118,7 +118,8 @@ fun UnplacedShipView(
  *
  * @return the coordinate
  */
-fun Coordinate.Companion.fromPoint(col: Int, row: Int) = Coordinate(FIRST_COL + col, row + 1)
+private fun Coordinate.Companion.fromPoint(col: Int, row: Int) =
+    Coordinate(FIRST_COL + col, row + 1)
 
 /**
  * Gets a coordinate from a point or null if it isn't valid.
@@ -128,7 +129,7 @@ fun Coordinate.Companion.fromPoint(col: Int, row: Int) = Coordinate(FIRST_COL + 
  *
  * @return the coordinate or null if it isn't valid
  */
-fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate? {
+private fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate? {
     return when {
         isValid(FIRST_COL + col, row + 1) -> fromPoint(col, row)
         else -> null

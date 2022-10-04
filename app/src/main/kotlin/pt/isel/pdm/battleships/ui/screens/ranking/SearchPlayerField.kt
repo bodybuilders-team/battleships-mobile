@@ -30,15 +30,13 @@ private const val SEARCH_PLAYER_FIELD_WIDTH_FACTOR = 0.6f
 fun SearchPlayerField(searchButtonCallback: () -> Unit) {
     var playerSearched by remember { mutableStateOf("") }
 
-    val searchPlayerPlaceholderText =
-        stringResource(id = R.string.ranking_search_player_placeholder_text)
-    val searchPlayerButtonText = stringResource(id = R.string.ranking_search_player_button_text)
-
     Row(modifier = Modifier.padding(bottom = SEARCH_PLAYER_FIELD_PADDING.dp)) {
         TextField(
             value = playerSearched,
             onValueChange = { playerSearched = it },
-            placeholder = { Text(text = searchPlayerPlaceholderText) },
+            placeholder = {
+                Text(stringResource(id = R.string.ranking_search_player_placeholder_text))
+            },
             modifier = Modifier.fillMaxWidth(SEARCH_PLAYER_FIELD_WIDTH_FACTOR)
         )
 
@@ -46,7 +44,7 @@ fun SearchPlayerField(searchButtonCallback: () -> Unit) {
             onClick = searchButtonCallback,
             modifier = Modifier.height(SEARCH_PLAYER_TEXT_FIELD_HEIGHT.dp)
         ) {
-            Text(text = searchPlayerButtonText)
+            Text(text = stringResource(id = R.string.ranking_search_player_button_text))
         }
     }
 }

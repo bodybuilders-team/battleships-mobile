@@ -26,7 +26,7 @@ fun LoginButtons(
     Row {
         Button(
             onClick = onLoginClickCallback,
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = Modifier.padding(end = BUTTON_PADDING.dp)
         ) {
             Text(text = stringResource(id = R.string.login_login_button_text))
         }
@@ -36,3 +36,5 @@ fun LoginButtons(
         }
     }
 }
+
+private const val BUTTON_PADDING = 8

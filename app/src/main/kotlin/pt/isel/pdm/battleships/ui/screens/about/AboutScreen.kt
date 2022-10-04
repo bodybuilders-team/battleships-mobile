@@ -6,7 +6,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,9 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.ui.utils.BackButton
+import pt.isel.pdm.battleships.ui.utils.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
-private const val ABOUT_DEVS_TITLE_PADDING = 8
 const val IMAGE_PADDING = 8
 
 /**
@@ -41,11 +40,7 @@ fun AboutScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(
-            text = stringResource(R.string.about_title),
-            style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(ABOUT_DEVS_TITLE_PADDING.dp)
-        )
+        ScreenTitle(title = stringResource(R.string.about_title))
 
         DeveloperInfoView(
             "48089",
@@ -78,6 +73,6 @@ fun AboutScreen(navController: NavController) {
                 .padding(IMAGE_PADDING.dp)
         )
 
-        BackButton(navController)
+        GoBackButton(navController)
     }
 }

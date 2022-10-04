@@ -13,7 +13,6 @@ import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.ui.theme.DarkBlue
 
 const val DEFAULT_TILE_SIZE = 32.0f
-const val TILE_BORDER_SIZE = 1.0f
 
 /**
  * Visual representation of a board tile.
@@ -34,9 +33,7 @@ fun TileView(
             .background(DarkBlue)
             .border((size / DEFAULT_TILE_SIZE).dp, Color.LightGray)
             .clickable(enabled = onTileClicked != null) {
-                if (onTileClicked != null) {
-                    onTileClicked(coordinate)
-                }
+                if (onTileClicked != null) onTileClicked(coordinate)
             }
     )
 }

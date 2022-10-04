@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.gameplay.configuration.shipPlacing
+package pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +26,7 @@ const val PLACING_MENU_PADDING = 6
  * @param onConfirmBoardButtonPressed the callback to be invoked when the user presses the confirm board button
  */
 @Composable
-fun ShipPlacingMenu(
+fun ShipPlacingMenuView(
     tileSize: Float,
     onChangeOrientationButtonPressed: () -> Unit,
     onRandomBoardButtonPressed: () -> Unit,
@@ -38,7 +38,7 @@ fun ShipPlacingMenu(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        ShipSlots(tileSize)
+        ShipSlotsView(tileSize)
 
         // Buttons
         Column(

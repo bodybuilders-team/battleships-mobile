@@ -2,8 +2,6 @@ package pt.isel.pdm.battleships.ui.screens.gameplay
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,7 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,8 +20,11 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.game.GameConfig
-import pt.isel.pdm.battleships.ui.screens.gameplay.configuration.BoardSetup
-import pt.isel.pdm.battleships.ui.utils.BackButton
+import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.NewGameScreen
+import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.BoardSetupScreen
+import pt.isel.pdm.battleships.ui.utils.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.MenuButton
+import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
 /**
  * The gameplay menu screen.
@@ -30,14 +33,14 @@ import pt.isel.pdm.battleships.ui.utils.BackButton
  */
 @Composable
 fun GameplayMenuScreen(navController: NavController) {
-    var myBoard by remember { mutableStateOf(Board.random(16)) }
-    var opponentBoard by remember { mutableStateOf(Board.random(16)) }
+    var myBoard by remember { mutableStateOf(Board.random()) }
+    var opponentBoard by remember { mutableStateOf(Board.random()) }
     var selectedCells by remember { mutableStateOf(emptyList<Coordinate>()) }
     var gameConfig by remember { mutableStateOf<GameConfig?>(null) }
 
-    val innerNavController = rememberNavController() // TODO: Maybe change to use the navController
+    val gameplayNavController = rememberNavController()
     NavHost(
-        navController = innerNavController,
+        navController = gameplayNavController,
         startDestination = "gameplay/menu"
     ) {
         composable("gameplay/menu") {
@@ -45,52 +48,53 @@ fun GameplayMenuScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Button(onClick = { innerNavController.navigate("gameplay/new-game") }) {
-                    Text(text = stringResource(id = R.string.gameplay_new_game_button_text))
-                }
-
-                Button(onClick = { innerNavController.navigate("gameplay/search-game") }) {
-                    Text(text = stringResource(id = R.string.gameplay_search_game_button_text))
-                }
-
-                Button(onClick = { innerNavController.navigate("gameplay/gameplay") }) {
-                    Text(text = "Gameplay")
-                }
-
-                BackButton(navController)
+                ScreenTitle(title = stringResource(R.string.gameplay_menu_title))
+                MenuButton(
+                    onClick = { gameplayNavController.navigate("gameplay/new-game") },
+                    icon = ImageVector.vectorResource(id = R.drawable.ic_round_add_24),
+                    iconDescription = stringResource(R.string.gameplay_new_game_button_description),
+                    text = stringResource(id = R.string.gameplay_new_game_button_text)
+                )
+                MenuButton(
+                    onClick = { gameplayNavController.navigate("gameplay/search-game") },
+                    icon = ImageVector.vectorResource(id = R.drawable.ic_round_search_24),
+                    iconDescription = stringResource(R.string.gameplay_search_game_button_description),
+                    text = stringResource(id = R.string.gameplay_search_game_button_text)
+                )
+                GoBackButton(navController)
             }
         }
         composable("gameplay/new-game") {
-            NewGame(
-                innerNavController,
+            NewGameScreen(
+                gameplayNavController,
                 onGameConfigured = {
                     gameConfig = it
 
                     // Api call to add game to lobby
                     opponentBoard = Board.random(it.gridSize)
 
-                    innerNavController.navigate("gameplay/setup-board")
+                    gameplayNavController.navigate("gameplay/board-setup")
                 }
             )
         }
         composable("gameplay/search-game") {
-            SearchGame(innerNavController)
+            SearchGameScreen(gameplayNavController)
         }
-        composable("gameplay/setup-board") {
+        composable("gameplay/board-setup") {
             gameConfig?.let {
-                BoardSetup(
-                    innerNavController,
+                BoardSetupScreen(
+                    gameplayNavController,
                     boardSize = it.gridSize,
                     onBoardSetupFinished = { board ->
                         myBoard = board
-                        innerNavController.navigate("gameplay/gameplay")
+                        gameplayNavController.navigate("gameplay/game")
                     }
                 )
             }
         }
-        composable("gameplay/gameplay") {
-            Gameplay(
-                innerNavController,
+        composable("gameplay/game") {
+            GameplayScreen(
+                gameplayNavController,
                 myBoard = myBoard,
                 opponentBoard = opponentBoard,
                 selectedCells = selectedCells,
