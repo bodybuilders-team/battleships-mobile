@@ -81,14 +81,12 @@ fun LoginScreen(navController: NavController) {
 
                 val hashedPassword = hashPassword(password.value)
 
-                // Send username and hashed password to the server api
+                // TODO Send username and hashed password to the server api
 
-                when (MockApi.login(username.value, hashedPassword)) {
-                    LoginStatus.USERNAME_NOT_FOUND ->
-                        loginMessage.value =
-                            loginMessageUsernameNotFound
-                    LoginStatus.WRONG_PASSWORD -> loginMessage.value = loginMessageWrongPassword
-                    LoginStatus.SUCCESSFUL -> loginMessage.value = loginMessageSuccessful
+                loginMessage.value = when (MockApi.login(username.value, hashedPassword)) {
+                    LoginStatus.USERNAME_NOT_FOUND -> loginMessageUsernameNotFound
+                    LoginStatus.WRONG_PASSWORD -> loginMessageWrongPassword
+                    LoginStatus.SUCCESSFUL -> loginMessageSuccessful
                 }
             },
             onRegisterClickCallback = {
@@ -104,9 +102,9 @@ fun LoginScreen(navController: NavController) {
 
                 val hashedPassword = hashPassword(password.value)
 
-                when (MockApi.register(username.value, hashedPassword)) {
-                    RegisterStatus.USERNAME_EXISTS -> loginMessage.value = registerMessageUserExists
-                    RegisterStatus.SUCCESSFUL -> loginMessage.value = registerMessageSuccessful
+                loginMessage.value = when (MockApi.register(username.value, hashedPassword)) {
+                    RegisterStatus.USERNAME_EXISTS -> registerMessageUserExists
+                    RegisterStatus.SUCCESSFUL -> registerMessageSuccessful
                 }
             }
         )

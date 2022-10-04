@@ -62,7 +62,7 @@ fun BoardSetup(
         Column(modifier = Modifier.width(FULL_BOARD_VIEW_BOX_SIZE.dp)) {
             IdentifiersWrapper(boardSize = board.size) {
                 Column {
-                    BoardView(board = board, selectedCells = emptyList(), onTileClicked = null)
+                    BoardView(board = board, selectedCells = emptyList(), onTileClicked = {})
 
                     ShipPlacingMenu(
                         tileSize = tileSize,

@@ -32,6 +32,8 @@ const val IMAGE_PADDING = 8
  * - Email contact
  *
  * Also shows the github link of the app's repository.
+ *
+ * @param navController The navigation controller used to navigate between screens.
  */
 @Composable
 fun AboutScreen(navController: NavController) {
@@ -45,34 +47,31 @@ fun AboutScreen(navController: NavController) {
             modifier = Modifier.padding(ABOUT_DEVS_TITLE_PADDING.dp)
         )
 
-        DeveloperInfo(
+        DeveloperInfoView(
             "48089",
             "André Páscoa",
             "https://github.com/devandrepascoa"
         )
 
-        DeveloperInfo(
+        DeveloperInfoView(
             "48280",
             "André Jesus",
             "https://github.com/andre-j3sus"
         )
 
-        DeveloperInfo(
+        DeveloperInfoView(
             "48287",
             "Nyckollas Brandão",
             "https://github.com/Nyckoka"
         )
 
         val uriHandler = LocalUriHandler.current
-        val githubIcon = if (isSystemInDarkTheme()) {
-            painterResource(id = R.drawable.github_mark_light_120px_plus)
-        } else {
-            painterResource(id = R.drawable.github_mark_120px_plus)
-        }
 
         Text(text = stringResource(id = R.string.about_repo_github_text))
         Image(
-            painter = githubIcon,
+            painter = painterResource(
+                id = if (isSystemInDarkTheme()) R.drawable.ic_github_light else R.drawable.ic_github_dark
+            ),
             contentDescription = stringResource(id = R.string.github_logo_content_description),
             modifier = Modifier
                 .clickable { uriHandler.openUri("https://github.com/bodybuilders-team/battleships") }

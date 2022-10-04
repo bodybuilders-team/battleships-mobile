@@ -19,7 +19,10 @@ import pt.isel.pdm.battleships.R
  * @param onRegisterClickCallback callback to be invoked when the register button is clicked
  */
 @Composable
-fun LoginButtons(onLoginClickCallback: () -> Unit, onRegisterClickCallback: () -> Unit) {
+fun LoginButtons(
+    onLoginClickCallback: () -> Unit,
+    onRegisterClickCallback: () -> Unit
+) {
     Row {
         Button(
             onClick = onLoginClickCallback,

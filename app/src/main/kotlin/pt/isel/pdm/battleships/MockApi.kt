@@ -16,7 +16,7 @@ enum class LoginStatus {
 }
 
 object MockApi {
-    private val users = mutableListOf<User>(
+    private val users = mutableListOf(
         User("joe", "mama", 69),
         User("mike", "ock", 420),
         User("yuri", "tarded", 42)

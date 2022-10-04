@@ -9,6 +9,7 @@ android {
     defaultConfig {
         applicationId "pt.isel.pdm.battleships"
         minSdk 30
+        //noinspection OldTargetApi
         targetSdk 32
         versionCode 1
         versionName "1.0"

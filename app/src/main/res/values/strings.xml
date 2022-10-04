@@ -42,4 +42,6 @@
     <string name="game_config_time_for_board_config_text">Board Configuration Time</string>
     <string name="ship_image_content_description">Ship</string>
     <string name="logo_content_description" translatable="false">Battleships Logo</string>
+    <string name="opponent_board_description">Opponent Board</string>
+    <string name="my_board_description">My Board</string>
 </resources>

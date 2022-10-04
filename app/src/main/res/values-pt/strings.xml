@@ -41,4 +41,6 @@
     <string name="game_config_time_for_board_config_text">Tempo para configuração do tabuleiro</string>
     <string name="game_config_confirm_board_button_text">Confirmar Grelha</string>
     <string name="ship_image_content_description">Navio</string>
+    <string name="opponent_board_description">Grelha do Oponente</string>
+    <string name="my_board_description">Minha Grelha</string>
 </resources>

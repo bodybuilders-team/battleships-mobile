@@ -166,6 +166,7 @@ data class Board(
          * Returns a random board of [size].
          *
          * @param size size of the board
+         * @return random board of [size]
          */
         fun random(size: Int) = Board(size, generateRandomMatrix(size))
 

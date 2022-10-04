@@ -9,13 +9,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.utils.BackButton
+
+/* TODO: check the composables names, maybe use ...Screen when the composable is the whole screen and ...View when it's just a part of the screen */
 
 /**
  * The gameplay screen.
@@ -43,7 +47,7 @@ fun Gameplay(
         modifier = Modifier.width(FULL_BOARD_VIEW_BOX_SIZE.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Opponent Board")
+        Text(text = stringResource(id = R.string.opponent_board_description))
         BoardViewWithIdentifiers(
             board = opponentBoard,
             selectedCells = selectedCells,
@@ -52,12 +56,12 @@ fun Gameplay(
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("My Board")
+                Text(text = stringResource(id = R.string.my_board_description))
                 BoardViewWithIdentifiers(
                     board = myBoard,
                     selectedCells = emptyList(),
-                    onTileClicked = null,
-                    tileSizeFactor = 0.5f
+                    onTileClicked = {},
+                    tileSizeFactor = TILE_SIZE_FACTOR
                 )
             }
 
@@ -77,3 +81,5 @@ fun Gameplay(
         BackButton(navController)
     }
 }
+
+private const val TILE_SIZE_FACTOR = 0.5f

@@ -35,7 +35,7 @@ fun GameplayMenuScreen(navController: NavController) {
     var selectedCells by remember { mutableStateOf(emptyList<Coordinate>()) }
     var gameConfig by remember { mutableStateOf<GameConfig?>(null) }
 
-    val innerNavController = rememberNavController()
+    val innerNavController = rememberNavController() // TODO: Maybe change to use the navController
     NavHost(
         navController = innerNavController,
         startDestination = "gameplay/menu"
@@ -66,8 +66,8 @@ fun GameplayMenuScreen(navController: NavController) {
                 onGameConfigured = {
                     gameConfig = it
 
-                    // api call to add game to lobby
-                    opponentBoard = Board.random(it.boardSize)
+                    // Api call to add game to lobby
+                    opponentBoard = Board.random(it.gridSize)
 
                     innerNavController.navigate("gameplay/setup-board")
                 }
@@ -80,7 +80,7 @@ fun GameplayMenuScreen(navController: NavController) {
             gameConfig?.let {
                 BoardSetup(
                     innerNavController,
-                    boardSize = it.boardSize,
+                    boardSize = it.gridSize,
                     onBoardSetupFinished = { board ->
                         myBoard = board
                         innerNavController.navigate("gameplay/gameplay")
@@ -104,9 +104,9 @@ fun GameplayMenuScreen(navController: NavController) {
                     }
                 },
                 onShootButtonPressed = {
-                    // api call shoot on coordinates
+                    // Api call shoot on coordinates
 
-                    // when response is received
+                    // When response is received
                     selectedCells = emptyList()
                 },
                 onResetShotsButtonPressed = {

@@ -20,10 +20,12 @@ import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.PlacedShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.toPoint
 
-const val BOARD_VIEW_BOX_SIZE = 320.0f
+private const val BOARD_VIEW_BOX_SIZE = 320.0f
 const val FULL_BOARD_VIEW_BOX_SIZE = BOARD_VIEW_BOX_SIZE + DEFAULT_TILE_SIZE
+private const val COL_IDENTIFIER_FONT_SIZE_FACTOR = 0.4f
+private const val DEFAULT_TILE_SIZE_FACTOR = 1.0f
 
-const val COL_IDENTIFIER_FONT_SIZE_FACTOR = 0.4f
+// TODO: Maybe separate the views into different files?
 
 /**
  * The view that shows the board of the game with column and row identifiers.
@@ -37,8 +39,8 @@ const val COL_IDENTIFIER_FONT_SIZE_FACTOR = 0.4f
 fun BoardViewWithIdentifiers(
     board: Board,
     selectedCells: List<Coordinate>,
-    onTileClicked: ((Coordinate) -> Unit)?,
-    tileSizeFactor: Float = 1.0f
+    onTileClicked: ((Coordinate) -> Unit),
+    tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR
 ) {
     IdentifiersWrapper(boardSize = board.size, tileSizeFactor = tileSizeFactor) {
         BoardView(
@@ -62,8 +64,8 @@ fun BoardViewWithIdentifiers(
 fun BoardView(
     board: Board,
     selectedCells: List<Coordinate>,
-    onTileClicked: ((Coordinate) -> Unit)?,
-    tileSizeFactor: Float = 1.0f
+    onTileClicked: ((Coordinate) -> Unit),
+    tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR
 ) {
     val tileSize = getTileSize(board.size) * tileSizeFactor
 
@@ -72,13 +74,12 @@ fun BoardView(
             repeat(board.size) { rowIdx ->
                 Row {
                     repeat(board.size) { colIdx ->
-                        val coordinate = Coordinate(
-                            col = FIRST_COL + colIdx,
-                            row = FIRST_ROW + rowIdx
-                        )
                         TileView(
                             size = tileSize,
-                            coordinate = coordinate,
+                            coordinate = Coordinate(
+                                col = FIRST_COL + colIdx,
+                                row = FIRST_ROW + rowIdx
+                            ),
                             onTileClicked = onTileClicked
                         )
                     }
@@ -111,9 +112,11 @@ fun TileSelectionView(coordinate: Coordinate, tileSize: Float) {
                 y = (yPoint * tileSize).dp
             )
             .size(tileSize.dp)
-            .border(2.dp, color = Color.Green)
+            .border(SELECTED_TILE_BORDER_SIZE.dp, color = Color.Green)
     )
 }
+
+private const val SELECTED_TILE_BORDER_SIZE = 2
 
 /**
  * The view that shows the column and row identifiers.
@@ -125,7 +128,7 @@ fun TileSelectionView(coordinate: Coordinate, tileSize: Float) {
 @Composable
 fun IdentifiersWrapper(
     boardSize: Int,
-    tileSizeFactor: Float = 1.0f,
+    tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR,
     content: @Composable () -> Unit
 ) {
     Box {
@@ -148,15 +151,17 @@ fun IdentifiersWrapper(
  * @param tileSizeFactor the factor by which the tile size is multiplied
  */
 @Composable
-private fun ColumnsIdentifierView(boardSize: Int, tileSizeFactor: Float = 1.0f) {
+private fun ColumnsIdentifierView(
+    boardSize: Int,
+    tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR
+) {
     val tileSize = getTileSize(boardSize) * tileSizeFactor
 
     Row(modifier = Modifier.offset(x = tileSize.dp)) {
         repeat(boardSize) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(tileSize.dp)
+                modifier = Modifier.size(tileSize.dp)
             ) {
                 Text(
                     text = "${FIRST_COL + it}",
@@ -174,7 +179,10 @@ private fun ColumnsIdentifierView(boardSize: Int, tileSizeFactor: Float = 1.0f) 
  * @param tileSizeFactor the factor by which the tile size is multiplied
  */
 @Composable
-private fun RowsIdentifierView(boardSize: Int, tileSizeFactor: Float = 1.0f) {
+private fun RowsIdentifierView(
+    boardSize: Int,
+    tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR
+) {
     val tileSize = getTileSize(boardSize) * tileSizeFactor
 
     Column {
@@ -197,5 +205,6 @@ private fun RowsIdentifierView(boardSize: Int, tileSizeFactor: Float = 1.0f) {
  * Gets the tile size based on the board size.
  *
  * @param boardSize the size of the board
+ * @return the tile size
  */
 fun getTileSize(boardSize: Int) = FULL_BOARD_VIEW_BOX_SIZE / (boardSize + 1)

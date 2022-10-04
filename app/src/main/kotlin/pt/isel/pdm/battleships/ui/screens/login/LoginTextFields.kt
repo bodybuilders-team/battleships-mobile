@@ -31,7 +31,7 @@ fun LoginTextFields(
         value = username,
         onValueChange = onUsernameChangeCallback,
         placeholder = { Text(text = stringResource(id = R.string.login_username_placeholder_text)) },
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = USERNAME_PADDING.dp)
     )
 
     TextField(
@@ -41,3 +41,5 @@ fun LoginTextFields(
         visualTransformation = PasswordVisualTransformation()
     )
 }
+
+private const val USERNAME_PADDING = 8

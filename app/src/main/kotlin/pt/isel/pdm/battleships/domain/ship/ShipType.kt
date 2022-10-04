@@ -7,7 +7,11 @@ package pt.isel.pdm.battleships.domain.ship
  * @property shipName the name of the ship
  * @property points the points that the ship is worth
  */
-enum class ShipType(val size: Int, val shipName: String, val points: Int) {
+enum class ShipType(
+    val size: Int,
+    val shipName: String,
+    val points: Int
+) {
     CARRIER(5, "Carrier", 50),
     BATTLESHIP(4, "Battleship", 40),
     CRUISER(3, "Cruiser", 30),

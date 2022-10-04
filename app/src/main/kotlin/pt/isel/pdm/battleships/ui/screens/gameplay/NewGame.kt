@@ -102,7 +102,8 @@ fun NewGame(
                             boardSize,
                             shotsPerTurn,
                             timePerTurn,
-                            timeForBoardConfig
+                            timeForBoardConfig,
+                            emptyList()
                         )
                     )
                 }

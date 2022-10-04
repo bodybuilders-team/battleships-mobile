@@ -41,4 +41,6 @@
     <string name="game_config_time_per_turn_text">Tiempo por Turno</string>
     <string name="game_config_time_for_board_config_text">Tiempo de configuración de la  cuadrícula</string>
     <string name="ship_image_content_description">Barco</string>
+    <string name="opponent_board_description">Cuadrícula Oponente</string>
+    <string name="my_board_description">Mi Cyadrícula</string>
 </resources>
