@@ -3,6 +3,7 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.newGame
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
@@ -14,8 +15,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 
 private const val INT_SELECTOR_WIDTH_FACTOR = 0.5f
+private const val SLIDER_RIGHT_PADDING = 32
 
 /**
  * A slider that allows the user to select an integer value.
@@ -56,9 +60,10 @@ fun IntSelector(
         }
 
         Slider(
+            modifier = Modifier.fillMaxWidth().padding(end = SLIDER_RIGHT_PADDING.dp),
             value = currentValue.toFloat(),
             onValueChange = {
-                currentValue = it.toInt()
+                currentValue = it.roundToInt()
                 onValueChange(currentValue)
             },
             valueRange = valueRange.first.toFloat()..valueRange.last.toFloat()

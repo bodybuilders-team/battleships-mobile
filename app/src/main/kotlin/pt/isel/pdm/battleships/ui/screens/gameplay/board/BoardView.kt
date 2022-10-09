@@ -37,7 +37,7 @@ fun BoardViewWithIdentifiers(
     onTileClicked: ((Coordinate) -> Unit),
     tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR
 ) {
-    IdentifiersWrapper(boardSize = board.size, tileSizeFactor = tileSizeFactor) {
+    BoardIdentifiersWrapperView(boardSize = board.size, tileSizeFactor = tileSizeFactor) {
         BoardView(
             board = board,
             selectedCells = selectedCells,

@@ -23,7 +23,7 @@ private const val COL_IDENTIFIER_FONT_SIZE_FACTOR = 0.4f
  * @param content the content to be shown
  */
 @Composable
-fun IdentifiersWrapper(
+fun BoardIdentifiersWrapperView(
     boardSize: Int,
     tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR,
     content: @Composable () -> Unit

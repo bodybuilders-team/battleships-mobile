@@ -1,7 +1,9 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.newGame
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +19,7 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Board.Companion.DEFAULT_BOARD_SIZE
 import pt.isel.pdm.battleships.domain.game.GameConfig
+import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.MenuButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
@@ -49,6 +52,7 @@ fun NewGameScreen(
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
     var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }
     var timeForBoardConfig by remember { mutableStateOf(DEFAULT_TIME_FOR_BOARD_CONFIG) }
+    var ships by remember { mutableStateOf(ShipType.values().toList()) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -91,6 +95,12 @@ fun NewGameScreen(
             onValueChange = { timePerTurn = it }
         )
 
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+        }
+
         MenuButton(
             onClick = {
                 onGameConfigured(
@@ -99,7 +109,7 @@ fun NewGameScreen(
                         shotsPerTurn,
                         timePerTurn,
                         timeForBoardConfig,
-                        emptyList()
+                        ships
                     )
                 )
             },
