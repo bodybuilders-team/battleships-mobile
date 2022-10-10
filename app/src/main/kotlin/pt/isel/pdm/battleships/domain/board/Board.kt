@@ -82,6 +82,21 @@ data class Board(
     }
 
     /**
+     * Removes a ship from the board.
+     *
+     * @param ship the ship to place
+     * @return the new board with the ship placed
+     */
+    fun removeShip(ship: Ship): Board {
+        return copy(
+            grid = grid.replaceIf(
+                predicate = { ship.coordinates.contains(it.coordinate) },
+                new = { WaterCell(it.coordinate, it.wasHit) }
+            )
+        )
+    }
+
+    /**
      * Shoots the cell in [coordinate].
      * If the cell is already hit, the attack is invalid.
      * Otherwise, the cell becomes hit.

@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
@@ -21,7 +20,6 @@ import pt.isel.pdm.battleships.ui.theme.Bronze
 import pt.isel.pdm.battleships.ui.theme.Gold
 import pt.isel.pdm.battleships.ui.theme.Silver
 
-private const val RANKING_CELL_OFFSET = 5
 private const val RANKING_TABLE_BORDER_WIDTH = 1
 private const val RANKING_TABLE_CELL_WIDTH = 100
 private const val RANKING_TABLE_CELL_HEIGHT = 30
@@ -58,16 +56,13 @@ fun RankingTableView(players: List<Player>) {
                                 2 -> Bronze
                                 else -> Color.Unspecified
                             }
-                        ),
-                    textModifier = Modifier.offset(RANKING_CELL_OFFSET.dp)
+                        )
                 )
                 TableCell(
-                    text = player.username,
-                    textModifier = Modifier.offset(RANKING_CELL_OFFSET.dp)
+                    text = player.username
                 )
                 TableCell(
-                    text = player.points.toString(),
-                    textModifier = Modifier.offset(RANKING_CELL_OFFSET.dp)
+                    text = player.points.toString()
                 )
             }
         }

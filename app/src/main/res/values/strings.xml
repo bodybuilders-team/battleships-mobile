@@ -51,4 +51,6 @@
     <string name="game_config_ships_text">Ships</string>
     <string name="remove_ship_button_icon_content_description">Button to remove a ship quantity</string>
     <string name="add_ship_button_icon_content_description">Button to add a ship quantity</string>
+    <string name="gameplay_shoot_button_text">Shoot!</string>
+    <string name="gameplay_reset_shots_button_text">Reset shots</string>
 </resources>

@@ -14,7 +14,6 @@ import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_ROW
 import pt.isel.pdm.battleships.domain.board.Coordinate
-import pt.isel.pdm.battleships.ui.screens.gameplay.ship.PlacedShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.toPoint
 
 private const val BOARD_VIEW_BOX_SIZE = 320.0f
@@ -23,43 +22,16 @@ const val FULL_BOARD_VIEW_BOX_SIZE = BOARD_VIEW_BOX_SIZE + DEFAULT_TILE_SIZE
 const val DEFAULT_TILE_SIZE_FACTOR = 1.0f
 
 /**
- * The view that shows the board of the game with column and row identifiers.
- *
- * @param board the board to be shown
- * @param selectedCells the cells that are currently selected
- * @param tileSizeFactor the factor by which the tile size is multiplied
- * @param onTileClicked callback to be invoked when a tile is clicked
- */
-@Composable
-fun BoardViewWithIdentifiers(
-    board: Board,
-    selectedCells: List<Coordinate>,
-    onTileClicked: ((Coordinate) -> Unit),
-    tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR
-) {
-    BoardIdentifiersWrapperView(boardSize = board.size, tileSizeFactor = tileSizeFactor) {
-        BoardView(
-            board = board,
-            selectedCells = selectedCells,
-            tileSizeFactor = tileSizeFactor,
-            onTileClicked = onTileClicked
-        )
-    }
-}
-
-/**
  * The view that shows the board of the game.
  *
  * @param board the board to be shown
- * @param selectedCells the cells that are currently selected
  * @param onTileClicked callback to be invoked when a tile is clicked
  * @param tileSizeFactor the factor by which the tile size is multiplied
  */
 @Composable
 fun BoardView(
     board: Board,
-    selectedCells: List<Coordinate>,
-    onTileClicked: ((Coordinate) -> Unit),
+    onTileClicked: ((Coordinate) -> Unit)?,
     tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR
 ) {
     val tileSize = getTileSize(board.size) * tileSizeFactor
@@ -81,12 +53,6 @@ fun BoardView(
                 }
             }
         }
-        board.fleet.forEach { ship ->
-            PlacedShipView(ship, tileSize)
-        }
-        selectedCells.forEach {
-            TileSelectionView(it, tileSize)
-        }
     }
 }
 
@@ -97,7 +63,7 @@ fun BoardView(
  * @param tileSize the size of the tile
  */
 @Composable
-private fun TileSelectionView(coordinate: Coordinate, tileSize: Float) {
+fun TileSelectionView(coordinate: Coordinate, tileSize: Float) {
     val (xPoint, yPoint) = coordinate.toPoint()
 
     Box(

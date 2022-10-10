@@ -35,7 +35,7 @@ import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 fun GameplayMenuScreen(navController: NavController) {
     var myBoard by remember { mutableStateOf(Board.random()) }
     var opponentBoard by remember { mutableStateOf(Board.random()) }
-    var selectedCells by remember { mutableStateOf(emptyList<Coordinate>()) }
+    val selectedCells by remember { mutableStateOf(mutableListOf<Coordinate>()) }
     var gameConfig by remember { mutableStateOf<GameConfig?>(null) }
 
     val gameplayNavController = rememberNavController()
@@ -101,10 +101,10 @@ fun GameplayMenuScreen(navController: NavController) {
                 selectedCells = selectedCells,
                 onCellSelected = { coordinate ->
                     if (!opponentBoard.getCell(coordinate).wasHit) {
-                        selectedCells = if (coordinate in selectedCells) {
-                            selectedCells - coordinate
-                        } else {
-                            selectedCells + coordinate
+                        if (coordinate in selectedCells) {
+                            selectedCells -= coordinate
+                        } else if (gameConfig?.let { selectedCells.size < it.shotsPerTurn } == true) {
+                            selectedCells += coordinate
                         }
                     }
                 },
@@ -112,10 +112,10 @@ fun GameplayMenuScreen(navController: NavController) {
                     // Api call shoot on coordinates
 
                     // When response is received
-                    selectedCells = emptyList()
+                    selectedCells.clear()
                 },
                 onResetShotsButtonPressed = {
-                    selectedCells = emptyList()
+                    selectedCells.clear()
                 }
             )
         }

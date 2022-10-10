@@ -47,4 +47,9 @@
     <string name="gameplay_search_game_button_description">Botão para pesquisar jogos</string>
     <string name="gameplay_new_game_button_description">Botão para criar um novo jogo</string>
     <string name="main_menu_about_button_content_description">Botão para cerca de tela</string>
+    <string name="remove_ship_button_icon_content_description">Botão para remove uma quantidade de um navio</string>
+    <string name="add_ship_button_icon_content_description">Botão para adicionar uma quantidade de um navio</string>
+    <string name="game_config_ships_text">Navios</string>
+    <string name="gameplay_shoot_button_text">Atirar!</string>
+    <string name="gameplay_reset_shots_button_text">Resetar tiros</string>
 </resources>

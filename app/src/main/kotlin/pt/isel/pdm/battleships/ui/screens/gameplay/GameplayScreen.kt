@@ -15,6 +15,9 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardViewWithIdentifiers
+import pt.isel.pdm.battleships.ui.screens.gameplay.board.TileSelectionView
+import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
+import pt.isel.pdm.battleships.ui.screens.gameplay.ship.PlacedShipView
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 
 /**
@@ -44,21 +47,36 @@ fun GameplayScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = stringResource(id = R.string.opponent_board_description))
+
+        val opponentBoardTileSize = getTileSize(opponentBoard.size)
+
         BoardViewWithIdentifiers(
             board = opponentBoard,
-            selectedCells = selectedCells,
             onTileClicked = onCellSelected
-        )
+        ) {
+            opponentBoard.fleet.forEach { ship ->
+                PlacedShipView(ship, opponentBoardTileSize)
+            }
+            selectedCells.forEach {
+                TileSelectionView(it, opponentBoardTileSize)
+            }
+        }
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = stringResource(id = R.string.my_board_description))
+
+                val myBoardTileSize = getTileSize(myBoard.size) * SMALLER_BOARD_TILE_SIZE_FACTOR
+
                 BoardViewWithIdentifiers(
                     board = myBoard,
-                    selectedCells = emptyList(),
-                    onTileClicked = {},
-                    tileSizeFactor = TILE_SIZE_FACTOR
-                )
+                    onTileClicked = null,
+                    tileSizeFactor = SMALLER_BOARD_TILE_SIZE_FACTOR
+                ) {
+                    myBoard.fleet.forEach { ship ->
+                        PlacedShipView(ship, myBoardTileSize)
+                    }
+                }
             }
 
             Column(
@@ -66,10 +84,10 @@ fun GameplayScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(onClick = onShootButtonPressed) {
-                    Text("Shoot!")
+                    Text(stringResource(id = R.string.gameplay_shoot_button_text))
                 }
                 Button(onClick = onResetShotsButtonPressed) {
-                    Text("Reset shots")
+                    Text(stringResource(id = R.string.gameplay_reset_shots_button_text))
                 }
             }
         }
@@ -78,4 +96,4 @@ fun GameplayScreen(
     }
 }
 
-private const val TILE_SIZE_FACTOR = 0.5f
+private const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f

@@ -39,18 +39,13 @@ data class Ship(
             shipType: ShipType,
             coordinate: Coordinate,
             orientation: Orientation
-        ): List<Coordinate> {
-            val coordinates = mutableListOf<Coordinate>()
-
-            repeat(shipType.size) { i ->
-                val col = coordinate.col + if (orientation.isHorizontal()) i else 0
-                val row = coordinate.row + if (orientation.isVertical()) i else 0
-
-                coordinates.add(Coordinate(col, row))
+        ): List<Coordinate> =
+            (0 until shipType.size).map {
+                when (orientation) {
+                    Orientation.HORIZONTAL -> Coordinate(coordinate.col + it, coordinate.row)
+                    Orientation.VERTICAL -> Coordinate(coordinate.col, coordinate.row + it)
+                }
             }
-
-            return coordinates
-        }
 
         /**
          * Checks if the given coordinate is valid for the given ship information.

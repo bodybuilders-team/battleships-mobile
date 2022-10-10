@@ -17,8 +17,7 @@ import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
-import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardIdentifiersWrapperView
-import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardView
+import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.PLACING_MENU_PADDING
@@ -61,26 +60,7 @@ fun BoardSetupScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         Column(modifier = Modifier.width(FULL_BOARD_VIEW_BOX_SIZE.dp)) {
-            BoardIdentifiersWrapperView(boardSize = board.size) {
-                Column {
-                    BoardView(board = board, selectedCells = emptyList(), onTileClicked = {})
-
-                    ShipPlacingMenuView(
-                        tileSize = tileSize,
-                        onChangeOrientationButtonPressed = {
-                            selectedOrientation = selectedOrientation.opposite()
-                        },
-                        onRandomBoardButtonPressed = {
-                            board = Board.random(size = board.size, ships = ships)
-                        },
-                        onConfirmBoardButtonPressed = {
-                            if (board.fleet.size == ships.size) {
-                                onBoardSetupFinished(board)
-                            }
-                        }
-                    )
-                }
-
+            BoardViewWithIdentifiers(board = board, onTileClicked = null) {
                 if (board.fleet.size < ships.size) {
                     UnplacedShipView(
                         type = ships[currentShipIndex],
@@ -106,6 +86,22 @@ fun BoardSetupScreen(
                     )
                 }
             }
+
+            ShipPlacingMenuView(
+                shipTypes = ships,
+                tileSize = tileSize,
+                onChangeOrientationButtonPressed = {
+                    selectedOrientation = selectedOrientation.opposite()
+                },
+                onRandomBoardButtonPressed = {
+                    board = Board.random(size = board.size, ships = ships)
+                },
+                onConfirmBoardButtonPressed = {
+                    if (board.fleet.size == ships.size) {
+                        onBoardSetupFinished(board)
+                    }
+                }
+            )
         }
 
         GoBackButton(navController)

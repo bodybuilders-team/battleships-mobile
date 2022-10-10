@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.domain.ship.ShipType
 
 const val PLACING_MENU_PADDING = 6
 
@@ -21,12 +22,15 @@ const val PLACING_MENU_PADDING = 6
  * A composable that represents the ship placing menu.
  * It contains the ship slots and some buttons.
  *
+ * @param shipTypes the list of ship types to be presented
+ * @param tileSize the size of the tiles in the board
  * @param onChangeOrientationButtonPressed the callback to be invoked when the user presses the change orientation button
  * @param onRandomBoardButtonPressed the callback to be invoked when the user presses the random board button
  * @param onConfirmBoardButtonPressed the callback to be invoked when the user presses the confirm board button
  */
 @Composable
 fun ShipPlacingMenuView(
+    shipTypes: List<ShipType>,
     tileSize: Float,
     onChangeOrientationButtonPressed: () -> Unit,
     onRandomBoardButtonPressed: () -> Unit,
@@ -38,7 +42,7 @@ fun ShipPlacingMenuView(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        ShipSlotsView(tileSize)
+        ShipSlotsView(shipTypes, tileSize)
 
         // Buttons
         Column(

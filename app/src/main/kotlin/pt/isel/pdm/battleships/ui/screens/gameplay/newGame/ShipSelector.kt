@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,10 +26,10 @@ import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.DEFAULT_TILE_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 
-private const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
-private const val BUTTON_CORNER_RADIUS = 2
-private const val BUTTON_PADDING = 2
-private const val BUTTON_SIZE_PADDING = 2
+const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
+const val SHIP_SELECTOR_BUTTON_CORNER_RADIUS = 2
+const val SHIP_SELECTOR_BUTTON_PADDING = 2
+const val SHIP_SELECTOR_BUTTON_SIZE_PADDING = 2
 
 // TODO: Make ship slots (containing the draggable ships on board setup) similar to this,
 //  having one slot for each ship type, and only showing the empty slot when all the ships of the
@@ -53,7 +54,9 @@ fun ShipSelector(
             items(ShipType.values()) { ship ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
-                        modifier = Modifier.height((tileSize * SHIP_VIEW_BOX_HEIGHT_FACTOR).dp),
+                        modifier = Modifier
+                            .height((tileSize * SHIP_VIEW_BOX_HEIGHT_FACTOR).dp)
+                            .width(tileSize.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         ShipView(
@@ -65,10 +68,10 @@ fun ShipSelector(
 
                     Button(
                         onClick = { onShipAdded(ship) },
-                        shape = RoundedCornerShape(BUTTON_CORNER_RADIUS.dp),
+                        shape = RoundedCornerShape(SHIP_SELECTOR_BUTTON_CORNER_RADIUS.dp),
                         modifier = Modifier
-                            .padding(bottom = BUTTON_PADDING.dp)
-                            .size((DEFAULT_TILE_SIZE / BUTTON_SIZE_PADDING).dp),
+                            .padding(bottom = SHIP_SELECTOR_BUTTON_PADDING.dp)
+                            .size((DEFAULT_TILE_SIZE / SHIP_SELECTOR_BUTTON_SIZE_PADDING).dp),
                         contentPadding = PaddingValues(0.dp) // TODO: What is this?
                     ) {
                         Icon(
@@ -82,8 +85,8 @@ fun ShipSelector(
 
                     Button(
                         onClick = { onShipRemoved(ship) },
-                        shape = RoundedCornerShape(BUTTON_CORNER_RADIUS.dp),
-                        modifier = Modifier.size((DEFAULT_TILE_SIZE / BUTTON_SIZE_PADDING).dp),
+                        shape = RoundedCornerShape(SHIP_SELECTOR_BUTTON_CORNER_RADIUS.dp),
+                        modifier = Modifier.size((DEFAULT_TILE_SIZE / SHIP_SELECTOR_BUTTON_SIZE_PADDING).dp),
                         contentPadding = PaddingValues(0.dp) // TODO: What is this?
                     ) {
                         Icon(

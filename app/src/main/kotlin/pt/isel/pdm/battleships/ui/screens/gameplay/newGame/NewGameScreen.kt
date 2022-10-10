@@ -25,6 +25,8 @@ import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.MenuButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
+private const val MIN_SHOTS_PER_TURN = 1
+private const val MAX_SHOTS_PER_TURN = 5
 private const val DEFAULT_SHOTS_PER_TURN = 1
 
 private const val MIN_TIME_PER_TURN = 10 // Seconds
@@ -35,8 +37,7 @@ private const val MIN_TIME_FOR_BOARD_CONFIG = 10 // Seconds
 private const val MAX_TIME_FOR_BOARD_CONFIG = 120 // Seconds
 private const val DEFAULT_TIME_FOR_BOARD_CONFIG = 60 // Seconds
 
-private const val MIN_SHOTS_PER_TURN = 1
-private const val MAX_SHOTS_PER_TURN = 5
+val DEFAULT_SHIP_TYPES = ShipType.values().toList()
 
 /**
  * Screen that allows the user to configure a new game before starting it.
@@ -53,7 +54,7 @@ fun NewGameScreen(
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
     var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }
     var timeForBoardConfig by remember { mutableStateOf(DEFAULT_TIME_FOR_BOARD_CONFIG) }
-    var ships by remember { mutableStateOf(ShipType.values().toList()) }
+    var ships by remember { mutableStateOf(DEFAULT_SHIP_TYPES) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,11 +121,11 @@ fun NewGameScreen(
             onClick = {
                 onGameConfigured(
                     GameConfig(
-                        boardSize,
-                        shotsPerTurn,
-                        timePerTurn,
-                        timeForBoardConfig,
-                        ships
+                        gridSize = boardSize,
+                        shotsPerTurn = shotsPerTurn,
+                        maxTimePerShot = timePerTurn,
+                        maxTimeForLayoutPhase = timeForBoardConfig,
+                        ships = ships
                     )
                 )
             },

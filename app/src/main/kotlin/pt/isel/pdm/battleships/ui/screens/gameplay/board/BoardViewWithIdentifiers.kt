@@ -12,28 +12,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.isel.pdm.battleships.domain.board.Board
+import pt.isel.pdm.battleships.domain.board.Coordinate
 
 private const val COL_IDENTIFIER_FONT_SIZE_FACTOR = 0.4f
 
 /**
- * The view that shows the column and row identifiers.
+ * The view that shows the column and row identifiers, wrapping the board and other content in a
+ * box, allowing for the board cells to be overridden.
  *
- * @param boardSize the size of the board
+ * @param board the board to be shown
+ * @param onTileClicked callback to be invoked when a tile is clicked
  * @param tileSizeFactor the factor by which the tile size is multiplied
- * @param content the content to be shown
+ * @param content the content to be shown in the box alongside the board
  */
 @Composable
-fun BoardIdentifiersWrapperView(
-    boardSize: Int,
+fun BoardViewWithIdentifiers(
+    board: Board,
+    onTileClicked: ((Coordinate) -> Unit)?,
     tileSizeFactor: Float = DEFAULT_TILE_SIZE_FACTOR,
     content: @Composable () -> Unit
 ) {
     Box {
         Column {
-            ColumnsIdentifierView(boardSize, tileSizeFactor)
+            ColumnsIdentifierView(board.size, tileSizeFactor)
             Row {
-                RowsIdentifierView(boardSize, tileSizeFactor)
+                RowsIdentifierView(board.size, tileSizeFactor)
                 Box {
+                    BoardView(
+                        board = board,
+                        onTileClicked = onTileClicked,
+                        tileSizeFactor = tileSizeFactor
+                    )
                     content()
                 }
             }
