@@ -166,9 +166,15 @@ data class Board(
          * Returns a random board of [size].
          *
          * @param size size of the board
-         * @return random board of [size]
+         * @param ships the ships to place in the board
+         *
+         * @return board of [size] with the [ships] placed randomly
          */
-        fun random(size: Int = DEFAULT_BOARD_SIZE) = Board(size, generateRandomMatrix(size))
+        fun random(
+            size: Int = DEFAULT_BOARD_SIZE,
+            ships: List<ShipType> = ShipType.values().toList()
+        ) =
+            Board(size, generateRandomMatrix(size, ships))
 
         /**
          * Generates a matrix only with water cells.
@@ -191,12 +197,14 @@ data class Board(
          * Generates a matrix of cells with the ships placed randomly.
          *
          * @param size the size of the matrix
-         * @return the matrix
+         * @param ships the ships to place in the matrix
+         *
+         * @return matrix of [size] with the [ships] placed randomly
          */
-        private fun generateRandomMatrix(size: Int): List<Cell> {
+        private fun generateRandomMatrix(size: Int, ships: List<ShipType>): List<Cell> {
             val grid = generateEmptyMatrix(size).toMutableList()
 
-            ShipType.values().forEach { shipType ->
+            ships.forEach { shipType ->
                 val ship = grid
                     .filterIsInstance<WaterCell>()
                     .flatMap<WaterCell, Ship> { cell ->

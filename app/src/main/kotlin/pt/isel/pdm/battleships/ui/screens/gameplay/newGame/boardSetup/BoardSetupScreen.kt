@@ -38,12 +38,12 @@ import pt.isel.pdm.battleships.ui.utils.GoBackButton
 fun BoardSetupScreen(
     navController: NavController,
     boardSize: Int,
-    shipTypes: List<ShipType>,
+    ships: List<ShipType>,
     onBoardSetupFinished: (Board) -> Unit
 ) {
     var board by remember { mutableStateOf(Board(boardSize)) }
 
-    var currentShipTypeIndex by remember { mutableStateOf(0) }
+    var currentShipIndex by remember { mutableStateOf(0) }
     var selectedOrientation by remember { mutableStateOf(Orientation.VERTICAL) }
 
     val tileSize = getTileSize(boardSize)
@@ -52,7 +52,7 @@ fun BoardSetupScreen(
         x = (board.size * tileSize * SHIP_SLOTS_FACTOR) / 2 - tileSize / 2,
         y = board.size * tileSize + PLACING_MENU_PADDING +
             (board.size * tileSize * SHIP_SLOTS_FACTOR) / 2 - tileSize / 2 *
-            shipTypes[currentShipTypeIndex].size
+            ships[currentShipIndex].size
     )
 
     Column(
@@ -70,24 +70,24 @@ fun BoardSetupScreen(
                             selectedOrientation = selectedOrientation.opposite()
                         },
                         onRandomBoardButtonPressed = {
-                            board = Board.random(board.size)
+                            board = Board.random(size = board.size, ships = ships)
                         },
                         onConfirmBoardButtonPressed = {
-                            if (board.fleet.size == shipTypes.size)
+                            if (board.fleet.size == ships.size)
                                 onBoardSetupFinished(board)
                         }
                     )
                 }
 
-                if (board.fleet.size < shipTypes.size) {
+                if (board.fleet.size < ships.size) {
                     UnplacedShipView(
-                        type = shipTypes[currentShipTypeIndex],
+                        type = ships[currentShipIndex],
                         orientation = selectedOrientation,
                         initialOffset = initialOffset,
                         boardSize = board.size,
                         onShipPlaced = { shipCoordinate ->
                             val newShip = Ship(
-                                shipTypes[currentShipTypeIndex],
+                                ships[currentShipIndex],
                                 shipCoordinate,
                                 selectedOrientation
                             )
@@ -96,8 +96,8 @@ fun BoardSetupScreen(
                             if (canPlace) {
                                 board = board.placeShip(newShip)
 
-                                if (board.fleet.size < shipTypes.size)
-                                    currentShipTypeIndex++
+                                if (board.fleet.size < ships.size)
+                                    currentShipIndex++
                             }
                         }
                     )

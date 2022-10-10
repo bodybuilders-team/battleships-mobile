@@ -85,7 +85,7 @@ fun GameplayMenuScreen(navController: NavController) {
                 BoardSetupScreen(
                     gameplayNavController,
                     boardSize = it.gridSize,
-                    shipTypes = it.ships,
+                    ships = it.ships,
                     onBoardSetupFinished = { board ->
                         myBoard = board
                         gameplayNavController.navigate("gameplay/game")

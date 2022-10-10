@@ -1,9 +1,6 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.newGame
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
@@ -13,16 +10,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
-private const val INT_SELECTOR_WIDTH_FACTOR = 0.5f
-private const val SLIDER_RIGHT_PADDING = 32
-
 /**
- * A slider that allows the user to select an integer value.
+ * A game config selector that uses a slider to allow the user to select an integer value.
  *
  * @param defaultValue the default value of the slider
  * @param valueRange the range of values that the slider can take
@@ -40,33 +32,29 @@ fun IntSelector(
 ) {
     var currentValue by remember { mutableStateOf(defaultValue) }
 
-    Row(
-        Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(INT_SELECTOR_WIDTH_FACTOR),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.h6,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = valueLabel(currentValue),
-                style = MaterialTheme.typography.h6
+    GameConfigSelector(
+        leftSideContent = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = valueLabel(currentValue),
+                    style = MaterialTheme.typography.h6
+                )
+            }
+        },
+        rightSideContent = {
+            Slider(
+                value = currentValue.toFloat(),
+                onValueChange = {
+                    currentValue = it.roundToInt()
+                    onValueChange(currentValue)
+                },
+                valueRange = valueRange.first.toFloat()..valueRange.last.toFloat()
             )
         }
-
-        Slider(
-            modifier = Modifier.fillMaxWidth().padding(end = SLIDER_RIGHT_PADDING.dp),
-            value = currentValue.toFloat(),
-            onValueChange = {
-                currentValue = it.roundToInt()
-                onValueChange(currentValue)
-            },
-            valueRange = valueRange.first.toFloat()..valueRange.last.toFloat()
-        )
-    }
+    )
 }

@@ -21,7 +21,7 @@ fun ShipView(
     type: ShipType,
     orientation: Orientation,
     tileSize: Float,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Box(
         Modifier

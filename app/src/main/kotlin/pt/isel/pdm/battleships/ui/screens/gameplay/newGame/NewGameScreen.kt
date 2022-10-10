@@ -1,9 +1,9 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.newGame
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
@@ -95,11 +96,25 @@ fun NewGameScreen(
             onValueChange = { timePerTurn = it }
         )
 
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-        }
+        // Ship Selector
+        // TODO limitation on number of ships based on board size (type of ship also matters)
+        //  50% of the board max?
+        GameConfigSelector(
+            leftSideContent = {
+                Text(
+                    text = "Ships",
+                    style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center
+                )
+            },
+            rightSideContent = {
+                ShipSelector(
+                    ships = ships,
+                    onShipAdded = { ships = ships + it },
+                    onShipRemoved = { ships = ships - it }
+                )
+            }
+        )
 
         MenuButton(
             onClick = {
