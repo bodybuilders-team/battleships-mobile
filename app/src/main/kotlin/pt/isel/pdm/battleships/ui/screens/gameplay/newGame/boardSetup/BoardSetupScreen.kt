@@ -32,6 +32,7 @@ import pt.isel.pdm.battleships.ui.utils.GoBackButton
  *
  * @param navController the navigation controller
  * @param boardSize the size of the board
+ * @param ships the list of ships to be placed
  * @param onBoardSetupFinished what to do when the board finished being setup
  */
 @Composable
@@ -73,8 +74,9 @@ fun BoardSetupScreen(
                             board = Board.random(size = board.size, ships = ships)
                         },
                         onConfirmBoardButtonPressed = {
-                            if (board.fleet.size == ships.size)
+                            if (board.fleet.size == ships.size) {
                                 onBoardSetupFinished(board)
+                            }
                         }
                     )
                 }
@@ -96,8 +98,9 @@ fun BoardSetupScreen(
                             if (canPlace) {
                                 board = board.placeShip(newShip)
 
-                                if (board.fleet.size < ships.size)
+                                if (board.fleet.size < ships.size) {
                                     currentShipIndex++
+                                }
                             }
                         }
                     )

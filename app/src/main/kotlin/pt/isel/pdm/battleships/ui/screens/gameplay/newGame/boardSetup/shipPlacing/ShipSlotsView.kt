@@ -20,6 +20,8 @@ const val SHIP_SLOTS_FACTOR = 0.6f
 /**
  * A composable that represents the ship slots.
  * Contains the slots for each ship type.
+ *
+ * @param tileSize the size of the tiles in the board
  */
 @Composable
 fun ShipSlotsView(tileSize: Float) {

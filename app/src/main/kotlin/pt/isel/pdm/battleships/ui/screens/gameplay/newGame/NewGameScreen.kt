@@ -102,14 +102,14 @@ fun NewGameScreen(
         GameConfigSelector(
             leftSideContent = {
                 Text(
-                    text = "Ships",
+                    text = stringResource(R.string.game_config_ships_text),
                     style = MaterialTheme.typography.h6,
                     textAlign = TextAlign.Center
                 )
             },
             rightSideContent = {
                 ShipSelector(
-                    ships = ships,
+                    shipTypes = ships,
                     onShipAdded = { ships = ships + it },
                     onShipRemoved = { ships = ships - it }
                 )

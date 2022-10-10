@@ -48,4 +48,7 @@
     <string name="gameplay_search_game_button_description">Button to search games</string>
     <string name="gameplay_menu_title">Gameplay Menu</string>
     <string name="search_game_title">Search Games</string>
+    <string name="game_config_ships_text">Ships</string>
+    <string name="remove_ship_button_icon_content_description">Button to remove a ship quantity</string>
+    <string name="add_ship_button_icon_content_description">Button to add a ship quantity</string>
 </resources>
