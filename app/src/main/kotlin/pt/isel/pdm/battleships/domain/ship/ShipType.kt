@@ -1,5 +1,7 @@
 package pt.isel.pdm.battleships.domain.ship
 
+import java.io.Serializable
+
 /**
  * Represents the ship class in the game.
  *
@@ -11,7 +13,7 @@ enum class ShipType(
     val size: Int,
     val shipName: String,
     val points: Int
-) {
+) : Serializable {
     CARRIER(5, "Carrier", 50),
     BATTLESHIP(4, "Battleship", 40),
     CRUISER(3, "Cruiser", 30),

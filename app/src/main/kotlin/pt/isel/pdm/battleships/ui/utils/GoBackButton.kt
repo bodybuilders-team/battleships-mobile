@@ -11,22 +11,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import pt.isel.pdm.battleships.R
 
 /**
  * A back button that navigates to the previous screen.
  * The button is displayed at the bottom of the screen.
  *
- * @param navController the navigation controller
  */
 @Composable
-fun GoBackButton(navController: NavController) {
+fun GoBackButton(onClick: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        Button(onClick = { navController.popBackStack() }) {
+        Button(onClick = onClick) {
             Icon(
                 imageVector = Icons.Rounded.ArrowBack,
                 contentDescription = stringResource(id = R.string.back_button_text)

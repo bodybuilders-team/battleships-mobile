@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.domain.board
 
+import java.io.Serializable
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_ROW
 import pt.isel.pdm.battleships.domain.board.Board.Companion.MAX_BOARD_SIZE
@@ -12,7 +13,7 @@ import pt.isel.pdm.battleships.domain.board.Coordinate.Companion.maxRowsRange
  * @property col char in range [maxColsRange]
  * @property row int in range [maxRowsRange]
  */
-data class Coordinate(val col: Char, val row: Int) {
+data class Coordinate(val col: Char, val row: Int) : Serializable {
 
     init {
         require(col in maxColsRange) {

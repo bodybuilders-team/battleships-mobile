@@ -7,13 +7,13 @@ package pt.isel.pdm.battleships.service
  * @property gamesService The service used to handle the games.
  * @property playersService The service used to handle the players.
  */
-class BattleshipsService {
+class BattleshipsService(apiEndpoint: String) {
 
-    val usersService: UserService = UserService()
+    val usersService: UserService = UserService(apiEndpoint)
 
-    val gamesService: GameService = GameService()
+    val gamesService: GameService = GameService(apiEndpoint)
 
-    val playersService: PlayersService = PlayersService()
+    val playersService: PlayersService = PlayersService(apiEndpoint)
 
     companion object {
         const val API_URI = "http://localhost:8888"

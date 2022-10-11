@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".BattleshipsApplication"
         android:allowBackup="true"
@@ -14,7 +16,7 @@
         android:theme="@style/Theme.Battleships"
         tools:targetApi="31">
         <activity
-            android:name=".BattleshipsActivity"
+            android:name=".activities.BattleshipsActivity"
             android:exported="true"
             android:theme="@style/Theme.Battleships">
 
@@ -23,6 +25,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.gameplay.BoardSetupActivity" />
+        <activity android:name=".activities.gameplay.GameplayActivity" />
+        <activity android:name=".activities.gameplay.GameplayMenuActivity" />
+        <activity android:name=".activities.gameplay.NewGameActivity" />
+        <activity android:name=".activities.gameplay.SearchGameActivity" />
+        <activity android:name=".activities.AboutActivity" />
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.RankingActivity" />
     </application>
 
 </manifest>

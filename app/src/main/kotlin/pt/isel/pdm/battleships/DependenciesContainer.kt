@@ -8,5 +8,6 @@ import pt.isel.pdm.battleships.service.BattleshipsService
  * @property battleshipsService The service used to handle the battleships game.
  */
 interface DependenciesContainer {
+    val sessionManager: SessionManager
     val battleshipsService: BattleshipsService
 }

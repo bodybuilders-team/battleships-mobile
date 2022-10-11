@@ -22,7 +22,7 @@
     <string name="email_icon_content_description">Icono del Github</string>
     <string name="login_message_invalid_password">Contraseña debe tener al menos 4 caracteres.</string>
     <string name="login_message_invalid_username">Nombre de usuario debe tener al menos 3 caracteres.</string>
-    <string name="login_title">Login/Registro</string>
+    <string name="login_title">Login</string>
     <string name="about_repo_github_text">El código de esta aplicación está disponible aquí:</string>
     <string name="about_title">Desarrolladores</string>
     <string name="main_menu_about_button_text">Sobre los Desarrolladores</string>

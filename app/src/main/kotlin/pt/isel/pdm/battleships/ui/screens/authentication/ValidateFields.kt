@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.login
+package pt.isel.pdm.battleships.ui.screens.authentication
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
@@ -36,31 +36,19 @@ private fun validatePassword(password: String): Boolean {
 }
 
 /**
- * Hashes a password.
+ * Hashes a string with sha-256.
  *
- * TODO: salt (username?)
- *
- * @param password to hash
- * @return hashed password
+ * @param text to hash
+ * @return hashed text
  */
-fun hashPassword(password: String): String {
+fun hash(text: String): String {
     // Hash using SHA-256
     val digest = MessageDigest.getInstance("SHA-256")
     val encodedHash = digest.digest(
-        password.toByteArray(StandardCharsets.UTF_8)
+        text.toByteArray(StandardCharsets.UTF_8)
     )
 
-    // Convert to hexadecimal
-    val sb = StringBuilder()
-    for (b in encodedHash) {
-        val hex = Integer.toHexString(b.toInt() and 0xff)
-        if (hex.length == 1) {
-            sb.append('0')
-        }
-        sb.append(hex)
-    }
-
-    return sb.toString()
+    return encodedHash.fold("") { str, it -> str + "%02x".format(it) }
 }
 
 /**

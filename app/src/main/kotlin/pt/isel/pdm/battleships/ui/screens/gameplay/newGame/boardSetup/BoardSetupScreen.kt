@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
@@ -29,17 +28,16 @@ import pt.isel.pdm.battleships.ui.utils.GoBackButton
 /**
  * Board configuration page. Allows the user to place their ships on the board how they like.
  *
- * @param navController the navigation controller
  * @param boardSize the size of the board
  * @param ships the list of ships to be placed
  * @param onBoardSetupFinished what to do when the board finished being setup
  */
 @Composable
 fun BoardSetupScreen(
-    navController: NavController,
     boardSize: Int,
     ships: List<ShipType>,
-    onBoardSetupFinished: (Board) -> Unit
+    onBoardSetupFinished: (Board) -> Unit,
+    onBackButtonClicked: () -> Unit
 ) {
     var board by remember { mutableStateOf(Board(boardSize)) }
 
@@ -104,6 +102,6 @@ fun BoardSetupScreen(
             )
         }
 
-        GoBackButton(navController)
+        GoBackButton(onClick = onBackButtonClicked)
     }
 }

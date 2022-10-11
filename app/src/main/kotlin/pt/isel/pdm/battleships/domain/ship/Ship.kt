@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.domain.ship
 
+import java.io.Serializable
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 
@@ -19,7 +20,7 @@ data class Ship(
     val coordinate: Coordinate,
     val orientation: Orientation,
     val lives: Int = type.size
-) {
+) : Serializable {
     val coordinates: List<Coordinate> = getCoordinates(type, coordinate, orientation)
 
     val isSunk = lives == 0

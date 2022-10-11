@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships
+package pt.isel.pdm.battleships.viewModels
 
 import androidx.lifecycle.ViewModel
 import pt.isel.pdm.battleships.service.BattleshipsService
@@ -9,7 +9,5 @@ import pt.isel.pdm.battleships.service.BattleshipsService
  * @property battleshipsService The service used to handle the battleships game.
  */
 class BattleshipsViewModel(
-    val battleshipsService: BattleshipsService
-) : ViewModel() {
-    // TODO("Not yet implemented")
-}
+    private val battleshipsService: BattleshipsService
+) : ViewModel()

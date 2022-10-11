@@ -1,5 +1,7 @@
 package pt.isel.pdm.battleships.ui.screens.about
 
+import android.content.ActivityNotFoundException
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,6 +40,7 @@ private const val DEV_INFO_CORNER_RADIUS = 8
 @Composable
 fun DeveloperInfoView(number: String, name: String, githubLink: String) {
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,7 +66,15 @@ fun DeveloperInfoView(number: String, name: String, githubLink: String) {
                 painter = painterResource(id = R.drawable.email),
                 contentDescription = stringResource(id = R.string.email_icon_content_description),
                 modifier = Modifier
-                    .clickable { uriHandler.openUri("mailto:A$number@alunos.isel.pt") }
+                    .clickable {
+                        try {
+                            uriHandler.openUri("mailto:A$number@alunos.isel.pt")
+                        } catch (e: ActivityNotFoundException) {
+                            Toast
+                                .makeText(context, "Mail client not found", Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    }
                     .padding(IMAGE_PADDING.dp)
             )
         }

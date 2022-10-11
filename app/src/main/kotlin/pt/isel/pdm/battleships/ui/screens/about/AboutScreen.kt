@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
@@ -32,10 +31,9 @@ const val IMAGE_PADDING = 8
  *
  * Also shows the github link of the app's repository.
  *
- * @param navController The navigation controller used to navigate between screens.
  */
 @Composable
-fun AboutScreen(navController: NavController) {
+fun AboutScreen(onBackButtonClicked: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
@@ -65,14 +63,18 @@ fun AboutScreen(navController: NavController) {
         Text(text = stringResource(id = R.string.about_repo_github_text))
         Image(
             painter = painterResource(
-                id = if (isSystemInDarkTheme()) R.drawable.ic_github_light else R.drawable.ic_github_dark
+                id = if (isSystemInDarkTheme()) {
+                    R.drawable.ic_github_light
+                } else R.drawable.ic_github_dark
             ),
             contentDescription = stringResource(id = R.string.github_logo_content_description),
             modifier = Modifier
-                .clickable { uriHandler.openUri("https://github.com/bodybuilders-team/battleships") }
+                .clickable {
+                    uriHandler.openUri("https://github.com/bodybuilders-team/battleships")
+                }
                 .padding(IMAGE_PADDING.dp)
         )
 
-        GoBackButton(navController)
+        GoBackButton(onClick = onBackButtonClicked)
     }
 }

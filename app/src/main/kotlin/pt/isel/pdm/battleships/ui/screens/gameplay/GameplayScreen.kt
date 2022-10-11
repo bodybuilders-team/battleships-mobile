@@ -7,13 +7,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
+import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.TileSelectionView
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
@@ -23,25 +26,18 @@ import pt.isel.pdm.battleships.ui.utils.GoBackButton
 /**
  * The gameplay screen.
  *
- * @param navController the navigation controller
- * @param myBoard the player's board
- * @param opponentBoard the opponent's board
- * @param selectedCells the cells that are currently selected
- * @param onCellSelected the callback to be invoked when the player selects a cell
- * @param onShootButtonPressed the callback to be invoked when the player presses the shoot button
- * @param onResetShotsButtonPressed the callback to be invoked when the player presses the
  * reset shots button
  */
 @Composable
 fun GameplayScreen(
-    navController: NavController,
-    myBoard: Board,
-    opponentBoard: Board,
-    selectedCells: List<Coordinate>,
-    onCellSelected: (Coordinate) -> Unit,
-    onShootButtonPressed: () -> Unit,
-    onResetShotsButtonPressed: () -> Unit
+    board: Board,
+    gameConfig: GameConfig,
+    onBackButtonClicked: () -> Unit
 ) {
+    val myBoard by remember { mutableStateOf(board) }
+    val opponentBoard by remember { mutableStateOf(Board.random()) }
+    val selectedCells by remember { mutableStateOf(mutableListOf<Coordinate>()) }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -52,7 +48,15 @@ fun GameplayScreen(
 
         BoardViewWithIdentifiers(
             board = opponentBoard,
-            onTileClicked = onCellSelected
+            onTileClicked = { coordinate ->
+                if (!opponentBoard.getCell(coordinate).wasHit) {
+                    if (coordinate in selectedCells) {
+                        selectedCells -= coordinate
+                    } else if (gameConfig.let { selectedCells.size < it.shotsPerTurn }) {
+                        selectedCells += coordinate
+                    }
+                }
+            }
         ) {
             opponentBoard.fleet.forEach { ship ->
                 PlacedShipView(ship, opponentBoardTileSize)
@@ -83,16 +87,16 @@ fun GameplayScreen(
                 modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(onClick = onShootButtonPressed) {
+                Button(onClick = { selectedCells.clear() }) {
                     Text(stringResource(id = R.string.gameplay_shoot_button_text))
                 }
-                Button(onClick = onResetShotsButtonPressed) {
+                Button(onClick = { selectedCells.clear() }) {
                     Text(stringResource(id = R.string.gameplay_reset_shots_button_text))
                 }
             }
         }
 
-        GoBackButton(navController)
+        GoBackButton(onClick = onBackButtonClicked)
     }
 }
 

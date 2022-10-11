@@ -21,7 +21,7 @@ import pt.isel.pdm.battleships.utils.replaceIf
 data class Board(
     val size: Int = DEFAULT_BOARD_SIZE,
     private val grid: List<Cell> = generateEmptyMatrix(size)
-) {
+) : java.io.Serializable {
 
     val fleet: List<Ship>
         get() = grid.filterIsInstance<ShipCell>().map { it.ship }.distinct()

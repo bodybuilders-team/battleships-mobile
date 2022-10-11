@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavController
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Board.Companion.DEFAULT_BOARD_SIZE
@@ -47,8 +46,8 @@ val DEFAULT_SHIP_TYPES = ShipType.values().toList()
  */
 @Composable
 fun NewGameScreen(
-    navController: NavController,
-    onGameConfigured: (GameConfig) -> Unit
+    onGameConfigured: (GameConfig) -> Unit,
+    onBackButtonClicked: () -> Unit
 ) {
     var boardSize by remember { mutableStateOf(DEFAULT_BOARD_SIZE) }
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
@@ -134,6 +133,6 @@ fun NewGameScreen(
             text = stringResource(id = R.string.game_config_create_game_button_text)
         )
 
-        GoBackButton(navController)
+        GoBackButton(onClick = onBackButtonClicked)
     }
 }

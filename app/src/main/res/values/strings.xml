@@ -6,7 +6,7 @@
     <string name="main_menu_about_button_text">About</string>
     <string name="about_title">Developers</string>
     <string name="about_repo_github_text">"The code for this app is available at: "</string>
-    <string name="login_title">Login/Register</string>
+    <string name="login_title">Login</string>
     <string name="login_message_invalid_username">Username should have at least 3 characters.</string>
     <string name="login_message_invalid_password">Password should have at least 4 characters.</string>
     <string name="login_message_username_not_found">Username doesn\'t exist.</string>

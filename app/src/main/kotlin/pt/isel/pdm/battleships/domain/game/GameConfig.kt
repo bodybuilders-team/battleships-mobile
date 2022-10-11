@@ -17,4 +17,4 @@ data class GameConfig(
     val maxTimePerShot: Int,
     val maxTimeForLayoutPhase: Int,
     val ships: List<ShipType>
-)
+) : java.io.Serializable

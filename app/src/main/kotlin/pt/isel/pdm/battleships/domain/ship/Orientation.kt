@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.domain.ship
 /**
  * Represents the ship's orientation.
  */
-enum class Orientation {
+enum class Orientation : java.io.Serializable {
     VERTICAL,
     HORIZONTAL;
 

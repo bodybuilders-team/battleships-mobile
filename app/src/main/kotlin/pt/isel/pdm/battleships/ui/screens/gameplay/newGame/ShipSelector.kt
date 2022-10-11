@@ -86,13 +86,17 @@ fun ShipSelector(
                     Button(
                         onClick = { onShipRemoved(ship) },
                         shape = RoundedCornerShape(SHIP_SELECTOR_BUTTON_CORNER_RADIUS.dp),
-                        modifier = Modifier.size((DEFAULT_TILE_SIZE / SHIP_SELECTOR_BUTTON_SIZE_PADDING).dp),
+                        modifier = Modifier.size(
+                            (DEFAULT_TILE_SIZE / SHIP_SELECTOR_BUTTON_SIZE_PADDING).dp
+                        ),
                         contentPadding = PaddingValues(0.dp) // TODO: What is this?
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_round_remove_24),
                             contentDescription =
-                            stringResource(id = R.string.remove_ship_button_icon_content_description)
+                            stringResource(
+                                id = R.string.remove_ship_button_icon_content_description
+                            )
                         )
                     }
                 }

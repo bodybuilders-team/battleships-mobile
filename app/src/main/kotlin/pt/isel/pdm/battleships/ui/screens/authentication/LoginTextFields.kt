@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.login
+package pt.isel.pdm.battleships.ui.screens.authentication
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
@@ -30,14 +30,18 @@ fun LoginTextFields(
     TextField(
         value = username,
         onValueChange = onUsernameChangeCallback,
-        placeholder = { Text(text = stringResource(id = R.string.login_username_placeholder_text)) },
+        placeholder = {
+            Text(text = stringResource(id = R.string.login_username_placeholder_text))
+        },
         modifier = Modifier.padding(bottom = USERNAME_PADDING.dp)
     )
 
     TextField(
         value = password,
         onValueChange = onPasswordChangeCallback,
-        placeholder = { Text(text = stringResource(id = R.string.login_password_placeholder_text)) },
+        placeholder = {
+            Text(text = stringResource(id = R.string.login_password_placeholder_text))
+        },
         visualTransformation = PasswordVisualTransformation()
     )
 }
