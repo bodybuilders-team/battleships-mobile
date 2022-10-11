@@ -11,12 +11,15 @@ import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 
 /**
- * The text fields for the login operation on the login page:
+ * The text fields for the register operation on the register page:
+ * - Email field
  * - Username field
  * - Password field
  *
+ * @param email email to show
  * @param username username to show
  * @param password password to show
+ * @param onEmailChangeCallback callback to be invoked when the email text is changed
  * @param onUsernameChangeCallback callback to be invoked when the username text is changed
  * @param onPasswordChangeCallback callback to be invoked when the password text is changed
  */

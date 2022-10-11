@@ -17,6 +17,9 @@ class GameService(private val apiEndpoint: String) {
         // TODO
     }
 
+    suspend fun matchmake() {
+    }
+
     suspend fun joinGame(id: Int) {
         // TODO
     }

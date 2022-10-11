@@ -29,6 +29,7 @@ private const val LOGO_MAX_SIZE_FACTOR = 0.6f
 /**
  * The main menu of the application.
  *
+ * @param showAuthentication if true, the authentication buttons will be shown
  */
 @Composable
 fun HomeScreen(showAuthentication: Boolean) {

@@ -26,7 +26,9 @@ import pt.isel.pdm.battleships.ui.utils.GoBackButton
 /**
  * The gameplay screen.
  *
- * reset shots button
+ * @param board the board to be displayed.
+ * @param gameConfig the game configuration.
+ * @param onBackButtonClicked the callback to be invoked when the back button is clicked.
  */
 @Composable
 fun GameplayScreen(

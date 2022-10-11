@@ -12,6 +12,9 @@ import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.BoardSetupScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
+/**
+ * Activity for board setup screen
+ */
 class BoardSetupActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

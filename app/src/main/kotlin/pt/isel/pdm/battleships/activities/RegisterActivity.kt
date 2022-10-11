@@ -13,8 +13,15 @@ import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.authentication.RegisterScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
-import pt.isel.pdm.battleships.viewModels.RegisterViewModel
+import pt.isel.pdm.battleships.viewModels.authentication.RegisterViewModel
 
+/**
+ * This activity is used for creating a new user in the application.
+ *
+ * @property viewModel The view model used to handle the login process.
+ * @property battleshipsService The service used to handle the battleships game.
+ * @property sessionManager The session manager used to handle the user session.
+ */
 class RegisterActivity : ComponentActivity() {
 
     private val battleshipsService by lazy {
@@ -26,7 +33,7 @@ class RegisterActivity : ComponentActivity() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private val registerViewModel by viewModels<RegisterViewModel> {
+    private val viewModel by viewModels<RegisterViewModel> {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return RegisterViewModel(sessionManager, battleshipsService.usersService) as T
@@ -44,7 +51,7 @@ class RegisterActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     RegisterScreen(
-                        registerViewModel,
+                        viewModel,
                         onBackButtonClicked = {
                             finish()
                         }

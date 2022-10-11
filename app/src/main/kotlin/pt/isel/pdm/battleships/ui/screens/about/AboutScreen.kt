@@ -31,6 +31,7 @@ const val IMAGE_PADDING = 8
  *
  * Also shows the github link of the app's repository.
  *
+ * @param onBackButtonClicked callback to be invoked when the back button is clicked
  */
 @Composable
 fun AboutScreen(onBackButtonClicked: () -> Unit) {

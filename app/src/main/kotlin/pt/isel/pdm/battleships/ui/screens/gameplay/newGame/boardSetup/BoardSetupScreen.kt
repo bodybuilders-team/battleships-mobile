@@ -31,6 +31,7 @@ import pt.isel.pdm.battleships.ui.utils.GoBackButton
  * @param boardSize the size of the board
  * @param ships the list of ships to be placed
  * @param onBoardSetupFinished what to do when the board finished being setup
+ * @param onBackButtonClicked Callback to be called when the back button is clicked
  */
 @Composable
 fun BoardSetupScreen(

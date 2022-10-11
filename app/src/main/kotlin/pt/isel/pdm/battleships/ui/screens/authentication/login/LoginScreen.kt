@@ -13,9 +13,15 @@ import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
-import pt.isel.pdm.battleships.viewModels.AuthenticationState
-import pt.isel.pdm.battleships.viewModels.LoginViewModel
+import pt.isel.pdm.battleships.viewModels.authentication.AuthenticationState
+import pt.isel.pdm.battleships.viewModels.authentication.LoginViewModel
 
+/**
+ * Screen for login operation
+ *
+ * @param vm login view model
+ * @param onBackButtonClicked callback to be invoked when the back button is clicked
+ */
 @Composable
 fun LoginScreen(
     vm: LoginViewModel,

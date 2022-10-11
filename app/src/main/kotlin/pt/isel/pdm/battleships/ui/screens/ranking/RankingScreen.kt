@@ -22,7 +22,7 @@ private const val RANKING_TITLE_PADDING = 8
  *
  * The position is based of the player's points.
  *
- * @param navController the navigation controller
+ * @param onBackButtonClicked callback to be invoked when the back button is clicked
  */
 @Composable
 fun RankingScreen(onBackButtonClicked: () -> Unit) {

@@ -41,8 +41,8 @@ val DEFAULT_SHIP_TYPES = ShipType.values().toList()
 /**
  * Screen that allows the user to configure a new game before starting it.
  *
- * @param navController the navigation controller to be used to navigate to the game screen
  * @param onGameConfigured Callback that is called when the user finishes configuring the game
+ * @param onBackButtonClicked Callback that is called when the user clicks the back button
  */
 @Composable
 fun NewGameScreen(

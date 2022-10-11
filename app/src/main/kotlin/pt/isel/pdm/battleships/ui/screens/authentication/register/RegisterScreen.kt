@@ -15,9 +15,15 @@ import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterButton
 import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterTextFields
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
-import pt.isel.pdm.battleships.viewModels.AuthenticationState
-import pt.isel.pdm.battleships.viewModels.RegisterViewModel
+import pt.isel.pdm.battleships.viewModels.authentication.AuthenticationState
+import pt.isel.pdm.battleships.viewModels.authentication.RegisterViewModel
 
+/**
+ * Screen for registering a new user
+ *
+ * @param vm the view model for the register screen
+ * @param onBackButtonClicked callback to be invoked when the back button is clicked
+ */
 @Composable
 fun RegisterScreen(
     vm: RegisterViewModel,

@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.ui.screens.gameplay.GameplayMenuScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
+/**
+ * Activity for gameplay menu screen
+ */
 class GameplayMenuActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

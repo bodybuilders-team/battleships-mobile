@@ -16,7 +16,7 @@ import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
  * It is responsible for creating the main view and the view model.
  *
  * @property battleshipsService The service used to handle the battleships game.
- * @property vm The view model used to handle the application logic.
+ * @property sessionManager The session manager used to handle the user session.
  */
 class BattleshipsActivity : ComponentActivity() {
 

@@ -1,14 +1,11 @@
 package pt.isel.pdm.battleships.service
 
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody
 import org.json.JSONObject
 import pt.isel.pdm.battleships.utils.await
+import pt.isel.pdm.battleships.utils.toJson
+import pt.isel.pdm.battleships.utils.toJsonRequestBody
 
 sealed class AuthenticationResult {
     class Success(val token: String) : AuthenticationResult()
@@ -21,6 +18,10 @@ sealed class AuthenticationResult {
 class UserService(private val apiEndpoint: String) {
     private val httpClient = OkHttpClient()
 
+    /**
+     * Logs in the user with the given [username] and [password].
+     * @return The authentication result.
+     */
     suspend fun login(username: String, password: String): AuthenticationResult {
         val json = JSONObject()
         json.put("username", username)
@@ -45,6 +46,10 @@ class UserService(private val apiEndpoint: String) {
         }
     }
 
+    /**
+     * Registers the user with the given [email], [username] and [password].
+     * @return The authentication result.
+     */
     suspend fun register(email: String, username: String, password: String): AuthenticationResult {
         val json = JSONObject()
         json.put("username", username)
@@ -74,13 +79,3 @@ class UserService(private val apiEndpoint: String) {
         // TODO
     }
 }
-
-private suspend fun ResponseBody.toJson(): JSONObject =
-    withContext(kotlinx.coroutines.Dispatchers.IO) {
-        val resString = this@toJson.string()
-        JSONObject(resString)
-    }
-
-private fun JSONObject.toJsonRequestBody(): RequestBody =
-    this.toString()
-        .toRequestBody("application/json".toMediaType())

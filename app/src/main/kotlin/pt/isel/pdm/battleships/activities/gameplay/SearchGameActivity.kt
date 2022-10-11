@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.ui.screens.gameplay.SearchGameScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
+/**
+ * Activity for search game screen
+ */
 class SearchGameActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

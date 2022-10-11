@@ -13,6 +13,7 @@ import pt.isel.pdm.battleships.R
 /**
  * Button for login operation
  *
+ * @param enabled whether the button is enabled or not
  * @param onLoginClickCallback callback to be invoked when the login button is clicked
  */
 @Composable

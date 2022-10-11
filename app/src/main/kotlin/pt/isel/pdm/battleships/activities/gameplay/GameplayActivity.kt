@@ -12,6 +12,9 @@ import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.ui.screens.gameplay.GameplayScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
+/**
+ * Activity for gameplay screen
+ */
 class GameplayActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

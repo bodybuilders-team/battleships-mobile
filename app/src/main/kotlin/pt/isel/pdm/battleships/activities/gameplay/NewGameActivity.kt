@@ -11,6 +11,9 @@ import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.NewGameScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
+/**
+ * Activity for new game screen
+ */
 class NewGameActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

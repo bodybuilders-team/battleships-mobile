@@ -13,6 +13,7 @@ import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 /**
  * Screen that displays the search game menu.
  *
+ * @param onBackButtonClicked the callback to be invoked when the back button is clicked.
  */
 @Composable
 fun SearchGameScreen(onBackButtonClicked: () -> Unit) {

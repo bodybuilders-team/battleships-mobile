@@ -21,6 +21,7 @@ import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 /**
  * The gameplay menu screen.
  *
+ * @param onBackButtonClicked the callback to be invoked when the back button is clicked.
  */
 @Composable
 fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
@@ -48,6 +49,7 @@ fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
             iconDescription = stringResource(R.string.gameplay_search_game_button_description),
             text = stringResource(id = R.string.gameplay_search_game_button_text)
         )
+
         GoBackButton(onClick = onBackButtonClicked)
     }
 }

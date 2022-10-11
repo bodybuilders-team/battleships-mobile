@@ -13,8 +13,15 @@ import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.authentication.LoginScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
-import pt.isel.pdm.battleships.viewModels.LoginViewModel
+import pt.isel.pdm.battleships.viewModels.authentication.LoginViewModel
 
+/**
+ * This activity is used for logging in the application.
+ *
+ * @property viewModel The view model used to handle the login process.
+ * @property battleshipsService The service used to handle the battleships game.
+ * @property sessionManager The session manager used to handle the user session.
+ */
 class LoginActivity : ComponentActivity() {
 
     private val battleshipsService by lazy {
@@ -26,7 +33,7 @@ class LoginActivity : ComponentActivity() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private val loginViewModel by viewModels<LoginViewModel> {
+    private val viewModel by viewModels<LoginViewModel> {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return LoginViewModel(sessionManager, battleshipsService.usersService) as T
@@ -44,7 +51,7 @@ class LoginActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     LoginScreen(
-                        loginViewModel,
+                        viewModel,
                         onBackButtonClicked = {
                             finish()
                         }
