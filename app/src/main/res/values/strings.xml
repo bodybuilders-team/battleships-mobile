@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Battleships</string>
+    <string name="app_name" translatable="false">Battleships ⚓</string>
     <string name="main_menu_play_button_text">Play</string>
     <string name="main_menu_login_button_text">Login</string>
     <string name="main_menu_ranking_button_text">Ranking</string>
@@ -7,11 +7,11 @@
     <string name="about_title">Developers</string>
     <string name="about_repo_github_text">"The code for this app is available at: "</string>
     <string name="login_title">Login</string>
-    <string name="login_message_invalid_username">Username should have at least 3 characters.</string>
-    <string name="login_message_invalid_password">Password should have at least 4 characters.</string>
-    <string name="login_message_username_not_found">Username doesn\'t exist.</string>
-    <string name="login_message_wrong_password">Password is wrong.</string>
-    <string name="login_message_successful">Login was successful.</string>
+    <string name="authentication_message_invalid_username">Username should have at least 3 characters.</string>
+    <string name="authentication_message_invalid_password">Password should have at least 4 characters.</string>
+    <string name="authentication_message_username_not_found">Username doesn\'t exist.</string>
+    <string name="authentication_message_wrong_password">Password is wrong.</string>
+    <string name="authentication_message_successful">Login was successful.</string>
     <string name="register_message_user_exists">Username already exists.</string>
     <string name="register_message_successful">User registered successfully.</string>
     <string name="ranking_title">Ranking</string>
@@ -20,10 +20,10 @@
     <string name="ranking_table_label_position">Position</string>
     <string name="ranking_table_label_username">Username</string>
     <string name="ranking_table_label_points">Points</string>
-    <string name="login_username_placeholder_text">Username</string>
-    <string name="login_password_placeholder_text">Password</string>
-    <string name="login_login_button_text">Login</string>
-    <string name="login_register_button_text">Register Instead</string>
+    <string name="authentication_username_placeholder_text">Username</string>
+    <string name="authentication_password_placeholder_text">Password</string>
+    <string name="login_button_text">Login</string>
+    <string name="register_button_text">Register</string>
     <string name="gameplay_change_orientation_button_text">Change Orientation</string>
     <string name="gameplay_random_board_button_text">Random Board</string>
     <string name="github_logo_content_description">Github logo</string>
@@ -53,4 +53,13 @@
     <string name="add_ship_button_icon_content_description">Button to add a ship quantity</string>
     <string name="gameplay_shoot_button_text">Shoot!</string>
     <string name="gameplay_reset_shots_button_text">Reset shots</string>
+    <string name="register_register_button_text">Register</string>
+    <string name="authentication_message_invalid_email">Invalid Email</string>
+    <string name="authentication_email_placeholder_text">Email</string>
+    <string name="register_title">Register</string>
+    <string name="main_menu_ranking_button_content_description">Button to players ranking screen</string>
+    <string name="main_menu_register_button_text">Register</string>
+    <string name="main_menu_register_button_content_description">Button to register screen</string>
+    <string name="main_menu_login_button_content_description">Button to login screen</string>
+    <string name="main_menu_play_button_content_description">Button to gameplay menu screen</string>
 </resources>

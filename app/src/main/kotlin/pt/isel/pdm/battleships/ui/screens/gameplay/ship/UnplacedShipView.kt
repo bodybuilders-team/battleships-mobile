@@ -17,13 +17,13 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
-import kotlin.math.roundToInt
 
 /**
  * A composable that represents a ship not yet placed on the board.

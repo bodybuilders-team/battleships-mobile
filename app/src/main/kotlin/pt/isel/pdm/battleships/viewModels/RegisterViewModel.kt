@@ -5,15 +5,15 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.UserService
 
-class LoginViewModel(
+class RegisterViewModel(
     sessionManager: SessionManager,
     private val usersService: UserService
 ) : AuthenticationViewModel(sessionManager) {
 
-    fun login(username: String, password: String) {
+    fun register(email: String, username: String, password: String) {
         viewModelScope.launch {
             state = AuthenticationState.LOADING
-            val res = usersService.login(username, password)
+            val res = usersService.register(email, username, password)
             updateState(res)
         }
     }

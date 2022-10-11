@@ -14,8 +14,4 @@ class BattleshipsService(apiEndpoint: String) {
     val gamesService: GameService = GameService(apiEndpoint)
 
     val playersService: PlayersService = PlayersService(apiEndpoint)
-
-    companion object {
-        const val API_URI = "http://localhost:8888"
-    }
 }

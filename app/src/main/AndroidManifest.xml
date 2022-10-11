@@ -31,7 +31,7 @@
         <activity android:name=".activities.gameplay.NewGameActivity" />
         <activity android:name=".activities.gameplay.SearchGameActivity" />
         <activity android:name=".activities.AboutActivity" />
-        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.RankingActivity" />
     </application>
 

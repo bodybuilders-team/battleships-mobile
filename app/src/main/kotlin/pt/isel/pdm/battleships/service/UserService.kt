@@ -52,7 +52,7 @@ class UserService(private val apiEndpoint: String) {
         json.put("password", password)
 
         val req = Request.Builder()
-            .url("$apiEndpoint/users/register")
+            .url("$apiEndpoint/users")
             .post(
                 json.toJsonRequestBody()
             )

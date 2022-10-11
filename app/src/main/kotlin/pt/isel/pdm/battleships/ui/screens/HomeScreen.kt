@@ -19,8 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat.startActivity
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.activities.AboutActivity
-import pt.isel.pdm.battleships.activities.LoginActivity
 import pt.isel.pdm.battleships.activities.RankingActivity
+import pt.isel.pdm.battleships.activities.RegisterActivity
 import pt.isel.pdm.battleships.activities.gameplay.GameplayMenuActivity
 import pt.isel.pdm.battleships.ui.utils.MenuButton
 
@@ -31,7 +31,7 @@ private const val LOGO_MAX_SIZE_FACTOR = 0.6f
  *
  */
 @Composable
-fun MainMenuScreen(showAuthentication: Boolean) {
+fun HomeScreen(showAuthentication: Boolean) {
     val context = LocalContext.current
 
     Column(
@@ -39,7 +39,7 @@ fun MainMenuScreen(showAuthentication: Boolean) {
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            text = stringResource(id = R.string.app_name) + "⚓",
+            text = stringResource(id = R.string.app_name),
             style = MaterialTheme.typography.h3,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
@@ -55,20 +55,31 @@ fun MainMenuScreen(showAuthentication: Boolean) {
                 startActivity(context, intent, null)
             },
             icon = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
-            iconDescription = stringResource(R.string.main_menu_about_button_content_description),
+            iconDescription = stringResource(R.string.main_menu_play_button_content_description),
             text = stringResource(id = R.string.main_menu_play_button_text)
         )
         if (showAuthentication) {
             MenuButton(
                 onClick = {
-                    val intent = Intent(context, LoginActivity::class.java)
+                    val intent = Intent(context, RegisterActivity::class.java)
                     startActivity(context, intent, null)
                 },
                 icon = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
                 iconDescription = stringResource(
-                    R.string.main_menu_about_button_content_description
+                    R.string.main_menu_login_button_content_description
                 ),
                 text = stringResource(id = R.string.main_menu_login_button_text)
+            )
+            MenuButton(
+                onClick = {
+                    val intent = Intent(context, RegisterActivity::class.java)
+                    startActivity(context, intent, null)
+                },
+                icon = ImageVector.vectorResource(id = R.drawable.ic_round_person_add_24),
+                iconDescription = stringResource(
+                    R.string.main_menu_register_button_content_description
+                ),
+                text = stringResource(id = R.string.main_menu_register_button_text)
             )
         }
         MenuButton(
@@ -76,8 +87,8 @@ fun MainMenuScreen(showAuthentication: Boolean) {
                 val intent = Intent(context, RankingActivity::class.java)
                 startActivity(context, intent, null)
             },
-            icon = ImageVector.vectorResource(id = R.drawable.ic_baseline_table_rows_24),
-            iconDescription = stringResource(R.string.main_menu_about_button_content_description),
+            icon = ImageVector.vectorResource(id = R.drawable.ic_round_table_rows_24),
+            iconDescription = stringResource(R.string.main_menu_ranking_button_content_description),
             text = stringResource(id = R.string.main_menu_ranking_button_text)
         )
         MenuButton(

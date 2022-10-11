@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="main_menu_login_button_text">Login</string>
-    <string name="login_password_placeholder_text">Contraseña</string>
-    <string name="login_login_button_text">Login</string>
+    <string name="authentication_password_placeholder_text">Contraseña</string>
+    <string name="login_button_text">Login</string>
     <string name="ranking_table_label_username">Nombre de Usuario</string>
-    <string name="login_username_placeholder_text">Nombre de Usuario</string>
-    <string name="login_message_username_not_found">Nombre de usuario no existe.</string>
-    <string name="login_message_wrong_password">Contraseña está incorrecta.</string>
-    <string name="login_message_successful">Login logrado con éxito.</string>
+    <string name="authentication_username_placeholder_text">Nombre de Usuario</string>
+    <string name="authentication_message_username_not_found">Nombre de usuario no existe.</string>
+    <string name="authentication_message_wrong_password">Contraseña está incorrecta.</string>
+    <string name="authentication_message_successful">Login logrado con éxito.</string>
     <string name="register_message_user_exists">Nombre de usuario ya existe.</string>
     <string name="register_message_successful">Usuario registrado con éxito.</string>
     <string name="ranking_title">Ranking</string>
@@ -15,13 +15,13 @@
     <string name="ranking_search_player_button_text">Buscar</string>
     <string name="ranking_table_label_position">Posición</string>
     <string name="ranking_table_label_points">Puntos</string>
-    <string name="login_register_button_text">Registrar</string>
+    <string name="register_button_text">Registrar</string>
     <string name="gameplay_change_orientation_button_text">Cambiar Orientación</string>
     <string name="gameplay_random_board_button_text">Tablero Aleatorio</string>
     <string name="github_logo_content_description">Logo del Github</string>
     <string name="email_icon_content_description">Icono del Github</string>
-    <string name="login_message_invalid_password">Contraseña debe tener al menos 4 caracteres.</string>
-    <string name="login_message_invalid_username">Nombre de usuario debe tener al menos 3 caracteres.</string>
+    <string name="authentication_message_invalid_password">Contraseña debe tener al menos 4 caracteres.</string>
+    <string name="authentication_message_invalid_username">Nombre de usuario debe tener al menos 3 caracteres.</string>
     <string name="login_title">Login</string>
     <string name="about_repo_github_text">El código de esta aplicación está disponible aquí:</string>
     <string name="about_title">Desarrolladores</string>

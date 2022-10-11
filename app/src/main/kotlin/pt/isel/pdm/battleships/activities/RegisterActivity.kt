@@ -3,22 +3,19 @@ package pt.isel.pdm.battleships.activities
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.ui.screens.HomeScreen
+import pt.isel.pdm.battleships.ui.screens.authentication.RegisterScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
+import pt.isel.pdm.battleships.viewModels.RegisterViewModel
 
-/**
- * This activity is the main entry point of the application.
- * It is responsible for creating the main view and the view model.
- *
- * @property battleshipsService The service used to handle the battleships game.
- * @property vm The view model used to handle the application logic.
- */
-class BattleshipsActivity : ComponentActivity() {
+class RegisterActivity : ComponentActivity() {
 
     private val battleshipsService by lazy {
         (application as DependenciesContainer).battleshipsService
@@ -26,6 +23,15 @@ class BattleshipsActivity : ComponentActivity() {
 
     private val sessionManager by lazy {
         (application as DependenciesContainer).sessionManager
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val registerViewModel by viewModels<RegisterViewModel> {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return RegisterViewModel(sessionManager, battleshipsService.usersService) as T
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +43,12 @@ class BattleshipsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    HomeScreen(showAuthentication = sessionManager.token == null)
+                    RegisterScreen(
+                        registerViewModel,
+                        onBackButtonClicked = {
+                            finish()
+                        }
+                    )
                 }
             }
         }

@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.domain.game
 
+import java.io.Serializable
 import pt.isel.pdm.battleships.domain.ship.ShipType
 
 /**
@@ -17,4 +18,4 @@ data class GameConfig(
     val maxTimePerShot: Int,
     val maxTimeForLayoutPhase: Int,
     val ships: List<ShipType>
-) : java.io.Serializable
+) : Serializable

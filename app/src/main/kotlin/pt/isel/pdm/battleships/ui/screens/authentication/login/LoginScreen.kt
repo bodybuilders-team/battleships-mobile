@@ -5,26 +5,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.Job
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
-import pt.isel.pdm.battleships.viewModels.LoginState
+import pt.isel.pdm.battleships.viewModels.AuthenticationState
 import pt.isel.pdm.battleships.viewModels.LoginViewModel
-
-private const val BUTTON_PADDING = 8
 
 @Composable
 fun LoginScreen(
-    vm: LoginViewModel = viewModel(),
+    vm: LoginViewModel,
     onBackButtonClicked: () -> Unit
 ) {
     val loginMessage = remember { mutableStateOf<String?>(null) }
@@ -32,14 +26,10 @@ fun LoginScreen(
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
-    val loginMessageInvalidUsername = stringResource(id = R.string.login_message_invalid_username)
-    val loginMessageInvalidPassword = stringResource(id = R.string.login_message_invalid_password)
-    val loginMessageUsernameNotFound =
-        stringResource(id = R.string.login_message_username_not_found)
-    val loginMessageWrongPassword = stringResource(id = R.string.login_message_wrong_password)
-    val loginMessageSuccessful = stringResource(id = R.string.login_message_successful)
-
-    var loginJob by remember { mutableStateOf<Job?>(null) }
+    val authenticationMessageInvalidUsername =
+        stringResource(id = R.string.authentication_message_invalid_username)
+    val authenticationMessageInvalidPassword =
+        stringResource(id = R.string.authentication_message_invalid_password)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,18 +38,18 @@ fun LoginScreen(
         ScreenTitle(title = stringResource(R.string.login_title))
 
         LoginTextFields(
-            username.value,
-            password.value,
+            username = username.value,
+            password = password.value,
             onUsernameChangeCallback = { username.value = it },
             onPasswordChangeCallback = { password.value = it }
         )
 
-        LoginButton(enabled = vm.state != LoginState.LOADING) {
-            validateFields(
-                username.value,
-                password.value,
-                loginMessageInvalidUsername,
-                loginMessageInvalidPassword
+        LoginButton(enabled = vm.state != AuthenticationState.LOADING) {
+            validateLoginFields(
+                username = username.value,
+                password = password.value,
+                invalidUsernameMessage = authenticationMessageInvalidUsername,
+                invalidPasswordMessage = authenticationMessageInvalidPassword
             )?.let {
                 loginMessage.value = it
                 return@LoginButton
@@ -67,7 +57,10 @@ fun LoginScreen(
 
             val hashedPassword = hash(password.value)
 
-            loginJob = vm.login(username.value, hashedPassword)
+            vm.login(
+                username = username.value,
+                password = hashedPassword
+            )
         }
 
         loginMessage.value?.let {
@@ -76,10 +69,9 @@ fun LoginScreen(
             }
         }
 
-        if (vm.state == LoginState.SUCCESS) {
-            loginMessage.value = loginMessageSuccessful
+        if (vm.state == AuthenticationState.SUCCESS) {
             onBackButtonClicked()
-        } else if (vm.state == LoginState.ERROR) {
+        } else if (vm.state == AuthenticationState.ERROR) {
             loginMessage.value = vm.errorMessage
         }
 

@@ -19,6 +19,16 @@ private fun validateUsername(username: String): Boolean {
     return true
 }
 
+private fun validateEmail(email: String): Boolean {
+    if (email.length < 3) {
+        return false
+    }
+
+    // TODO: Add more validation rules
+
+    return true
+}
+
 /**
  * Validates the password.
  *
@@ -59,7 +69,7 @@ fun hash(text: String): String {
  * @param invalidUsernameMessage message to show in case of invalid username
  * @param invalidPasswordMessage message to show in case of invalid password
  */
-fun validateFields(
+fun validateLoginFields(
     username: String,
     password: String,
     invalidUsernameMessage: String,
@@ -68,9 +78,30 @@ fun validateFields(
     if (!validateUsername(username)) {
         return invalidUsernameMessage
     }
+
     if (!validatePassword(password)) {
         return invalidPasswordMessage
     }
 
+    return null
+}
+
+fun validateEmailFields(
+    email: String,
+    username: String,
+    password: String,
+    invalidEmailMessage: String,
+    invalidUsernameMessage: String,
+    invalidPasswordMessage: String
+): String? {
+    if (!validateEmail(email)) {
+        return invalidEmailMessage
+    }
+    if (!validateUsername(username)) {
+        return invalidUsernameMessage
+    }
+    if (!validatePassword(password)) {
+        return invalidPasswordMessage
+    }
     return null
 }
