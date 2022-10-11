@@ -1,8 +1,8 @@
 package pt.isel.pdm.battleships.domain.ship
 
-import java.io.Serializable
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
+import java.io.Serializable
 
 /**
  * Represents a ship in the game.

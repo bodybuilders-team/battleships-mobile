@@ -4,14 +4,17 @@ import android.content.res.AssetManager
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.services.BattleshipsService
 
 const val DEFAULT_GAME_CONFIG_FILE_PATH = "defaultGameConfig.json"
 
 /**
  * Represents the ViewModel for the Battleships game.
  *
- * @property battleshipsService The service used to handle the battleships game.
+ * @property battleshipsService the service used to handle the battleships game
+ * @property sessionManager the session manager used to handle the user session
+ * @property assetManager the asset manager used to access the game configuration file
+ * @property jsonFormatter the JSON formatter used to parse the game configuration file
  */
 class BattleshipsViewModel(
     private val battleshipsService: BattleshipsService,

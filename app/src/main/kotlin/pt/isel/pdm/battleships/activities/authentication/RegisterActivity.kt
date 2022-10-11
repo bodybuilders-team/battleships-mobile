@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.activities
+package pt.isel.pdm.battleships.activities.authentication
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,16 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.ui.screens.authentication.RegisterScreen
+import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.authentication.RegisterViewModel
 
 /**
- * This activity is used for creating a new user in the application.
+ * Activity for the register screen.
  *
- * @property viewModel The view model used to handle the login process.
- * @property battleshipsService The service used to handle the battleships game.
- * @property sessionManager The session manager used to handle the user session.
+ * @property battleshipsService the service used to handle the battleships game
+ * @property sessionManager the session manager used to handle the user session
+ * @property viewModel the view model used to handle the login process
  */
 class RegisterActivity : ComponentActivity() {
 
@@ -52,9 +52,7 @@ class RegisterActivity : ComponentActivity() {
                 ) {
                     RegisterScreen(
                         viewModel,
-                        onBackButtonClicked = {
-                            finish()
-                        }
+                        onBackButtonClicked = { finish() }
                     )
                 }
             }

@@ -1,6 +1,5 @@
 package pt.isel.pdm.battleships.domain.board
 
-import java.io.Serializable
 import pt.isel.pdm.battleships.domain.Cell
 import pt.isel.pdm.battleships.domain.ShipCell
 import pt.isel.pdm.battleships.domain.WaterCell
@@ -10,6 +9,7 @@ import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.utils.replace
 import pt.isel.pdm.battleships.utils.replaceIf
+import java.io.Serializable
 
 /**
  * Represents a board in the game.

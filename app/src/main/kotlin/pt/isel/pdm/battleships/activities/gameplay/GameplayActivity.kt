@@ -13,7 +13,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.GameplayScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
- * Activity for gameplay screen
+ * Activity for the gameplay screen.
  */
 class GameplayActivity : ComponentActivity() {
 

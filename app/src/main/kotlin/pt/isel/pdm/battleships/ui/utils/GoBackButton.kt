@@ -17,6 +17,7 @@ import pt.isel.pdm.battleships.R
  * A back button that navigates to the previous screen.
  * The button is displayed at the bottom of the screen.
  *
+ * @param onClick the action to be performed when the button is clicked
  */
 @Composable
 fun GoBackButton(onClick: () -> Unit) {

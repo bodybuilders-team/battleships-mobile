@@ -10,10 +10,10 @@ private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 /**
  * Represents a button in the main menu.
  *
+ * @param onClick the action to be performed when the button is clicked
  * @param icon the icon of the button
  * @param iconDescription the description of the icon
  * @param text the text of the button
- * @param onClick the action to be performed when the button is clicked
  */
 @Composable
 fun MenuButton(

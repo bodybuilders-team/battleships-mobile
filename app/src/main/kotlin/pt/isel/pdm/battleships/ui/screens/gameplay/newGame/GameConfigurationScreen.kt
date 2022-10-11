@@ -45,7 +45,7 @@ val DEFAULT_SHIP_TYPES = ShipType.values().toList()
  * @param onBackButtonClicked Callback that is called when the user clicks the back button
  */
 @Composable
-fun NewGameScreen(
+fun GameConfigurationScreen(
     onGameConfigured: (GameConfig) -> Unit,
     onBackButtonClicked: () -> Unit
 ) {

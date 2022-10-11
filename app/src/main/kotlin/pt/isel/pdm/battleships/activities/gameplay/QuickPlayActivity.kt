@@ -11,7 +11,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.QuickPlayScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
- * Activity for quick play screen
+ * Activity for the quick play screen.
  */
 class QuickPlayActivity : ComponentActivity() {
 

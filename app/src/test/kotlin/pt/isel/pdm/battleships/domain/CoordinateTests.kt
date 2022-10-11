@@ -1,8 +1,8 @@
 package pt.isel.pdm.battleships.domain
 
+import pt.isel.pdm.battleships.domain.board.Coordinate
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import pt.isel.pdm.battleships.domain.board.Coordinate
 
 class CoordinateTests {
 

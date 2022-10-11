@@ -11,7 +11,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.GameplayMenuScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
- * Activity for gameplay menu screen
+ * Activity for the gameplay menu screen.
  */
 class GameplayMenuActivity : ComponentActivity() {
 

@@ -1,10 +1,14 @@
-package pt.isel.pdm.battleships.service
+package pt.isel.pdm.battleships.services.players
 
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 
 /**
  * Represents the service that handles the battleships game.
+ *
+ * @property apiEndpoint the API endpoint
+ * @property httpClient the HTTP client
+ * @property jsonFormatter the JSON formatter
  */
 class PlayersService(
     private val apiEndpoint: String,

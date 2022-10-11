@@ -11,7 +11,7 @@ import pt.isel.pdm.battleships.ui.screens.ranking.RankingScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
- * Activity for ranking screen
+ * Activity for the ranking screen.
  */
 class RankingActivity : ComponentActivity() {
 

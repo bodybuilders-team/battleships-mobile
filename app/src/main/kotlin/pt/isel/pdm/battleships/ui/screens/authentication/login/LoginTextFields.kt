@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.authentication
+package pt.isel.pdm.battleships.ui.screens.authentication.login
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text

@@ -17,10 +17,11 @@ private const val BUTTON_CORNER_RADIUS = 8
 /**
  * Represents a button with an icon.
  *
+ * @param onClick the action to be performed when the button is clicked
  * @param icon the icon of the button
  * @param iconDescription the description of the icon
  * @param text the text of the button
- * @param onClick the action to be performed when the button is clicked
+ * @param modifier the modifier of the button
  */
 @Composable
 fun IconButton(

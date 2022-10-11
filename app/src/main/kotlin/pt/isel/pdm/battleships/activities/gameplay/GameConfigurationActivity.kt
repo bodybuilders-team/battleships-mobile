@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.NewGameScreen
+import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.GameConfigurationScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
- * Activity for new game screen
+ * Activity for the new game screen.
  */
-class NewGameActivity : ComponentActivity() {
+class GameConfigurationActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,18 +25,15 @@ class NewGameActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    NewGameScreen(
+                    GameConfigurationScreen(
                         onGameConfigured = {
                             val intent = Intent(this, BoardSetupActivity::class.java)
-                            // Api call to add game to lobby
-//                            intent.putExtra("gameId", gameId)
+                            // Api call to add game to lobby: intent.putExtra("gameId", gameId)
 
                             intent.putExtra("gameConfig", it)
                             startActivity(intent)
                         },
-                        onBackButtonClicked = {
-                            finish()
-                        }
+                        onBackButtonClicked = { finish() }
                     )
                 }
             }

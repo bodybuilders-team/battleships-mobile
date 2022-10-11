@@ -19,8 +19,10 @@ import pt.isel.pdm.battleships.viewModels.BattleshipsViewModel
  * This activity is the main entry point of the application.
  * It is responsible for creating the main view and the view model.
  *
- * @property battleshipsService The service used to handle the battleships game.
- * @property sessionManager The session manager used to handle the user session.
+ * @property battleshipsService the service used to handle the battleships game
+ * @property sessionManager the session manager used to handle the user session
+ * @property jsonFormatter the json formatter used to format the json data
+ * @property viewModel the view model used to handle the state of the application
  */
 class BattleshipsActivity : ComponentActivity() {
 
@@ -53,7 +55,7 @@ class BattleshipsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        viewModel.test()
+        // viewModel.test()
         setContent {
             BattleshipsTheme {
                 Surface(

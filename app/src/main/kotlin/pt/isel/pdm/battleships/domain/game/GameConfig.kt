@@ -1,7 +1,8 @@
 package pt.isel.pdm.battleships.domain.game
 
-import java.io.Serializable
 import pt.isel.pdm.battleships.domain.ship.ShipType
+import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
+import java.io.Serializable
 
 /**
  * Represents a game configuration.
@@ -18,4 +19,18 @@ data class GameConfig(
     val maxTimePerShot: Int,
     val maxTimeForLayoutPhase: Int,
     val ships: List<ShipType>
-) : Serializable
+) : Serializable {
+
+    /**
+     * Converts this game configuration to a DTO.
+     *
+     * @return the DTO
+     */
+    fun toDTO(): GameConfigDTO = GameConfigDTO(
+        gridSize,
+        maxTimeForLayoutPhase,
+        shotsPerTurn,
+        maxTimePerShot,
+        ships.map { it.toDTO() }
+    )
+}

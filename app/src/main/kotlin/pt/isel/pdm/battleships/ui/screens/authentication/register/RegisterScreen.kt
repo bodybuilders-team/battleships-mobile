@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.authentication
+package pt.isel.pdm.battleships.ui.screens.authentication.register
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterButton
-import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterTextFields
+import pt.isel.pdm.battleships.ui.screens.authentication.hash
+import pt.isel.pdm.battleships.ui.screens.authentication.validateEmailFields
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 import pt.isel.pdm.battleships.viewModels.authentication.AuthenticationState

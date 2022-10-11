@@ -13,7 +13,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.BoardSetup
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
- * Activity for board setup screen
+ * Activity for the board setup screen.
  */
 class BoardSetupActivity : ComponentActivity() {
 
@@ -26,8 +26,7 @@ class BoardSetupActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val gameConfig =
-                        intent.getSerializableExtra("gameConfig") as GameConfig
+                    val gameConfig = intent.getSerializableExtra("gameConfig") as GameConfig
 
                     BoardSetupScreen(
                         boardSize = gameConfig.gridSize,
@@ -39,9 +38,7 @@ class BoardSetupActivity : ComponentActivity() {
 
                             startActivity(intent)
                         },
-                        onBackButtonClicked = {
-                            finish()
-                        }
+                        onBackButtonClicked = { finish() }
                     )
                 }
             }

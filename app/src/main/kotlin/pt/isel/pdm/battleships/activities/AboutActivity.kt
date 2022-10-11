@@ -11,7 +11,7 @@ import pt.isel.pdm.battleships.ui.screens.about.AboutScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
- * Activity for about screen
+ * Activity for the about screen.
  */
 class AboutActivity : ComponentActivity() {
 

@@ -19,6 +19,7 @@ import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
 const val IMAGE_PADDING = 8
+private const val GITHUB_URL = "https://github.com/bodybuilders-team/battleships"
 
 /**
  * Screen shown after clicking the "About the developers" button in the main menu.
@@ -42,37 +43,34 @@ fun AboutScreen(onBackButtonClicked: () -> Unit) {
         ScreenTitle(title = stringResource(R.string.about_title))
 
         DeveloperInfoView(
-            "48089",
-            "André Páscoa",
-            "https://github.com/devandrepascoa"
+            number = "48089",
+            name = "André Páscoa",
+            githubLink = "https://github.com/devandrepascoa"
         )
 
         DeveloperInfoView(
-            "48280",
-            "André Jesus",
-            "https://github.com/andre-j3sus"
+            number = "48280",
+            name = "André Jesus",
+            githubLink = "https://github.com/andre-j3sus"
         )
 
         DeveloperInfoView(
-            "48287",
-            "Nyckollas Brandão",
-            "https://github.com/Nyckoka"
+            number = "48287",
+            name = "Nyckollas Brandão",
+            githubLink = "https://github.com/Nyckoka"
         )
 
-        val uriHandler = LocalUriHandler.current
+        val uriHandler = LocalUriHandler.current // TODO: Change to use intents?
 
         Text(text = stringResource(id = R.string.about_repo_github_text))
         Image(
             painter = painterResource(
-                id = if (isSystemInDarkTheme()) {
-                    R.drawable.ic_github_light
-                } else R.drawable.ic_github_dark
+                id = if (isSystemInDarkTheme()) R.drawable.ic_github_light
+                else R.drawable.ic_github_dark
             ),
             contentDescription = stringResource(id = R.string.github_logo_content_description),
             modifier = Modifier
-                .clickable {
-                    uriHandler.openUri("https://github.com/bodybuilders-team/battleships")
-                }
+                .clickable { uriHandler.openUri(GITHUB_URL) }
                 .padding(IMAGE_PADDING.dp)
         )
 

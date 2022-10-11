@@ -19,9 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat.startActivity
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.activities.AboutActivity
-import pt.isel.pdm.battleships.activities.LoginActivity
 import pt.isel.pdm.battleships.activities.RankingActivity
-import pt.isel.pdm.battleships.activities.RegisterActivity
+import pt.isel.pdm.battleships.activities.authentication.LoginActivity
+import pt.isel.pdm.battleships.activities.authentication.RegisterActivity
 import pt.isel.pdm.battleships.activities.gameplay.GameplayMenuActivity
 import pt.isel.pdm.battleships.ui.utils.MenuButton
 
