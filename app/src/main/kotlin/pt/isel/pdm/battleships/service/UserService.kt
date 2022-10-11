@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.service
 
+import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -15,8 +16,11 @@ sealed class AuthenticationResult {
 /**
  * Represents the service that handles the battleships game.
  */
-class UserService(private val apiEndpoint: String) {
-    private val httpClient = OkHttpClient()
+class UserService(
+    private val apiEndpoint: String,
+    private val httpClient: OkHttpClient,
+    private val jsonFormatter: Gson
+) {
 
     /**
      * Logs in the user with the given [username] and [password].

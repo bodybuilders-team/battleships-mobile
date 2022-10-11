@@ -1,9 +1,16 @@
 package pt.isel.pdm.battleships.service
 
+import com.google.gson.Gson
+import okhttp3.OkHttpClient
+
 /**
  * Represents the service that handles the battleships game.
  */
-class PlayersService(private val apiEndpoint: String) {
+class PlayersService(
+    private val apiEndpoint: String,
+    private val httpClient: OkHttpClient,
+    private val jsonFormatter: Gson
+) {
 
     suspend fun getPlayerFleet(id: Int) {
         // TODO

@@ -3,13 +3,17 @@ package pt.isel.pdm.battleships.activities
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.HomeScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
+import pt.isel.pdm.battleships.viewModels.BattleshipsViewModel
 
 /**
  * This activity is the main entry point of the application.
@@ -28,9 +32,28 @@ class BattleshipsActivity : ComponentActivity() {
         (application as DependenciesContainer).sessionManager
     }
 
+    private val jsonFormatter by lazy {
+        (application as DependenciesContainer).jsonFormatter
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val viewModel by viewModels<BattleshipsViewModel> {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return BattleshipsViewModel(
+                    battleshipsService,
+                    sessionManager,
+                    assets,
+                    jsonFormatter
+                ) as T
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+//        viewModel.test()
         setContent {
             BattleshipsTheme {
                 Surface(

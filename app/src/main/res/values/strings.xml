@@ -62,4 +62,6 @@
     <string name="main_menu_register_button_content_description">Button to register screen</string>
     <string name="main_menu_login_button_content_description">Button to login screen</string>
     <string name="main_menu_play_button_content_description">Button to gameplay menu screen</string>
+    <string name="gameplay_quick_play_button_description">Button to quick play screen</string>
+    <string name="gameplay_quick_play_button_text">Quick Play</string>
 </resources>

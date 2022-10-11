@@ -13,6 +13,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.core.content.ContextCompat.startActivity
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.activities.gameplay.NewGameActivity
+import pt.isel.pdm.battleships.activities.gameplay.QuickPlayActivity
 import pt.isel.pdm.battleships.activities.gameplay.SearchGameActivity
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.MenuButton
@@ -50,6 +51,15 @@ fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
             text = stringResource(id = R.string.gameplay_search_game_button_text)
         )
 
+        MenuButton(
+            onClick = {
+                val intent = Intent(context, QuickPlayActivity::class.java)
+                startActivity(context, intent, null)
+            },
+            icon = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
+            iconDescription = stringResource(R.string.gameplay_quick_play_button_description),
+            text = stringResource(id = R.string.gameplay_quick_play_button_text)
+        )
         GoBackButton(onClick = onBackButtonClicked)
     }
 }

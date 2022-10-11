@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat.startActivity
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.activities.AboutActivity
+import pt.isel.pdm.battleships.activities.LoginActivity
 import pt.isel.pdm.battleships.activities.RankingActivity
 import pt.isel.pdm.battleships.activities.RegisterActivity
 import pt.isel.pdm.battleships.activities.gameplay.GameplayMenuActivity
@@ -62,7 +63,7 @@ fun HomeScreen(showAuthentication: Boolean) {
         if (showAuthentication) {
             MenuButton(
                 onClick = {
-                    val intent = Intent(context, RegisterActivity::class.java)
+                    val intent = Intent(context, LoginActivity::class.java)
                     startActivity(context, intent, null)
                 },
                 icon = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
