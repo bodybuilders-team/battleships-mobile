@@ -15,12 +15,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.SHIP_VIEW_BOX_HEIGHT_FACTOR
+import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.DragState
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 
 private const val SHIP_SLOTS_CORNER_RADIUS = 10
@@ -34,7 +36,12 @@ const val SHIP_SLOTS_FACTOR = 0.6f
  * @param tileSize the size of the tiles in the board
  */
 @Composable
-fun ShipSlotsView(shipTypes: List<ShipType>, tileSize: Float) {
+fun ShipSlotsView(
+    shipTypes: List<ShipType>,
+    tileSize: Float,
+    dragState: DragState,
+    onShipDragEnd: (ShipType) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth(SHIP_SLOTS_FACTOR)
@@ -47,31 +54,47 @@ fun ShipSlotsView(shipTypes: List<ShipType>, tileSize: Float) {
         LazyRow {
             items(ShipType.values()) { ship ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val draggingShip = dragState.shipType == ship && dragState.isDragging
+
                     val shipTypeCount = shipTypes.count { it == ship }
 
-                    // TODO: put the "ship silhouette" / empty slot image when the ship is out the slot
                     Box(
                         modifier = Modifier
                             .height((tileSize * SHIP_VIEW_BOX_HEIGHT_FACTOR).dp)
                             .width(tileSize.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        ShipView(
-                            type = ship,
-                            orientation = Orientation.VERTICAL,
-                            tileSize = tileSize
-                        )
+                        if (shipTypeCount == 0) {
+                            ShipView(
+                                type = ship,
+                                orientation = Orientation.VERTICAL,
+                                tileSize = tileSize,
+                                modifier = Modifier.alpha(0.5f)
+                            )
+                        } else {
+                            DraggableShipView(
+                                type = ship,
+                                orientation = Orientation.VERTICAL,
+                                tileSize = tileSize,
+                                dragState = dragState,
+                                onDragStart = {},
+                                onDragEnd = onShipDragEnd,
+                                modifier = Modifier.alpha(
+                                    if (shipTypeCount == 1 && draggingShip) 0.5f else 1f
+                                ),
+                                onTap = {}
+                            )
+                        }
                     }
 
-                    Text(text = shipTypeCount.toString())
+                    Text(
+                        text = (
+                            shipTypeCount -
+                                if (draggingShip && shipTypeCount != 0) 1 else 0
+                            ).toString()
+                    )
                 }
             }
         }
     }
-}
-
-@Composable
-private fun ShipSlotView(type: ShipType, tileSize: Float) {
-    // TODO: put the "ship sillouette" / empty slot image
-    // ShipImage(type = type, orientation = Orientation.VERTICAL)
 }

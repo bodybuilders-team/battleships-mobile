@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -29,7 +28,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
 const val SHIP_SELECTOR_BUTTON_CORNER_RADIUS = 2
 const val SHIP_SELECTOR_BUTTON_PADDING = 2
-const val SHIP_SELECTOR_BUTTON_SIZE_PADDING = 2
+const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
 
 // TODO: Make ship slots (containing the draggable ships on board setup) similar to this,
 //  having one slot for each ship type, and only showing the empty slot when all the ships of the
@@ -66,48 +65,41 @@ fun ShipSelector(
                         )
                     }
 
-                    Button(
+                    IncrementShipCountButton(
                         onClick = { onShipAdded(ship) },
-                        shape = RoundedCornerShape(SHIP_SELECTOR_BUTTON_CORNER_RADIUS.dp),
-                        modifier = Modifier
-                            .padding(bottom = SHIP_SELECTOR_BUTTON_PADDING.dp)
-                            .size((DEFAULT_TILE_SIZE / SHIP_SELECTOR_BUTTON_SIZE_PADDING).dp),
-                        contentPadding = PaddingValues(0.dp) // TODO: What is this?
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_add_24),
-                            contentDescription =
-                            stringResource(id = R.string.add_ship_button_icon_content_description)
-                        )
-                    }
+                        icon = ImageVector.vectorResource(R.drawable.ic_round_add_24),
+                        contentDescription = stringResource(id = R.string.add_ship_button_icon_content_description)
+                    )
 
                     Text(text = shipTypes.count { it == ship }.toString())
 
-                    Button(
+                    IncrementShipCountButton(
                         onClick = { onShipRemoved(ship) },
-                        shape = RoundedCornerShape(SHIP_SELECTOR_BUTTON_CORNER_RADIUS.dp),
-                        modifier = Modifier.size(
-                            (DEFAULT_TILE_SIZE / SHIP_SELECTOR_BUTTON_SIZE_PADDING).dp
-                        ),
-                        contentPadding = PaddingValues(0.dp) // TODO: What is this?
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_remove_24),
-                            contentDescription =
-                            stringResource(
-                                id = R.string.remove_ship_button_icon_content_description
-                            )
-                        )
-                    }
+                        icon = ImageVector.vectorResource(R.drawable.ic_round_remove_24),
+                        contentDescription = stringResource(id = R.string.remove_ship_button_icon_content_description)
+                    )
                 }
             }
         }
+    }
+}
 
-        /*IconButton(
-            onClick = { },
-            icon = ImageVector.vectorResource(R.drawable.ic_round_directions_boat_24),
-            iconDescription = "",
-            text = "Select Ships"
-        )*/
+@Composable
+private fun IncrementShipCountButton(
+    onClick: () -> Unit,
+    icon: ImageVector,
+    contentDescription: String
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(SHIP_SELECTOR_BUTTON_CORNER_RADIUS.dp),
+        modifier = Modifier
+            .size(SHIP_SELECTOR_BUTTON_SIZE.dp),
+        contentPadding = PaddingValues(0.dp) // TODO: What is this?
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription
+        )
     }
 }

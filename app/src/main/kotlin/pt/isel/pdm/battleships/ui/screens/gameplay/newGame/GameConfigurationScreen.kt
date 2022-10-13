@@ -21,6 +21,7 @@ import pt.isel.pdm.battleships.domain.board.Board.Companion.DEFAULT_BOARD_SIZE
 import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.IconButton
 import pt.isel.pdm.battleships.ui.utils.MenuButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
@@ -37,6 +38,8 @@ private const val MAX_TIME_FOR_BOARD_CONFIG = 120 // Seconds
 private const val DEFAULT_TIME_FOR_BOARD_CONFIG = 60 // Seconds
 
 val DEFAULT_SHIP_TYPES = ShipType.values().toList()
+
+const val GAME_CONFIG_SHIP_SELECTOR_LABEL_WIDTH_FACTOR = 0.2f
 
 /**
  * Screen that allows the user to configure a new game before starting it.
@@ -99,13 +102,51 @@ fun GameConfigurationScreen(
         // Ship Selector
         // TODO limitation on number of ships based on board size (type of ship also matters)
         //  50% of the board max?
-        GameConfigSelector(
-            leftSideContent = {
+
+        /*Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier.fillMaxWidth(0.4f),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
                     text = stringResource(R.string.game_config_ships_text),
                     style = MaterialTheme.typography.h6,
                     textAlign = TextAlign.Center
                 )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = SLIDER_RIGHT_PADDING.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                ShipSelector(
+                    shipTypes = ships,
+                    onShipAdded = { ships = ships + it },
+                    onShipRemoved = { ships = ships - it }
+                )
+            }
+        }*/
+
+        GameConfigSelector(
+            leftSideContent = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = stringResource(R.string.game_config_ships_text),
+                        style = MaterialTheme.typography.h6,
+                        textAlign = TextAlign.Center
+                    )
+                    IconButton(
+                        onClick = { },
+                        icon = ImageVector.vectorResource(R.drawable.ic_round_directions_boat_24),
+                        iconDescription = "",
+                        text = "Manage ships"
+                    )
+                }
             },
             rightSideContent = {
                 ShipSelector(
