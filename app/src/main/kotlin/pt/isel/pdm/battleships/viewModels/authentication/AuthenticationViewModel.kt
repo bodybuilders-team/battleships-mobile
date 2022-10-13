@@ -5,7 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.users.results.AuthenticationResult
+import pt.isel.pdm.battleships.services.Result
+import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
 
 /**
  * Represents the ViewModel for both authentication screens (login and register).
@@ -25,13 +26,13 @@ open class AuthenticationViewModel(
      *
      * @param res the result of the authentication process
      */
-    protected fun updateState(res: AuthenticationResult) {
+    protected fun updateState(res: Result<TokenDTO>) {
         state = when (res) {
-            is AuthenticationResult.Success -> {
-                sessionManager.token = res.token
+            is Result.Success -> {
+                sessionManager.token = res.dto.token
                 AuthenticationState.SUCCESS
             }
-            is AuthenticationResult.Failure -> {
+            is Result.Failure -> {
                 errorMessage = res.error.message
                 AuthenticationState.ERROR
             }

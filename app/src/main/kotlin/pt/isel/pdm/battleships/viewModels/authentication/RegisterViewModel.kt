@@ -1,6 +1,8 @@
 package pt.isel.pdm.battleships.viewModels.authentication
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import java.io.IOException
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.users.UsersService
@@ -25,9 +27,13 @@ class RegisterViewModel(
      */
     fun register(email: String, username: String, password: String) {
         viewModelScope.launch {
-            state = AuthenticationState.LOADING
-            val res = usersService.register(email, username, password)
-            updateState(res)
+            try {
+                state = AuthenticationState.LOADING
+                val res = usersService.register(email, username, password)
+                updateState(res)
+            } catch (e: IOException) {
+                Log.v("RegisterViewModel", "Failed to register user", e)
+            }
         }
     }
 }

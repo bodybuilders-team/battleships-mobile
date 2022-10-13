@@ -25,7 +25,7 @@ class BattleshipsApplication : DependenciesContainer, Application() {
         )
 
     companion object {
-        const val API_ENDPOINT = "https://6ca6-2001-8a0-6370-f300-18f7-d26d-1d5d-d612.eu.ngrok.io"
+        const val API_ENDPOINT = "https://0d3d-2001-8a0-6370-f300-10a3-5c76-dc6d-c308.eu.ngrok.io"
         const val TAG = "BattleshipsApp"
     }
 }

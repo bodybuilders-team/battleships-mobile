@@ -8,5 +8,5 @@ package pt.isel.pdm.battleships.services.games.dtos
  */
 data class MatchmakeDTO(
     val wasCreated: Boolean,
-    val gameId: Int
+    val game: GameDTO
 )

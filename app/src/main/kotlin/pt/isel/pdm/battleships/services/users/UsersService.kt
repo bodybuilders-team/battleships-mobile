@@ -1,17 +1,13 @@
 package pt.isel.pdm.battleships.services.users
 
 import com.google.gson.Gson
-import com.google.gson.stream.JsonReader
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import pt.isel.pdm.battleships.services.dtos.ErrorDTO
+import pt.isel.pdm.battleships.services.HTTPService
+import pt.isel.pdm.battleships.services.Result
+import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
 import pt.isel.pdm.battleships.services.users.dtos.UserDTO
-import pt.isel.pdm.battleships.services.users.results.AuthenticationResult
-import pt.isel.pdm.battleships.services.users.results.UserResult
-import pt.isel.pdm.battleships.utils.await
-import pt.isel.pdm.battleships.utils.getBodyOrThrow
-import pt.isel.pdm.battleships.utils.toJson
 import pt.isel.pdm.battleships.utils.toJsonRequestBody
 
 /**
@@ -23,9 +19,11 @@ import pt.isel.pdm.battleships.utils.toJsonRequestBody
  */
 class UsersService(
     private val apiEndpoint: String,
-    private val httpClient: OkHttpClient,
-    private val jsonFormatter: Gson
-) {
+    httpClient: OkHttpClient,
+    jsonFormatter: Gson
+) : HTTPService(httpClient, jsonFormatter) {
+
+    private val usersEndpoint = "$apiEndpoint/users"
 
     /**
      * Logs in the user with the given [username] and [password].
@@ -35,27 +33,17 @@ class UsersService(
      *
      * @return the authentication result
      */
-    suspend fun login(username: String, password: String): AuthenticationResult {
+    suspend fun login(username: String, password: String): Result<TokenDTO> {
         val json = JSONObject()
         json.put("username", username)
         json.put("password", password)
 
         val req = Request.Builder()
-            .url("$apiEndpoint/users/login")
+            .url("$usersEndpoint/login")
             .post(body = json.toJsonRequestBody())
             .build()
 
-        val res = httpClient.newCall(req).await()
-        val body = res.getBodyOrThrow()
-        val resJson = JsonReader(body.charStream())
-
-        return if (res.code != 200) { // TODO: use constants
-            AuthenticationResult.Failure(
-                error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java)
-            )
-        } else {
-            AuthenticationResult.Success(token = body.toJson().getString("token"))
-        }
+        return req.getResponseResult()
     }
 
     /**
@@ -67,44 +55,26 @@ class UsersService(
      *
      * @return the authentication result
      */
-    suspend fun register(email: String, username: String, password: String): AuthenticationResult {
+    suspend fun register(email: String, username: String, password: String): Result<TokenDTO> {
         val json = JSONObject()
         json.put("username", username)
         json.put("email", email)
         json.put("password", password)
 
         val req = Request.Builder()
-            .url("$apiEndpoint/users")
+            .url(usersEndpoint)
             .post(body = json.toJsonRequestBody())
             .build()
 
-        val res = httpClient.newCall(req).await()
-        val body = res.getBodyOrThrow()
-        val resJson = JsonReader(body.charStream())
-
-        return if (res.code != 200) {
-            AuthenticationResult.Failure(
-                error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java)
-            )
-        } else {
-            AuthenticationResult.Success(token = body.toJson().getString("token"))
-        }
+        return req.getResponseResult()
     }
 
-    suspend fun getUserByUsername(username: String): UserResult {
+    suspend fun getUserByUsername(username: String): Result<UserDTO> {
         val req = Request.Builder()
-            .url("$apiEndpoint/users/$username")
+            .url("$usersEndpoint/$username")
             .get()
             .build()
 
-        val res = httpClient.newCall(req).await()
-        val body = res.getBodyOrThrow()
-        val resJson = JsonReader(body.charStream())
-
-        return if (res.code != 200) {
-            UserResult.Failure(error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java))
-        } else {
-            UserResult.Success(user = jsonFormatter.fromJson(resJson, UserDTO::class.java))
-        }
+        return req.getResponseResult()
     }
 }

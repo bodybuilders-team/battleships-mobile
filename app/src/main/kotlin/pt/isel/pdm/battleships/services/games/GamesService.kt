@@ -6,12 +6,13 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import pt.isel.pdm.battleships.services.HTTPService
+import pt.isel.pdm.battleships.services.Result
 import pt.isel.pdm.battleships.services.dtos.ErrorDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
+import pt.isel.pdm.battleships.services.games.dtos.GameStateDTO
 import pt.isel.pdm.battleships.services.games.dtos.MatchmakeDTO
-import pt.isel.pdm.battleships.services.games.results.GameResult
-import pt.isel.pdm.battleships.services.games.results.MatchmakeResult
 import pt.isel.pdm.battleships.utils.await
 import pt.isel.pdm.battleships.utils.getBodyOrThrow
 
@@ -24,9 +25,9 @@ import pt.isel.pdm.battleships.utils.getBodyOrThrow
  */
 class GamesService(
     apiEndpoint: String,
-    private val httpClient: OkHttpClient,
-    private val jsonFormatter: Gson
-) {
+    httpClient: OkHttpClient,
+    jsonFormatter: Gson
+) : HTTPService(httpClient, jsonFormatter) {
 
     private val gamesEndpoint = "$apiEndpoint/games"
 
@@ -42,7 +43,7 @@ class GamesService(
      *
      * @return the result of the get game operation
      */
-    suspend fun getGame(token: String, id: Int): GameResult {
+    suspend fun getGame(token: String, id: Int): Result<GameDTO> {
         val req = Request.Builder()
             .url("$gamesEndpoint/$id")
             .header("Authorization", "Bearer $token")
@@ -54,9 +55,16 @@ class GamesService(
         val resJson = JsonReader(body.charStream())
 
         return if (res.code != 200) {
-            GameResult.Failure(error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java))
+            Result.Failure(
+                error = jsonFormatter.fromJson(
+                    resJson,
+                    ErrorDTO::class.java
+                )
+            )
         } else {
-            GameResult.Success(game = jsonFormatter.fromJson(resJson, GameDTO::class.java))
+            Result.Success(
+                dto = jsonFormatter.fromJson(resJson, GameDTO::class.java)
+            )
         }
     }
 
@@ -72,7 +80,7 @@ class GamesService(
      *
      * @return the result of the matchmaking operation
      */
-    suspend fun matchmake(token: String, gameConfigDTO: GameConfigDTO): MatchmakeResult {
+    suspend fun matchmake(token: String, gameConfigDTO: GameConfigDTO): Result<MatchmakeDTO> {
         val req = Request.Builder()
             .url("$gamesEndpoint/matchmake")
             .header("Authorization", "Bearer $token")
@@ -83,15 +91,7 @@ class GamesService(
             )
             .build()
 
-        val res = httpClient.newCall(req).await()
-        val body = res.getBodyOrThrow()
-        val resJson = JsonReader(body.charStream())
-
-        return if (res.code != 200) {
-            MatchmakeResult.Failure(error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java))
-        } else {
-            MatchmakeResult.Success(dto = jsonFormatter.fromJson(resJson, MatchmakeDTO::class.java))
-        }
+        return req.getResponseResult()
     }
 
     suspend fun joinGame(id: Int) {
@@ -102,7 +102,13 @@ class GamesService(
         // TODO
     }
 
-    suspend fun getGameState(id: Int) {
-        // TODO
+    suspend fun getGameState(token: String, id: Int): Result<GameStateDTO> {
+        val req = Request.Builder()
+            .url("$gamesEndpoint/$id/state")
+            .header("Authorization", "Bearer $token")
+            .get()
+            .build()
+
+        return req.getResponseResult()
     }
 }

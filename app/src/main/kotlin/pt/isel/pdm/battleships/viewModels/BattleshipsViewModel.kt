@@ -24,10 +24,6 @@ class BattleshipsViewModel(
 ) : ViewModel() {
 //    fun test() {
 //        viewModelScope.launch {
-//            val gameConfigDTO = jsonFormatter.fromJson<GameConfigDTO>(
-//                JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
-//                GameConfigDTO::class.java
-//            )
 //            while (sessionManager.token == null) {
 //                delay(10)
 //            }
