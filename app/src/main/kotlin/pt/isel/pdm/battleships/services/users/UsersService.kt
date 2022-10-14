@@ -8,7 +8,7 @@ import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.Result
 import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
 import pt.isel.pdm.battleships.services.users.dtos.UserDTO
-import pt.isel.pdm.battleships.utils.toJsonRequestBody
+import pt.isel.pdm.battleships.services.utils.toJsonRequestBody
 
 /**
  * Represents the service that handles the battleships game.

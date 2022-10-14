@@ -6,8 +6,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import pt.isel.pdm.battleships.services.dtos.ErrorDTO
-import pt.isel.pdm.battleships.utils.await
-import pt.isel.pdm.battleships.utils.getBodyOrThrow
+import pt.isel.pdm.battleships.services.utils.await
+import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
 
 /**
  * HTTP Response result.

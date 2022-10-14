@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.SearchGameScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
-import pt.isel.pdm.battleships.viewModels.SearchGameViewModel
+import pt.isel.pdm.battleships.viewModels.gameplay.SearchGameViewModel
 
 /**
  * Activity for the search game screen.
@@ -36,7 +36,10 @@ class SearchGameActivity : ComponentActivity() {
     private val viewModel by viewModels<SearchGameViewModel> {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return SearchGameViewModel(sessionManager, battleshipsService.gamesService) as T
+                return SearchGameViewModel(
+                    sessionManager = sessionManager,
+                    gamesService = battleshipsService.gamesService
+                ) as T
             }
         }
     }

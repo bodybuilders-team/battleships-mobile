@@ -13,10 +13,15 @@ import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.QuickPlayScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
-import pt.isel.pdm.battleships.viewModels.QuickPlayViewModel
+import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel
 
 /**
  * Activity for the quick play screen.
+ *
+ * @property battleshipsService the service used to handle the battleships game
+ * @property sessionManager the session manager used to handle the user session
+ * @property jsonFormatter the json formatter
+ * @property viewModel the view model used to handle the quick play process
  */
 class QuickPlayActivity : ComponentActivity() {
 
@@ -37,10 +42,10 @@ class QuickPlayActivity : ComponentActivity() {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return QuickPlayViewModel(
-                    sessionManager,
-                    battleshipsService.gamesService,
-                    jsonFormatter,
-                    assets
+                    sessionManager = sessionManager,
+                    gamesService = battleshipsService.gamesService,
+                    jsonFormatter = jsonFormatter,
+                    assetManager = assets
                 ) as T
             }
         }

@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.viewModels
+package pt.isel.pdm.battleships.viewModels.gameplay
 
 import android.content.res.AssetManager
 import androidx.compose.runtime.getValue
@@ -14,14 +14,10 @@ import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.Result
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
-
-enum class QuickPlayState {
-    MATCHMAKING,
-    MATCHMADE,
-    ERROR
-}
-
-private const val POLLING_DELAY = 500L
+import pt.isel.pdm.battleships.viewModels.DEFAULT_GAME_CONFIG_FILE_PATH
+import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.ERROR
+import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.MATCHMADE
+import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.MATCHMAKING
 
 /**
  * View model for the quick play activity.
@@ -32,14 +28,12 @@ private const val POLLING_DELAY = 500L
 class QuickPlayViewModel(
     private val sessionManager: SessionManager,
     private val gamesService: GamesService,
-    private val jsonFormatter: Gson,
-    private val assetManager: AssetManager
+    jsonFormatter: Gson,
+    assetManager: AssetManager
 ) : ViewModel() {
 
-    var state by mutableStateOf(QuickPlayState.MATCHMAKING)
-
+    var state by mutableStateOf(MATCHMAKING)
     var gameId: Int? by mutableStateOf(null)
-
     var errorMessage: String? by mutableStateOf(null)
 
     // TODO: change this
@@ -48,48 +42,64 @@ class QuickPlayViewModel(
         GameConfigDTO::class.java
     )
 
+    // TODO: Comment this
     fun matchmake() {
         viewModelScope.launch {
             val matchmakeGameId = when (
-                val res =
-                    gamesService.matchmake(sessionManager.token!!, gameConfigDTO)
+                val res = gamesService.matchmake(sessionManager.token!!, gameConfigDTO)
             ) {
                 is Result.Success -> {
                     if (res.dto.wasCreated) {
                         res.dto.game.id
                     } else {
-                        state = QuickPlayState.MATCHMADE
+                        state = MATCHMADE
                         return@launch
                     }
                 }
                 is Result.Failure -> {
                     errorMessage = res.error.message
-                    state = QuickPlayState.ERROR
+                    state = ERROR
                     return@launch
                 }
             }
 
             gameId = matchmakeGameId
 
-            while (state != QuickPlayState.MATCHMADE) {
+            while (state != MATCHMADE) {
                 when (
-                    val res =
-                        gamesService.getGameState(sessionManager.token!!, matchmakeGameId)
+                    val res = gamesService.getGameState(sessionManager.token!!, matchmakeGameId)
                 ) {
                     is Result.Success -> {
                         if (res.dto.phase == "WAITING_FOR_PLAYERS") {
                             delay(POLLING_DELAY)
                         } else {
-                            state = QuickPlayState.MATCHMADE
+                            state = MATCHMADE
                         }
                     }
                     is Result.Failure -> {
                         errorMessage = res.error.message
-                        state = QuickPlayState.ERROR
+                        state = ERROR
                         return@launch
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Represents the quick play operation state.
+     *
+     * @property MATCHMAKING the matchmaking is in progress
+     * @property MATCHMADE the matchmake was successful
+     * @property ERROR the matchmake failed
+     */
+    enum class QuickPlayState {
+        MATCHMAKING,
+        MATCHMADE,
+        ERROR
+    }
+
+    companion object {
+        private const val POLLING_DELAY = 500L
     }
 }

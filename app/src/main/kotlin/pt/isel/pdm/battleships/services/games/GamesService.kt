@@ -12,9 +12,11 @@ import pt.isel.pdm.battleships.services.dtos.ErrorDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameStateDTO
+import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
 import pt.isel.pdm.battleships.services.games.dtos.MatchmakeDTO
-import pt.isel.pdm.battleships.utils.await
-import pt.isel.pdm.battleships.utils.getBodyOrThrow
+import pt.isel.pdm.battleships.services.games.dtos.gamesDTOType
+import pt.isel.pdm.battleships.services.utils.await
+import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
 
 /**
  * Represents the service that handles the battleships game.
@@ -31,8 +33,22 @@ class GamesService(
 
     private val gamesEndpoint = "$apiEndpoint/games"
 
-    fun getAllGames() {
-        // TODO
+    suspend fun getAllGames(token: String): Result<GamesDTO> {
+        val req = Request.Builder()
+            .url(gamesEndpoint)
+            .header("Authorization", "Bearer $token")
+            .get()
+            .build()
+
+        val res = httpClient.newCall(req).await()
+        val body = res.getBodyOrThrow()
+        val resJson = JsonReader(body.charStream())
+
+        return if (res.code != 200) {
+            Result.Failure(error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java))
+        } else {
+            Result.Success(dto = jsonFormatter.fromJson(resJson, gamesDTOType.type))
+        }
     }
 
     /**
@@ -55,16 +71,9 @@ class GamesService(
         val resJson = JsonReader(body.charStream())
 
         return if (res.code != 200) {
-            Result.Failure(
-                error = jsonFormatter.fromJson(
-                    resJson,
-                    ErrorDTO::class.java
-                )
-            )
+            Result.Failure(error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java))
         } else {
-            Result.Success(
-                dto = jsonFormatter.fromJson(resJson, GameDTO::class.java)
-            )
+            Result.Success(dto = jsonFormatter.fromJson(resJson, GameDTO::class.java))
         }
     }
 

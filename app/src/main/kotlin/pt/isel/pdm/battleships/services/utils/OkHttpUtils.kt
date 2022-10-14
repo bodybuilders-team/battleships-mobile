@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.utils
+package pt.isel.pdm.battleships.services.utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
