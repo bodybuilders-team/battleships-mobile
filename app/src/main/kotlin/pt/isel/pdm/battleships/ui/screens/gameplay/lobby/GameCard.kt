@@ -60,14 +60,14 @@ fun GameCard(
         IconButton(
             onClick = onGameInfoRequest,
             icon = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
-            iconDescription = stringResource(id = R.string.join_icon),
+            iconDescription = stringResource(id = R.string.join_icon_description),
             modifier = Modifier.size(BUTTON_SIZE.dp)
         )
 
         IconButton(
             onClick = onJoinGameRequest,
             icon = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
-            iconDescription = stringResource(id = R.string.join_icon),
+            iconDescription = stringResource(id = R.string.join_icon_description),
             modifier = Modifier.size(BUTTON_SIZE.dp)
         )
     }

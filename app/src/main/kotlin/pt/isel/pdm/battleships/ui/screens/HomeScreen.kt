@@ -57,7 +57,7 @@ fun HomeScreen(showAuthentication: Boolean) {
                 startActivity(context, intent, null)
             },
             icon = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
-            iconDescription = stringResource(R.string.main_menu_play_button_content_description),
+            iconDescription = stringResource(R.string.main_menu_play_button_description),
             text = stringResource(id = R.string.main_menu_play_button_text)
         )
         if (showAuthentication) {
@@ -68,7 +68,7 @@ fun HomeScreen(showAuthentication: Boolean) {
                 },
                 icon = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
                 iconDescription = stringResource(
-                    R.string.main_menu_login_button_content_description
+                    R.string.main_menu_login_button_description
                 ),
                 text = stringResource(id = R.string.main_menu_login_button_text)
             )
@@ -79,7 +79,7 @@ fun HomeScreen(showAuthentication: Boolean) {
                 },
                 icon = ImageVector.vectorResource(id = R.drawable.ic_round_person_add_24),
                 iconDescription = stringResource(
-                    R.string.main_menu_register_button_content_description
+                    R.string.main_menu_register_button_description
                 ),
                 text = stringResource(id = R.string.main_menu_register_button_text)
             )
@@ -90,7 +90,7 @@ fun HomeScreen(showAuthentication: Boolean) {
                 startActivity(context, intent, null)
             },
             icon = ImageVector.vectorResource(id = R.drawable.ic_round_table_rows_24),
-            iconDescription = stringResource(R.string.main_menu_ranking_button_content_description),
+            iconDescription = stringResource(R.string.main_menu_ranking_button_description),
             text = stringResource(id = R.string.main_menu_ranking_button_text)
         )
         MenuButton(
@@ -99,7 +99,7 @@ fun HomeScreen(showAuthentication: Boolean) {
                 startActivity(context, intent, null)
             },
             icon = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
-            iconDescription = stringResource(R.string.main_menu_about_button_content_description),
+            iconDescription = stringResource(R.string.main_menu_about_button_description),
             text = stringResource(id = R.string.main_menu_about_button_text)
         )
     }

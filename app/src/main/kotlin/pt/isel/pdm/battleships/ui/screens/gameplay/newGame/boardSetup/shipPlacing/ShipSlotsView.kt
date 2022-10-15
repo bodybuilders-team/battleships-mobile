@@ -24,6 +24,7 @@ import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
+import pt.isel.pdm.battleships.ui.screens.gameplay.board.DEFAULT_TILE_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.SHIP_VIEW_BOX_HEIGHT_FACTOR
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 
@@ -65,15 +66,15 @@ fun ShipSlotsView(
 
                     Box(
                         modifier = Modifier
-                            .height((tileSize * SHIP_VIEW_BOX_HEIGHT_FACTOR).dp)
-                            .width(tileSize.dp),
+                            .height((DEFAULT_TILE_SIZE * SHIP_VIEW_BOX_HEIGHT_FACTOR).dp)
+                            .width(DEFAULT_TILE_SIZE.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         if (shipTypeCount == 0) {
                             ShipView(
                                 type = shipType,
                                 orientation = Orientation.VERTICAL,
-                                tileSize = tileSize,
+                                tileSize = DEFAULT_TILE_SIZE,
                                 modifier = Modifier.alpha(0.5f)
                             )
                         } else {
@@ -83,7 +84,7 @@ fun ShipSlotsView(
                                     coordinate = Coordinate('A', 1),
                                     orientation = Orientation.VERTICAL
                                 ),
-                                tileSize = tileSize,
+                                tileSize = DEFAULT_TILE_SIZE,
                                 onDragStart = onDragStart,
                                 onDragEnd = onDragEnd,
                                 onDragCancel = onDragCancel,

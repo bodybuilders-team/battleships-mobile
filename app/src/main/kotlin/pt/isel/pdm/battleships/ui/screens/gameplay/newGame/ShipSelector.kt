@@ -23,6 +23,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 import pt.isel.pdm.battleships.ui.utils.IconButton
 
 const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
+const val SHIP_SELECTOR_BUTTON_CORNER_RADIUS = 2
 const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
 
 // TODO: Make ship slots (containing the draggable ships on board setup) similar to this,
@@ -45,7 +46,7 @@ fun ShipSelector(
 
     Column {
         LazyRow {
-            items(ShipType.values()) { ship ->
+            items(ShipType.values()) { shipType ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
                         modifier = Modifier
@@ -54,25 +55,25 @@ fun ShipSelector(
                         contentAlignment = Alignment.Center
                     ) {
                         ShipView(
-                            type = ship,
+                            type = shipType,
                             orientation = Orientation.VERTICAL,
                             tileSize = tileSize
                         )
                     }
 
                     IconButton(
-                        onClick = { onShipAdded(ship) },
+                        onClick = { onShipAdded(shipType) },
                         icon = ImageVector.vectorResource(R.drawable.ic_round_add_24),
-                        iconDescription = stringResource(id = R.string.add_ship_button_icon_content_description),
+                        iconDescription = stringResource(id = R.string.increment_ship_button_icon_content_description),
                         modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
                     )
 
-                    Text(text = shipTypes.count { it == ship }.toString())
+                    Text(text = shipTypes.count { it == shipType }.toString())
 
                     IconButton(
-                        onClick = { onShipRemoved(ship) },
+                        onClick = { onShipRemoved(shipType) },
                         icon = ImageVector.vectorResource(R.drawable.ic_round_remove_24),
-                        iconDescription = stringResource(id = R.string.remove_ship_button_icon_content_description),
+                        iconDescription = stringResource(id = R.string.decrement_ship_button_icon_content_description),
                         modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
                     )
                 }

@@ -37,7 +37,7 @@ private const val MIN_TIME_FOR_BOARD_CONFIG = 10 // Seconds
 private const val MAX_TIME_FOR_BOARD_CONFIG = 120 // Seconds
 private const val DEFAULT_TIME_FOR_BOARD_CONFIG = 60 // Seconds
 
-val DEFAULT_SHIP_TYPES = ShipType.values().toList()
+private val DEFAULT_SHIP_TYPES = ShipType.values().toList()
 
 /**
  * Screen that allows the user to configure a new game before starting it.

@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import pt.isel.pdm.battleships.domain.board.Board
+import pt.isel.pdm.battleships.domain.board.ConfigurableBoard
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
@@ -71,12 +71,10 @@ class DragState {
 fun BoardSetupScreen(
     boardSize: Int,
     ships: List<ShipType>,
-    onBoardSetupFinished: (Board) -> Unit,
+    onBoardSetupFinished: (ConfigurableBoard) -> Unit,
     onBackButtonClicked: () -> Unit
 ) {
-    var board by remember { mutableStateOf(Board(boardSize)) }
-
-    var selectedOrientation by remember { mutableStateOf(Orientation.VERTICAL) }
+    var board by remember { mutableStateOf(ConfigurableBoard(boardSize)) }
 
     val tileSize = getTileSize(boardSize)
 
@@ -227,13 +225,10 @@ fun BoardSetupScreen(
                         dragState.reset()
                     },
                     onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
-                    onChangeOrientationButtonPressed = {
-                        selectedOrientation = selectedOrientation.opposite()
-                    },
                     onRandomBoardButtonPressed = {
                         draggableShips = mutableListOf()
 
-                        board = Board.random(size = board.size, ships = ships)
+                        board = ConfigurableBoard.random(size = board.size, ships = ships)
 
                         board.fleet.forEach { ship ->
                             draggableShips = draggableShips + ship

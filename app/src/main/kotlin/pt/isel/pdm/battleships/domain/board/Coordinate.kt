@@ -22,7 +22,7 @@ data class Coordinate(val col: Char, val row: Int) : Serializable {
         }
         require(row in maxRowsRange) {
             "Invalid Coordinate:" +
-                " Row $row out of range (${maxColsRange.first} .. ${maxColsRange.last})."
+                " Row $row out of range (${maxRowsRange.first} .. ${maxRowsRange.last})."
         }
     }
 

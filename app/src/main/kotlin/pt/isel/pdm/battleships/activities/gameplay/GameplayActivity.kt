@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import pt.isel.pdm.battleships.domain.board.Board
+import pt.isel.pdm.battleships.domain.board.MyBoard
 import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.ui.screens.gameplay.GameplayScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
@@ -26,12 +26,15 @@ class GameplayActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val board = intent.getSerializableExtra("board") as Board
+                    val myBoard = intent.getSerializableExtra("board") as MyBoard
                     val gameConfig = intent.getSerializableExtra("gameConfig") as GameConfig
 
                     GameplayScreen(
-                        board = board,
+                        myBoard = myBoard,
                         gameConfig = gameConfig,
+                        onShootClicked = { coordinates ->
+                            // vm.shoot(coordinates)
+                        },
                         onBackButtonClicked = { finish() }
                     )
                 }

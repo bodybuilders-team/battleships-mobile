@@ -33,7 +33,7 @@ class BoardSetupActivity : ComponentActivity() {
                         ships = gameConfig.ships,
                         onBoardSetupFinished = { board ->
                             val intent = Intent(this, GameplayActivity::class.java)
-                            intent.putExtra("board", board)
+                            intent.putExtra("board", board.toMyBoard())
                             intent.putExtra("gameConfig", gameConfig)
 
                             startActivity(intent)
