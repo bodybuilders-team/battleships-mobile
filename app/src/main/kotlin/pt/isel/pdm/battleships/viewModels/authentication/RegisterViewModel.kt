@@ -2,10 +2,10 @@ package pt.isel.pdm.battleships.viewModels.authentication
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import java.io.IOException
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.users.UsersService
+import java.io.IOException
 
 /**
  * Represents the register view model for the register screen.

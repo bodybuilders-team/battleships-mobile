@@ -17,12 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
+import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.SHIP_VIEW_BOX_HEIGHT_FACTOR
-import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.DragState
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 
 private const val SHIP_SLOTS_CORNER_RADIUS = 10
@@ -39,8 +41,11 @@ const val SHIP_SLOTS_FACTOR = 0.6f
 fun ShipSlotsView(
     shipTypes: List<ShipType>,
     tileSize: Float,
-    dragState: DragState,
-    onShipDragEnd: (ShipType) -> Unit
+    dragging: (ShipType) -> Boolean,
+    onDragStart: (Ship, Offset) -> Unit,
+    onDragEnd: (Ship) -> Unit,
+    onDragCancel: () -> Unit,
+    onDrag: (Offset) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -52,11 +57,11 @@ fun ShipSlotsView(
         contentAlignment = Alignment.Center
     ) {
         LazyRow {
-            items(ShipType.values()) { ship ->
+            items(ShipType.values()) { shipType ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val draggingShip = dragState.shipType == ship && dragState.isDragging
+                    val draggingShip = dragging(shipType)
 
-                    val shipTypeCount = shipTypes.count { it == ship }
+                    val shipTypeCount = shipTypes.count { it == shipType }
 
                     Box(
                         modifier = Modifier
@@ -66,21 +71,25 @@ fun ShipSlotsView(
                     ) {
                         if (shipTypeCount == 0) {
                             ShipView(
-                                type = ship,
+                                type = shipType,
                                 orientation = Orientation.VERTICAL,
                                 tileSize = tileSize,
                                 modifier = Modifier.alpha(0.5f)
                             )
                         } else {
                             DraggableShipView(
-                                type = ship,
-                                orientation = Orientation.VERTICAL,
+                                ship = Ship(
+                                    type = shipType,
+                                    coordinate = Coordinate('A', 1),
+                                    orientation = Orientation.VERTICAL
+                                ),
                                 tileSize = tileSize,
-                                dragState = dragState,
-                                onDragStart = {},
-                                onDragEnd = onShipDragEnd,
+                                onDragStart = onDragStart,
+                                onDragEnd = onDragEnd,
+                                onDragCancel = onDragCancel,
+                                onDrag = onDrag,
                                 modifier = Modifier.alpha(
-                                    if (shipTypeCount == 1 && draggingShip) 0.5f else 1f
+                                    if (draggingShip && shipTypeCount == 1) 0.5f else 1f
                                 ),
                                 onTap = {}
                             )
@@ -88,10 +97,8 @@ fun ShipSlotsView(
                     }
 
                     Text(
-                        text = (
-                            shipTypeCount -
-                                if (draggingShip && shipTypeCount != 0) 1 else 0
-                            ).toString()
+                        text = (shipTypeCount - if (draggingShip && shipTypeCount != 0) 1 else 0)
+                            .toString()
                     )
                 }
             }

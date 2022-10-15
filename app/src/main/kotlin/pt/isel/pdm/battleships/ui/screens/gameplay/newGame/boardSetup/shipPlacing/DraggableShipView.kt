@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -17,66 +16,67 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
-import pt.isel.pdm.battleships.domain.ship.Orientation
-import pt.isel.pdm.battleships.domain.ship.ShipType
-import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.DragState
+import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 
+/**
+ * Represents a draggable ship.
+ *
+ * @param ship the ship
+ * @param tileSize the size of the tile
+ * @param onDragStart the callback to be invoked when the drag starts
+ * @param onDragEnd the callback to be invoked when the drag ends
+ * @param onDragCancel the callback to be invoked when the drag is cancelled
+ * @param onDrag the callback to be invoked when the ship is dragged
+ * @param onTap the callback to be invoked when the ship is tapped
+ * @param modifier the modifier
+ */
 @Composable
 fun DraggableShipView(
-    type: ShipType,
-    orientation: Orientation,
+    ship: Ship,
     tileSize: Float,
-    dragState: DragState,
-    onDragStart: () -> Unit,
-    onDragEnd: (ShipType) -> Unit,
-    onTap: (ShipType) -> Unit,
+    onDragStart: (Ship, Offset) -> Unit,
+    onDragEnd: (Ship) -> Unit,
+    onDragCancel: () -> Unit,
+    onDrag: (Offset) -> Unit,
+    onTap: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var initialPosition by remember { mutableStateOf(Offset(0f, 0f)) }
-
-    val currentOrientation by rememberUpdatedState(newValue = orientation)
 
     Box(
         modifier = Modifier
             .onGloballyPositioned {
                 initialPosition = it.positionInWindow()
             }
-            .pointerInput(Unit) {
+            .pointerInput(ship) {
                 detectDragGestures(
                     onDragStart = {
-                        onDragStart()
-                        dragState.shipType = type
-                        dragState.shipOrientation = currentOrientation
-                        dragState.isDragging = true
-                        dragState.initialOffset = initialPosition
+                        onDragStart(ship, initialPosition)
                     },
                     onDragEnd = {
-                        onDragEnd(type)
-                        dragState.isDragging = false
-                        dragState.dragOffset = Offset.Zero
+                        onDragEnd(ship)
                     },
                     onDragCancel = {
-                        dragState.isDragging = false
-                        dragState.dragOffset = Offset.Zero
+                        onDragCancel()
                     },
                     onDrag = { change, dragAmount ->
                         change.consumeAllChanges()
-                        dragState.dragOffset += dragAmount
+                        onDrag(dragAmount)
                     }
                 )
             }
-            .pointerInput(Unit) {
+            .pointerInput(ship) {
                 detectTapGestures(
                     onTap = {
-                        onTap(type)
+                        onTap()
                     }
                 )
             }
     ) {
         ShipView(
-            type = type,
-            orientation = orientation,
+            type = ship.type,
+            orientation = ship.orientation,
             tileSize = tileSize,
             modifier = modifier
         )

@@ -10,12 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
-import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.DragState
 
 const val PLACING_MENU_PADDING = 6
 
@@ -33,8 +34,11 @@ const val PLACING_MENU_PADDING = 6
 fun ShipPlacingMenuView(
     shipTypes: List<ShipType>,
     tileSize: Float,
-    dragState: DragState,
-    onShipDragEnd: (ShipType) -> Unit,
+    dragging: (ShipType) -> Boolean,
+    onDragStart: (Ship, Offset) -> Unit,
+    onDragEnd: (Ship) -> Unit,
+    onDragCancel: () -> Unit,
+    onDrag: (Offset) -> Unit,
     onChangeOrientationButtonPressed: () -> Unit,
     onRandomBoardButtonPressed: () -> Unit,
     onConfirmBoardButtonPressed: () -> Unit
@@ -45,7 +49,15 @@ fun ShipPlacingMenuView(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        ShipSlotsView(shipTypes, tileSize, dragState, onShipDragEnd)
+        ShipSlotsView(
+            shipTypes = shipTypes,
+            tileSize = tileSize,
+            dragging = dragging,
+            onDragStart = onDragStart,
+            onDragEnd = onDragEnd,
+            onDragCancel = onDragCancel,
+            onDrag = onDrag
+        )
 
         // Buttons
         Column(
