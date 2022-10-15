@@ -13,8 +13,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.core.content.ContextCompat.startActivity
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.activities.gameplay.GameConfigurationActivity
+import pt.isel.pdm.battleships.activities.gameplay.LobbyActivity
 import pt.isel.pdm.battleships.activities.gameplay.QuickPlayActivity
-import pt.isel.pdm.battleships.activities.gameplay.SearchGameActivity
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.MenuButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
@@ -43,7 +43,7 @@ fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
         )
         MenuButton(
             onClick = {
-                val intent = Intent(context, SearchGameActivity::class.java)
+                val intent = Intent(context, LobbyActivity::class.java)
                 startActivity(context, intent, null)
             },
             icon = ImageVector.vectorResource(id = R.drawable.ic_round_search_24),

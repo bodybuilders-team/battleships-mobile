@@ -33,10 +33,9 @@ class GamesService(
 
     private val gamesEndpoint = "$apiEndpoint/games"
 
-    suspend fun getAllGames(token: String): Result<GamesDTO> {
+    suspend fun getAllGames(): Result<GamesDTO> {
         val req = Request.Builder()
             .url(gamesEndpoint)
-            .header("Authorization", "Bearer $token")
             .get()
             .build()
 

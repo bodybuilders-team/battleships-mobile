@@ -2,8 +2,11 @@ package pt.isel.pdm.battleships
 
 import android.app.Application
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.BattleshipsService
+import pt.isel.pdm.battleships.services.utils.siren.SubEntity
+import pt.isel.pdm.battleships.services.utils.siren.SubEntityDeserializer
 
 /**
  * Represents the Battleships application.
@@ -14,7 +17,10 @@ import pt.isel.pdm.battleships.services.BattleshipsService
  */
 class BattleshipsApplication : DependenciesContainer, Application() {
 
-    override val jsonFormatter: Gson = Gson()
+    override val jsonFormatter: Gson = GsonBuilder()
+        .registerTypeAdapter(SubEntity::class.java, SubEntityDeserializer())
+        .create()
+
     override val sessionManager: SessionManager = SessionManager()
 
     override val battleshipsService =
@@ -25,7 +31,7 @@ class BattleshipsApplication : DependenciesContainer, Application() {
         )
 
     companion object {
-        const val API_ENDPOINT = "https://0d3d-2001-8a0-6370-f300-10a3-5c76-dc6d-c308.eu.ngrok.io"
+        const val API_ENDPOINT = "https://68a1-95-92-71-62.eu.ngrok.io"
         const val TAG = "BattleshipsApp"
     }
 }

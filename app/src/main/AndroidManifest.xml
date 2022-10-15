@@ -30,7 +30,7 @@
         <activity android:name=".activities.gameplay.GameplayActivity" />
         <activity android:name=".activities.gameplay.GameplayMenuActivity" />
         <activity android:name=".activities.gameplay.GameConfigurationActivity" />
-        <activity android:name=".activities.gameplay.SearchGameActivity" />
+        <activity android:name=".activities.gameplay.LobbyActivity" />
         <activity android:name=".activities.gameplay.QuickPlayActivity" />
         <activity android:name=".activities.AboutActivity" />
         <activity android:name=".activities.authentication.RegisterActivity" />

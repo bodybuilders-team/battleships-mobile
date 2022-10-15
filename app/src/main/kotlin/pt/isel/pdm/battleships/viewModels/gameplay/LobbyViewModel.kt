@@ -12,12 +12,12 @@ import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
 
 /**
- * View model for the search game activity.
+ * View model for the lobby screen.
  *
  * @property sessionManager the session manager used to handle the user session
  * @property gamesService the game service
  */
-class SearchGameViewModel(
+class LobbyViewModel(
     private val sessionManager: SessionManager,
     private val gamesService: GamesService
 ) : ViewModel() {
@@ -28,7 +28,7 @@ class SearchGameViewModel(
 
     fun getAllGames() {
         viewModelScope.launch {
-            games = when (val res = gamesService.getAllGames(sessionManager.token!!)) {
+            games = when (val res = gamesService.getAllGames()) {
                 is Result.Success -> {
                     state = SearchGameState.SEARCH_FINISHED
                     res.dto

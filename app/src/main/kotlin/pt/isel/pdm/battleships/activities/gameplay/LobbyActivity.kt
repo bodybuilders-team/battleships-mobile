@@ -11,18 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.ui.screens.gameplay.SearchGameScreen
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
-import pt.isel.pdm.battleships.viewModels.gameplay.SearchGameViewModel
+import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel
 
 /**
- * Activity for the search game screen.
+ * Activity for the lobby screen.
  *
  * @property battleshipsService the service used to handle the battleships game
  * @property sessionManager the session manager used to handle the user session
  * @property viewModel the view model used to the search game process
  */
-class SearchGameActivity : ComponentActivity() {
+class LobbyActivity : ComponentActivity() {
 
     private val battleshipsService by lazy {
         (application as DependenciesContainer).battleshipsService
@@ -33,10 +33,10 @@ class SearchGameActivity : ComponentActivity() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private val viewModel by viewModels<SearchGameViewModel> {
+    private val viewModel by viewModels<LobbyViewModel> {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return SearchGameViewModel(
+                return LobbyViewModel(
                     sessionManager = sessionManager,
                     gamesService = battleshipsService.gamesService
                 ) as T
@@ -53,7 +53,7 @@ class SearchGameActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    SearchGameScreen(
+                    LobbyScreen(
                         viewModel,
                         onBackButtonClicked = { finish() }
                     )

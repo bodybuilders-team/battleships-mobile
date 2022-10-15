@@ -64,4 +64,6 @@
     <string name="main_menu_play_button_content_description">Button to gameplay menu screen</string>
     <string name="gameplay_quick_play_button_description">Button to quick play screen</string>
     <string name="gameplay_quick_play_button_text">Quick Play</string>
+    <string name="join_icon">Join Icon</string>
+    <string name="info_icon_description">Info icon</string>
 </resources>

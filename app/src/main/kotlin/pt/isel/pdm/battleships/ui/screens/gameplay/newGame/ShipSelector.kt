@@ -2,15 +2,11 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.newGame
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,10 +20,9 @@ import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.DEFAULT_TILE_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
+import pt.isel.pdm.battleships.ui.utils.IconButton
 
 const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
-const val SHIP_SELECTOR_BUTTON_CORNER_RADIUS = 2
-const val SHIP_SELECTOR_BUTTON_PADDING = 2
 const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
 
 // TODO: Make ship slots (containing the draggable ships on board setup) similar to this,
@@ -65,41 +60,23 @@ fun ShipSelector(
                         )
                     }
 
-                    IncrementShipCountButton(
+                    IconButton(
                         onClick = { onShipAdded(ship) },
                         icon = ImageVector.vectorResource(R.drawable.ic_round_add_24),
-                        contentDescription = stringResource(id = R.string.add_ship_button_icon_content_description)
+                        iconDescription = stringResource(id = R.string.add_ship_button_icon_content_description),
+                        modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
                     )
 
                     Text(text = shipTypes.count { it == ship }.toString())
 
-                    IncrementShipCountButton(
+                    IconButton(
                         onClick = { onShipRemoved(ship) },
                         icon = ImageVector.vectorResource(R.drawable.ic_round_remove_24),
-                        contentDescription = stringResource(id = R.string.remove_ship_button_icon_content_description)
+                        iconDescription = stringResource(id = R.string.remove_ship_button_icon_content_description),
+                        modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun IncrementShipCountButton(
-    onClick: () -> Unit,
-    icon: ImageVector,
-    contentDescription: String
-) {
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(SHIP_SELECTOR_BUTTON_CORNER_RADIUS.dp),
-        modifier = Modifier
-            .size(SHIP_SELECTOR_BUTTON_SIZE.dp),
-        contentPadding = PaddingValues(0.dp) // TODO: What is this?
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = contentDescription
-        )
     }
 }

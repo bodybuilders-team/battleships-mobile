@@ -1,9 +1,11 @@
 package pt.isel.pdm.battleships.ui.utils
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +14,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 private const val BUTTON_PADDING = 6
-private const val BUTTON_CORNER_RADIUS = 8
 
 /**
  * Represents a button with an icon.
@@ -22,25 +23,31 @@ private const val BUTTON_CORNER_RADIUS = 8
  * @param iconDescription the description of the icon
  * @param text the text of the button
  * @param modifier the modifier of the button
+ * @param enabled whether the button is enabled or not
  */
 @Composable
 fun IconButton(
     onClick: () -> Unit,
     icon: ImageVector,
     iconDescription: String,
-    text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
         modifier = modifier,
-        shape = RoundedCornerShape(BUTTON_CORNER_RADIUS.dp)
+        shape = CircleShape,
+        enabled = enabled,
+        contentPadding = if (text == null) PaddingValues(0.dp) else ButtonDefaults.ContentPadding
     ) {
         Icon(
             imageVector = icon,
             contentDescription = iconDescription
         )
-        Spacer(modifier = Modifier.width(BUTTON_PADDING.dp))
-        Text(text = text)
+        if (text != null) {
+            Spacer(modifier = Modifier.width(BUTTON_PADDING.dp))
+            Text(text = text)
+        }
     }
 }
