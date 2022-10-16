@@ -5,9 +5,17 @@ import pt.isel.pdm.battleships.domain.ShipCell
 import pt.isel.pdm.battleships.domain.WaterCell
 import pt.isel.pdm.battleships.domain.exceptions.InvalidShotException
 import pt.isel.pdm.battleships.domain.ship.Ship
-import pt.isel.pdm.battleships.utils.replace
-import pt.isel.pdm.battleships.utils.replaceIf
+import pt.isel.pdm.battleships.domain.utils.replace
+import pt.isel.pdm.battleships.domain.utils.replaceIf
 
+/**
+ * Represents the opponent's board.
+ *
+ * @param size the size of the board
+ * @param grid the grid of the board
+ *
+ * @property fleet the fleet of the board
+ */
 data class OpponentBoard(
     override val size: Int = DEFAULT_BOARD_SIZE,
     override val grid: List<Cell> = generateEmptyMatrix(size)

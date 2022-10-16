@@ -6,7 +6,7 @@ import pt.isel.pdm.battleships.domain.WaterCell
 import pt.isel.pdm.battleships.domain.ship.Orientation
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.ship.ShipType
-import pt.isel.pdm.battleships.utils.replaceIf
+import pt.isel.pdm.battleships.domain.utils.replaceIf
 
 /**
  * Represents a board in the game.
@@ -72,6 +72,8 @@ data class ConfigurableBoard(
 
     /**
      * Converts this configurable board to a [MyBoard], in order to be played in the gameplay phase.
+     *
+     * @return the [MyBoard] representation of this board
      */
     fun toMyBoard() = MyBoard(size, grid)
 

@@ -23,7 +23,7 @@ import pt.isel.pdm.battleships.activities.RankingActivity
 import pt.isel.pdm.battleships.activities.authentication.LoginActivity
 import pt.isel.pdm.battleships.activities.authentication.RegisterActivity
 import pt.isel.pdm.battleships.activities.gameplay.GameplayMenuActivity
-import pt.isel.pdm.battleships.ui.utils.MenuButton
+import pt.isel.pdm.battleships.ui.utils.IconButton
 
 private const val LOGO_MAX_SIZE_FACTOR = 0.6f
 
@@ -46,61 +46,74 @@ fun HomeScreen(showAuthentication: Boolean) {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = stringResource(R.string.logo_content_description),
             modifier = Modifier.fillMaxSize(LOGO_MAX_SIZE_FACTOR)
         )
-        MenuButton(
+
+        IconButton(
             onClick = {
                 val intent = Intent(context, GameplayMenuActivity::class.java)
                 startActivity(context, intent, null)
             },
-            icon = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
-            iconDescription = stringResource(R.string.main_menu_play_button_description),
-            text = stringResource(id = R.string.main_menu_play_button_text)
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
+            contentDescription = stringResource(R.string.main_menu_play_button_description),
+            text = stringResource(id = R.string.main_menu_play_button_text),
+            modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
         )
+
         if (showAuthentication) {
-            MenuButton(
+            IconButton(
                 onClick = {
                     val intent = Intent(context, LoginActivity::class.java)
                     startActivity(context, intent, null)
                 },
-                icon = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
-                iconDescription = stringResource(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
+                contentDescription = stringResource(
                     R.string.main_menu_login_button_description
                 ),
-                text = stringResource(id = R.string.main_menu_login_button_text)
+                text = stringResource(id = R.string.main_menu_login_button_text),
+                modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
-            MenuButton(
+
+            IconButton(
                 onClick = {
                     val intent = Intent(context, RegisterActivity::class.java)
                     startActivity(context, intent, null)
                 },
-                icon = ImageVector.vectorResource(id = R.drawable.ic_round_person_add_24),
-                iconDescription = stringResource(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_person_add_24),
+                contentDescription = stringResource(
                     R.string.main_menu_register_button_description
                 ),
-                text = stringResource(id = R.string.main_menu_register_button_text)
+                text = stringResource(id = R.string.main_menu_register_button_text),
+                modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
         }
-        MenuButton(
+
+        IconButton(
             onClick = {
                 val intent = Intent(context, RankingActivity::class.java)
                 startActivity(context, intent, null)
             },
-            icon = ImageVector.vectorResource(id = R.drawable.ic_round_table_rows_24),
-            iconDescription = stringResource(R.string.main_menu_ranking_button_description),
-            text = stringResource(id = R.string.main_menu_ranking_button_text)
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_table_rows_24),
+            contentDescription = stringResource(R.string.main_menu_ranking_button_description),
+            text = stringResource(id = R.string.main_menu_ranking_button_text),
+            modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
         )
-        MenuButton(
+
+        IconButton(
             onClick = {
                 val intent = Intent(context, AboutActivity::class.java)
                 startActivity(context, intent, null)
             },
-            icon = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
-            iconDescription = stringResource(R.string.main_menu_about_button_description),
-            text = stringResource(id = R.string.main_menu_about_button_text)
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
+            contentDescription = stringResource(R.string.main_menu_about_button_description),
+            text = stringResource(id = R.string.main_menu_about_button_text),
+            modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
         )
     }
 }
+
+private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f

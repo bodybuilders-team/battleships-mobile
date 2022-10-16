@@ -65,14 +65,14 @@ fun ShipPlacingMenuView(
         ) {
             IconButton(
                 onClick = onRandomBoardButtonPressed,
-                icon = ImageVector.vectorResource(R.drawable.ic_round_question_mark_24),
-                iconDescription = stringResource(id = R.string.gameplay_random_board_button_description),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_question_mark_24),
+                contentDescription = stringResource(id = R.string.gameplay_random_board_button_description),
                 text = stringResource(id = R.string.gameplay_random_board_button_text)
             )
             IconButton(
                 onClick = onConfirmBoardButtonPressed,
-                icon = ImageVector.vectorResource(R.drawable.ic_round_check_24),
-                iconDescription = stringResource(id = R.string.game_config_confirm_board_button_description),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_check_24),
+                contentDescription = stringResource(id = R.string.game_config_confirm_board_button_description),
                 text = stringResource(id = R.string.game_config_confirm_board_button_text)
             )
         }

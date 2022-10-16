@@ -7,14 +7,14 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import pt.isel.pdm.battleships.services.HTTPService
-import pt.isel.pdm.battleships.services.Result
-import pt.isel.pdm.battleships.services.dtos.ErrorDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameStateDTO
 import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
 import pt.isel.pdm.battleships.services.games.dtos.MatchmakeDTO
 import pt.isel.pdm.battleships.services.games.dtos.gamesDTOType
+import pt.isel.pdm.battleships.services.utils.ErrorDTO
+import pt.isel.pdm.battleships.services.utils.Result
 import pt.isel.pdm.battleships.services.utils.await
 import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
 

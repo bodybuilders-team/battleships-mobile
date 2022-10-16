@@ -5,9 +5,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import pt.isel.pdm.battleships.services.HTTPService
-import pt.isel.pdm.battleships.services.Result
 import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
 import pt.isel.pdm.battleships.services.users.dtos.UserDTO
+import pt.isel.pdm.battleships.services.utils.Result
 import pt.isel.pdm.battleships.services.utils.toJsonRequestBody
 
 /**

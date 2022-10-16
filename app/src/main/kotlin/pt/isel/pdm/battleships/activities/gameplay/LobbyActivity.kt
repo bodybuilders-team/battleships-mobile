@@ -8,9 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel
@@ -32,15 +31,12 @@ class LobbyActivity : ComponentActivity() {
         (application as DependenciesContainer).sessionManager
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private val viewModel by viewModels<LobbyViewModel> {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return LobbyViewModel(
-                    sessionManager = sessionManager,
-                    gamesService = battleshipsService.gamesService
-                ) as T
-            }
+    private val viewModel: LobbyViewModel by viewModels {
+        viewModelInit {
+            LobbyViewModel(
+                sessionManager = sessionManager,
+                gamesService = battleshipsService.gamesService
+            )
         }
     }
 

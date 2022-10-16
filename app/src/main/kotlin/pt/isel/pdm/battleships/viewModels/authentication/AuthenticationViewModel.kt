@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.Result
 import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
+import pt.isel.pdm.battleships.services.utils.Result
 
 /**
  * Represents the ViewModel for both authentication screens (login and register).

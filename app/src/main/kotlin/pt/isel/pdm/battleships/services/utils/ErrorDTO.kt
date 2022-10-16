@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.services.dtos
+package pt.isel.pdm.battleships.services.utils
 
 /**
  * Represents a Error DTO.

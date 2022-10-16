@@ -7,11 +7,17 @@ import pt.isel.pdm.battleships.domain.WaterCell
  * Represents a board in the game.
  *
  * @property size the size of the board
+ * @property grid the grid of cells
  */
 abstract class Board(
     open val size: Int = DEFAULT_BOARD_SIZE,
     protected open val grid: List<Cell> = generateEmptyMatrix(size)
 ) {
+    /**
+     * Checks if the board is valid.
+     *
+     * @throws IllegalArgumentException if the board is not valid
+     */
     protected fun isValid() {
         require(size in MIN_BOARD_SIZE..MAX_BOARD_SIZE) {
             "Board size must be between $size $MIN_BOARD_SIZE and $MAX_BOARD_SIZE"

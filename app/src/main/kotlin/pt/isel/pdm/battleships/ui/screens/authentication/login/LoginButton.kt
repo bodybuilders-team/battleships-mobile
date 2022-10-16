@@ -26,8 +26,8 @@ fun LoginButton(
         enabled = enabled,
         modifier = Modifier.padding(BUTTON_PADDING.dp),
         text = stringResource(id = R.string.login_button_text),
-        icon = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
-        iconDescription = stringResource(id = R.string.main_menu_login_button_description)
+        imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
+        contentDescription = stringResource(id = R.string.main_menu_login_button_description)
     )
 }
 

@@ -57,10 +57,11 @@ fun GameplayScreen(
             selectedCells = selectedCells,
             onTileClicked = { coordinate ->
                 if (!opponentBoard.getCell(coordinate).wasHit) {
-                    if (coordinate in selectedCells) {
-                        selectedCells = selectedCells - coordinate
-                    } else if (selectedCells.size < gameConfig.shotsPerTurn) {
-                        selectedCells = selectedCells + coordinate
+                    selectedCells = when {
+                        coordinate in selectedCells -> selectedCells - coordinate
+                        selectedCells.size < gameConfig.shotsPerTurn -> selectedCells + coordinate
+                        gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
+                        else -> selectedCells
                     }
                 }
             }
@@ -94,14 +95,14 @@ fun GameplayScreen(
                         onShootClicked(selectedCells)
                         selectedCells = emptyList()
                     },
-                    icon = ImageVector.vectorResource(R.drawable.ic_round_send_diagonal_24),
-                    iconDescription = stringResource(id = R.string.gameplay_shoot_button_description),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_send_diagonal_24),
+                    contentDescription = stringResource(id = R.string.gameplay_shoot_button_description),
                     text = stringResource(id = R.string.gameplay_shoot_button_text)
                 )
                 IconButton(
                     onClick = { selectedCells = emptyList() },
-                    icon = ImageVector.vectorResource(R.drawable.ic_round_reset_24),
-                    iconDescription = stringResource(id = R.string.gameplay_reset_shots_button_description),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_reset_24),
+                    contentDescription = stringResource(id = R.string.gameplay_reset_shots_button_description),
                     text = stringResource(id = R.string.gameplay_reset_shots_button_text)
                 )
             }

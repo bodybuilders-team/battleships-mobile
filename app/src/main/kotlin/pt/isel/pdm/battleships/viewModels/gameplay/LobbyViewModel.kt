@@ -7,44 +7,60 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.Result
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
+import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.LobbyState.ERROR
+import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.LobbyState.FINISHED
+import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.LobbyState.GETTING_GAMES
 
 /**
  * View model for the lobby screen.
  *
  * @property sessionManager the session manager used to handle the user session
  * @property gamesService the game service
+ * @property state the current state of the view model
+ * @property games the list of games
+ * @property errorMessage the error message
  */
 class LobbyViewModel(
     private val sessionManager: SessionManager,
     private val gamesService: GamesService
 ) : ViewModel() {
 
-    var state by mutableStateOf(SearchGameState.SEARCHING)
+    var state by mutableStateOf(GETTING_GAMES)
     var games by mutableStateOf<GamesDTO?>(null)
     var errorMessage: String? by mutableStateOf(null)
 
+    /**
+     * Gets the list of games.
+     */
     fun getAllGames() {
         viewModelScope.launch {
             games = when (val res = gamesService.getAllGames()) {
                 is Result.Success -> {
-                    state = SearchGameState.SEARCH_FINISHED
+                    state = FINISHED
                     res.dto
                 }
                 is Result.Failure -> {
                     errorMessage = res.error.message
-                    state = SearchGameState.ERROR
+                    state = ERROR
                     return@launch
                 }
             }
         }
     }
 
-    enum class SearchGameState {
-        SEARCHING,
-        SEARCH_FINISHED,
+    /**
+     * Represents the lobby state.
+     *
+     * @property GETTING_GAMES the get games operation is in progress
+     * @property FINISHED the get games operation has finished
+     * @property ERROR the get games operation has failed
+     */
+    enum class LobbyState {
+        GETTING_GAMES,
+        FINISHED,
         ERROR
     }
 }

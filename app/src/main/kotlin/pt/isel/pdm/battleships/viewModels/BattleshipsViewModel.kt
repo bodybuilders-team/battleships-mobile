@@ -21,23 +21,4 @@ class BattleshipsViewModel(
     private val sessionManager: SessionManager,
     private val assetManager: AssetManager,
     private val jsonFormatter: Gson
-) : ViewModel() {
-//    fun test() {
-//        viewModelScope.launch {
-//            while (sessionManager.token == null) {
-//                delay(10)
-//            }
-//            try {
-//                val token = sessionManager.token!!
-//                val mres = battleshipsService.gamesService.matchmake(token, gameConfigDTO)
-//                mres as MatchmakeResult.Success
-//                val gres = battleshipsService.gamesService.getGameById(token, mres.dto.gameId)
-//                print(gres)
-//                1
-//            } catch (e: Exception) {
-//                Log.v("BattleshipsViewModelTest", "Error: ${e.message}")
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-}
+) : ViewModel()

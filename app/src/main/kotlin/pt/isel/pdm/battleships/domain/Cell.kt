@@ -10,7 +10,10 @@ import java.io.Serializable
  * @property coordinate the coordinate of the cell
  * @property wasHit if the cell was hit
  */
-sealed class Cell(open val coordinate: Coordinate, open val wasHit: Boolean) : Serializable
+sealed class Cell(
+    open val coordinate: Coordinate,
+    open val wasHit: Boolean
+) : Serializable
 
 /**
  * Represents an empty cell.

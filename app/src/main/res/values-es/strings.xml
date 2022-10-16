@@ -1,51 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="back_button_text">Volver</string>
+
+    <string name="main_menu_play_button_text">Jugar</string>
+    <string name="main_menu_play_button_description">Botón para la pantalla del menú de juego</string>
+
     <string name="main_menu_login_button_text">Login</string>
-    <string name="authentication_password_placeholder_text">Contraseña</string>
-    <string name="login_button_text">Login</string>
-    <string name="ranking_table_label_username">Nombre de Usuario</string>
-    <string name="authentication_username_placeholder_text">Nombre de Usuario</string>
+    <string name="main_menu_login_button_description">Botón de la pantalla de inicio de sesión</string>
+
+    <string name="main_menu_register_button_text">Registrarse</string>
+    <string name="main_menu_register_button_description">Botón para la pantalla de registro</string>
+
+    <string name="main_menu_ranking_button_text">Calificaciones</string>
+    <string name="main_menu_ranking_button_description">Botón para la pantalla de clasificación de jugadores</string>
+
+    <string name="main_menu_about_button_text">Sobre</string>
+    <string name="main_menu_about_button_description">Botón de pantalla con información del desarrollador.</string>
+
+    <string name="about_title">Desarrolladores</string>
+    <string name="about_repo_github_text">El código de esta aplicación está disponible aquí:</string>
+
+    <string name="login_title">Iniciar Sesión</string>
+
+    <string name="authentication_message_invalid_username">Nombre de usuario debe tener al menos 3 caracteres.</string>
+    <string name="authentication_message_invalid_password">Contraseña debe tener al menos 4 caracteres.</string>
     <string name="authentication_message_username_not_found">Nombre de usuario no existe.</string>
     <string name="authentication_message_wrong_password">Contraseña está incorrecta.</string>
-    <string name="authentication_message_successful">Login logrado con éxito.</string>
+    <string name="authentication_message_successful">El inicio de sesión fue un éxito.</string>
+
     <string name="register_message_user_exists">Nombre de usuario ya existe.</string>
     <string name="register_message_successful">Usuario registrado con éxito.</string>
-    <string name="ranking_title">Ranking</string>
+
+    <string name="ranking_title">Calificaciones</string>
     <string name="ranking_search_player_placeholder_text">Buscar Jugador</string>
-    <string name="ranking_search_player_button_text">Buscar</string>
     <string name="ranking_table_label_position">Posición</string>
+    <string name="ranking_table_label_username">Nombre de Usuario</string>
     <string name="ranking_table_label_points">Puntos</string>
-    <string name="register_button_text">Registrar</string>
+    <string name="ranking_search_player_button_text">Buscar</string>
+
+    <string name="authentication_username_placeholder_text">Nombre de Usuario</string>
+    <string name="authentication_password_placeholder_text">Contraseña</string>
+
+
+    <string name="login_button_text">Iniciar Sesión</string>
+    <string name="register_button_text">Registrarse</string>
+
     <string name="gameplay_change_orientation_button_text">Cambiar Orientación</string>
     <string name="gameplay_random_board_button_text">Tablero Aleatorio</string>
-    <string name="github_logo_content_description">Logo del Github</string>
-    <string name="email_icon_content_description">Icono del Github</string>
-    <string name="authentication_message_invalid_password">Contraseña debe tener al menos 4 caracteres.</string>
-    <string name="authentication_message_invalid_username">Nombre de usuario debe tener al menos 3 caracteres.</string>
-    <string name="login_title">Login</string>
-    <string name="about_repo_github_text">El código de esta aplicación está disponible aquí:</string>
-    <string name="about_title">Desarrolladores</string>
-    <string name="main_menu_about_button_text">Sobre los Desarrolladores</string>
-    <string name="main_menu_ranking_button_text">Ranking</string>
-    <string name="main_menu_play_button_text">Jugar</string>
-    <string name="game_config_grid_size_text">Tamaño de la Cuadrícula</string>
+    <string name="gameplay_random_board_button_description">Botón para generar un tablero aleatorio</string>
+
     <string name="game_config_title">Configuracíon del Juego</string>
+    <string name="game_config_grid_size_text">Tamaño de la Cuadrícula</string>
+
     <string name="gameplay_new_game_button_text">Nuevo Juejo</string>
+    <string name="gameplay_new_game_button_description">Botón para crear un nuevo juego</string>
+
     <string name="gameplay_search_game_button_text">Buscar Juego</string>
+    <string name="gameplay_search_game_button_description">Botón para buscar juegos</string>
+
     <string name="game_config_create_game_button_text">Criar Juego</string>
-    <string name="back_button_text">Volver</string>
-    <string name="main_menu_exit_button_text">Salir</string>
-    <string name="game_config_confirm_board_button_text">Confirmar Cuadrícula</string>
+
+    <string name="game_config_confirm_board_button_text">Confirmar Tablero</string>
+    <string name="game_config_confirm_board_button_description">Botón para confirmar el tablero</string>
+
     <string name="game_config_shots_per_turn_text">Disparos por Turno</string>
     <string name="game_config_time_per_turn_text">Tiempo por Turno</string>
-    <string name="game_config_time_for_board_config_text">Tiempo de configuración de la  cuadrícula</string>
+    <string name="game_config_time_for_board_config_text">Tiempo de configuración del tablero</string>
+
     <string name="ship_image_content_description">Barco</string>
-    <string name="opponent_board_description">Cuadrícula Oponente</string>
-    <string name="my_board_description">Mi Cyadrícula</string>
-    <string name="search_game_title">Buscar Juegos</string>
+    <string name="opponent_board_description">Tablero del Oponente</string>
+    <string name="my_board_description">Mi Tablero</string>
     <string name="gameplay_menu_title">Menú de Juego</string>
-    <string name="gameplay_search_game_button_description">Botón para buscar juegos</string>
-    <string name="gameplay_new_game_button_description">Botón para crear un nuevo juego</string>
-    <string name="main_menu_about_button_description">Botón para acerca de la pantalla</string>
+    <string name="search_game_title">Buscar Juegos</string>
     <string name="game_config_ships_text">Buques</string>
+
+    <string name="increment_ship_button_icon_content_description">Botón para incrementar el importe de la nave</string>
+    <string name="decrement_ship_button_icon_content_description">Botón para disminuir la cantidad de la nave</string>
+
+    <string name="register_register_button_text">Registrarse</string>
+    <string name="authentication_message_invalid_email">Email Inválido</string>
+
+    <string name="register_title">Registrarse</string>
+
+    <string name="gameplay_quick_play_button_text">Juego Rápido</string>
+    <string name="gameplay_quick_play_button_description">Botón para pantalla de juego rápido</string>
+
+    <string name="gameplay_shoot_button_text">¡Disparar!</string>
+    <string name="gameplay_shoot_button_description">Botón para disparar</string>
+
+    <string name="gameplay_reset_shots_button_text">Reiniciar tiros</string>
+    <string name="gameplay_reset_shots_button_description">Botón para reiniciar disparos</string>
 </resources>

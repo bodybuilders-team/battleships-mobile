@@ -3,9 +3,17 @@ package pt.isel.pdm.battleships.domain.board
 import pt.isel.pdm.battleships.domain.Cell
 import pt.isel.pdm.battleships.domain.ShipCell
 import pt.isel.pdm.battleships.domain.ship.Ship
-import pt.isel.pdm.battleships.utils.replace
+import pt.isel.pdm.battleships.domain.utils.replace
 import java.io.Serializable
 
+/**
+ * Represents a board of the player.
+ *
+ * @param size the size of the board
+ * @property grid the grid of the board
+ *
+ * @property fleet the fleet of the board
+ */
 data class MyBoard(
     override val size: Int = DEFAULT_BOARD_SIZE,
     override val grid: List<Cell> = generateEmptyMatrix(size)

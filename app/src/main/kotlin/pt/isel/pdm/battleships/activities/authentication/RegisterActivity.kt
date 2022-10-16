@@ -8,9 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.authentication.RegisterViewModel
@@ -32,12 +31,9 @@ class RegisterActivity : ComponentActivity() {
         (application as DependenciesContainer).sessionManager
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private val viewModel by viewModels<RegisterViewModel> {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return RegisterViewModel(sessionManager, battleshipsService.usersService) as T
-            }
+    private val viewModel: RegisterViewModel by viewModels {
+        viewModelInit {
+            RegisterViewModel(sessionManager, battleshipsService.usersService)
         }
     }
 

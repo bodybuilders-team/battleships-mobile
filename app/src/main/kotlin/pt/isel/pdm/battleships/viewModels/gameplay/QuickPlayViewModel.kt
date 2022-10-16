@@ -11,9 +11,9 @@ import com.google.gson.stream.JsonReader
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.Result
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
+import pt.isel.pdm.battleships.services.utils.Result
 import pt.isel.pdm.battleships.viewModels.DEFAULT_GAME_CONFIG_FILE_PATH
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.ERROR
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.MATCHMADE
@@ -24,6 +24,9 @@ import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayS
  *
  * @property sessionManager the session manager used to handle the user session
  * @property gamesService the game service
+ * @property state the current state of the quick play activity
+ * @property gameId the id of the game that was created
+ * @property errorMessage the error message to display
  */
 class QuickPlayViewModel(
     private val sessionManager: SessionManager,

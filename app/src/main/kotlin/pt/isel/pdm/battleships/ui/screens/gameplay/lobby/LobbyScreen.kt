@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel
-import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.SearchGameState
+import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.LobbyState
 
 /**
  * Screen that displays the lobby menu.
@@ -35,11 +37,11 @@ fun LobbyScreen(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize()
     ) {
-        ScreenTitle(title = "Lobby")
+        ScreenTitle(title = stringResource(id = R.string.lobby_title))
 
         when (vm.state) {
-            SearchGameState.SEARCHING -> Text(text = "Searching...")
-            SearchGameState.SEARCH_FINISHED ->
+            LobbyState.GETTING_GAMES -> Text(text = "Searching...")
+            LobbyState.FINISHED ->
                 LazyColumn(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
@@ -56,7 +58,7 @@ fun LobbyScreen(
                         )
                     }
                 }
-            SearchGameState.ERROR -> Text(text = "Error" + vm.errorMessage)
+            LobbyState.ERROR -> Text(text = "Error" + vm.errorMessage)
         }
 
         GoBackButton(onClick = onBackButtonClicked)

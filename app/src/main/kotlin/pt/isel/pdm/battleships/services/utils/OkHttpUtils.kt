@@ -18,6 +18,7 @@ import kotlin.coroutines.resumeWithException
 /**
  * Suspends the current coroutine until the [Call] completes.
  *
+ * @receiver the [Call] to be executed
  * @return the [Response] of the [Call]
  */
 suspend fun Call.await(): Response =
@@ -41,6 +42,7 @@ suspend fun Call.await(): Response =
 /**
  * Converts the [ResponseBody] to a [JSONObject].
  *
+ * @receiver the [ResponseBody] to be converted
  * @return the json object
  */
 suspend fun ResponseBody.toJson(): JSONObject =
@@ -52,6 +54,7 @@ suspend fun ResponseBody.toJson(): JSONObject =
 /**
  * Converts the [JSONObject] to a [RequestBody].
  *
+ * @receiver the json object
  * @return the request body
  */
 fun JSONObject.toJsonRequestBody(): RequestBody = this
@@ -60,6 +63,8 @@ fun JSONObject.toJsonRequestBody(): RequestBody = this
 
 /**
  * Gets the [ResponseBody] from the [Response] body.
+ *
+ * @receiver the response
  *
  * @return the response body
  * @throws IllegalStateException if the response body is null

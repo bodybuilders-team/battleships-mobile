@@ -5,54 +5,48 @@ import com.google.gson.stream.JsonReader
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import pt.isel.pdm.battleships.services.dtos.ErrorDTO
+import pt.isel.pdm.battleships.services.utils.ErrorDTO
+import pt.isel.pdm.battleships.services.utils.Result
 import pt.isel.pdm.battleships.services.utils.await
 import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
 
 /**
- * HTTP Response result.
+ * Represents a service that communicates with a HTTP server.
+ *
+ * @property httpClient the HTTP client used to communicate with the server
+ * @property jsonFormatter the JSON formatter used to parse the server responses
  */
-sealed class Result<T> {
-
-    /**
-     * The response was successful.
-     *
-     * @property dto the response DTO
-     */
-    class Success<T>(val dto: T) : Result<T>()
-
-    /**
-     * The response was unsuccessful.
-     *
-     * @property error the error DTO
-     */
-    class Failure<T>(val error: ErrorDTO) : Result<T>()
-}
-
 abstract class HTTPService(
     protected val httpClient: OkHttpClient,
     protected val jsonFormatter: Gson
 ) {
 
-    protected suspend inline fun <reified T> Request.getResponseResult(): Result<T> {
-        val res = httpClient.newCall(this).await()
+    /**
+     * Sends a HTTP request to the server and parses the response into a [Result] of the specified type.
+     *
+     * @receiver the HTTP request to send
+     * @return a [Result] of the specified type
+     */
+    protected suspend inline fun <reified T> Request.getResponseResult(): Result<T> =
+        httpClient
+            .newCall(request = this)
+            .await()
+            .getResult()
 
-        return res.getResult()
-    }
-
+    /**
+     * Parses the response into a [Result] of the specified type.
+     *
+     * @receiver the HTTP response to parse
+     * @return a [Result] of the specified type
+     */
     protected inline fun <reified T> Response.getResult(): Result<T> {
         val body = this.getBodyOrThrow()
         val resJson = JsonReader(body.charStream())
 
         return if (!this.isSuccessful) {
-            Result.Failure(
-                error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java)
-            )
+            Result.Failure(error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java))
         } else {
-            Result.Success(
-                dto =
-                jsonFormatter.fromJson(resJson, T::class.java)
-            )
+            Result.Success(dto = jsonFormatter.fromJson(resJson, T::class.java))
         }
     }
 }

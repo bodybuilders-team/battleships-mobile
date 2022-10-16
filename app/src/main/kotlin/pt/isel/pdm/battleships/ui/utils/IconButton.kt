@@ -19,17 +19,17 @@ private const val BUTTON_PADDING = 6
  * Represents a button with an icon.
  *
  * @param onClick the action to be performed when the button is clicked
- * @param icon the icon of the button
- * @param iconDescription the description of the icon
- * @param text the text of the button
+ * @param imageVector the icon of the button
+ * @param contentDescription the description of the icon
  * @param modifier the modifier of the button
+ * @param text the text of the button
  * @param enabled whether the button is enabled or not
  */
 @Composable
 fun IconButton(
     onClick: () -> Unit,
-    icon: ImageVector,
-    iconDescription: String,
+    imageVector: ImageVector,
+    contentDescription: String,
     modifier: Modifier = Modifier,
     text: String? = null,
     enabled: Boolean = true
@@ -42,8 +42,8 @@ fun IconButton(
         contentPadding = if (text == null) PaddingValues(0.dp) else ButtonDefaults.ContentPadding
     ) {
         Icon(
-            imageVector = icon,
-            contentDescription = iconDescription
+            imageVector = imageVector,
+            contentDescription = contentDescription
         )
         if (text != null) {
             Spacer(modifier = Modifier.width(BUTTON_PADDING.dp))

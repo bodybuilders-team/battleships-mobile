@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.utils
+package pt.isel.pdm.battleships.domain.utils
 
 /**
  * Returns a new list with element at index [at] replaced by [new].

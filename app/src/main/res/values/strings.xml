@@ -19,8 +19,6 @@
     <string name="main_menu_about_button_text">About</string>
     <string name="main_menu_about_button_description">Button to about screen</string>
 
-    <string name="main_menu_exit_button_text">Exit</string>
-
     <string name="about_title">Developers</string>
     <string name="about_repo_github_text">"The code for this app is available at: "</string>
 
@@ -53,8 +51,8 @@
     <string name="gameplay_random_board_button_text">Random Board</string>
     <string name="gameplay_random_board_button_description">Button to get a random board</string>
 
-    <string name="github_logo_content_description">Github logo</string>
-    <string name="email_icon_content_description">Email icon</string>
+    <string name="github_logo_content_description" translatable="false">Github Logo</string>
+    <string name="email_icon_content_description" translatable="false">Email Icon</string>
 
     <string name="game_config_title">Game Configuration</string>
     <string name="game_config_grid_size_text">Grid Size</string>
@@ -86,19 +84,21 @@
 
     <string name="register_register_button_text">Register</string>
     <string name="authentication_message_invalid_email">Invalid Email</string>
-    <string name="authentication_email_placeholder_text">Email</string>
+    <string name="authentication_email_placeholder_text" translatable="false">Email</string>
 
     <string name="register_title">Register</string>
 
     <string name="gameplay_quick_play_button_text">Quick Play</string>
     <string name="gameplay_quick_play_button_description">Button to quick play screen</string>
 
-    <string name="join_icon_description">Join Icon</string>
-    <string name="info_icon_description">Info icon</string>
+    <string name="join_icon_description" translatable="false">Join Icon</string>
+    <string name="info_icon_description" translatable="false">Info icon</string>
 
     <string name="gameplay_shoot_button_text">Shoot!</string>
     <string name="gameplay_shoot_button_description">Button to shoot</string>
 
     <string name="gameplay_reset_shots_button_text">Reset shots</string>
     <string name="gameplay_reset_shots_button_description">Button to reset shots</string>
+
+    <string name="lobby_title" translatable="false">Lobby</string>
 </resources>

@@ -2,6 +2,7 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.newGame
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +23,6 @@ import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.IconButton
-import pt.isel.pdm.battleships.ui.utils.MenuButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
 private const val MIN_SHOTS_PER_TURN = 1
@@ -37,7 +37,7 @@ private const val MIN_TIME_FOR_BOARD_CONFIG = 10 // Seconds
 private const val MAX_TIME_FOR_BOARD_CONFIG = 120 // Seconds
 private const val DEFAULT_TIME_FOR_BOARD_CONFIG = 60 // Seconds
 
-private val DEFAULT_SHIP_TYPES = ShipType.values().toList()
+val DEFAULT_SHIP_TYPES = ShipType.values().toList()
 
 /**
  * Screen that allows the user to configure a new game before starting it.
@@ -110,8 +110,8 @@ fun GameConfigurationScreen(
                     )
                     IconButton(
                         onClick = { },
-                        icon = ImageVector.vectorResource(R.drawable.ic_round_directions_boat_24),
-                        iconDescription = "",
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_round_directions_boat_24),
+                        contentDescription = "",
                         text = "Manage ships"
                     )
                 }
@@ -125,7 +125,7 @@ fun GameConfigurationScreen(
             }
         )
 
-        MenuButton(
+        IconButton(
             onClick = {
                 onGameConfigured(
                     GameConfig(
@@ -137,11 +137,14 @@ fun GameConfigurationScreen(
                     )
                 )
             },
-            icon = ImageVector.vectorResource(id = R.drawable.ic_round_add_24),
-            iconDescription = stringResource(R.string.gameplay_new_game_button_description),
-            text = stringResource(id = R.string.game_config_create_game_button_text)
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_add_24),
+            contentDescription = stringResource(R.string.gameplay_new_game_button_description),
+            text = stringResource(id = R.string.game_config_create_game_button_text),
+            modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
         )
 
         GoBackButton(onClick = onBackButtonClicked)
     }
 }
+
+private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
