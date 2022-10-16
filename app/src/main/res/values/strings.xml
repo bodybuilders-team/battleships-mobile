@@ -101,4 +101,6 @@
     <string name="gameplay_reset_shots_button_description">Button to reset shots</string>
 
     <string name="lobby_title" translatable="false">Lobby</string>
+    <string name="main_menu_logout_button_text">Logout</string>
+    <string name="main_menu_logout_button_description">Button to logout</string>
 </resources>

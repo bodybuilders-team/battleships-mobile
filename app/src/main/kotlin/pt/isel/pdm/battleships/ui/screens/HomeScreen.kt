@@ -31,6 +31,7 @@ fun HomeScreen(
     onGameplayMenuClick: () -> Unit,
     onLoginClick: () -> Unit,
     onRegisterClick: () -> Unit,
+    onLogoutClick: () -> Unit,
     onRankingClick: () -> Unit,
     onAboutClick: () -> Unit,
     refreshingState: RefreshingState
@@ -82,6 +83,17 @@ fun HomeScreen(
                     R.string.main_menu_register_button_description
                 ),
                 text = stringResource(id = R.string.main_menu_register_button_text),
+                modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
+            )
+        } else {
+            IconButton(
+                onClick = onLogoutClick,
+                enabled = refreshingState == RefreshingState.NOT_REFRESHING,
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_logout_24),
+                contentDescription = stringResource(
+                    R.string.main_menu_logout_button_description
+                ),
+                text = stringResource(id = R.string.main_menu_logout_button_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
         }

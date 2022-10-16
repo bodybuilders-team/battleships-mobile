@@ -91,6 +91,9 @@ class HomeActivity : ComponentActivity() {
                                 linkKeys = setOf("register")
                             )
                         },
+                        onLogoutClick = {
+                            sessionManager.clearSession()
+                        },
                         refreshingState = viewModel.refreshingState
                     )
                 }
