@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-private const val TABLE_BORDER_WIDTH = 1
-private const val TABLE_CELL_WIDTH = 100
-private const val TABLE_CELL_HEIGHT = 30
+private const val TABLE_CELL_BORDER_WIDTH = 1
+const val TABLE_CELL_WIDTH = 100
+const val TABLE_CELL_HEIGHT = 30
 
 /**
  * Table cell that displays a text.
@@ -34,7 +34,7 @@ fun TableCell(
         modifier = Modifier
             .width(TABLE_CELL_WIDTH.dp)
             .height(TABLE_CELL_HEIGHT.dp)
-            .border(TABLE_BORDER_WIDTH.dp, Color.Black)
+            .border(TABLE_CELL_BORDER_WIDTH.dp, Color.Black)
             .then(modifier)
     ) {
         Text(
