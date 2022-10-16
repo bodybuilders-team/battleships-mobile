@@ -1,6 +1,5 @@
 package pt.isel.pdm.battleships.ui.screens
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,31 +10,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.core.content.ContextCompat.startActivity
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.activities.AboutActivity
-import pt.isel.pdm.battleships.activities.RankingActivity
-import pt.isel.pdm.battleships.activities.authentication.LoginActivity
-import pt.isel.pdm.battleships.activities.authentication.RegisterActivity
-import pt.isel.pdm.battleships.activities.gameplay.GameplayMenuActivity
 import pt.isel.pdm.battleships.ui.utils.IconButton
+import pt.isel.pdm.battleships.viewModels.RefreshingState
 
 private const val LOGO_MAX_SIZE_FACTOR = 0.6f
 
 /**
  * The main menu of the application.
  *
- * @param showAuthentication if true, the authentication buttons will be shown
+ * @param loggedIn if true, the user is logged in
  */
 @Composable
-fun HomeScreen(showAuthentication: Boolean) {
-    val context = LocalContext.current
-
+fun HomeScreen(
+    loggedIn: Boolean,
+    onGameplayMenuClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit,
+    onRankingClick: () -> Unit,
+    onAboutClick: () -> Unit,
+    refreshingState: RefreshingState
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
@@ -46,7 +45,6 @@ fun HomeScreen(showAuthentication: Boolean) {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
-
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = stringResource(R.string.logo_content_description),
@@ -54,22 +52,20 @@ fun HomeScreen(showAuthentication: Boolean) {
         )
 
         IconButton(
-            onClick = {
-                val intent = Intent(context, GameplayMenuActivity::class.java)
-                startActivity(context, intent, null)
-            },
+            onClick = onGameplayMenuClick,
+            enabled = refreshingState == RefreshingState.NOT_REFRESHING,
+// TODO: Commented for dev purposes, remove in the future.
+//                    && loggedIn
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
             contentDescription = stringResource(R.string.main_menu_play_button_description),
             text = stringResource(id = R.string.main_menu_play_button_text),
             modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
         )
 
-        if (showAuthentication) {
+        if (!loggedIn) {
             IconButton(
-                onClick = {
-                    val intent = Intent(context, LoginActivity::class.java)
-                    startActivity(context, intent, null)
-                },
+                onClick = onLoginClick,
+                enabled = refreshingState == RefreshingState.NOT_REFRESHING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
                 contentDescription = stringResource(
                     R.string.main_menu_login_button_description
@@ -79,10 +75,8 @@ fun HomeScreen(showAuthentication: Boolean) {
             )
 
             IconButton(
-                onClick = {
-                    val intent = Intent(context, RegisterActivity::class.java)
-                    startActivity(context, intent, null)
-                },
+                onClick = onRegisterClick,
+                enabled = refreshingState == RefreshingState.NOT_REFRESHING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_person_add_24),
                 contentDescription = stringResource(
                     R.string.main_menu_register_button_description
@@ -93,10 +87,8 @@ fun HomeScreen(showAuthentication: Boolean) {
         }
 
         IconButton(
-            onClick = {
-                val intent = Intent(context, RankingActivity::class.java)
-                startActivity(context, intent, null)
-            },
+            onClick = onRankingClick,
+            enabled = refreshingState == RefreshingState.NOT_REFRESHING,
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_table_rows_24),
             contentDescription = stringResource(R.string.main_menu_ranking_button_description),
             text = stringResource(id = R.string.main_menu_ranking_button_text),
@@ -104,10 +96,8 @@ fun HomeScreen(showAuthentication: Boolean) {
         )
 
         IconButton(
-            onClick = {
-                val intent = Intent(context, AboutActivity::class.java)
-                startActivity(context, intent, null)
-            },
+            onClick = onAboutClick,
+            enabled = refreshingState == RefreshingState.NOT_REFRESHING,
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
             contentDescription = stringResource(R.string.main_menu_about_button_description),
             text = stringResource(id = R.string.main_menu_about_button_text),

@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 import pt.isel.pdm.battleships.domain.board.ConfigurableBoard
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
@@ -32,7 +33,6 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacin
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.fromPointOrNull
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
-import kotlin.math.roundToInt
 
 /**
  * Class that stores the state of the ship dragging in the board setup screen.

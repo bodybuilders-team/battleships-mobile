@@ -110,7 +110,9 @@ fun GameConfigurationScreen(
                     )
                     IconButton(
                         onClick = { },
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_round_directions_boat_24),
+                        imageVector = ImageVector.vectorResource(
+                            R.drawable.ic_round_directions_boat_24
+                        ),
                         contentDescription = "",
                         text = "Manage ships"
                     )

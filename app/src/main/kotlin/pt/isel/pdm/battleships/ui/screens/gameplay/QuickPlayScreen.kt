@@ -1,6 +1,5 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,9 +9,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat.startActivity
 import kotlinx.coroutines.delay
 import pt.isel.pdm.battleships.activities.gameplay.BoardSetupActivity
+import pt.isel.pdm.battleships.ui.utils.navigateTo
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState
 
@@ -40,11 +39,10 @@ fun QuickPlayScreen(viewModel: QuickPlayViewModel) {
         when (viewModel.state) {
             QuickPlayState.MATCHMAKING -> Text(text = "Matchmaking...")
             QuickPlayState.MATCHMADE -> Text(text = "Matchmade!")
-            QuickPlayState.ERROR -> Text(text = "Error" + viewModel.errorMessage)
+            QuickPlayState.ERROR -> Text(text = "Error: " + viewModel.errorMessage)
         }
-        if (viewModel.state == QuickPlayState.MATCHMAKING) {
-            val intent = Intent(context, BoardSetupActivity::class.java)
-            startActivity(context, intent, null)
+        if (viewModel.state == QuickPlayState.MATCHMADE) {
+            context.navigateTo<BoardSetupActivity>()
         }
     }
 }

@@ -3,7 +3,6 @@ package pt.isel.pdm.battleships.activities.gameplay
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -31,13 +30,11 @@ class LobbyActivity : ComponentActivity() {
         (application as DependenciesContainer).sessionManager
     }
 
-    private val viewModel: LobbyViewModel by viewModels {
-        viewModelInit {
-            LobbyViewModel(
-                sessionManager = sessionManager,
-                gamesService = battleshipsService.gamesService
-            )
-        }
+    private val viewModel by viewModelInit {
+        LobbyViewModel(
+            sessionManager = sessionManager,
+            gamesService = battleshipsService.gamesService
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

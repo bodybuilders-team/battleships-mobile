@@ -2,13 +2,12 @@ package pt.isel.pdm.battleships.services.users
 
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONObject
 import pt.isel.pdm.battleships.services.HTTPService
+import pt.isel.pdm.battleships.services.users.dtos.LoginDTO
+import pt.isel.pdm.battleships.services.users.dtos.RegisterDTO
 import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
 import pt.isel.pdm.battleships.services.users.dtos.UserDTO
 import pt.isel.pdm.battleships.services.utils.Result
-import pt.isel.pdm.battleships.services.utils.toJsonRequestBody
 
 /**
  * Represents the service that handles the battleships game.
@@ -18,12 +17,10 @@ import pt.isel.pdm.battleships.services.utils.toJsonRequestBody
  * @property jsonFormatter the JSON formatter
  */
 class UsersService(
-    private val apiEndpoint: String,
+    apiEndpoint: String,
     httpClient: OkHttpClient,
     jsonFormatter: Gson
-) : HTTPService(httpClient, jsonFormatter) {
-
-    private val usersEndpoint = "$apiEndpoint/users"
+) : HTTPService(apiEndpoint, httpClient, jsonFormatter) {
 
     /**
      * Logs in the user with the given [username] and [password].
@@ -33,18 +30,8 @@ class UsersService(
      *
      * @return the authentication result
      */
-    suspend fun login(username: String, password: String): Result<TokenDTO> {
-        val json = JSONObject()
-        json.put("username", username)
-        json.put("password", password)
-
-        val req = Request.Builder()
-            .url("$usersEndpoint/login")
-            .post(body = json.toJsonRequestBody())
-            .build()
-
-        return req.getResponseResult()
-    }
+    suspend fun login(username: String, password: String): Result<TokenDTO> =
+        post("/users/login", LoginDTO(username, password))
 
     /**
      * Registers the user with the given [email], [username] and [password].
@@ -55,26 +42,9 @@ class UsersService(
      *
      * @return the authentication result
      */
-    suspend fun register(email: String, username: String, password: String): Result<TokenDTO> {
-        val json = JSONObject()
-        json.put("username", username)
-        json.put("email", email)
-        json.put("password", password)
+    suspend fun register(email: String, username: String, password: String): Result<TokenDTO> =
+        post("/users", RegisterDTO(email, username, password))
 
-        val req = Request.Builder()
-            .url(usersEndpoint)
-            .post(body = json.toJsonRequestBody())
-            .build()
-
-        return req.getResponseResult()
-    }
-
-    suspend fun getUserByUsername(username: String): Result<UserDTO> {
-        val req = Request.Builder()
-            .url("$usersEndpoint/$username")
-            .get()
-            .build()
-
-        return req.getResponseResult()
-    }
+    suspend fun getUserByUsername(username: String): Result<UserDTO> =
+        get("/users/$username")
 }

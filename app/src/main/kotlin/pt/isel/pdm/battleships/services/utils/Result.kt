@@ -8,9 +8,9 @@ sealed class Result<T> {
     /**
      * The response was successful.
      *
-     * @property dto the response DTO
+     * @property data the response data
      */
-    class Success<T>(val dto: T) : Result<T>()
+    class Success<T>(val data: T) : Result<T>()
 
     /**
      * The response was unsuccessful.

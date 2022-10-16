@@ -14,10 +14,12 @@ import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.utils.Result
-import pt.isel.pdm.battleships.viewModels.DEFAULT_GAME_CONFIG_FILE_PATH
+import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.ERROR
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.MATCHMADE
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.MATCHMAKING
+
+const val DEFAULT_GAME_CONFIG_FILE_PATH = "defaultGameConfig.json"
 
 /**
  * View model for the quick play activity.
@@ -25,7 +27,7 @@ import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayS
  * @property sessionManager the session manager used to handle the user session
  * @property gamesService the game service
  * @property state the current state of the quick play activity
- * @property gameId the id of the game that was created
+ * @property gameLink the id of the game that was created
  * @property errorMessage the error message to display
  */
 class QuickPlayViewModel(
@@ -36,7 +38,7 @@ class QuickPlayViewModel(
 ) : ViewModel() {
 
     var state by mutableStateOf(MATCHMAKING)
-    var gameId: Int? by mutableStateOf(null)
+    var gameLink: String? by mutableStateOf(null)
     var errorMessage: String? by mutableStateOf(null)
 
     // TODO: change this
@@ -45,19 +47,31 @@ class QuickPlayViewModel(
         GameConfigDTO::class.java
     )
 
-    // TODO: Comment this
+    /**
+     * Matchmakes a game with the default configuration.
+     */
     fun matchmake() {
         viewModelScope.launch {
-            val matchmakeGameId = when (
-                val res = gamesService.matchmake(sessionManager.token!!, gameConfigDTO)
+            val token = sessionManager.token ?: throw IllegalStateException("No token found")
+
+            val matchmakeGameLink = when (
+                val res = gamesService.matchmake(token, gameConfigDTO)
             ) {
                 is Result.Success -> {
-                    if (res.dto.wasCreated) {
-                        res.dto.game.id
-                    } else {
+                    val properties = res.data.properties
+                        ?: throw IllegalStateException("Game properties are null")
+                    val entities =
+                        res.data.entities ?: throw IllegalStateException("Game entities are null")
+                    val matchGameLink = res.data.entities
+                        .filterIsInstance<EmbeddedLink>()
+                        .first { it.rel.contains("game") }.href.path
+
+                    gameLink = matchGameLink
+                    if (!properties.wasCreated) {
                         state = MATCHMADE
                         return@launch
                     }
+                    matchGameLink
                 }
                 is Result.Failure -> {
                     errorMessage = res.error.message
@@ -66,14 +80,15 @@ class QuickPlayViewModel(
                 }
             }
 
-            gameId = matchmakeGameId
-
             while (state != MATCHMADE) {
                 when (
-                    val res = gamesService.getGameState(sessionManager.token!!, matchmakeGameId)
+                    val res = gamesService.getGameState(token, matchmakeGameLink)
                 ) {
                     is Result.Success -> {
-                        if (res.dto.phase == "WAITING_FOR_PLAYERS") {
+                        val properties = res.data.properties
+                            ?: throw IllegalStateException("Game state properties are null")
+
+                        if (properties.phase == "WAITING_FOR_PLAYERS") {
                             delay(POLLING_DELAY)
                         } else {
                             state = MATCHMADE

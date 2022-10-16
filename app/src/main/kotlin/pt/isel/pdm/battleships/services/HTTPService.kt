@@ -2,51 +2,95 @@ package pt.isel.pdm.battleships.services
 
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import pt.isel.pdm.battleships.services.utils.ErrorDTO
 import pt.isel.pdm.battleships.services.utils.Result
 import pt.isel.pdm.battleships.services.utils.await
+import pt.isel.pdm.battleships.services.utils.fromJson
 import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
+import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
-/**
- * Represents a service that communicates with a HTTP server.
- *
- * @property httpClient the HTTP client used to communicate with the server
- * @property jsonFormatter the JSON formatter used to parse the server responses
- */
 abstract class HTTPService(
-    protected val httpClient: OkHttpClient,
-    protected val jsonFormatter: Gson
+    val apiEndpoint: String,
+    val httpClient: OkHttpClient,
+    val jsonFormatter: Gson
 ) {
 
-    /**
-     * Sends a HTTP request to the server and parses the response into a [Result] of the specified type.
-     *
-     * @receiver the HTTP request to send
-     * @return a [Result] of the specified type
-     */
-    protected suspend inline fun <reified T> Request.getResponseResult(): Result<T> =
-        httpClient
-            .newCall(request = this)
-            .await()
-            .getResult()
+    suspend inline fun <reified T> Request.getResponseResult(): Result<SirenEntity<T>> {
+        val res = httpClient.newCall(this).await()
 
-    /**
-     * Parses the response into a [Result] of the specified type.
-     *
-     * @receiver the HTTP response to parse
-     * @return a [Result] of the specified type
-     */
-    protected inline fun <reified T> Response.getResult(): Result<T> {
+        return res.getResult()
+    }
+
+    inline fun <reified T> Response.getResult(): Result<SirenEntity<T>> {
         val body = this.getBodyOrThrow()
         val resJson = JsonReader(body.charStream())
 
-        return if (!this.isSuccessful) {
-            Result.Failure(error = jsonFormatter.fromJson(resJson, ErrorDTO::class.java))
+        return if (!this@getResult.isSuccessful) {
+            Result.Failure(
+                error = jsonFormatter.fromJson(resJson)
+            )
         } else {
-            Result.Success(dto = jsonFormatter.fromJson(resJson, T::class.java))
+            Result.Success(
+                data = jsonFormatter.fromJson(resJson, SirenEntity.getType<T>().type)
+            )
         }
+    }
+
+    suspend inline fun <reified T> get(link: String): Result<SirenEntity<T>> {
+        val req = Request.Builder()
+            .url(apiEndpoint + link)
+            .build()
+
+        return req.getResponseResult()
+    }
+
+    suspend inline fun <reified T> get(
+        link: String,
+        token: String
+    ): Result<SirenEntity<T>> {
+        val req = Request.Builder()
+            .url(apiEndpoint + link)
+            .header("Authorization", "Bearer $token")
+            .build()
+
+        return req.getResponseResult()
+    }
+
+    suspend inline fun <reified T> post(
+        link: String,
+        body: Any
+    ): Result<SirenEntity<T>> {
+        val req = Request.Builder()
+            .url(apiEndpoint + link)
+            .post(
+                jsonFormatter.toJson(body).toRequestBody(
+                    "application/json".toMediaType()
+                )
+            )
+            .build()
+
+        return req.getResponseResult()
+    }
+
+    suspend inline fun <reified T> post(
+        link: String,
+        token: String,
+        body: Any
+    ): Result<SirenEntity<T>> {
+        val req = Request.Builder()
+            .url(apiEndpoint + link)
+            .header("Authorization", "Bearer $token")
+            .post(
+                jsonFormatter.toJson(body).toRequestBody(
+                    "application/json".toMediaType()
+                )
+            )
+            .build()
+
+        return req.getResponseResult()
     }
 }

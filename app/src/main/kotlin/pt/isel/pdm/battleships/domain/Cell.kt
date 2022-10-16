@@ -1,8 +1,8 @@
 package pt.isel.pdm.battleships.domain
 
+import java.io.Serializable
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Ship
-import java.io.Serializable
 
 /**
  * Represents a cell in the board.

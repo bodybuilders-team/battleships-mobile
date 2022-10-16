@@ -1,7 +1,9 @@
 package pt.isel.pdm.battleships.services.games.dtos
 
+import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
+
 /**
- * Represents a Game DTO.
+ * Represents the properties of a Game DTO.
  *
  * @property id the id of the game
  * @property name the name of the game
@@ -10,7 +12,7 @@ package pt.isel.pdm.battleships.services.games.dtos
  * @property state the state of the game
  * @property players the players of the game
  */
-data class GameDTO(
+data class GameDTOProperties(
     val id: Int,
     val name: String,
     val creator: String,
@@ -18,3 +20,5 @@ data class GameDTO(
     val state: GameStateDTO,
     val players: List<PlayerDTO>
 )
+
+typealias GameDTO = SirenEntity<GameDTOProperties>

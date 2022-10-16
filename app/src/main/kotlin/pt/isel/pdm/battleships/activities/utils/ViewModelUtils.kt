@@ -1,5 +1,7 @@
 package pt.isel.pdm.battleships.activities.utils // ktlint-disable filename
 
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
@@ -10,9 +12,12 @@ import androidx.lifecycle.ViewModelProvider
  * @return The initialized [ViewModel]
  */
 @Suppress("UNCHECKED_CAST")
-fun <T> viewModelInit(block: () -> T) =
-    object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return block() as T
+inline fun <reified T : ViewModel>
+ComponentActivity.viewModelInit(crossinline block: () -> T) =
+    viewModels<T> {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return block() as T
+            }
         }
     }

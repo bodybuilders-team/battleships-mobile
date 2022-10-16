@@ -40,7 +40,7 @@ class LobbyViewModel(
             games = when (val res = gamesService.getAllGames()) {
                 is Result.Success -> {
                     state = FINISHED
-                    res.dto
+                    res.data
                 }
                 is Result.Failure -> {
                     errorMessage = res.error.message

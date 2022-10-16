@@ -64,7 +64,9 @@ fun ShipSelector(
                     IconButton(
                         onClick = { onShipAdded(shipType) },
                         imageVector = ImageVector.vectorResource(R.drawable.ic_round_add_24),
-                        contentDescription = stringResource(id = R.string.increment_ship_button_icon_content_description),
+                        contentDescription = stringResource(
+                            id = R.string.increment_ship_button_icon_content_description
+                        ),
                         modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
                     )
 
@@ -73,7 +75,9 @@ fun ShipSelector(
                     IconButton(
                         onClick = { onShipRemoved(shipType) },
                         imageVector = ImageVector.vectorResource(R.drawable.ic_round_remove_24),
-                        contentDescription = stringResource(id = R.string.decrement_ship_button_icon_content_description),
+                        contentDescription = stringResource(
+                            id = R.string.decrement_ship_button_icon_content_description
+                        ),
                         modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
                     )
                 }

@@ -1,11 +1,11 @@
 package pt.isel.pdm.battleships.domain.board
 
+import java.io.Serializable
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_ROW
 import pt.isel.pdm.battleships.domain.board.Board.Companion.MAX_BOARD_SIZE
 import pt.isel.pdm.battleships.domain.board.Coordinate.Companion.maxColsRange
 import pt.isel.pdm.battleships.domain.board.Coordinate.Companion.maxRowsRange
-import java.io.Serializable
 
 /**
  * Coordinate of each board cell.

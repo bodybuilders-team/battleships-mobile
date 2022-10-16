@@ -3,7 +3,6 @@ package pt.isel.pdm.battleships.activities.gameplay
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -36,15 +35,13 @@ class QuickPlayActivity : ComponentActivity() {
         (application as DependenciesContainer).jsonFormatter
     }
 
-    private val viewModel: QuickPlayViewModel by viewModels {
-        viewModelInit {
-            QuickPlayViewModel(
-                sessionManager = sessionManager,
-                gamesService = battleshipsService.gamesService,
-                jsonFormatter = jsonFormatter,
-                assetManager = assets
-            )
-        }
+    private val viewModel by viewModelInit {
+        QuickPlayViewModel(
+            sessionManager = sessionManager,
+            gamesService = battleshipsService.gamesService,
+            jsonFormatter = jsonFormatter,
+            assetManager = assets
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

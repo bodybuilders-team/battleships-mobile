@@ -1,10 +1,10 @@
 package pt.isel.pdm.battleships.domain.board
 
+import java.io.Serializable
 import pt.isel.pdm.battleships.domain.Cell
 import pt.isel.pdm.battleships.domain.ShipCell
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.domain.utils.replace
-import java.io.Serializable
 
 /**
  * Represents a board of the player.

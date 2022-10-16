@@ -1,12 +1,14 @@
 package pt.isel.pdm.battleships.services.games.dtos
 
+import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
+
 /**
- * Represents a Matchmake DTO.
+ * Represents the properties of a Matchmake DTO.
  *
- * @property gameId the id of the game
  * @property wasCreated true if the game was created, false if it was joined
  */
-data class MatchmakeDTO(
-    val wasCreated: Boolean,
-    val game: GameDTO
+data class MatchmakeDTOProperties(
+    val wasCreated: Boolean
 )
+
+typealias MatchmakeDTO = SirenEntity<MatchmakeDTOProperties>

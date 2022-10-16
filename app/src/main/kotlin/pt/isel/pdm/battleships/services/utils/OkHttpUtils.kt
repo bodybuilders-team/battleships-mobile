@@ -1,5 +1,10 @@
 package pt.isel.pdm.battleships.services.utils
 
+import com.google.gson.Gson
+import com.google.gson.stream.JsonReader
+import java.io.IOException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -11,9 +16,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
 import org.json.JSONObject
-import java.io.IOException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 /**
  * Suspends the current coroutine until the [Call] completes.
@@ -71,3 +73,12 @@ fun JSONObject.toJsonRequestBody(): RequestBody = this
  */
 fun Response.getBodyOrThrow(): ResponseBody =
     body ?: throw IllegalStateException("Response body is null")
+
+/**
+ * Parses an object of type [T] from the [json] stream.
+ *
+ * @param json the json stream
+ *
+ * @return the parsed object
+ */
+inline fun <reified T> Gson.fromJson(json: JsonReader): T = fromJson(json, T::class.java)

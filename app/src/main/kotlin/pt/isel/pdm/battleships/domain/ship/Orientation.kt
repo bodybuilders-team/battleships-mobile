@@ -1,8 +1,8 @@
 package pt.isel.pdm.battleships.domain.ship
 
+import java.io.Serializable
 import pt.isel.pdm.battleships.domain.ship.Orientation.HORIZONTAL
 import pt.isel.pdm.battleships.domain.ship.Orientation.VERTICAL
-import java.io.Serializable
 
 /**
  * Represents the ship's orientation.

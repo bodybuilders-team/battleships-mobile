@@ -26,7 +26,7 @@ class LoginViewModel(
         viewModelScope.launch {
             state = AuthenticationState.LOADING
             val res = usersService.login(username, password)
-            updateState(res)
+            updateState(username, res)
         }
     }
 }

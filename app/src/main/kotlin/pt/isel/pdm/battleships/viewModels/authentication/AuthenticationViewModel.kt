@@ -26,10 +26,12 @@ open class AuthenticationViewModel(
      *
      * @param res the result of the authentication process
      */
-    protected fun updateState(res: Result<TokenDTO>) {
+    protected fun updateState(username: String, res: Result<TokenDTO>) {
         state = when (res) {
             is Result.Success -> {
-                sessionManager.token = res.dto.token
+                val properties =
+                    res.data.properties ?: throw IllegalStateException("Token properties are null")
+                sessionManager.setSession(properties.token, username)
                 AuthenticationState.SUCCESS
             }
             is Result.Failure -> {

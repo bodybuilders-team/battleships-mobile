@@ -96,13 +96,17 @@ fun GameplayScreen(
                         selectedCells = emptyList()
                     },
                     imageVector = ImageVector.vectorResource(R.drawable.ic_missile),
-                    contentDescription = stringResource(id = R.string.gameplay_shoot_button_description),
+                    contentDescription = stringResource(
+                        id = R.string.gameplay_shoot_button_description
+                    ),
                     text = stringResource(id = R.string.gameplay_shoot_button_text)
                 )
                 IconButton(
                     onClick = { selectedCells = emptyList() },
                     imageVector = ImageVector.vectorResource(R.drawable.ic_round_refresh_24),
-                    contentDescription = stringResource(id = R.string.gameplay_reset_shots_button_description),
+                    contentDescription = stringResource(
+                        id = R.string.gameplay_reset_shots_button_description
+                    ),
                     text = stringResource(id = R.string.gameplay_reset_shots_button_text)
                 )
             }

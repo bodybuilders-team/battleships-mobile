@@ -1,8 +1,9 @@
 package pt.isel.pdm.battleships.domain.ship
 
+import java.io.Serializable
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
-import java.io.Serializable
+import pt.isel.pdm.battleships.services.players.dtos.UndeployedShipDTO
 
 /**
  * Represents a ship in the game.
@@ -21,6 +22,9 @@ data class Ship(
     val orientation: Orientation,
     val lives: Int = type.size
 ) : Serializable {
+    fun toUndeployedShipDTO(): UndeployedShipDTO =
+        UndeployedShipDTO(type.name, coordinate.toString(), orientation.name)
+
     val coordinates: List<Coordinate> = getCoordinates(type, coordinate, orientation)
 
     val isSunk = lives == 0

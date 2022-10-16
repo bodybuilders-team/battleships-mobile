@@ -19,6 +19,7 @@ import pt.isel.pdm.battleships.activities.gameplay.QuickPlayActivity
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.IconButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
+import pt.isel.pdm.battleships.ui.utils.navigateTo
 
 /**
  * The gameplay menu screen.
@@ -47,8 +48,7 @@ fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
 
         IconButton(
             onClick = {
-                val intent = Intent(context, GameConfigurationActivity::class.java)
-                startActivity(context, intent, null)
+                context.navigateTo<GameConfigurationActivity>()
             },
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_add_24),
             contentDescription = stringResource(R.string.gameplay_new_game_button_description),
@@ -58,8 +58,7 @@ fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
 
         IconButton(
             onClick = {
-                val intent = Intent(context, LobbyActivity::class.java)
-                startActivity(context, intent, null)
+                context.navigateTo<LobbyActivity>()
             },
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_search_24),
             contentDescription = stringResource(R.string.gameplay_search_game_button_description),

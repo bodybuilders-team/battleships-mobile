@@ -3,7 +3,6 @@ package pt.isel.pdm.battleships.activities.authentication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -31,10 +30,8 @@ class LoginActivity : ComponentActivity() {
         (application as DependenciesContainer).sessionManager
     }
 
-    private val viewModel: LoginViewModel by viewModels {
-        viewModelInit {
-            LoginViewModel(sessionManager, battleshipsService.usersService)
-        }
+    private val viewModel by viewModelInit {
+        LoginViewModel(sessionManager, battleshipsService.usersService)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -62,12 +62,12 @@ fun TileSelectionView(
                 onTileClicked()
             }
             .then(
-                if (selected)
+                if (selected) {
                     Modifier.border(
                         width = SELECTED_TILE_BORDER_SIZE.dp,
                         color = Color.Green
                     )
-                else Modifier
+                } else Modifier
             )
     )
 }
