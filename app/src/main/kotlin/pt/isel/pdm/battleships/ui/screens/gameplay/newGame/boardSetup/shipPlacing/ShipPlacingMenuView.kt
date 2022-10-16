@@ -65,7 +65,7 @@ fun ShipPlacingMenuView(
         ) {
             IconButton(
                 onClick = onRandomBoardButtonPressed,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_question_mark_24),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_cycle_24),
                 contentDescription = stringResource(id = R.string.gameplay_random_board_button_description),
                 text = stringResource(id = R.string.gameplay_random_board_button_text)
             )
