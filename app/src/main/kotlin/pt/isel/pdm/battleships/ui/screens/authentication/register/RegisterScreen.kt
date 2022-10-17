@@ -91,8 +91,6 @@ fun RegisterScreen(
             registerMessage.value = vm.errorMessage
         }
 
-        GoBackButton(
-            onClick = onBackButtonClicked
-        )
+        GoBackButton(onClick = onBackButtonClicked)
     }
 }

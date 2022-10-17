@@ -14,8 +14,6 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
-import pt.isel.pdm.battleships.domain.board.Board
-import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 
@@ -46,20 +44,12 @@ fun DraggableShipView(
 
     Box(
         modifier = Modifier
-            .onGloballyPositioned {
-                initialPosition = it.positionInWindow()
-            }
+            .onGloballyPositioned { initialPosition = it.positionInWindow() }
             .pointerInput(ship) {
                 detectDragGestures(
-                    onDragStart = {
-                        onDragStart(ship, initialPosition)
-                    },
-                    onDragEnd = {
-                        onDragEnd(ship)
-                    },
-                    onDragCancel = {
-                        onDragCancel()
-                    },
+                    onDragStart = { onDragStart(ship, initialPosition) },
+                    onDragEnd = { onDragEnd(ship) },
+                    onDragCancel = { onDragCancel() },
                     onDrag = { change, dragAmount ->
                         change.consumeAllChanges()
                         onDrag(dragAmount)
@@ -68,9 +58,7 @@ fun DraggableShipView(
             }
             .pointerInput(ship) {
                 detectTapGestures(
-                    onTap = {
-                        onTap()
-                    }
+                    onTap = { onTap() }
                 )
             }
     ) {
@@ -80,31 +68,5 @@ fun DraggableShipView(
             tileSize = tileSize,
             modifier = modifier
         )
-    }
-}
-
-/**
- * Gets a coordinate from a point.
- *
- * @param col the column of the point
- * @param row the row of the point
- *
- * @return the coordinate
- */
-private fun Coordinate.Companion.fromPoint(col: Int, row: Int) =
-    Coordinate(Board.FIRST_COL + col, row + 1)
-
-/**
- * Gets a coordinate from a point or null if it isn't valid.
- *
- * @param col the column of the point
- * @param row the row of the point
- *
- * @return the coordinate or null if it isn't valid
- */
-fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate? {
-    return when {
-        isValid(Board.FIRST_COL + col, row + 1) -> fromPoint(col, row)
-        else -> null
     }
 }

@@ -31,7 +31,10 @@ class UsersService(
      * @return the authentication result
      */
     suspend fun login(username: String, password: String): Result<TokenDTO> =
-        post("/users/login", LoginDTO(username, password))
+        post(
+            link = "/users/login",
+            body = LoginDTO(username, password)
+        )
 
     /**
      * Registers the user with the given [email], [username] and [password].
@@ -43,8 +46,17 @@ class UsersService(
      * @return the authentication result
      */
     suspend fun register(email: String, username: String, password: String): Result<TokenDTO> =
-        post("/users", RegisterDTO(email, username, password))
+        post(
+            link = "/users",
+            body = RegisterDTO(email, username, password)
+        )
 
+    /**
+     * Gets the user with the given [username].
+     *
+     * @param username the username of the user
+     * @return the result of the operation
+     */
     suspend fun getUserByUsername(username: String): Result<UserDTO> =
-        get("/users/$username")
+        get(link = "/users/$username")
 }

@@ -10,6 +10,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 
+private const val USERNAME_PADDING = 8
+private const val EMAIL_PADDING = 8
+
 /**
  * The text fields for the register operation on the register page:
  * - Email field
@@ -59,6 +62,3 @@ fun RegisterTextFields(
         visualTransformation = PasswordVisualTransformation()
     )
 }
-
-private const val USERNAME_PADDING = 8
-private const val EMAIL_PADDING = 8

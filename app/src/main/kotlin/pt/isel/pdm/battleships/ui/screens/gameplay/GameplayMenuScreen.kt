@@ -16,10 +16,12 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.activities.gameplay.GameConfigurationActivity
 import pt.isel.pdm.battleships.activities.gameplay.LobbyActivity
 import pt.isel.pdm.battleships.activities.gameplay.QuickPlayActivity
+import pt.isel.pdm.battleships.activities.utils.navigateTo
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.IconButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
-import pt.isel.pdm.battleships.ui.utils.navigateTo
+
+private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 
 /**
  * The gameplay menu screen.
@@ -47,9 +49,7 @@ fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
         )
 
         IconButton(
-            onClick = {
-                context.navigateTo<GameConfigurationActivity>()
-            },
+            onClick = { context.navigateTo<GameConfigurationActivity>() },
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_add_24),
             contentDescription = stringResource(R.string.gameplay_new_game_button_description),
             text = stringResource(id = R.string.gameplay_new_game_button_text),
@@ -57,9 +57,7 @@ fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
         )
 
         IconButton(
-            onClick = {
-                context.navigateTo<LobbyActivity>()
-            },
+            onClick = { context.navigateTo<LobbyActivity>() },
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_search_24),
             contentDescription = stringResource(R.string.gameplay_search_game_button_description),
             text = stringResource(id = R.string.gameplay_search_game_button_text),
@@ -69,5 +67,3 @@ fun GameplayMenuScreen(onBackButtonClicked: () -> Unit) {
         GoBackButton(onClick = onBackButtonClicked)
     }
 }
-
-private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f

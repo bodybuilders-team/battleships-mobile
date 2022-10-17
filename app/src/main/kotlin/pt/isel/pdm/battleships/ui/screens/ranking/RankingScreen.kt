@@ -31,7 +31,8 @@ private const val RANKING_TITLE_PADDING = 8
  */
 @Composable
 fun RankingScreen(onBackButtonClicked: () -> Unit) {
-    val fetchedPlayers = MockApi.getPlayers().sortedByDescending { it.points }
+    val fetchedPlayers = MockApi.getPlayers()
+        .sortedByDescending { it.points }
         .mapIndexed { index, rankedPlayer ->
             RankedPlayer(
                 username = rankedPlayer.username,

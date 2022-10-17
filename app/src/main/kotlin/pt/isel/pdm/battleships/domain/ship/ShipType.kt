@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.domain.ship
 
-import java.io.Serializable
 import pt.isel.pdm.battleships.services.games.dtos.ShipTypeDTO
+import java.io.Serializable
 
 /**
  * Represents the ship class in the game.
@@ -29,6 +29,13 @@ enum class ShipType(
     fun toDTO() = ShipTypeDTO(shipName, size, 1, points) // TODO: Check this, quantity?
 
     companion object {
+
+        /**
+         * Converts a DTO to a ship type.
+         *
+         * @param dto the DTO to convert
+         * @return the ship type
+         */
         fun fromDTO(dto: ShipTypeDTO) = values().first { it.shipName == dto.shipName }
     }
 }

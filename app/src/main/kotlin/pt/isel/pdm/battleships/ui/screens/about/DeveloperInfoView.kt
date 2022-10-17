@@ -63,7 +63,7 @@ fun DeveloperInfoView(number: String, name: String, githubLink: String) {
                     .padding(IMAGE_PADDING.dp)
             )
             Image(
-                painter = painterResource(id = R.drawable.email),
+                painter = painterResource(id = R.drawable.ic_email),
                 contentDescription = stringResource(id = R.string.email_icon_content_description),
                 modifier = Modifier
                     .clickable {

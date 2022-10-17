@@ -16,14 +16,22 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.utils.IconButton
-import pt.isel.pdm.battleships.viewModels.RefreshingState
+import pt.isel.pdm.battleships.viewModels.HomeViewModel.LoadingState
 
 private const val LOGO_MAX_SIZE_FACTOR = 0.6f
+private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 
 /**
  * The main menu of the application.
  *
  * @param loggedIn if true, the user is logged in
+ * @param onGameplayMenuClick callback to be invoked when the user clicks on the gameplay menu button
+ * @param onLoginClick callback to be invoked when the user clicks on the login button
+ * @param onRegisterClick callback to be invoked when the user clicks on the register button
+ * @param onLogoutClick callback to be invoked when the user clicks on the logout button
+ * @param onRankingClick callback to be invoked when the user clicks on the ranking button
+ * @param onAboutClick callback to be invoked when the user clicks on the about button
+ * @param loadingState the current state of the loading operation
  */
 @Composable
 fun HomeScreen(
@@ -34,7 +42,7 @@ fun HomeScreen(
     onLogoutClick: () -> Unit,
     onRankingClick: () -> Unit,
     onAboutClick: () -> Unit,
-    refreshingState: RefreshingState
+    loadingState: LoadingState
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,6 +54,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = stringResource(R.string.logo_content_description),
@@ -54,9 +63,7 @@ fun HomeScreen(
 
         IconButton(
             onClick = onGameplayMenuClick,
-            enabled = refreshingState == RefreshingState.NOT_REFRESHING,
-// TODO: Commented for dev purposes, remove in the future.
-//                    && loggedIn
+            enabled = loadingState == LoadingState.NOT_LOADING && loggedIn,
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
             contentDescription = stringResource(R.string.main_menu_play_button_description),
             text = stringResource(id = R.string.main_menu_play_button_text),
@@ -66,33 +73,27 @@ fun HomeScreen(
         if (!loggedIn) {
             IconButton(
                 onClick = onLoginClick,
-                enabled = refreshingState == RefreshingState.NOT_REFRESHING,
+                enabled = loadingState == LoadingState.NOT_LOADING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
-                contentDescription = stringResource(
-                    R.string.main_menu_login_button_description
-                ),
+                contentDescription = stringResource(R.string.main_menu_login_button_description),
                 text = stringResource(id = R.string.main_menu_login_button_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
 
             IconButton(
                 onClick = onRegisterClick,
-                enabled = refreshingState == RefreshingState.NOT_REFRESHING,
+                enabled = loadingState == LoadingState.NOT_LOADING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_person_add_24),
-                contentDescription = stringResource(
-                    R.string.main_menu_register_button_description
-                ),
+                contentDescription = stringResource(R.string.main_menu_register_button_description),
                 text = stringResource(id = R.string.main_menu_register_button_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
         } else {
             IconButton(
                 onClick = onLogoutClick,
-                enabled = refreshingState == RefreshingState.NOT_REFRESHING,
+                enabled = loadingState == LoadingState.NOT_LOADING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_logout_24),
-                contentDescription = stringResource(
-                    R.string.main_menu_logout_button_description
-                ),
+                contentDescription = stringResource(R.string.main_menu_logout_button_description),
                 text = stringResource(id = R.string.main_menu_logout_button_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
@@ -100,7 +101,7 @@ fun HomeScreen(
 
         IconButton(
             onClick = onRankingClick,
-            enabled = refreshingState == RefreshingState.NOT_REFRESHING,
+            enabled = loadingState == LoadingState.NOT_LOADING,
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_table_rows_24),
             contentDescription = stringResource(R.string.main_menu_ranking_button_description),
             text = stringResource(id = R.string.main_menu_ranking_button_text),
@@ -109,7 +110,7 @@ fun HomeScreen(
 
         IconButton(
             onClick = onAboutClick,
-            enabled = refreshingState == RefreshingState.NOT_REFRESHING,
+            enabled = loadingState == LoadingState.NOT_LOADING,
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
             contentDescription = stringResource(R.string.main_menu_about_button_description),
             text = stringResource(id = R.string.main_menu_about_button_text),
@@ -117,5 +118,3 @@ fun HomeScreen(
         )
     }
 }
-
-private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f

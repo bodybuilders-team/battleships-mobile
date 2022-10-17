@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 import pt.isel.pdm.battleships.activities.gameplay.BoardSetupActivity
-import pt.isel.pdm.battleships.ui.utils.navigateTo
+import pt.isel.pdm.battleships.activities.utils.navigateTo
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState
 

@@ -19,7 +19,7 @@ import pt.isel.pdm.battleships.viewModels.authentication.AuthenticationState
 import pt.isel.pdm.battleships.viewModels.authentication.LoginViewModel
 
 /**
- * Screen for login operation
+ * Screen for login operation.
  *
  * @param vm login view model
  * @param onBackButtonClicked callback to be invoked when the back button is clicked
@@ -83,8 +83,6 @@ fun LoginScreen(
             loginMessage.value = vm.errorMessage
         }
 
-        GoBackButton(
-            onClick = onBackButtonClicked
-        )
+        GoBackButton(onClick = onBackButtonClicked)
     }
 }

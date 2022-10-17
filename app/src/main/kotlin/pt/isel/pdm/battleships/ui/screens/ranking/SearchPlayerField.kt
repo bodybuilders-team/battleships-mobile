@@ -34,17 +34,8 @@ fun SearchPlayerField(onPlayerNameChanged: (String) -> Unit) {
                 playerSearched = it
                 onPlayerNameChanged(it)
             },
-            placeholder = {
-                Text(stringResource(id = R.string.ranking_search_player_placeholder_text))
-            },
+            placeholder = { Text(stringResource(id = R.string.ranking_search_player_placeholder_text)) },
             modifier = Modifier.fillMaxWidth(SEARCH_PLAYER_FIELD_WIDTH_FACTOR)
         )
-
-        /*Button(
-            onClick = searchButtonCallback,
-            modifier = Modifier.height(SEARCH_PLAYER_TEXT_FIELD_HEIGHT.dp)
-        ) {
-            Text(text = stringResource(id = R.string.ranking_search_player_button_text))
-        }*/
     }
 }

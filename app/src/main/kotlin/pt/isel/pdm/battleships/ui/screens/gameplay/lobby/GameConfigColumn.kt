@@ -16,6 +16,10 @@ import androidx.compose.ui.unit.sp
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.ui.utils.TableCell
 
+private const val PADDING = 10
+private const val CONFIG_TITLE_FONT_SIZE = 18
+private const val SHIP_TYPES_TABLE_HEIGHT = 160
+
 /**
  * Composable that displays the game configuration.
  *
@@ -73,7 +77,7 @@ fun GameConfigColumn(gameConfig: GameConfigDTO) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp)
+                .height(SHIP_TYPES_TABLE_HEIGHT.dp)
         ) {
             items(gameConfig.shipTypes) { shipType ->
                 Row {
@@ -86,6 +90,3 @@ fun GameConfigColumn(gameConfig: GameConfigDTO) {
         }
     }
 }
-
-private const val PADDING = 10
-private const val CONFIG_TITLE_FONT_SIZE = 18

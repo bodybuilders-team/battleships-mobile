@@ -37,6 +37,8 @@ private const val MIN_TIME_FOR_BOARD_CONFIG = 10 // Seconds
 private const val MAX_TIME_FOR_BOARD_CONFIG = 120 // Seconds
 private const val DEFAULT_TIME_FOR_BOARD_CONFIG = 60 // Seconds
 
+private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
+
 val DEFAULT_SHIP_TYPES = ShipType.values().toList()
 
 /**
@@ -148,5 +150,3 @@ fun GameConfigurationScreen(
         GoBackButton(onClick = onBackButtonClicked)
     }
 }
-
-private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f

@@ -23,12 +23,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 import pt.isel.pdm.battleships.ui.utils.IconButton
 
 const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
-const val SHIP_SELECTOR_BUTTON_CORNER_RADIUS = 2
-const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
+private const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
 
-// TODO: Make ship slots (containing the draggable ships on board setup) similar to this,
-//  having one slot for each ship type, and only showing the empty slot when all the ships of the
-//  type have been placed on the board.
 /**
  * Represents a slot that presents the ship types and allows the user to select the quantity of each type in a game.
  *

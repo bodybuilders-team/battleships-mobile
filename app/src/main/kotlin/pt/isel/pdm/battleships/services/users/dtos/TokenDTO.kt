@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.services.users.dtos
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
 /**
- * Represents a token DTO
+ * Represents a token DTO.
  *
  * @property token the token
  */

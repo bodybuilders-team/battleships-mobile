@@ -27,7 +27,7 @@ class GamesService(
      * Gets all the games
      */
     suspend fun getAllGames(): Result<GamesDTO> =
-        get("/games")
+        get(link = "/games")
 
     /**
      * Gets a game by id.
@@ -38,7 +38,10 @@ class GamesService(
      * @return the result of the get game operation
      */
     suspend fun getGame(token: String, gameLink: String): Result<GameDTO> =
-        get(gameLink, token)
+        get(
+            link = gameLink,
+            token = token
+        )
 
     suspend fun createGame() {
         // TODO
@@ -56,7 +59,11 @@ class GamesService(
         token: String,
         gameConfigDTO: GameConfigDTO
     ): Result<MatchmakeDTO> =
-        post("/games/matchmake", token, gameConfigDTO)
+        post(
+            link = "/games/matchmake",
+            token = token,
+            body = gameConfigDTO
+        )
 
     suspend fun joinGame(gameLink: String) {
         // TODO
@@ -74,9 +81,9 @@ class GamesService(
      *
      * @return the game state
      */
-    suspend fun getGameState(
-        token: String,
-        gameLink: String
-    ): Result<GameStateDTO> =
-        get("$gameLink/state", token)
+    suspend fun getGameState(token: String, gameLink: String): Result<GameStateDTO> =
+        get(
+            link = "$gameLink/state",
+            token = token
+        )
 }

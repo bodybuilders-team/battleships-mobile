@@ -8,9 +8,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.navigateTo
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.GameConfigurationScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
-import pt.isel.pdm.battleships.ui.utils.navigateTo
 
 /**
  * Activity for the new game screen.

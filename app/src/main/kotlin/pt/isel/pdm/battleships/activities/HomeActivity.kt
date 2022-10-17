@@ -11,13 +11,12 @@ import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.activities.authentication.LoginActivity
 import pt.isel.pdm.battleships.activities.authentication.RegisterActivity
 import pt.isel.pdm.battleships.activities.gameplay.GameplayMenuActivity
+import pt.isel.pdm.battleships.activities.utils.navigateTo
 import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.HomeScreen
 import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
-import pt.isel.pdm.battleships.ui.utils.navigateTo
-import pt.isel.pdm.battleships.viewModels.HomeState
 import pt.isel.pdm.battleships.viewModels.HomeViewModel
-import pt.isel.pdm.battleships.viewModels.RefreshingState
+import pt.isel.pdm.battleships.viewModels.HomeViewModel.LoadingState
 
 /**
  * This activity is the main entry point of the application.
@@ -66,48 +65,55 @@ class HomeActivity : ComponentActivity() {
                         loggedIn = sessionManager.isLoggedIn(),
                         onGameplayMenuClick = {
                             navigateWithActionTo<GameplayMenuActivity>(
-                                RefreshingState.REFRESHING_GAMEPLAY_MENU
+                                LoadingState.LOADING_GAMEPLAY_MENU
                             )
                         },
                         onRankingClick = {
                             navigateWithActionTo<RankingActivity>(
-                                RefreshingState.REFRESHING_RANKING
+                                LoadingState.LOADING_RANKING
                             )
                         },
                         onAboutClick = {
                             navigateWithActionTo<AboutActivity>(
-                                RefreshingState.REFRESHING_ABOUT
+                                LoadingState.LOADING_ABOUT
                             )
                         },
                         onLoginClick = {
                             navigateWithActionTo<LoginActivity>(
-                                RefreshingState.REFRESHING_LOGIN,
+                                LoadingState.LOADING_LOGIN,
                                 setOf("login")
                             )
                         },
                         onRegisterClick = {
                             navigateWithActionTo<RegisterActivity>(
-                                RefreshingState.REFRESHING_REGISTER,
+                                LoadingState.LOADING_REGISTER,
                                 linkKeys = setOf("register")
                             )
                         },
                         onLogoutClick = {
                             sessionManager.clearSession()
                         },
-                        refreshingState = viewModel.refreshingState
+                        loadingState = viewModel.loadingState
                     )
                 }
             }
         }
     }
 
+    /**
+     * Navigates to the specified activity, with the given link keys.
+     *
+     * @param T the type of the activity to navigate to
+     * @param loadingState the loading state to set before navigating
+     * @param linkKeys the link keys to set before navigating
+     */
     private inline fun <reified T> navigateWithActionTo(
-        refreshingState: RefreshingState,
+        loadingState: LoadingState,
         linkKeys: Set<String>? = null
     ) {
-        viewModel.refreshingState = refreshingState
+        viewModel.loadingState = loadingState
         viewModel.onHomeLoaded {
-            if (viewModel.state != HomeState.LOADED) {
+            if (viewModel.state != HomeViewModel.HomeState.LOADED) {
                 return@onHomeLoaded
             }
 
@@ -115,13 +121,13 @@ class HomeActivity : ComponentActivity() {
                 if (linkKeys == null) return@navigateTo
 
                 val links =
-                    viewModel.actions.filter {
-                        linkKeys.contains(it.key)
-                    }.mapValues { it.value.href.path }
+                    viewModel.actions
+                        .filter { linkKeys.contains(it.key) }
+                        .mapValues { it.value.href.path }
 
                 intent.putExtra("links", HashMap(links))
             }
-            viewModel.refreshingState = RefreshingState.NOT_REFRESHING
+            viewModel.loadingState = LoadingState.NOT_LOADING
         }
     }
 }

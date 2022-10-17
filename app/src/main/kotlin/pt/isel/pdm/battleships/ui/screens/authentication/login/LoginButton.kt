@@ -10,6 +10,8 @@ import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.utils.IconButton
 
+private const val BUTTON_PADDING = 8
+
 /**
  * Button for login operation
  *
@@ -30,5 +32,3 @@ fun LoginButton(
         contentDescription = stringResource(id = R.string.main_menu_login_button_description)
     )
 }
-
-private const val BUTTON_PADDING = 8

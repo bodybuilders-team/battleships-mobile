@@ -90,6 +90,7 @@
 
     <string name="gameplay_reset_shots_button_text">Reiniciar tiros</string>
     <string name="gameplay_reset_shots_button_description">Botón para reiniciar disparos</string>
+
     <string name="main_menu_logout_button_description">Botón para cerrar sesión</string>
     <string name="main_menu_logout_button_text">Cerrar sesión</string>
 </resources>

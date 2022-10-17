@@ -39,7 +39,7 @@ abstract class Board(
     companion object {
         const val DEFAULT_BOARD_SIZE = 10
         const val MIN_BOARD_SIZE = 7
-        const val MAX_BOARD_SIZE = 26
+        const val MAX_BOARD_SIZE = 18
         const val FIRST_COL = 'A'
         const val FIRST_ROW = 1
 

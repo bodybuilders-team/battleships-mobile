@@ -2,20 +2,20 @@ package pt.isel.pdm.battleships.services.utils
 
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
-import java.io.IOException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
 import org.json.JSONObject
+import pt.isel.pdm.battleships.services.HTTPService.Companion.applicationJsonMediaType
+import java.io.IOException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /**
  * Suspends the current coroutine until the [Call] completes.
@@ -61,7 +61,7 @@ suspend fun ResponseBody.toJson(): JSONObject =
  */
 fun JSONObject.toJsonRequestBody(): RequestBody = this
     .toString()
-    .toRequestBody("application/json".toMediaType())
+    .toRequestBody(applicationJsonMediaType)
 
 /**
  * Gets the [ResponseBody] from the [Response] body.

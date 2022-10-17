@@ -10,6 +10,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 
+private const val USERNAME_PADDING = 8
+
 /**
  * The text fields for the login operation on the login page:
  * - Username field
@@ -45,5 +47,3 @@ fun LoginTextFields(
         visualTransformation = PasswordVisualTransformation()
     )
 }
-
-private const val USERNAME_PADDING = 8

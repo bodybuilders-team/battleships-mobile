@@ -19,13 +19,14 @@ import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayS
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.MATCHMADE
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.MATCHMAKING
 
-const val DEFAULT_GAME_CONFIG_FILE_PATH = "defaultGameConfig.json"
-
 /**
  * View model for the quick play activity.
  *
  * @property sessionManager the session manager used to handle the user session
  * @property gamesService the game service
+ * @param jsonFormatter the json formatter
+ * @param assetManager the asset manager
+ *
  * @property state the current state of the quick play activity
  * @property gameLink the id of the game that was created
  * @property errorMessage the error message to display
@@ -60,8 +61,8 @@ class QuickPlayViewModel(
                 is Result.Success -> {
                     val properties = res.data.properties
                         ?: throw IllegalStateException("Game properties are null")
-                    val entities =
-                        res.data.entities ?: throw IllegalStateException("Game entities are null")
+                    val entities = res.data.entities
+                        ?: throw IllegalStateException("Game entities are null")
                     val matchGameLink = res.data.entities
                         .filterIsInstance<EmbeddedLink>()
                         .first { it.rel.contains("game") }.href.path
@@ -118,6 +119,7 @@ class QuickPlayViewModel(
     }
 
     companion object {
+        private const val DEFAULT_GAME_CONFIG_FILE_PATH = "defaultGameConfig.json"
         private const val POLLING_DELAY = 500L
     }
 }

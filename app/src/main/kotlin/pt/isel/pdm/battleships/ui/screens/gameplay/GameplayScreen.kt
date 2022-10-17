@@ -16,24 +16,25 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
-import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_ROW
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.board.MyBoard
 import pt.isel.pdm.battleships.domain.board.OpponentBoard
 import pt.isel.pdm.battleships.domain.game.GameConfig
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardViewWithIdentifiers
-import pt.isel.pdm.battleships.ui.screens.gameplay.board.TileSelectionView
+import pt.isel.pdm.battleships.ui.screens.gameplay.board.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.PlacedShipView
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.IconButton
+
+private const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
 
 /**
  * The gameplay screen.
  *
  * @param myBoard the player's board
  * @param gameConfig the game configuration
+ * @param onShootClicked the callback to be invoked when the player shoots
  * @param onBackButtonClicked the callback to be invoked when the back button is clicked
  */
 @Composable
@@ -96,9 +97,7 @@ fun GameplayScreen(
                         selectedCells = emptyList()
                     },
                     imageVector = ImageVector.vectorResource(R.drawable.ic_missile),
-                    contentDescription = stringResource(
-                        id = R.string.gameplay_shoot_button_description
-                    ),
+                    contentDescription = stringResource(R.string.gameplay_shoot_button_description),
                     text = stringResource(id = R.string.gameplay_shoot_button_text)
                 )
                 IconButton(
@@ -113,44 +112,5 @@ fun GameplayScreen(
         }
 
         GoBackButton(onClick = onBackButtonClicked)
-    }
-}
-
-private const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
-
-/**
- * View that shows the opponent's board.
- *
- * @param opponentBoard the opponent's board
- * @param selectedCells the selected cells
- * @param onTileClicked the callback to be invoked when a tile is clicked
- */
-@Composable
-private fun OpponentBoardView(
-    opponentBoard: OpponentBoard,
-    selectedCells: List<Coordinate>,
-    onTileClicked: (Coordinate) -> Unit
-) {
-    BoardViewWithIdentifiers(board = opponentBoard) {
-        val opponentBoardTileSize = getTileSize(opponentBoard.size)
-
-        opponentBoard.fleet.forEach { ship ->
-            PlacedShipView(ship, opponentBoardTileSize)
-        }
-
-        Row {
-            repeat(opponentBoard.size) { rowIdx ->
-                Column {
-                    repeat(opponentBoard.size) { colIdx ->
-                        val coordinate = Coordinate(FIRST_COL + colIdx, FIRST_ROW + rowIdx)
-                        TileSelectionView(
-                            tileSize = opponentBoardTileSize,
-                            selected = coordinate in selectedCells,
-                            onTileClicked = { onTileClicked(coordinate) }
-                        )
-                    }
-                }
-            }
-        }
     }
 }

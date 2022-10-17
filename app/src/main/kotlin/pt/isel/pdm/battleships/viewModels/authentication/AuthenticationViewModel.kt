@@ -18,6 +18,7 @@ import pt.isel.pdm.battleships.services.utils.Result
 open class AuthenticationViewModel(
     private val sessionManager: SessionManager
 ) : ViewModel() {
+
     var state by mutableStateOf(AuthenticationState.IDLE)
     var errorMessage: String? by mutableStateOf(null)
 
@@ -29,9 +30,9 @@ open class AuthenticationViewModel(
     protected fun updateState(username: String, res: Result<TokenDTO>) {
         state = when (res) {
             is Result.Success -> {
-                val properties =
-                    res.data.properties ?: throw IllegalStateException("Token properties are null")
-                sessionManager.setSession(properties.token, username)
+                val properties = res.data.properties
+                    ?: throw IllegalStateException("Token properties are null")
+                sessionManager.setSession(token = properties.token, username = username)
                 AuthenticationState.SUCCESS
             }
             is Result.Failure -> {

@@ -21,6 +21,8 @@ import pt.isel.pdm.battleships.ui.utils.TABLE_CELL_WIDTH
 import pt.isel.pdm.battleships.ui.utils.TableCell
 
 private const val TABLE_BORDER_WIDTH = 5
+private const val TABLE_COLUMNS_COUNT = 3
+private const val TABLE_ROWS_COUNT = 11
 
 /**
  * Table that shows the ranking of players, displaying their ranking position, username and points.
@@ -31,8 +33,8 @@ private const val TABLE_BORDER_WIDTH = 5
 fun RankingTableView(players: List<RankedPlayer>) {
     LazyColumn(
         modifier = Modifier
-            .width((TABLE_CELL_WIDTH * 3).dp)
-            .height((TABLE_CELL_HEIGHT * 11).dp)
+            .width((TABLE_CELL_WIDTH * TABLE_COLUMNS_COUNT).dp)
+            .height((TABLE_CELL_HEIGHT * TABLE_ROWS_COUNT).dp)
             .border(TABLE_BORDER_WIDTH.dp, Color.Black)
     ) {
         // Headers

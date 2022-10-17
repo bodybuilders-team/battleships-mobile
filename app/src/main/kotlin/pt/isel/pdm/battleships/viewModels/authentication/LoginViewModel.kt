@@ -8,7 +8,7 @@ import pt.isel.pdm.battleships.services.users.UsersService
 /**
  * Login view model for the login screen.
  *
- * @property sessionManager the session manager used to handle the user session
+ * @param sessionManager the session manager used to handle the user session
  * @property usersService the service used to handle the user's authentication
  */
 class LoginViewModel(
@@ -25,7 +25,7 @@ class LoginViewModel(
     fun login(username: String, password: String) {
         viewModelScope.launch {
             state = AuthenticationState.LOADING
-            val res = usersService.login(username, password)
+            val res = usersService.login(username = username, password = password)
             updateState(username, res)
         }
     }

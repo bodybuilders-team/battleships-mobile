@@ -33,6 +33,14 @@ import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.DEFAULT_SHIP_TYPES
 import pt.isel.pdm.battleships.ui.utils.IconButton
 
+private const val BUTTON_SIZE = 38
+private const val SPACER_WIDTH = 100
+private const val CARD_WIDTH_FACTOR = 0.8f
+private const val CARD_HEIGHT = 60
+private const val CARD_PADDING = 10
+private const val CARD_CORNER_RADIUS = 8
+private const val CARD_BORDER_WIDTH = 1
+
 /**
  * Composable that displays a game card in the lobby.
  *
@@ -52,9 +60,9 @@ fun GameCard(
             .padding(bottom = CARD_PADDING.dp)
             .clip(RoundedCornerShape(CARD_CORNER_RADIUS.dp))
             .border(
-                CARD_BORDER_WIDTH.dp,
-                Color.DarkGray,
-                RoundedCornerShape(CARD_CORNER_RADIUS.dp)
+                width = CARD_BORDER_WIDTH.dp,
+                color = Color.DarkGray,
+                shape = RoundedCornerShape(CARD_CORNER_RADIUS.dp)
             )
             .background(Color.LightGray)
     ) {
@@ -105,11 +113,3 @@ fun GameCard(
         }
     }
 }
-
-private const val BUTTON_SIZE = 38
-private const val SPACER_WIDTH = 100
-private const val CARD_WIDTH_FACTOR = 0.8f
-private const val CARD_HEIGHT = 60
-private const val CARD_PADDING = 10
-private const val CARD_CORNER_RADIUS = 8
-private const val CARD_BORDER_WIDTH = 1

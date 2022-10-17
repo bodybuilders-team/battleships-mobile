@@ -12,8 +12,7 @@ import androidx.lifecycle.ViewModelProvider
  * @return The initialized [ViewModel]
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : ViewModel>
-ComponentActivity.viewModelInit(crossinline block: () -> T) =
+inline fun <reified T : ViewModel> ComponentActivity.viewModelInit(crossinline block: () -> T) =
     viewModels<T> {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {

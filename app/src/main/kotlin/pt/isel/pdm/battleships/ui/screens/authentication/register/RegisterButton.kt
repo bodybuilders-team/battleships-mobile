@@ -1,6 +1,5 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.register
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -10,27 +9,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 
+private const val BUTTON_PADDING = 8
+
 /**
- * Button for login operation
+ * Button for register operation.
  *
  * @param enabled whether the button is enabled or not
- * @param onLoginClickCallback callback to be invoked when the login button is clicked
+ * @param onLoginClickCallback callback to be invoked when the register button is clicked
  */
 @Composable
 fun RegisterButton(
     enabled: Boolean = true,
     onLoginClickCallback: () -> Unit
 ) {
-    Row {
-        Button(
-            onClick = onLoginClickCallback,
-            modifier = Modifier.padding(end = BUTTON_PADDING.dp),
-            enabled = enabled
+    Button(
+        onClick = onLoginClickCallback,
+        modifier = Modifier.padding(end = BUTTON_PADDING.dp),
+        enabled = enabled
 
-        ) {
-            Text(text = stringResource(id = R.string.register_register_button_text))
-        }
+    ) {
+        Text(text = stringResource(id = R.string.register_register_button_text))
     }
 }
-
-private const val BUTTON_PADDING = 8

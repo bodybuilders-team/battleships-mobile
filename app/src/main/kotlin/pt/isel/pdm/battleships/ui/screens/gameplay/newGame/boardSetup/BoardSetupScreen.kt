@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import kotlin.math.roundToInt
+import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.ConfigurableBoard
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.domain.ship.Orientation
@@ -30,34 +30,9 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.board.FULL_BOARD_VIEW_BOX_SIZ
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.PlacedDraggableShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.ShipPlacingMenuView
-import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.fromPointOrNull
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
-
-/**
- * Class that stores the state of the ship dragging in the board setup screen.
- * Whenever a ship is dragged, the instance of this class is updated with the ship information,
- * therefore each ship does not hold a dragging state of its own.
- *
- * @property ship the ship being dragged
- * @property dragOffset the drag offset
- * @property isDragging whether the ship is being dragged
- */
-class DragState {
-    var ship by mutableStateOf<Ship?>(null)
-    var dragOffset by mutableStateOf(Offset.Zero)
-
-    val isDragging: Boolean
-        get() = ship != null
-
-    /**
-     * The function that resets the dragging state.
-     */
-    fun reset() {
-        ship = null
-        dragOffset = Offset.Zero
-    }
-}
+import kotlin.math.roundToInt
 
 /**
  * Board configuration page. Allows the user to place their ships on the board how they like.
@@ -91,10 +66,9 @@ fun BoardSetupScreen(
     ) {
         Box {
             Column(
-                modifier = Modifier.width(FULL_BOARD_VIEW_BOX_SIZE.dp)
-                    .onGloballyPositioned {
-                        boardOffset = it.positionInWindow()
-                    }
+                modifier = Modifier
+                    .width(FULL_BOARD_VIEW_BOX_SIZE.dp)
+                    .onGloballyPositioned { boardOffset = it.positionInWindow() }
             ) {
                 BoardViewWithIdentifiers(board = board) {
                     draggableShips.forEach { draggableShip ->
@@ -125,12 +99,13 @@ fun BoardSetupScreen(
                                         ) {
                                             val newShip =
                                                 Ship(
-                                                    draggableShip.type,
-                                                    coordinate,
-                                                    draggableShip.orientation
+                                                    type = draggableShip.type,
+                                                    coordinate = coordinate,
+                                                    orientation = draggableShip.orientation
                                                 )
 
-                                            if (board.removeShip(draggableShip)
+                                            if (board
+                                                .removeShip(draggableShip)
                                                 .canPlaceShip(newShip)
                                             ) {
                                                 board = board
@@ -160,12 +135,14 @@ fun BoardSetupScreen(
                                         ) {
                                             val newShip =
                                                 Ship(
-                                                    draggableShip.type,
-                                                    coordinate,
-                                                    draggableShip.orientation.opposite()
+                                                    type = draggableShip.type,
+                                                    coordinate = coordinate,
+                                                    orientation = draggableShip.orientation
+                                                        .opposite()
                                                 )
 
-                                            if (board.removeShip(draggableShip)
+                                            if (board
+                                                .removeShip(draggableShip)
                                                 .canPlaceShip(newShip)
                                             ) {
                                                 board = board
@@ -209,8 +186,7 @@ fun BoardSetupScreen(
                                         boardSize
                                     )
                                 ) {
-                                    val newShip =
-                                        Ship(ship.type, coordinate, Orientation.VERTICAL)
+                                    val newShip = Ship(ship.type, coordinate, Orientation.VERTICAL)
                                     val canPlace = board.canPlaceShip(newShip)
 
                                     if (canPlace) {
@@ -221,9 +197,7 @@ fun BoardSetupScreen(
                                 }
                             }
                     },
-                    onDragCancel = {
-                        dragState.reset()
-                    },
+                    onDragCancel = { dragState.reset() },
                     onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
                     onRandomBoardButtonPressed = {
                         draggableShips = mutableListOf()
@@ -265,4 +239,42 @@ fun BoardSetupScreen(
 
         GoBackButton(onClick = onBackButtonClicked)
     }
+}
+
+/**
+ * Stores the state of the ship dragging in the board setup screen.
+ * Whenever a ship is dragged, the instance of this class is updated with the ship information,
+ * therefore each ship does not hold a dragging state of its own.
+ *
+ * @property ship the ship being dragged
+ * @property dragOffset the drag offset
+ * @property isDragging whether the ship is being dragged
+ */
+private class DragState {
+    var ship by mutableStateOf<Ship?>(null)
+    var dragOffset by mutableStateOf(Offset.Zero)
+
+    val isDragging: Boolean
+        get() = ship != null
+
+    /**
+     * Resets the dragging state.
+     */
+    fun reset() {
+        ship = null
+        dragOffset = Offset.Zero
+    }
+}
+
+/**
+ * Gets a coordinate from a point or null if it isn't valid.
+ *
+ * @param col the column of the point
+ * @param row the row of the point
+ *
+ * @return the coordinate or null if it isn't valid
+ */
+private fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate? = when {
+    isValid(Board.FIRST_COL + col, row + 1) -> Coordinate(Board.FIRST_COL + col, row + 1)
+    else -> null
 }

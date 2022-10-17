@@ -15,16 +15,22 @@ import pt.isel.pdm.battleships.services.utils.Result
  * @param httpClient the HTTP client
  * @param jsonFormatter the JSON formatter
  *
+ * @property usersService the service that handles the users
+ * @property gamesService the service that handles the games
+ * @property playersService the service that handles the players
  */
 class BattleshipsService(
     apiEndpoint: String,
     httpClient: OkHttpClient,
     jsonFormatter: Gson
 ) : HTTPService(apiEndpoint, httpClient, jsonFormatter) {
+
     val usersService = UsersService(apiEndpoint, httpClient, jsonFormatter)
     val gamesService = GamesService(apiEndpoint, httpClient, jsonFormatter)
     val playersService = PlayersService(apiEndpoint, httpClient, jsonFormatter)
 
-    suspend fun getHome(): Result<HomeDTO> =
-        get("/home")
+    /**
+     * Gets the home information.
+     */
+    suspend fun getHome(): Result<HomeDTO> = get(link = "/home")
 }
