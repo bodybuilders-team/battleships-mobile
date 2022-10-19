@@ -5,11 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -41,6 +37,8 @@ private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 
 val DEFAULT_SHIP_TYPES = ShipType.values().toList()
 
+const val MAX_SHIP_COUNT_PER_TYPE = 10
+
 /**
  * Screen that allows the user to configure a new game before starting it.
  *
@@ -56,7 +54,7 @@ fun GameConfigurationScreen(
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
     var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }
     var timeForBoardConfig by remember { mutableStateOf(DEFAULT_TIME_FOR_BOARD_CONFIG) }
-    var ships by remember { mutableStateOf(DEFAULT_SHIP_TYPES) }
+    var shipTypes by remember { mutableStateOf(DEFAULT_SHIP_TYPES) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -100,8 +98,6 @@ fun GameConfigurationScreen(
         )
 
         // Ship Selector
-        // TODO limitation on number of ships based on board size (type of ship also matters)
-        //  50% of the board max?
         GameConfigSelector(
             leftSideContent = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -122,9 +118,21 @@ fun GameConfigurationScreen(
             },
             rightSideContent = {
                 ShipSelector(
-                    shipTypes = ships,
-                    onShipAdded = { ships = ships + it },
-                    onShipRemoved = { ships = ships - it }
+                    shipTypes = shipTypes,
+                    onShipAdded = { shipType ->
+                        val shipTypeCount = shipTypes.count { it == shipType }
+                        val shipCellsTotalCount = shipTypes.fold(shipType.size) { acc, type ->
+                            acc + type.size
+                        }
+
+                        if (shipTypeCount <= MAX_SHIP_COUNT_PER_TYPE &&
+                            boardSize * boardSize / 2 > shipCellsTotalCount
+                        ) {
+                            shipTypes = shipTypes + shipType
+                        }
+                    },
+                    onShipRemoved = { shipType ->
+                        shipTypes = shipTypes - shipType }
                 )
             }
         )
@@ -137,7 +145,7 @@ fun GameConfigurationScreen(
                         shotsPerTurn = shotsPerTurn,
                         maxTimePerShot = timePerTurn,
                         maxTimeForLayoutPhase = timeForBoardConfig,
-                        ships = ships
+                        ships = shipTypes
                     )
                 )
             },
