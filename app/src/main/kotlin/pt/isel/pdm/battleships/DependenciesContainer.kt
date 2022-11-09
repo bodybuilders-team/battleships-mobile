@@ -6,12 +6,12 @@ import pt.isel.pdm.battleships.services.BattleshipsService
 /**
  * This interface is used to provide dependencies to the application.
  *
- * @property jsonFormatter the JSON formatter used to serialize/deserialize objects
+ * @property jsonEncoder the JSON formatter used to serialize/deserialize objects
  * @property sessionManager the manager used to handle the user session
  * @property battleshipsService the service used to handle the battleships game
  */
 interface DependenciesContainer {
-    val jsonFormatter: Gson
+    val jsonEncoder: Gson
     val sessionManager: SessionManager
     val battleshipsService: BattleshipsService
 }

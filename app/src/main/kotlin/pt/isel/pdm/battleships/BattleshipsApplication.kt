@@ -11,13 +11,13 @@ import pt.isel.pdm.battleships.services.utils.siren.SubEntityDeserializer
 /**
  * Represents the Battleships application.
  *
- * @property jsonFormatter the JSON formatter used by the application
+ * @property jsonEncoder the JSON formatter used by the application
  * @property sessionManager the session manager used by the application
  * @property battleshipsService the service used to handle the battleships game
  */
 class BattleshipsApplication : DependenciesContainer, Application() {
 
-    override val jsonFormatter: Gson = GsonBuilder()
+    override val jsonEncoder: Gson = GsonBuilder()
         .registerTypeAdapter(SubEntity::class.java, SubEntityDeserializer())
         .create()
 
@@ -27,11 +27,11 @@ class BattleshipsApplication : DependenciesContainer, Application() {
         BattleshipsService(
             apiEndpoint = API_ENDPOINT,
             httpClient = OkHttpClient(),
-            jsonFormatter = jsonFormatter
+            jsonEncoder = jsonEncoder
         )
 
     companion object {
-        const val API_ENDPOINT = "https://93d4-2001-8a0-6370-f300-49aa-d934-d093-bec5.eu.ngrok.io"
+        const val API_ENDPOINT = "https://3ab4-95-92-69-229.eu.ngrok.io"
         const val TAG = "BattleshipsApp"
     }
 }

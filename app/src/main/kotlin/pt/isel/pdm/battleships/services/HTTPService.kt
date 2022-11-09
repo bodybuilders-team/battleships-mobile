@@ -18,12 +18,12 @@ import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
  *
  * @property apiEndpoint the base URL of the API
  * @property httpClient the HTTP client used to communicate with the server
- * @property jsonFormatter the JSON formatter used to parse the server responses
+ * @property jsonEncoder the JSON formatter used to parse the server responses
  */
 abstract class HTTPService(
     val apiEndpoint: String,
     val httpClient: OkHttpClient,
-    val jsonFormatter: Gson
+    val jsonEncoder: Gson
 ) {
 
     /**
@@ -49,16 +49,14 @@ abstract class HTTPService(
         val body = this.getBodyOrThrow()
         val resJson = JsonReader(body.charStream())
 
-        return if (!this@parseResponse.isSuccessful) {
-            HTTPResult.Failure(error = jsonFormatter.fromJson(resJson))
-        } else {
+        return if (this@parseResponse.isSuccessful) {
             HTTPResult.Success(
-                data = jsonFormatter.fromJson(
+                data = jsonEncoder.fromJson(
                     resJson,
                     SirenEntity.getType<T>().type
                 )
             )
-        }
+        } else HTTPResult.Failure(error = jsonEncoder.fromJson(resJson))
     }
 
     /**
@@ -99,7 +97,7 @@ abstract class HTTPService(
         Request.Builder()
             .url(url = apiEndpoint + link)
             .post(
-                body = jsonFormatter
+                body = jsonEncoder
                     .toJson(body)
                     .toRequestBody(contentType = applicationJsonMediaType)
             )
@@ -124,7 +122,7 @@ abstract class HTTPService(
             .url(url = apiEndpoint + link)
             .header(name = AUTHORIZATION_HEADER, value = "Bearer $token")
             .post(
-                body = jsonFormatter
+                body = jsonEncoder
                     .toJson(body)
                     .toRequestBody(contentType = applicationJsonMediaType)
             )

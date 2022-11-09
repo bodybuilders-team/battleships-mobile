@@ -16,16 +16,18 @@ import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
  *
  * @param apiEndpoint the API endpoint
  * @property httpClient the HTTP client
- * @property jsonFormatter the JSON formatter
+ * @property jsonEncoder the JSON formatter
  */
 class GamesService(
     apiEndpoint: String,
     httpClient: OkHttpClient,
-    jsonFormatter: Gson
-) : HTTPService(apiEndpoint, httpClient, jsonFormatter) {
+    jsonEncoder: Gson
+) : HTTPService(apiEndpoint, httpClient, jsonEncoder) {
 
     /**
      * Gets all the games
+     *
+     * @param listGamesLink the link to the list games endpoint
      */
     suspend fun getAllGames(listGamesLink: String): HTTPResult<GamesDTO> =
         get(listGamesLink)

@@ -15,7 +15,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.about.components.DeveloperInfoView
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
@@ -23,7 +24,7 @@ const val IMAGE_PADDING = 8
 private const val GITHUB_URL = "https://github.com/bodybuilders-team/battleships"
 
 /**
- * Screen shown after clicking the "About the developers" button in the main menu.
+ * About screen.
  *
  * Information shown for each developer:
  * - Student number

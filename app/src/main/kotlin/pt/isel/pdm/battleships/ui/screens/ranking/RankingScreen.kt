@@ -2,66 +2,57 @@ package pt.isel.pdm.battleships.ui.screens.ranking
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import pt.isel.pdm.battleships.MockApi
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.RankedPlayer
-import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
+import pt.isel.pdm.battleships.services.users.dtos.UsersDTO
+import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState
+import pt.isel.pdm.battleships.ui.screens.ranking.components.RankingTableView
+import pt.isel.pdm.battleships.ui.screens.ranking.components.SearchPlayerField
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
-
-private const val RANKING_TITLE_PADDING = 8
+import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
 /**
  * Ranking screen.
- * Shows the rankings/leaderboard of the players.
  *
- * The position is based of the player's points.
- *
+ * @param state the current state of the ranking
+ * @param users the list of users
+ * @param errorMessage the error message to be displayed
  * @param onBackButtonClicked callback to be invoked when the back button is clicked
  */
 @Composable
-fun RankingScreen(onBackButtonClicked: () -> Unit) {
-    val fetchedPlayers = MockApi.getPlayers()
-        .sortedByDescending { it.points }
-        .mapIndexed { index, rankedPlayer ->
-            RankedPlayer(
-                username = rankedPlayer.username,
-                points = rankedPlayer.points,
-                position = index + 1
-            )
-        }
-
-    var players by remember { mutableStateOf(fetchedPlayers) }
-
+fun RankingScreen(
+    state: RankingState,
+    users: UsersDTO?,
+    errorMessage: String?,
+    onBackButtonClicked: () -> Unit
+) {
     BattleshipsScreen {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = stringResource(R.string.ranking_title),
-                style = MaterialTheme.typography.h4,
-                modifier = Modifier.padding(RANKING_TITLE_PADDING.dp)
-            )
+            ScreenTitle(title = stringResource(id = R.string.ranking_title))
 
             SearchPlayerField { searchedName ->
-                players = fetchedPlayers.filter { player ->
+                /*TODO: players = fetchedPlayers.filter { player ->
                     player.username.contains(searchedName)
-                }
+                }*/
             }
 
-            RankingTableView(players)
+            when (state) {
+                RankingState.GETTING_USERS, RankingState.IDLE -> Text(text = "Searching...")
+                RankingState.FINISHED -> RankingTableView(
+                    users ?: throw IllegalStateException(
+                        "Users cannot be null when state is FINISHED"
+                    )
+                )
+                RankingState.ERROR -> Text(text = errorMessage ?: "Unknown error")
+            }
 
             GoBackButton(onClick = onBackButtonClicked)
         }

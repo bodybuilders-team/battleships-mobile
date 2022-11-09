@@ -12,15 +12,18 @@ import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
-import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
-import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.LobbyState
 
 /**
  * Screen that displays the lobby menu.
  *
-
+ * @param state the current state of the lobby
+ * @param games the list of games
+ * @param errorMessage the error message to be displayed
  * @param onBackButtonClicked the callback to be invoked when the back button is clicked.
  */
 @Composable
@@ -49,8 +52,8 @@ fun LobbyScreen(
                             ?: throw IllegalStateException(
                                 "Games cannot be null when state is FINISHED"
                             )
-                        val totalCount = games.properties?.totalCount ?: 0
 
+                        val totalCount = games.properties?.totalCount ?: 0
                         items(totalCount) { index ->
                             val game = games.entities?.get(index) as EmbeddedLink
                             GameCard(

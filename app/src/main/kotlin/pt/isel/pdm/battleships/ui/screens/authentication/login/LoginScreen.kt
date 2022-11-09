@@ -12,15 +12,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
 import pt.isel.pdm.battleships.ui.screens.authentication.hash
-import pt.isel.pdm.battleships.ui.screens.authentication.validateLoginFields
-import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginButton
+import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginTextFields
+import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
+import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
-import pt.isel.pdm.battleships.viewModels.authentication.AuthenticationState
 
 /**
- * Screen for login operation.
+ * Login screen.
  *
  * @param onBackButtonClicked callback to be invoked when the back button is clicked
  */
@@ -69,13 +72,14 @@ fun LoginScreen(
             )
 
             LoginButton(enabled = state != AuthenticationState.LOADING) {
-                validateLoginFields(
-                    username = username.value,
-                    password = password.value,
-                    invalidUsernameMessage = authenticationMessageInvalidUsername,
-                    invalidPasswordMessage = authenticationMessageInvalidPassword
-                )?.let {
-                    loginMessage.value = it
+                val message = when {
+                    !validateUsername(username.value) -> authenticationMessageInvalidUsername
+                    !validatePassword(password.value) -> authenticationMessageInvalidPassword
+                    else -> null
+                }
+
+                if (message != null) {
+                    loginMessage.value = message
                     return@LoginButton
                 }
 

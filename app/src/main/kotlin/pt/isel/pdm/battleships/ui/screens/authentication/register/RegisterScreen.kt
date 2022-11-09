@@ -12,15 +12,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
 import pt.isel.pdm.battleships.ui.screens.authentication.hash
-import pt.isel.pdm.battleships.ui.screens.authentication.validateEmailFields
-import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.authentication.register.components.RegisterButton
+import pt.isel.pdm.battleships.ui.screens.authentication.register.components.RegisterTextFields
+import pt.isel.pdm.battleships.ui.screens.authentication.validateEmail
+import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
+import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
-import pt.isel.pdm.battleships.viewModels.authentication.AuthenticationState
 
 /**
- * Screen for registering a new user
+ * Register screen.
  *
  * @param state Authentication state
  * @param onRegister callback to be invoked when the register button is clicked
@@ -77,15 +81,15 @@ fun RegisterScreen(
             )
 
             RegisterButton(enabled = state != AuthenticationState.LOADING) {
-                validateEmailFields(
-                    email = email.value,
-                    username = username.value,
-                    password = password.value,
-                    invalidEmailMessage = authenticationMessageInvalidEmail,
-                    invalidUsernameMessage = authenticationMessageInvalidUsername,
-                    invalidPasswordMessage = authenticationMessageInvalidPassword
-                )?.let {
-                    registerMessage.value = it
+                val message = when {
+                    !validateEmail(email.value) -> authenticationMessageInvalidEmail
+                    !validateUsername(username.value) -> authenticationMessageInvalidUsername
+                    !validatePassword(password.value) -> authenticationMessageInvalidPassword
+                    else -> null
+                }
+
+                if (message != null) {
+                    registerMessage.value = message
                     return@RegisterButton
                 }
 
