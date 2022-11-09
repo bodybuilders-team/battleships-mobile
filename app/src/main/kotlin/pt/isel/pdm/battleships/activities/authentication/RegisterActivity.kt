@@ -3,14 +3,10 @@ package pt.isel.pdm.battleships.activities.authentication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.getLinks
 import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterScreen
-import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.authentication.RegisterViewModel
 
 /**
@@ -37,18 +33,27 @@ class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val links = intent.getLinks()
+
+        val registerLink = links["register"] ?: throw IllegalStateException("Login link not found")
+
         setContent {
-            BattleshipsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    RegisterScreen(
-                        viewModel,
-                        onBackButtonClicked = { finish() }
+            RegisterScreen(
+                state = viewModel.state,
+                onRegister = { email, username, password ->
+                    viewModel.register(
+                        registerLink = registerLink,
+                        email = email,
+                        username = username,
+                        password = password
                     )
-                }
-            }
+                },
+                onRegisterSuccessful = {
+                    finish()
+                },
+                errorMessage = viewModel.errorMessage,
+                onBackButtonClicked = { finish() }
+            )
         }
     }
 }

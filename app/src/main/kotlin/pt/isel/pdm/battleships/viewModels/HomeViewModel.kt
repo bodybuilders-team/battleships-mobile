@@ -7,11 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import java.io.IOException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 import pt.isel.pdm.battleships.services.utils.siren.Action
 import pt.isel.pdm.battleships.viewModels.HomeViewModel.HomeState.ERROR
 import pt.isel.pdm.battleships.viewModels.HomeViewModel.HomeState.IDLE
@@ -23,7 +24,6 @@ import pt.isel.pdm.battleships.viewModels.HomeViewModel.LoadingState.LOADING_LOG
 import pt.isel.pdm.battleships.viewModels.HomeViewModel.LoadingState.LOADING_RANKING
 import pt.isel.pdm.battleships.viewModels.HomeViewModel.LoadingState.LOADING_REGISTER
 import pt.isel.pdm.battleships.viewModels.HomeViewModel.LoadingState.NOT_LOADING
-import java.io.IOException
 
 /**
  * Represents the ViewModel for the Battleships game.
@@ -47,7 +47,7 @@ class HomeViewModel(
 
     var loadingState: LoadingState by mutableStateOf(NOT_LOADING)
     var state by mutableStateOf(IDLE)
-    private var errorMessage by mutableStateOf<String?>(null)
+    var errorMessage by mutableStateOf<String?>(null)
     var actions: Map<String, Action> = emptyMap()
 
     /**
@@ -68,13 +68,13 @@ class HomeViewModel(
             }
 
             when (res) {
-                is Result.Success -> {
+                is HTTPResult.Success -> {
                     val resActions = res.data.actions ?: emptyList()
                     actions = resActions.associateBy { it.name }
                     state = LOADED
                 }
-                is Result.Failure -> {
-                    errorMessage = res.error.message
+                is HTTPResult.Failure -> {
+                    errorMessage = "Could not load the home page."
                     state = ERROR
                 }
             }
@@ -87,10 +87,10 @@ class HomeViewModel(
      * @param callback the callback to be executed
      */
     fun onHomeLoaded(callback: () -> Unit) {
-        if (state != LOADING) return callback()
+        if (state == LOADED) return callback()
 
         viewModelScope.launch {
-            while (state == LOADING) {
+            while (state != LOADED) {
                 yield()
             }
 

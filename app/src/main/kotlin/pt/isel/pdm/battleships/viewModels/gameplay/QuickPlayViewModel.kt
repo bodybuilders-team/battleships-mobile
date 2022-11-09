@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
-import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.ERROR
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel.QuickPlayState.MATCHMADE
@@ -38,7 +38,7 @@ class QuickPlayViewModel(
     assetManager: AssetManager
 ) : ViewModel() {
 
-    var state by mutableStateOf(MATCHMAKING)
+    var state by mutableStateOf(QuickPlayState.IDLE)
     var gameLink: String? by mutableStateOf(null)
     var errorMessage: String? by mutableStateOf(null)
 
@@ -51,30 +51,41 @@ class QuickPlayViewModel(
     /**
      * Matchmakes a game with the default configuration.
      */
-    fun matchmake() {
+    fun matchmake(matchmakeLink: String) {
+        if (state != QuickPlayState.IDLE) {
+            return
+        }
+
         viewModelScope.launch {
+            delay(ANIMATION_DELAY)
+
             val token = sessionManager.token ?: throw IllegalStateException("No token found")
 
-            val matchmakeGameLink = when (
-                val res = gamesService.matchmake(token, gameConfigDTO)
+            val gameStateLink = when (
+                val res = gamesService.matchmake(token, matchmakeLink, gameConfigDTO)
             ) {
-                is Result.Success -> {
+                is HTTPResult.Success -> {
                     val properties = res.data.properties
                         ?: throw IllegalStateException("Game properties are null")
-                    val entities = res.data.entities
-                        ?: throw IllegalStateException("Game entities are null")
-                    val matchGameLink = res.data.entities
+                    val entities =
+                        res.data.entities ?: throw IllegalStateException("Game entities are null")
+                    val matchGameLink = entities
                         .filterIsInstance<EmbeddedLink>()
                         .first { it.rel.contains("game") }.href.path
+
+                    val matchGameStateLink = entities
+                        .filterIsInstance<EmbeddedLink>()
+                        .first { it.rel.contains("state") }.href.path
 
                     gameLink = matchGameLink
                     if (!properties.wasCreated) {
                         state = MATCHMADE
                         return@launch
                     }
-                    matchGameLink
+
+                    matchGameStateLink
                 }
-                is Result.Failure -> {
+                is HTTPResult.Failure -> {
                     errorMessage = res.error.message
                     state = ERROR
                     return@launch
@@ -83,9 +94,9 @@ class QuickPlayViewModel(
 
             while (state != MATCHMADE) {
                 when (
-                    val res = gamesService.getGameState(token, matchmakeGameLink)
+                    val res = gamesService.getGameState(token, gameStateLink)
                 ) {
-                    is Result.Success -> {
+                    is HTTPResult.Success -> {
                         val properties = res.data.properties
                             ?: throw IllegalStateException("Game state properties are null")
 
@@ -95,7 +106,7 @@ class QuickPlayViewModel(
                             state = MATCHMADE
                         }
                     }
-                    is Result.Failure -> {
+                    is HTTPResult.Failure -> {
                         errorMessage = res.error.message
                         state = ERROR
                         return@launch
@@ -113,6 +124,7 @@ class QuickPlayViewModel(
      * @property ERROR the matchmake failed
      */
     enum class QuickPlayState {
+        IDLE,
         MATCHMAKING,
         MATCHMADE,
         ERROR
@@ -121,5 +133,6 @@ class QuickPlayViewModel(
     companion object {
         private const val DEFAULT_GAME_CONFIG_FILE_PATH = "defaultGameConfig.json"
         private const val POLLING_DELAY = 500L
+        private const val ANIMATION_DELAY = 1500L
     }
 }

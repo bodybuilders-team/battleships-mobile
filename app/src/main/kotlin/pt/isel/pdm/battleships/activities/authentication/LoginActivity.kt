@@ -3,14 +3,10 @@ package pt.isel.pdm.battleships.activities.authentication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.getLinks
 import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.authentication.login.LoginScreen
-import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.authentication.LoginViewModel
 
 /**
@@ -37,18 +33,28 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val links = intent.getLinks()
+
+        val loginLink = links["login"] ?: throw IllegalStateException("Login link not found")
+
         setContent {
-            BattleshipsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    LoginScreen(
-                        viewModel,
-                        onBackButtonClicked = { finish() }
+            LoginScreen(
+                viewModel.state,
+                onLogin = { username, password ->
+                    viewModel.login(
+                        loginLink = loginLink,
+                        username = username,
+                        password = password
                     )
+                },
+                onLoginSuccessful = {
+                    finish()
+                },
+                errorMessage = viewModel.errorMessage,
+                onBackButtonClicked = {
+                    finish()
                 }
-            }
+            )
         }
     }
 }

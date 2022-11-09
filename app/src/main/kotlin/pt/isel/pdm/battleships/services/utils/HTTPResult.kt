@@ -3,19 +3,19 @@ package pt.isel.pdm.battleships.services.utils
 /**
  * HTTP Response result.
  */
-sealed class Result<T> {
+sealed class HTTPResult<T> {
 
     /**
      * The response was successful.
      *
      * @property data the response data
      */
-    class Success<T>(val data: T) : Result<T>()
+    class Success<T>(val data: T) : HTTPResult<T>()
 
     /**
      * The response was unsuccessful.
      *
      * @property error the error DTO
      */
-    class Failure<T>(val error: ErrorDTO) : Result<T>()
+    class Failure<T>(val error: ErrorDTO) : HTTPResult<T>()
 }

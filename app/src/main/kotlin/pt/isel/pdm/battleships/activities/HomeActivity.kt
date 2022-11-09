@@ -3,18 +3,15 @@ package pt.isel.pdm.battleships.activities
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.activities.authentication.LoginActivity
 import pt.isel.pdm.battleships.activities.authentication.RegisterActivity
 import pt.isel.pdm.battleships.activities.gameplay.GameplayMenuActivity
+import pt.isel.pdm.battleships.activities.utils.LINKS_KEY
+import pt.isel.pdm.battleships.activities.utils.Links
 import pt.isel.pdm.battleships.activities.utils.navigateTo
 import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.HomeScreen
-import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.HomeViewModel
 import pt.isel.pdm.battleships.viewModels.HomeViewModel.LoadingState
 
@@ -56,47 +53,47 @@ class HomeActivity : ComponentActivity() {
         viewModel.loadHome()
 
         setContent {
-            BattleshipsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    HomeScreen(
-                        loggedIn = sessionManager.isLoggedIn(),
-                        onGameplayMenuClick = {
-                            navigateWithActionTo<GameplayMenuActivity>(
-                                LoadingState.LOADING_GAMEPLAY_MENU
-                            )
-                        },
-                        onRankingClick = {
-                            navigateWithActionTo<RankingActivity>(
-                                LoadingState.LOADING_RANKING
-                            )
-                        },
-                        onAboutClick = {
-                            navigateWithActionTo<AboutActivity>(
-                                LoadingState.LOADING_ABOUT
-                            )
-                        },
-                        onLoginClick = {
-                            navigateWithActionTo<LoginActivity>(
-                                LoadingState.LOADING_LOGIN,
-                                setOf("login")
-                            )
-                        },
-                        onRegisterClick = {
-                            navigateWithActionTo<RegisterActivity>(
-                                LoadingState.LOADING_REGISTER,
-                                linkKeys = setOf("register")
-                            )
-                        },
-                        onLogoutClick = {
-                            sessionManager.clearSession()
-                        },
-                        loadingState = viewModel.loadingState
+            HomeScreen(
+                loggedIn = sessionManager.isLoggedIn(),
+                onGameplayMenuClick = {
+                    viewModel.loadingState = LoadingState.LOADING_GAMEPLAY_MENU
+                    navigateWithActionTo<GameplayMenuActivity>(
+                        linkKeys = setOf("create-game", "list-games", "matchmake")
                     )
-                }
-            }
+                },
+                onRankingClick = {
+                    viewModel.loadingState = LoadingState.LOADING_RANKING
+                    navigateWithActionTo<RankingActivity>(
+                        linkKeys = setOf("list-users")
+                    )
+                },
+                onAboutClick = {
+                    viewModel.loadingState = LoadingState.LOADING_ABOUT
+                    navigateWithActionTo<AboutActivity>()
+                },
+                onLoginClick = {
+                    viewModel.loadingState = LoadingState.LOADING_LOGIN
+                    navigateWithActionTo<LoginActivity>(
+                        linkKeys = setOf("login")
+                    )
+                },
+                onRegisterClick = {
+                    viewModel.loadingState = LoadingState.LOADING_REGISTER
+                    navigateWithActionTo<RegisterActivity>(
+                        linkKeys = setOf("register")
+                    )
+                },
+                onLogoutClick = {
+                    sessionManager.clearSession()
+                },
+                errorMessage = viewModel.errorMessage,
+                onErrorMessageDismissed = {
+                    viewModel.state = HomeViewModel.HomeState.IDLE
+                    viewModel.errorMessage = null
+                    viewModel.loadHome()
+                },
+                loadingState = viewModel.loadingState
+            )
         }
     }
 
@@ -108,10 +105,8 @@ class HomeActivity : ComponentActivity() {
      * @param linkKeys the link keys to set before navigating
      */
     private inline fun <reified T> navigateWithActionTo(
-        loadingState: LoadingState,
         linkKeys: Set<String>? = null
     ) {
-        viewModel.loadingState = loadingState
         viewModel.onHomeLoaded {
             if (viewModel.state != HomeViewModel.HomeState.LOADED) {
                 return@onHomeLoaded
@@ -125,7 +120,7 @@ class HomeActivity : ComponentActivity() {
                         .filter { linkKeys.contains(it.key) }
                         .mapValues { it.value.href.path }
 
-                intent.putExtra("links", HashMap(links))
+                intent.putExtra(LINKS_KEY, Links(links))
             }
             viewModel.loadingState = LoadingState.NOT_LOADING
         }

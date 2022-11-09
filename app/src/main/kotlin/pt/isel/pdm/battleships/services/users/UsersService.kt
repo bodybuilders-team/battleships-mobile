@@ -7,7 +7,7 @@ import pt.isel.pdm.battleships.services.users.dtos.LoginDTO
 import pt.isel.pdm.battleships.services.users.dtos.RegisterDTO
 import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
 import pt.isel.pdm.battleships.services.users.dtos.UserDTO
-import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 
 /**
  * Represents the service that handles the battleships game.
@@ -30,9 +30,9 @@ class UsersService(
      *
      * @return the authentication result
      */
-    suspend fun login(username: String, password: String): Result<TokenDTO> =
+    suspend fun login(loginLink: String, username: String, password: String): HTTPResult<TokenDTO> =
         post(
-            link = "/users/login",
+            link = loginLink,
             body = LoginDTO(username, password)
         )
 
@@ -45,9 +45,14 @@ class UsersService(
      *
      * @return the authentication result
      */
-    suspend fun register(email: String, username: String, password: String): Result<TokenDTO> =
+    suspend fun register(
+        registerLink: String,
+        email: String,
+        username: String,
+        password: String
+    ): HTTPResult<TokenDTO> =
         post(
-            link = "/users",
+            link = registerLink,
             body = RegisterDTO(email, username, password)
         )
 
@@ -57,6 +62,6 @@ class UsersService(
      * @param username the username of the user
      * @return the result of the operation
      */
-    suspend fun getUserByUsername(username: String): Result<UserDTO> =
+    suspend fun getUserByUsername(username: String): HTTPResult<UserDTO> =
         get(link = "/users/$username")
 }

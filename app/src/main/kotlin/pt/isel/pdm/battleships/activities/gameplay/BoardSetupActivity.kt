@@ -1,18 +1,15 @@
 package pt.isel.pdm.battleships.activities.gameplay
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
+import androidx.compose.material.Text
+import androidx.compose.runtime.LaunchedEffect
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.navigateTo
 import pt.isel.pdm.battleships.activities.utils.viewModelInit
-import pt.isel.pdm.battleships.domain.game.GameConfig
+import pt.isel.pdm.battleships.domain.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.BoardSetupScreen
-import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.gameplay.BoardSetupViewModel
 
 /**
@@ -35,23 +32,43 @@ class BoardSetupActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val gameLink = intent.getStringExtra("gameLink")
+            ?: throw IllegalStateException("No game link found")
+
+        viewModel.loadGame(gameLink)
+
         setContent {
-            BattleshipsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    val gameConfig = intent.getSerializableExtra("gameConfig") as GameConfig
+            LaunchedEffect(viewModel.state) {
+                if (viewModel.state == BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED) {
+                    navigateTo<GameplayActivity> {
+                        it.putExtra("gameLink", gameLink)
+                    }
+                }
+            }
+
+            when (viewModel.state) {
+                BoardSetupViewModel.BoardSetupState.LOADING_GAME -> {
+                    Text("Loading Game..")
+                }
+                else -> {
+                    val game = viewModel.game
+                        ?: throw IllegalStateException("No game found")
+                    val properties =
+                        game.properties ?: throw IllegalStateException("No game properties found")
+
+                    val gridSize = properties.config.gridSize
+                    val ships = properties.config.shipTypes.map {
+                        ShipType.fromDTO(
+                            it
+                        )
+                    }
 
                     BoardSetupScreen(
-                        boardSize = gameConfig.gridSize,
-                        ships = gameConfig.ships,
+                        boardSize = gridSize,
+                        ships = ships,
                         onBoardSetupFinished = { board ->
-                            val intent = Intent(this, GameplayActivity::class.java)
-                            intent.putExtra("board", board.toMyBoard())
-                            intent.putExtra("gameConfig", gameConfig)
-
-                            startActivity(intent)
+                            // TODO fix this shit
+//                            viewModel.deployFleet(board.fleet)
                         },
                         onBackButtonClicked = { finish() }
                     )

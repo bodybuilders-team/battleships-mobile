@@ -2,6 +2,10 @@ package pt.isel.pdm.battleships.services.players
 
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
+import pt.isel.pdm.battleships.services.HTTPService
+import pt.isel.pdm.battleships.services.players.dtos.DeployFleetResponseDTO
+import pt.isel.pdm.battleships.services.players.dtos.UndeployedFleetDTO
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 
 /**
  * Represents the service that handles the battleships game.
@@ -11,18 +15,21 @@ import okhttp3.OkHttpClient
  * @property jsonFormatter the JSON formatter
  */
 class PlayersService(
-    private val apiEndpoint: String,
-    private val httpClient: OkHttpClient,
-    private val jsonFormatter: Gson
-) {
+    apiEndpoint: String,
+    httpClient: OkHttpClient,
+    jsonFormatter: Gson
+) : HTTPService(apiEndpoint, httpClient, jsonFormatter) {
 
     suspend fun getPlayerFleet(id: Int) {
         // TODO
     }
 
-    suspend fun deployFleet(id: Int) {
-        // TODO
-    }
+    suspend fun deployFleet(
+        token: String,
+        deployLink: String,
+        fleet: UndeployedFleetDTO
+    ): HTTPResult<DeployFleetResponseDTO> =
+        post(token, deployLink, fleet)
 
     suspend fun getOpponentFleet(id: Int) {
         // TODO

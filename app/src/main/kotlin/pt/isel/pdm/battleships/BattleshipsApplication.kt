@@ -18,10 +18,7 @@ import pt.isel.pdm.battleships.services.utils.siren.SubEntityDeserializer
 class BattleshipsApplication : DependenciesContainer, Application() {
 
     override val jsonFormatter: Gson = GsonBuilder()
-        .registerTypeAdapter(
-            /* type = */ SubEntity::class.java,
-            /* typeAdapter = */ SubEntityDeserializer()
-        )
+        .registerTypeAdapter(SubEntity::class.java, SubEntityDeserializer())
         .create()
 
     override val sessionManager: SessionManager = SessionManager()
@@ -34,9 +31,7 @@ class BattleshipsApplication : DependenciesContainer, Application() {
         )
 
     companion object {
-        const val API_ENDPOINT = "https://a631-194-210-193-124.eu.ngrok.io"
-
-        @Suppress("unused")
+        const val API_ENDPOINT = "https://93d4-2001-8a0-6370-f300-49aa-d934-d093-bec5.eu.ngrok.io"
         const val TAG = "BattleshipsApp"
     }
 }

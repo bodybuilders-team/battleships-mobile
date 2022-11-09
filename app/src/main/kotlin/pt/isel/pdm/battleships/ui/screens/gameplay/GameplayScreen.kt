@@ -24,6 +24,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.board.BoardViewWithIdentifier
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.PlacedShipView
+import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.IconButton
 
@@ -47,70 +48,74 @@ fun GameplayScreen(
     val opponentBoard by remember { mutableStateOf(OpponentBoard(myBoard.size)) }
     var selectedCells by remember { mutableStateOf(listOf<Coordinate>()) }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = stringResource(id = R.string.opponent_board_description))
+    BattleshipsScreen {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = stringResource(id = R.string.opponent_board_description))
 
-        OpponentBoardView(
-            opponentBoard = opponentBoard,
-            selectedCells = selectedCells,
-            onTileClicked = { coordinate ->
-                if (!opponentBoard.getCell(coordinate).wasHit) {
-                    selectedCells = when {
-                        coordinate in selectedCells -> selectedCells - coordinate
-                        selectedCells.size < gameConfig.shotsPerTurn -> selectedCells + coordinate
-                        gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
-                        else -> selectedCells
+            OpponentBoardView(
+                opponentBoard = opponentBoard,
+                selectedCells = selectedCells,
+                onTileClicked = { coordinate ->
+                    if (!opponentBoard.getCell(coordinate).wasHit) {
+                        selectedCells = when {
+                            coordinate in selectedCells -> selectedCells - coordinate
+                            selectedCells.size < gameConfig.shotsPerTurn -> selectedCells + coordinate
+                            gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
+                            else -> selectedCells
+                        }
                     }
                 }
-            }
-        )
+            )
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(id = R.string.my_board_description))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = stringResource(id = R.string.my_board_description))
 
-                BoardViewWithIdentifiers(
-                    board = myBoard,
-                    tileSizeFactor = SMALLER_BOARD_TILE_SIZE_FACTOR
+                    BoardViewWithIdentifiers(
+                        board = myBoard,
+                        tileSizeFactor = SMALLER_BOARD_TILE_SIZE_FACTOR
+                    ) {
+                        myBoard.fleet.forEach { ship ->
+                            PlacedShipView(
+                                ship = ship,
+                                tileSize = getTileSize(myBoard.size) * SMALLER_BOARD_TILE_SIZE_FACTOR
+                            )
+                        }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    myBoard.fleet.forEach { ship ->
-                        PlacedShipView(
-                            ship = ship,
-                            tileSize = getTileSize(myBoard.size) * SMALLER_BOARD_TILE_SIZE_FACTOR
-                        )
-                    }
+                    IconButton(
+                        onClick = {
+                            onShootClicked(selectedCells)
+                            selectedCells = emptyList()
+                        },
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_missile),
+                        contentDescription = stringResource(
+                            R.string.gameplay_shoot_button_description
+                        ),
+                        text = stringResource(id = R.string.gameplay_shoot_button_text)
+                    )
+                    IconButton(
+                        onClick = { selectedCells = emptyList() },
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_round_refresh_24),
+                        contentDescription = stringResource(
+                            id = R.string.gameplay_reset_shots_button_description
+                        ),
+                        text = stringResource(id = R.string.gameplay_reset_shots_button_text)
+                    )
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                IconButton(
-                    onClick = {
-                        onShootClicked(selectedCells)
-                        selectedCells = emptyList()
-                    },
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_missile),
-                    contentDescription = stringResource(R.string.gameplay_shoot_button_description),
-                    text = stringResource(id = R.string.gameplay_shoot_button_text)
-                )
-                IconButton(
-                    onClick = { selectedCells = emptyList() },
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_refresh_24),
-                    contentDescription = stringResource(
-                        id = R.string.gameplay_reset_shots_button_description
-                    ),
-                    text = stringResource(id = R.string.gameplay_reset_shots_button_text)
-                )
-            }
+            GoBackButton(onClick = onBackButtonClicked)
         }
-
-        GoBackButton(onClick = onBackButtonClicked)
     }
 }

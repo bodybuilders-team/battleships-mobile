@@ -1,6 +1,8 @@
 package pt.isel.pdm.battleships.domain.ship
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.Coordinate
 import pt.isel.pdm.battleships.services.players.dtos.UndeployedShipDTO
@@ -16,17 +18,20 @@ import pt.isel.pdm.battleships.services.players.dtos.UndeployedShipDTO
  * @property coordinates list of coordinates occupied by the ship
  * @property isSunk true if the ship is sunk, false otherwise
  */
+@Parcelize
 data class Ship(
     val type: ShipType,
     val coordinate: Coordinate,
     val orientation: Orientation,
     val lives: Int = type.size
-) : Serializable {
+) : Parcelable {
     fun toUndeployedShipDTO(): UndeployedShipDTO =
         UndeployedShipDTO(type.name, coordinate.toString(), orientation.name)
 
+    @IgnoredOnParcel
     val coordinates: List<Coordinate> = getCoordinates(type, coordinate, orientation)
 
+    @IgnoredOnParcel
     val isSunk = lives == 0
 
     companion object {

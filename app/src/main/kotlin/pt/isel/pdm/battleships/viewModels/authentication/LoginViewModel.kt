@@ -22,10 +22,15 @@ class LoginViewModel(
      * @param username the username of the user
      * @param password the password of the user
      */
-    fun login(username: String, password: String) {
+    fun login(loginLink: String, username: String, password: String) {
         viewModelScope.launch {
             state = AuthenticationState.LOADING
-            val res = usersService.login(username = username, password = password)
+            val res =
+                usersService.login(
+                    loginLink = loginLink,
+                    username = username,
+                    password = password
+                )
             updateState(username, res)
         }
     }

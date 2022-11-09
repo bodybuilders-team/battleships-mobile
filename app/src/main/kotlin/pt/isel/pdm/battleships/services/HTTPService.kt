@@ -7,7 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 import pt.isel.pdm.battleships.services.utils.await
 import pt.isel.pdm.battleships.services.utils.fromJson
 import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
@@ -27,32 +27,37 @@ abstract class HTTPService(
 ) {
 
     /**
-     * Sends a HTTP request to the server and parses the response into a [Result] of a
+     * Sends a HTTP request to the server and parses the response into a [HTTPResult] of a
      * [SirenEntity] with the specified type.
      *
      * @receiver the HTTP request to send
      * @return the result of the request
      */
-    suspend inline fun <reified T> Request.getResponseResult(): Result<SirenEntity<T>> =
+    suspend inline fun <reified T> Request.getResponseResult(): HTTPResult<SirenEntity<T>> =
         httpClient
             .newCall(request = this)
             .await()
-            .getResult()
+            .parseResponse()
 
     /**
-     * Parses the response into a [Result] of a [SirenEntity] with the specified type.
+     * Parses the response into a [HTTPResult] of a [SirenEntity] with the specified type.
      *
      * @receiver the HTTP response to parse
      * @return the result of the response
      */
-    inline fun <reified T> Response.getResult(): Result<SirenEntity<T>> {
+    inline fun <reified T> Response.parseResponse(): HTTPResult<SirenEntity<T>> {
         val body = this.getBodyOrThrow()
         val resJson = JsonReader(body.charStream())
 
-        return if (!this@getResult.isSuccessful) {
-            Result.Failure(error = jsonFormatter.fromJson(resJson))
+        return if (!this@parseResponse.isSuccessful) {
+            HTTPResult.Failure(error = jsonFormatter.fromJson(resJson))
         } else {
-            Result.Success(data = jsonFormatter.fromJson(resJson, SirenEntity.getType<T>().type))
+            HTTPResult.Success(
+                data = jsonFormatter.fromJson(
+                    resJson,
+                    SirenEntity.getType<T>().type
+                )
+            )
         }
     }
 
@@ -62,7 +67,7 @@ abstract class HTTPService(
      * @param link the link to send the request to
      * @return the result of the request
      */
-    suspend inline fun <reified T> get(link: String): Result<SirenEntity<T>> =
+    suspend inline fun <reified T> get(link: String): HTTPResult<SirenEntity<T>> =
         Request.Builder()
             .url(apiEndpoint + link)
             .build().getResponseResult()
@@ -75,7 +80,7 @@ abstract class HTTPService(
      *
      * @return the result of the request
      */
-    suspend inline fun <reified T> get(link: String, token: String): Result<SirenEntity<T>> =
+    suspend inline fun <reified T> get(link: String, token: String): HTTPResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .header(name = AUTHORIZATION_HEADER, value = "Bearer $token")
@@ -90,7 +95,7 @@ abstract class HTTPService(
      *
      * @return the result of the request
      */
-    suspend inline fun <reified T> post(link: String, body: Any): Result<SirenEntity<T>> =
+    suspend inline fun <reified T> post(link: String, body: Any): HTTPResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .post(
@@ -114,7 +119,7 @@ abstract class HTTPService(
         link: String,
         token: String,
         body: Any
-    ): Result<SirenEntity<T>> =
+    ): HTTPResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .header(name = AUTHORIZATION_HEADER, value = "Bearer $token")

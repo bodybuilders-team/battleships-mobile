@@ -3,12 +3,11 @@ package pt.isel.pdm.battleships.activities.gameplay
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
+import pt.isel.pdm.battleships.activities.utils.LINKS_KEY
+import pt.isel.pdm.battleships.activities.utils.getLinks
+import pt.isel.pdm.battleships.activities.utils.navigateTo
+import pt.isel.pdm.battleships.activities.utils.subSet
 import pt.isel.pdm.battleships.ui.screens.gameplay.GameplayMenuScreen
-import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 
 /**
  * Activity for the gameplay menu screen.
@@ -18,15 +17,27 @@ class GameplayMenuActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val links = intent.getLinks()
+
         setContent {
-            BattleshipsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    GameplayMenuScreen(onBackButtonClicked = { finish() })
-                }
-            }
+            GameplayMenuScreen(
+                onQuickPlayClick = {
+                    navigateTo<QuickPlayActivity> {
+                        it.putExtra(LINKS_KEY, links.subSet("matchmake"))
+                    }
+                },
+                onCreateGameClick = {
+                    navigateTo<GameConfigurationActivity> {
+                        it.putExtra(LINKS_KEY, links.subSet("create-game"))
+                    }
+                },
+                onLobbyClick = {
+                    navigateTo<LobbyActivity> {
+                        it.putExtra(LINKS_KEY, links.subSet("list-games"))
+                    }
+                },
+                onBackButtonClick = { finish() }
+            )
         }
     }
 }

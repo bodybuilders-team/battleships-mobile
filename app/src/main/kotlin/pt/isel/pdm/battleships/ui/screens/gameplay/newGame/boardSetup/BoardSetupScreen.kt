@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 import pt.isel.pdm.battleships.domain.board.Board
 import pt.isel.pdm.battleships.domain.board.ConfigurableBoard
 import pt.isel.pdm.battleships.domain.board.Coordinate
@@ -31,8 +32,9 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.PlacedDraggableShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.boardSetup.shipPlacing.ShipPlacingMenuView
 import pt.isel.pdm.battleships.ui.screens.gameplay.ship.ShipView
+import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
-import kotlin.math.roundToInt
+import pt.isel.pdm.battleships.viewModels.gameplay.BoardSetupViewModel.*
 
 /**
  * Board configuration page. Allows the user to place their ships on the board how they like.
@@ -60,184 +62,189 @@ fun BoardSetupScreen(
     var draggableShips by remember { mutableStateOf(listOf<Ship>()) }
     var boardOffset: Offset by remember { mutableStateOf(Offset.Zero) }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box {
-            Column(
-                modifier = Modifier
-                    .width(FULL_BOARD_VIEW_BOX_SIZE.dp)
-                    .onGloballyPositioned { boardOffset = it.positionInWindow() }
-            ) {
-                BoardViewWithIdentifiers(board = board) {
-                    draggableShips.forEach { draggableShip ->
-                        PlacedDraggableShipView(
-                            ship = draggableShip,
-                            tileSize = tileSize,
-                            hide = dragState.ship == draggableShip,
-                            onDragStart = { _, initialPosition ->
-                                dragState.ship = draggableShip
-                                dragState.dragOffset = initialPosition
-                            },
-                            onDragEnd = {
-                                dragState.reset()
+    BattleshipsScreen {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box {
+                Column(
+                    modifier = Modifier
+                        .width(FULL_BOARD_VIEW_BOX_SIZE.dp)
+                        .onGloballyPositioned { boardOffset = it.positionInWindow() }
+                ) {
+                    BoardViewWithIdentifiers(board = board) {
+                        draggableShips.forEach { draggableShip ->
+                            PlacedDraggableShipView(
+                                ship = draggableShip,
+                                tileSize = tileSize,
+                                hide = dragState.ship == draggableShip,
+                                onDragStart = { _, initialPosition ->
+                                    dragState.ship = draggableShip
+                                    dragState.dragOffset = initialPosition
+                                },
+                                onDragEnd = {
+                                    dragState.reset()
 
-                                val currCol = ((dragOffset.x - tileSize) / tileSize).roundToInt()
-                                val currRow = ((dragOffset.y - tileSize) / tileSize).roundToInt()
+                                    val currCol =
+                                        ((dragOffset.x - tileSize) / tileSize).roundToInt()
+                                    val currRow =
+                                        ((dragOffset.y - tileSize) / tileSize).roundToInt()
 
-                                Coordinate
-                                    .fromPointOrNull(currCol, currRow)
-                                    ?.let { coordinate ->
-                                        if (
-                                            Ship.isValidShipCoordinate(
-                                                coordinate,
-                                                draggableShip.orientation,
-                                                draggableShip.type.size,
-                                                boardSize
-                                            )
-                                        ) {
-                                            val newShip =
-                                                Ship(
-                                                    type = draggableShip.type,
-                                                    coordinate = coordinate,
-                                                    orientation = draggableShip.orientation
+                                    Coordinate
+                                        .fromPointOrNull(currCol, currRow)
+                                        ?.let { coordinate ->
+                                            if (
+                                                Ship.isValidShipCoordinate(
+                                                    coordinate,
+                                                    draggableShip.orientation,
+                                                    draggableShip.type.size,
+                                                    boardSize
                                                 )
-
-                                            if (board
-                                                .removeShip(draggableShip)
-                                                .canPlaceShip(newShip)
                                             ) {
-                                                board = board
-                                                    .removeShip(draggableShip)
-                                                    .placeShip(newShip)
+                                                val newShip =
+                                                    Ship(
+                                                        type = draggableShip.type,
+                                                        coordinate = coordinate,
+                                                        orientation = draggableShip.orientation
+                                                    )
 
-                                                draggableShips =
-                                                    draggableShips - draggableShip + newShip
+                                                if (board
+                                                    .removeShip(draggableShip)
+                                                    .canPlaceShip(newShip)
+                                                ) {
+                                                    board = board
+                                                        .removeShip(draggableShip)
+                                                        .placeShip(newShip)
+
+                                                    draggableShips =
+                                                        draggableShips - draggableShip + newShip
+                                                }
                                             }
                                         }
-                                    }
-                            },
-                            onDragCancel = {
-                                dragState.reset()
-                            },
-                            onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
-                            onTap = {
-                                draggableShip.coordinate
-                                    .let { coordinate ->
-                                        if (
-                                            Ship.isValidShipCoordinate(
-                                                coordinate,
-                                                draggableShip.orientation.opposite(),
-                                                draggableShip.type.size,
-                                                boardSize
-                                            )
-                                        ) {
-                                            val newShip =
-                                                Ship(
-                                                    type = draggableShip.type,
-                                                    coordinate = coordinate,
-                                                    orientation = draggableShip.orientation
-                                                        .opposite()
+                                },
+                                onDragCancel = {
+                                    dragState.reset()
+                                },
+                                onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
+                                onTap = {
+                                    draggableShip.coordinate
+                                        .let { coordinate ->
+                                            if (
+                                                Ship.isValidShipCoordinate(
+                                                    coordinate,
+                                                    draggableShip.orientation.opposite(),
+                                                    draggableShip.type.size,
+                                                    boardSize
                                                 )
-
-                                            if (board
-                                                .removeShip(draggableShip)
-                                                .canPlaceShip(newShip)
                                             ) {
-                                                board = board
-                                                    .removeShip(draggableShip)
-                                                    .placeShip(newShip)
+                                                val newShip =
+                                                    Ship(
+                                                        type = draggableShip.type,
+                                                        coordinate = coordinate,
+                                                        orientation = draggableShip.orientation
+                                                            .opposite()
+                                                    )
 
-                                                draggableShips =
-                                                    draggableShips - draggableShip + newShip
+                                                if (board
+                                                    .removeShip(draggableShip)
+                                                    .canPlaceShip(newShip)
+                                                ) {
+                                                    board = board
+                                                        .removeShip(draggableShip)
+                                                        .placeShip(newShip)
+
+                                                    draggableShips =
+                                                        draggableShips - draggableShip + newShip
+                                                }
                                             }
                                         }
+                                }
+                            )
+                        }
+                    }
+
+                    ShipPlacingMenuView(
+                        shipTypes = unplacedShips,
+                        tileSize = tileSize,
+                        dragging = { shipType ->
+                            dragState.ship?.type == shipType && dragState.isDragging
+                        },
+                        onDragStart = { ship, initialPosition ->
+                            dragState.ship = ship
+                            dragState.dragOffset = initialPosition
+                        },
+                        onDragEnd = { ship ->
+                            dragState.reset()
+
+                            val currCol = ((dragOffset.x - tileSize) / tileSize).roundToInt()
+                            val currRow = ((dragOffset.y - tileSize) / tileSize).roundToInt()
+
+                            Coordinate
+                                .fromPointOrNull(currCol, currRow)
+                                ?.let { coordinate ->
+                                    if (
+                                        Ship.isValidShipCoordinate(
+                                            coordinate,
+                                            Orientation.VERTICAL,
+                                            ship.type.size,
+                                            boardSize
+                                        )
+                                    ) {
+                                        val newShip =
+                                            Ship(ship.type, coordinate, Orientation.VERTICAL)
+                                        val canPlace = board.canPlaceShip(newShip)
+
+                                        if (canPlace) {
+                                            board = board.placeShip(newShip)
+                                            draggableShips = draggableShips + newShip
+                                            unplacedShips = unplacedShips - ship.type
+                                        }
                                     }
+                                }
+                        },
+                        onDragCancel = { dragState.reset() },
+                        onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
+                        onRandomBoardButtonPressed = {
+                            draggableShips = mutableListOf()
+
+                            board = ConfigurableBoard.random(size = board.size, ships = ships)
+
+                            board.fleet.forEach { ship ->
+                                draggableShips = draggableShips + ship
+                                unplacedShips = unplacedShips - ship.type
                             }
+                        },
+                        onConfirmBoardButtonPressed = {
+                            if (board.fleet.size == ships.size) {
+                                onBoardSetupFinished(board)
+                            }
+                        }
+                    )
+                }
+
+                // Dragging composable
+                if (dragState.isDragging) {
+                    dragOffset = (dragState.dragOffset - boardOffset) / LocalDensity.current.density
+
+                    dragState.ship?.let { ship ->
+                        ShipView(
+                            type = ship.type,
+                            orientation = ship.orientation,
+                            tileSize = tileSize,
+                            modifier = Modifier
+                                .offset(
+                                    x = dragOffset.x.dp,
+                                    y = dragOffset.y.dp
+                                )
+                                .border(2.dp, Color.Red)
                         )
                     }
                 }
-
-                ShipPlacingMenuView(
-                    shipTypes = unplacedShips,
-                    tileSize = tileSize,
-                    dragging = { shipType ->
-                        dragState.ship?.type == shipType && dragState.isDragging
-                    },
-                    onDragStart = { ship, initialPosition ->
-                        dragState.ship = ship
-                        dragState.dragOffset = initialPosition
-                    },
-                    onDragEnd = { ship ->
-                        dragState.reset()
-
-                        val currCol = ((dragOffset.x - tileSize) / tileSize).roundToInt()
-                        val currRow = ((dragOffset.y - tileSize) / tileSize).roundToInt()
-
-                        Coordinate
-                            .fromPointOrNull(currCol, currRow)
-                            ?.let { coordinate ->
-                                if (
-                                    Ship.isValidShipCoordinate(
-                                        coordinate,
-                                        Orientation.VERTICAL,
-                                        ship.type.size,
-                                        boardSize
-                                    )
-                                ) {
-                                    val newShip = Ship(ship.type, coordinate, Orientation.VERTICAL)
-                                    val canPlace = board.canPlaceShip(newShip)
-
-                                    if (canPlace) {
-                                        board = board.placeShip(newShip)
-                                        draggableShips = draggableShips + newShip
-                                        unplacedShips = unplacedShips - ship.type
-                                    }
-                                }
-                            }
-                    },
-                    onDragCancel = { dragState.reset() },
-                    onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
-                    onRandomBoardButtonPressed = {
-                        draggableShips = mutableListOf()
-
-                        board = ConfigurableBoard.random(size = board.size, ships = ships)
-
-                        board.fleet.forEach { ship ->
-                            draggableShips = draggableShips + ship
-                            unplacedShips = unplacedShips - ship.type
-                        }
-                    },
-                    onConfirmBoardButtonPressed = {
-                        if (board.fleet.size == ships.size) {
-                            onBoardSetupFinished(board)
-                        }
-                    }
-                )
             }
 
-            // Dragging composable
-            if (dragState.isDragging) {
-                dragOffset = (dragState.dragOffset - boardOffset) / LocalDensity.current.density
-
-                dragState.ship?.let { ship ->
-                    ShipView(
-                        type = ship.type,
-                        orientation = ship.orientation,
-                        tileSize = tileSize,
-                        modifier = Modifier
-                            .offset(
-                                x = dragOffset.x.dp,
-                                y = dragOffset.y.dp
-                            )
-                            .border(2.dp, Color.Red)
-                    )
-                }
-            }
+            GoBackButton(onClick = onBackButtonClicked)
         }
-
-        GoBackButton(onClick = onBackButtonClicked)
     }
 }
 

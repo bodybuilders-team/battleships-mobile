@@ -3,14 +3,10 @@ package pt.isel.pdm.battleships.activities.gameplay
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.getLinks
 import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyScreen
-import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel
 
 /**
@@ -40,18 +36,20 @@ class LobbyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val links = intent.getLinks()
+
+        viewModel.getAllGames(
+            links["list-games"]
+                ?: throw IllegalStateException("No list-games link found")
+        )
+
         setContent {
-            BattleshipsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    LobbyScreen(
-                        viewModel,
-                        onBackButtonClicked = { finish() }
-                    )
-                }
-            }
+            LobbyScreen(
+                state = viewModel.state,
+                games = viewModel.games,
+                errorMessage = viewModel.errorMessage,
+                onBackButtonClicked = { finish() }
+            )
         }
     }
 }

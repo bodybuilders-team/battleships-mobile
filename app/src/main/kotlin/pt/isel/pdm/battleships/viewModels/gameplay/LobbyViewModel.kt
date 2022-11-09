@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
-import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.LobbyState.ERROR
 import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.LobbyState.FINISHED
 import pt.isel.pdm.battleships.viewModels.gameplay.LobbyViewModel.LobbyState.GETTING_GAMES
@@ -28,21 +28,23 @@ class LobbyViewModel(
     private val gamesService: GamesService
 ) : ViewModel() {
 
-    var state by mutableStateOf(GETTING_GAMES)
+    var state by mutableStateOf(LobbyState.IDLE)
     var games by mutableStateOf<GamesDTO?>(null)
     var errorMessage: String? by mutableStateOf(null)
 
     /**
      * Gets the list of games.
      */
-    fun getAllGames() {
+    fun getAllGames(listGamesLink: String) {
+        if (state != LobbyState.IDLE) return
+
         viewModelScope.launch {
-            games = when (val res = gamesService.getAllGames()) {
-                is Result.Success -> {
+            games = when (val res = gamesService.getAllGames(listGamesLink)) {
+                is HTTPResult.Success -> {
                     state = FINISHED
                     res.data
                 }
-                is Result.Failure -> {
+                is HTTPResult.Failure -> {
                     errorMessage = res.error.message
                     state = ERROR
                     return@launch
@@ -59,6 +61,7 @@ class LobbyViewModel(
      * @property ERROR the get games operation has failed
      */
     enum class LobbyState {
+        IDLE,
         GETTING_GAMES,
         FINISHED,
         ERROR

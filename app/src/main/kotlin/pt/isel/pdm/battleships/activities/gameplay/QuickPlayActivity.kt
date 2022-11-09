@@ -3,14 +3,11 @@ package pt.isel.pdm.battleships.activities.gameplay
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.getLinks
+import pt.isel.pdm.battleships.activities.utils.navigateTo
 import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.gameplay.QuickPlayScreen
-import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
 import pt.isel.pdm.battleships.viewModels.gameplay.QuickPlayViewModel
 
 /**
@@ -47,15 +44,23 @@ class QuickPlayActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val links = intent.getLinks()
+
+        viewModel.matchmake(
+            links["matchmake"]
+                ?: throw IllegalArgumentException("Missing matchmake link")
+        )
+
         setContent {
-            BattleshipsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    QuickPlayScreen(viewModel)
-                }
-            }
+            QuickPlayScreen(
+                state = viewModel.state,
+                onMatchmade = {
+                    navigateTo<BoardSetupActivity> {
+                        it.putExtra("gameLink", viewModel.gameLink)
+                    }
+                },
+                errorMessage = viewModel.errorMessage
+            )
         }
     }
 }

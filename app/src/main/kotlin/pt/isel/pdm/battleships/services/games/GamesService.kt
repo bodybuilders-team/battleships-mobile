@@ -8,7 +8,8 @@ import pt.isel.pdm.battleships.services.games.dtos.GameDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameStateDTO
 import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
 import pt.isel.pdm.battleships.services.games.dtos.MatchmakeDTO
-import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.services.utils.HTTPResult
+import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
 /**
  * Represents the service that handles the battleships game.
@@ -26,8 +27,8 @@ class GamesService(
     /**
      * Gets all the games
      */
-    suspend fun getAllGames(): Result<GamesDTO> =
-        get(link = "/games")
+    suspend fun getAllGames(listGamesLink: String): HTTPResult<GamesDTO> =
+        get(listGamesLink)
 
     /**
      * Gets a game by id.
@@ -37,15 +38,14 @@ class GamesService(
      *
      * @return the result of the get game operation
      */
-    suspend fun getGame(token: String, gameLink: String): Result<GameDTO> =
-        get(
-            link = gameLink,
-            token = token
-        )
+    suspend fun getGame(token: String, gameLink: String): HTTPResult<GameDTO> =
+        get(gameLink, token)
 
-    suspend fun createGame() {
-        // TODO
-    }
+    suspend fun createGame(
+        createGameLink: String,
+        gameConfig: GameConfigDTO
+    ): HTTPResult<SirenEntity<Unit>> =
+        post(createGameLink, gameConfig)
 
     /**
      * Matchmakes a game with a specific configuration.
@@ -57,13 +57,10 @@ class GamesService(
      */
     suspend fun matchmake(
         token: String,
+        matchmakeLink: String,
         gameConfigDTO: GameConfigDTO
-    ): Result<MatchmakeDTO> =
-        post(
-            link = "/games/matchmake",
-            token = token,
-            body = gameConfigDTO
-        )
+    ): HTTPResult<MatchmakeDTO> =
+        post(matchmakeLink, token, gameConfigDTO)
 
     suspend fun joinGame(gameLink: String) {
         // TODO
@@ -77,13 +74,13 @@ class GamesService(
      * Gets the state of a game.
      *
      * @param token the token of the user that is matchmaking
-     * @param gameLink the game link
+     * @param gameStateLink the game state link
      *
      * @return the game state
      */
-    suspend fun getGameState(token: String, gameLink: String): Result<GameStateDTO> =
-        get(
-            link = "$gameLink/state",
-            token = token
-        )
+    suspend fun getGameState(
+        token: String,
+        gameStateLink: String
+    ): HTTPResult<GameStateDTO> =
+        get(gameStateLink, token)
 }

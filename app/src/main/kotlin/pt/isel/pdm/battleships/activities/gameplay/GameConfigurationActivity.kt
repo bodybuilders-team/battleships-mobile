@@ -3,14 +3,12 @@ package pt.isel.pdm.battleships.activities.gameplay
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.activities.utils.getLinks
 import pt.isel.pdm.battleships.activities.utils.navigateTo
+import pt.isel.pdm.battleships.activities.utils.viewModelInit
 import pt.isel.pdm.battleships.ui.screens.gameplay.newGame.GameConfigurationScreen
-import pt.isel.pdm.battleships.ui.theme.BattleshipsTheme
+import pt.isel.pdm.battleships.viewModels.gameplay.GameConfigurationViewModel
 
 /**
  * Activity for the new game screen.
@@ -21,28 +19,33 @@ class GameConfigurationActivity : ComponentActivity() {
         (application as DependenciesContainer).battleshipsService
     }
 
-//    private val viewModel by viewModelInit { GameConfigurationViewModel() }
+    private val viewModel by viewModelInit { GameConfigurationViewModel(
+        battleshipsService.gamesService
+    ) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val links = intent.getLinks()
+
         setContent {
-            BattleshipsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    GameConfigurationScreen(
-                        onGameConfigured = { gameConfig ->
-                            // Api call to add game to lobby: intent.putExtra("gameId", gameId)
-                            navigateTo<BoardSetupActivity> {
-                                it.putExtra("gameConfig", gameConfig)
-                            }
-                        },
-                        onBackButtonClicked = { finish() }
+            GameConfigurationScreen(
+                viewModel.state,
+                onGameConfigured = { gameConfig ->
+                    viewModel.createGame(
+                        links["create-game"]
+                            ?: throw IllegalStateException("No create game link found"),
+                        gameConfig
                     )
-                }
-            }
+                },
+                onGameCreated = {
+                    navigateTo<BoardSetupActivity> {
+                        it.putExtra("gameLink", viewModel.gameLink)
+                    }
+                },
+                errorMessage = viewModel.errorMessage,
+                onBackButtonClicked = { finish() }
+            )
         }
     }
 }

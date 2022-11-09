@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 
@@ -36,44 +37,46 @@ private const val GITHUB_URL = "https://github.com/bodybuilders-team/battleships
  */
 @Composable
 fun AboutScreen(onBackButtonClicked: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        ScreenTitle(title = stringResource(R.string.about_title))
+    BattleshipsScreen {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            ScreenTitle(title = stringResource(R.string.about_title))
 
-        DeveloperInfoView(
-            number = "48089",
-            name = "André Páscoa",
-            githubLink = "https://github.com/devandrepascoa"
-        )
+            DeveloperInfoView(
+                number = "48089",
+                name = "André Páscoa",
+                githubLink = "https://github.com/devandrepascoa"
+            )
 
-        DeveloperInfoView(
-            number = "48280",
-            name = "André Jesus",
-            githubLink = "https://github.com/andre-j3sus"
-        )
+            DeveloperInfoView(
+                number = "48280",
+                name = "André Jesus",
+                githubLink = "https://github.com/andre-j3sus"
+            )
 
-        DeveloperInfoView(
-            number = "48287",
-            name = "Nyckollas Brandão",
-            githubLink = "https://github.com/Nyckoka"
-        )
+            DeveloperInfoView(
+                number = "48287",
+                name = "Nyckollas Brandão",
+                githubLink = "https://github.com/Nyckoka"
+            )
 
-        val uriHandler = LocalUriHandler.current // TODO: Change to use intents?
+            val uriHandler = LocalUriHandler.current // TODO: Change to use intents?
 
-        Text(text = stringResource(id = R.string.about_repo_github_text))
-        Image(
-            painter = painterResource(
-                id = if (isSystemInDarkTheme()) R.drawable.ic_github_light
-                else R.drawable.ic_github_dark
-            ),
-            contentDescription = stringResource(id = R.string.github_logo_content_description),
-            modifier = Modifier
-                .clickable { uriHandler.openUri(GITHUB_URL) }
-                .padding(IMAGE_PADDING.dp)
-        )
+            Text(text = stringResource(id = R.string.about_repo_github_text))
+            Image(
+                painter = painterResource(
+                    id = if (isSystemInDarkTheme()) R.drawable.ic_github_light
+                    else R.drawable.ic_github_dark
+                ),
+                contentDescription = stringResource(id = R.string.github_logo_content_description),
+                modifier = Modifier
+                    .clickable { uriHandler.openUri(GITHUB_URL) }
+                    .padding(IMAGE_PADDING.dp)
+            )
 
-        GoBackButton(onClick = onBackButtonClicked)
+            GoBackButton(onClick = onBackButtonClicked)
+        }
     }
 }

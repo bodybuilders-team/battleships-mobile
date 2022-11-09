@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.MockApi
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.RankedPlayer
+import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 
 private const val RANKING_TITLE_PADDING = 8
@@ -43,24 +44,26 @@ fun RankingScreen(onBackButtonClicked: () -> Unit) {
 
     var players by remember { mutableStateOf(fetchedPlayers) }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(
-            text = stringResource(R.string.ranking_title),
-            style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(RANKING_TITLE_PADDING.dp)
-        )
+    BattleshipsScreen {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = stringResource(R.string.ranking_title),
+                style = MaterialTheme.typography.h4,
+                modifier = Modifier.padding(RANKING_TITLE_PADDING.dp)
+            )
 
-        SearchPlayerField { searchedName ->
-            players = fetchedPlayers.filter { player ->
-                player.username.contains(searchedName)
+            SearchPlayerField { searchedName ->
+                players = fetchedPlayers.filter { player ->
+                    player.username.contains(searchedName)
+                }
             }
+
+            RankingTableView(players)
+
+            GoBackButton(onClick = onBackButtonClicked)
         }
-
-        RankingTableView(players)
-
-        GoBackButton(onClick = onBackButtonClicked)
     }
 }

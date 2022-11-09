@@ -1,7 +1,8 @@
 package pt.isel.pdm.battleships.domain.ship
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.services.games.dtos.ShipTypeDTO
-import java.io.Serializable
 
 /**
  * Represents the ship class in the game.
@@ -10,11 +11,12 @@ import java.io.Serializable
  * @property shipName the name of the ship
  * @property points the points that the ship is worth
  */
+@Parcelize
 enum class ShipType(
     val size: Int,
     val shipName: String,
     val points: Int
-) : Serializable {
+) : Parcelable {
     CARRIER(5, "Carrier", 50),
     BATTLESHIP(4, "Battleship", 40),
     CRUISER(3, "Cruiser", 30),

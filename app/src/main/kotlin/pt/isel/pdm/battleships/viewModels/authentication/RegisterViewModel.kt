@@ -2,10 +2,10 @@ package pt.isel.pdm.battleships.viewModels.authentication
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import java.io.IOException
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.users.UsersService
-import java.io.IOException
 
 /**
  * Represents the register view model for the register screen.
@@ -25,11 +25,12 @@ class RegisterViewModel(
      * @param username the username of the user
      * @param password the password of the user
      */
-    fun register(email: String, username: String, password: String) {
+    fun register(registerLink: String, email: String, username: String, password: String) {
         viewModelScope.launch {
             try {
                 state = AuthenticationState.LOADING
                 val res = usersService.register(
+                    registerLink = registerLink,
                     email = email,
                     username = username,
                     password = password

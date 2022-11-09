@@ -1,11 +1,12 @@
 package pt.isel.pdm.battleships.domain.board
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.domain.board.Board.Companion.FIRST_ROW
 import pt.isel.pdm.battleships.domain.board.Board.Companion.MAX_BOARD_SIZE
 import pt.isel.pdm.battleships.domain.board.Coordinate.Companion.maxColsRange
 import pt.isel.pdm.battleships.domain.board.Coordinate.Companion.maxRowsRange
-import java.io.Serializable
 
 /**
  * Coordinate of each board cell.
@@ -13,7 +14,8 @@ import java.io.Serializable
  * @property col char in range [maxColsRange]
  * @property row int in range [maxRowsRange]
  */
-data class Coordinate(val col: Char, val row: Int) : Serializable {
+@Parcelize
+data class Coordinate(val col: Char, val row: Int) : Parcelable {
 
     init {
         require(col in maxColsRange) {

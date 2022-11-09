@@ -10,13 +10,8 @@ import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.ship.Ship
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
-
-enum class BoardSetupState {
-    LOADING_GAME,
-    PLACING_SHIPS,
-    ERROR,
-    READY
-}
+import pt.isel.pdm.battleships.services.players.dtos.UndeployedFleetDTO
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 
 class BoardSetupViewModel(
     battleshipsService: BattleshipsService,
@@ -29,7 +24,7 @@ class BoardSetupViewModel(
     var game by mutableStateOf<GameDTO?>(null)
     var errorMessage by mutableStateOf<String?>(null)
 
-    fun loadGame(gameId: Int) {
+    fun loadGame(gameLink: String) {
         if (state != BoardSetupState.LOADING_GAME) {
             return
         }
@@ -37,39 +32,52 @@ class BoardSetupViewModel(
         viewModelScope.launch {
             val token = sessionManager.token ?: throw IllegalStateException("No token found")
 
-//            when (val res = gamesService.getGame(token, gameId)) {
-//                is Result.Success -> {
-//                    game = res.data
-//                    state = BoardSetupState.PLACING_SHIPS
-//                }
-//                is Result.Failure -> {
-//                    errorMessage = res.error.message
-//                    state = BoardSetupState.ERROR
-//                }
-//            }
+            when (val res = gamesService.getGame(token, gameLink)) {
+                is HTTPResult.Success -> {
+                    game = res.data
+                    state = BoardSetupState.DEPLOYING_FLEET
+                }
+                is HTTPResult.Failure -> {
+                    errorMessage = res.error.message
+                    state = BoardSetupState.ERROR
+                }
+            }
         }
     }
 
-    fun deployFleet(fleet: List<Ship>) {
-        if (state != BoardSetupState.PLACING_SHIPS) {
+    fun deployFleet(deployFleetLink: String, fleet: List<Ship>) {
+        if (state != BoardSetupState.DEPLOYING_FLEET) {
             return
         }
 
         viewModelScope.launch {
             val token = sessionManager.token ?: throw IllegalStateException("No token found")
-            val currGame = game ?: throw IllegalStateException("No game found")
 
-            val fleetDtos = fleet.map { it.toUndeployedShipDTO() }
+            val fleetDTOs = fleet.map { it.toUndeployedShipDTO() }
 
-//            when (val res = playersService.deployFleet(token, currGame.id, fleetDtos)) {
-//                is Result.Success -> {
-//                    state = BoardSetupState.READY
-//                }
-//                is Result.Failure -> {
-//                    errorMessage = res.error.message
-//                    state = BoardSetupState.ERROR
-//                }
-//            }
+            when (
+                val res =
+                    playersService.deployFleet(
+                        token,
+                        deployFleetLink,
+                        UndeployedFleetDTO(fleetDTOs)
+                    )
+            ) {
+                is HTTPResult.Success -> {
+                    state = BoardSetupState.FLEET_DEPLOYED
+                }
+                is HTTPResult.Failure -> {
+                    errorMessage = res.error.message
+                    state = BoardSetupState.ERROR
+                }
+            }
         }
+    }
+
+    enum class BoardSetupState {
+        LOADING_GAME,
+        DEPLOYING_FLEET,
+        FLEET_DEPLOYED,
+        ERROR
     }
 }

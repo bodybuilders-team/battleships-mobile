@@ -1,6 +1,7 @@
 package pt.isel.pdm.battleships.domain.ship
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.ship.Orientation.HORIZONTAL
 import pt.isel.pdm.battleships.domain.ship.Orientation.VERTICAL
 
@@ -10,7 +11,8 @@ import pt.isel.pdm.battleships.domain.ship.Orientation.VERTICAL
  * @property VERTICAL the vertical orientation
  * @property HORIZONTAL the horizontal orientation
  */
-enum class Orientation : Serializable {
+@Parcelize
+enum class Orientation : Parcelable {
     VERTICAL,
     HORIZONTAL;
 

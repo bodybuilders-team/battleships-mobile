@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -13,23 +14,40 @@ import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.authentication.hash
 import pt.isel.pdm.battleships.ui.screens.authentication.validateEmailFields
+import pt.isel.pdm.battleships.ui.utils.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 import pt.isel.pdm.battleships.viewModels.authentication.AuthenticationState
-import pt.isel.pdm.battleships.viewModels.authentication.RegisterViewModel
 
 /**
  * Screen for registering a new user
  *
- * @param vm the view model for the register screen
+ * @param state Authentication state
+ * @param onRegister callback to be invoked when the register button is clicked
+ * @param errorMessage error message to be displayed
  * @param onBackButtonClicked callback to be invoked when the back button is clicked
  */
 @Composable
 fun RegisterScreen(
-    vm: RegisterViewModel,
+    state: AuthenticationState,
+    onRegister: (String, String, String) -> Unit,
+    onRegisterSuccessful: () -> Unit,
+    errorMessage: String?,
     onBackButtonClicked: () -> Unit
 ) {
     val registerMessage = remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(state) {
+        when (state) {
+            AuthenticationState.ERROR -> {
+                registerMessage.value = errorMessage
+            }
+            AuthenticationState.SUCCESS -> {
+                onRegisterSuccessful()
+            }
+            else -> {}
+        }
+    }
 
     val email = remember { mutableStateOf("") }
     val username = remember { mutableStateOf("") }
@@ -42,55 +60,53 @@ fun RegisterScreen(
     val authenticationMessageInvalidPassword =
         stringResource(id = R.string.authentication_message_invalid_password)
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        ScreenTitle(title = stringResource(R.string.register_title))
+    BattleshipsScreen {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            ScreenTitle(title = stringResource(R.string.register_title))
 
-        RegisterTextFields(
-            email = email.value,
-            username = username.value,
-            password = password.value,
-            onEmailChangeCallback = { email.value = it },
-            onUsernameChangeCallback = { username.value = it },
-            onPasswordChangeCallback = { password.value = it }
-        )
-
-        RegisterButton(enabled = vm.state != AuthenticationState.LOADING) {
-            validateEmailFields(
+            RegisterTextFields(
                 email = email.value,
                 username = username.value,
                 password = password.value,
-                invalidEmailMessage = authenticationMessageInvalidEmail,
-                invalidUsernameMessage = authenticationMessageInvalidUsername,
-                invalidPasswordMessage = authenticationMessageInvalidPassword
-            )?.let {
-                registerMessage.value = it
-                return@RegisterButton
+                onEmailChangeCallback = { email.value = it },
+                onUsernameChangeCallback = { username.value = it },
+                onPasswordChangeCallback = { password.value = it }
+            )
+
+            RegisterButton(enabled = state != AuthenticationState.LOADING) {
+                validateEmailFields(
+                    email = email.value,
+                    username = username.value,
+                    password = password.value,
+                    invalidEmailMessage = authenticationMessageInvalidEmail,
+                    invalidUsernameMessage = authenticationMessageInvalidUsername,
+                    invalidPasswordMessage = authenticationMessageInvalidPassword
+                )?.let {
+                    registerMessage.value = it
+                    return@RegisterButton
+                }
+
+                val hashedPassword = hash(password.value)
+
+                onRegister(
+                    email.value,
+                    username.value,
+                    hashedPassword
+                )
             }
 
-            val hashedPassword = hash(password.value)
+            registerMessage.value?.let {
+                AnimatedVisibility(visible = true) {
+                    Text(text = it)
+                }
+            }
 
-            vm.register(
-                email = email.value,
-                username = username.value,
-                password = hashedPassword
+            GoBackButton(
+                onClick = onBackButtonClicked
             )
         }
-
-        registerMessage.value?.let {
-            AnimatedVisibility(visible = true) {
-                Text(text = it)
-            }
-        }
-
-        if (vm.state == AuthenticationState.SUCCESS) {
-            onBackButtonClicked()
-        } else if (vm.state == AuthenticationState.ERROR) {
-            registerMessage.value = vm.errorMessage
-        }
-
-        GoBackButton(onClick = onBackButtonClicked)
     }
 }

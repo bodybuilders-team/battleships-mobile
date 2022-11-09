@@ -6,7 +6,7 @@ import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.home.dtos.HomeDTO
 import pt.isel.pdm.battleships.services.players.PlayersService
 import pt.isel.pdm.battleships.services.users.UsersService
-import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 
 /**
  * Represents the service that handles the battleships game.
@@ -32,5 +32,5 @@ class BattleshipsService(
     /**
      * Gets the home information.
      */
-    suspend fun getHome(): Result<HomeDTO> = get(link = "/home")
+    suspend fun getHome(): HTTPResult<HomeDTO> = get(link = "/")
 }

@@ -1,6 +1,7 @@
 package pt.isel.pdm.battleships.domain.board
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.Cell
 import pt.isel.pdm.battleships.domain.ShipCell
 import pt.isel.pdm.battleships.domain.ship.Ship
@@ -14,10 +15,11 @@ import pt.isel.pdm.battleships.domain.utils.replace
  *
  * @property fleet the fleet of the board
  */
+@Parcelize
 data class MyBoard(
     override val size: Int = DEFAULT_BOARD_SIZE,
     override val grid: List<Cell> = generateEmptyMatrix(size)
-) : Board(size, grid), Serializable {
+) : Board(size, grid), Parcelable {
 
     init {
         isValid()

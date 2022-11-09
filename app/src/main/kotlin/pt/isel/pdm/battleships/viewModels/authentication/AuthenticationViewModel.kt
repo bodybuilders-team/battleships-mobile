@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
-import pt.isel.pdm.battleships.services.utils.Result
+import pt.isel.pdm.battleships.services.utils.HTTPResult
 
 /**
  * Represents the ViewModel for both authentication screens (login and register).
@@ -27,15 +27,15 @@ open class AuthenticationViewModel(
      *
      * @param res the result of the authentication process
      */
-    protected fun updateState(username: String, res: Result<TokenDTO>) {
+    protected fun updateState(username: String, res: HTTPResult<TokenDTO>) {
         state = when (res) {
-            is Result.Success -> {
+            is HTTPResult.Success -> {
                 val properties = res.data.properties
                     ?: throw IllegalStateException("Token properties are null")
                 sessionManager.setSession(token = properties.token, username = username)
                 AuthenticationState.SUCCESS
             }
-            is Result.Failure -> {
+            is HTTPResult.Failure -> {
                 errorMessage = res.error.message
                 AuthenticationState.ERROR
             }
