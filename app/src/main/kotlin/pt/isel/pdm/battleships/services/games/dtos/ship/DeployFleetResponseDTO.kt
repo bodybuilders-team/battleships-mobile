@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.services.games.dtos
+package pt.isel.pdm.battleships.services.games.dtos.ship
 
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 

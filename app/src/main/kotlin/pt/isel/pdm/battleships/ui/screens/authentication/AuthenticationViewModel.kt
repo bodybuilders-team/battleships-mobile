@@ -39,11 +39,11 @@ open class AuthenticationViewModel(
                 val properties = res.data.properties
                     ?: throw IllegalStateException("Token properties are null")
 
-                sessionManager.setSession(token = properties.token, username = username)
+                sessionManager.setSession(token = properties.accessToken, username = username)
                 SUCCESS
             }
             is HTTPResult.Failure -> {
-                errorMessage = res.error.message
+                errorMessage = res.error.title
                 ERROR
             }
         }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".BattleshipsApplication"
@@ -21,13 +22,11 @@
             android:name=".ui.screens.home.HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.Battleships">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.screens.gameplay.boardSetup.BoardSetupActivity" />
         <activity android:name=".ui.screens.gameplay.gameplay.GameplayActivity" />
         <activity android:name=".ui.screens.gameplay.gameplayMenu.GameplayMenuActivity" />

@@ -5,7 +5,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.Board
-import pt.isel.pdm.battleships.services.games.dtos.UndeployedShipDTO
+import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedShipDTO
 
 /**
  * Represents a ship in the game.

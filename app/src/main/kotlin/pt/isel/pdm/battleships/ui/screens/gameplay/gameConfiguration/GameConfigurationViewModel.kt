@@ -54,7 +54,7 @@ class GameConfigurationViewModel(
                     state = GAME_CREATED
                 }
                 is HTTPResult.Failure -> {
-                    errorMessage = res.error.message
+                    errorMessage = res.error.title
                     state = ERROR
                 }
             }

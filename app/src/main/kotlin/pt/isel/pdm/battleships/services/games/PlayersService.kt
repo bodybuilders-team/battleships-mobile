@@ -3,8 +3,8 @@ package pt.isel.pdm.battleships.services.games
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
-import pt.isel.pdm.battleships.services.games.dtos.DeployFleetResponseDTO
-import pt.isel.pdm.battleships.services.games.dtos.UndeployedFleetDTO
+import pt.isel.pdm.battleships.services.games.dtos.ship.DeployFleetResponseDTO
+import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedFleetDTO
 import pt.isel.pdm.battleships.services.utils.HTTPResult
 
 /**

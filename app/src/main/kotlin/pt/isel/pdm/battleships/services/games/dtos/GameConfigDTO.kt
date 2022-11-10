@@ -1,5 +1,7 @@
 package pt.isel.pdm.battleships.services.games.dtos
 
+import pt.isel.pdm.battleships.services.games.dtos.ship.ShipTypeDTO
+
 /**
  * Represents a Game Config DTO.
  *

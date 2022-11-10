@@ -10,7 +10,7 @@ import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
-import pt.isel.pdm.battleships.services.games.dtos.UndeployedFleetDTO
+import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedFleetDTO
 import pt.isel.pdm.battleships.services.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.DEPLOYING_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.ERROR
@@ -56,7 +56,7 @@ class BoardSetupViewModel(
                     state = DEPLOYING_FLEET
                 }
                 is HTTPResult.Failure -> {
-                    errorMessage = res.error.message
+                    errorMessage = res.error.title
                     state = ERROR
                 }
             }
@@ -87,7 +87,7 @@ class BoardSetupViewModel(
                     state = FLEET_DEPLOYED
                 }
                 is HTTPResult.Failure -> {
-                    errorMessage = res.error.message
+                    errorMessage = res.error.title
                     state = ERROR
                 }
             }

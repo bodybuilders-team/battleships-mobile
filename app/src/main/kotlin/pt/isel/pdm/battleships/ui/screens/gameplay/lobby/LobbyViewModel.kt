@@ -49,7 +49,7 @@ class LobbyViewModel(
                     res.data
                 }
                 is HTTPResult.Failure -> {
-                    errorMessage = res.error.message
+                    errorMessage = res.error.title
                     state = ERROR
                     return@launch
                 }

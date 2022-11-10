@@ -90,7 +90,7 @@ class QuickPlayViewModel(
                     matchGameStateLink
                 }
                 is HTTPResult.Failure -> {
-                    errorMessage = res.error.message
+                    errorMessage = res.error.title
                     state = ERROR
                     return@launch
                 }
@@ -109,7 +109,7 @@ class QuickPlayViewModel(
                         }
                     }
                     is HTTPResult.Failure -> {
-                        errorMessage = res.error.message
+                        errorMessage = res.error.title
                         state = ERROR
                         return@launch
                     }

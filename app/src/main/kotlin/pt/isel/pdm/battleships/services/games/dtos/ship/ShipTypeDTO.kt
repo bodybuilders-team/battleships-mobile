@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.services.games.dtos
+package pt.isel.pdm.battleships.services.games.dtos.ship
 
 /**
  * Represents a Ship Type DTO.

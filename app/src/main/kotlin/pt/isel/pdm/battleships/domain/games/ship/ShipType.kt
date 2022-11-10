@@ -2,7 +2,7 @@ package pt.isel.pdm.battleships.domain.games.ship
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import pt.isel.pdm.battleships.services.games.dtos.ShipTypeDTO
+import pt.isel.pdm.battleships.services.games.dtos.ship.ShipTypeDTO
 
 /**
  * Represents the ship class in the game.
