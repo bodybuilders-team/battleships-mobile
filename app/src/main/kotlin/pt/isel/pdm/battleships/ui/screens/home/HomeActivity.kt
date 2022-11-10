@@ -8,7 +8,6 @@ import pt.isel.pdm.battleships.ui.screens.about.AboutActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.login.LoginActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuActivity
-import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.LoadingState
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
 import pt.isel.pdm.battleships.utils.Links
 import pt.isel.pdm.battleships.utils.Links.Companion.LINKS_KEY
@@ -56,35 +55,35 @@ class HomeActivity : ComponentActivity() {
             HomeScreen(
                 loggedIn = sessionManager.isLoggedIn(),
                 onGameplayMenuClick = {
-                    viewModel.loadingState = LoadingState.LOADING_GAMEPLAY_MENU
+                    viewModel.loadingState = HomeViewModel.LoadingState.LOADING_GAMEPLAY_MENU
                     navigateWithActionTo<GameplayMenuActivity>(
                         linkKeys = setOf("create-game", "list-games", "matchmake")
                     )
                 },
-                onRankingClick = {
-                    viewModel.loadingState = LoadingState.LOADING_RANKING
-                    navigateWithActionTo<RankingActivity>(
-                        linkKeys = setOf("list-users")
-                    )
-                },
-                onAboutClick = {
-                    viewModel.loadingState = LoadingState.LOADING_ABOUT
-                    navigateWithActionTo<AboutActivity>()
-                },
                 onLoginClick = {
-                    viewModel.loadingState = LoadingState.LOADING_LOGIN
+                    viewModel.loadingState = HomeViewModel.LoadingState.LOADING_LOGIN
                     navigateWithActionTo<LoginActivity>(
                         linkKeys = setOf("login")
                     )
                 },
                 onRegisterClick = {
-                    viewModel.loadingState = LoadingState.LOADING_REGISTER
+                    viewModel.loadingState = HomeViewModel.LoadingState.LOADING_REGISTER
                     navigateWithActionTo<RegisterActivity>(
                         linkKeys = setOf("register")
                     )
                 },
                 onLogoutClick = {
                     sessionManager.clearSession()
+                },
+                onRankingClick = {
+                    viewModel.loadingState = HomeViewModel.LoadingState.LOADING_RANKING
+                    navigateWithActionTo<RankingActivity>(
+                        linkKeys = setOf("list-users")
+                    )
+                },
+                onAboutClick = {
+                    viewModel.loadingState = HomeViewModel.LoadingState.LOADING_ABOUT
+                    navigateWithActionTo<AboutActivity>()
                 },
                 errorMessage = viewModel.errorMessage,
                 onErrorMessageDismissed = {
@@ -107,18 +106,21 @@ class HomeActivity : ComponentActivity() {
         linkKeys: Set<String>? = null
     ) {
         viewModel.onHomeLoaded {
-            if (viewModel.state != HomeViewModel.HomeState.LOADED) return@onHomeLoaded
+            if (viewModel.state != HomeViewModel.HomeState.LOADED) {
+                return@onHomeLoaded
+            }
 
             navigateTo<T> { intent ->
                 if (linkKeys == null) return@navigateTo
 
-                val links = viewModel.actions
-                    .filter { linkKeys.contains(it.key) }
-                    .mapValues { it.value.href.path }
+                val links =
+                    viewModel.actions
+                        .filter { linkKeys.contains(it.key) }
+                        .mapValues { it.value.href.path }
 
                 intent.putExtra(LINKS_KEY, Links(links))
             }
-            viewModel.loadingState = LoadingState.NOT_LOADING
+            viewModel.loadingState = HomeViewModel.LoadingState.NOT_LOADING
         }
     }
 }

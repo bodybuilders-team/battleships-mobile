@@ -7,6 +7,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
@@ -18,27 +20,31 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 /**
- * Suspends the current coroutine until the [Call] completes.
+ * Sends a request through the HTTP client and parses the response into a [T].
  *
- * @receiver the [Call] to be executed
- * @return the [Response] of the [Call]
+ * @receiver the HTTP request to send
+ * @param parseResponse the function that parses the response into a [T]
+ * @return the parsed response
  */
-suspend fun Call.await(): Response =
+suspend fun <T> Request.send(okHttpClient: OkHttpClient, parseResponse: (Response) -> T): T =
     suspendCancellableCoroutine { continuation ->
-        enqueue(
-            responseCallback = object : Callback {
+        val call = okHttpClient.newCall(request = this)
 
-                override fun onResponse(call: Call, response: Response) {
-                    continuation.resume(response)
-                }
+        call.enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                continuation.resumeWithException(e)
+            }
 
-                override fun onFailure(call: Call, e: IOException) {
-                    if (!this@await.isCanceled()) continuation.resumeWithException(e)
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    continuation.resume(parseResponse(response))
+                } catch (t: Throwable) {
+                    continuation.resumeWithException(t)
                 }
             }
-        )
+        })
 
-        continuation.invokeOnCancellation { this.cancel() }
+        continuation.invokeOnCancellation { call.cancel() }
     }
 
 /**

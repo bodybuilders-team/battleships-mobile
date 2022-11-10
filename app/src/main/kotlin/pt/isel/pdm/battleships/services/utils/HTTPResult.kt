@@ -17,5 +17,5 @@ sealed class HTTPResult<T> {
      *
      * @property error the error DTO
      */
-    class Failure<T>(val error: ErrorDTO) : HTTPResult<T>()
+    class Failure<T>(val error: Problem) : HTTPResult<T>()
 }

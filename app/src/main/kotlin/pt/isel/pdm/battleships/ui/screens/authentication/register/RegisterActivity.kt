@@ -37,7 +37,8 @@ class RegisterActivity : ComponentActivity() {
 
         val links = intent.getLinks()
 
-        val registerLink = links[REGISTER] ?: throw IllegalStateException("Login link not found")
+        val registerLink = links[REGISTER]
+            ?: throw IllegalStateException("$REGISTER link not found")
 
         setContent {
             RegisterScreen(

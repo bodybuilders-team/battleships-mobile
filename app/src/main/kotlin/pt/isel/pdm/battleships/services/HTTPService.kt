@@ -6,12 +6,13 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import pt.isel.pdm.battleships.services.utils.HTTPResult
-import pt.isel.pdm.battleships.services.utils.await
+import pt.isel.pdm.battleships.services.utils.Problem.Companion.problemMediaType
 import pt.isel.pdm.battleships.services.utils.fromJson
 import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
+import pt.isel.pdm.battleships.services.utils.send
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
+import pt.isel.pdm.battleships.services.utils.siren.SirenEntity.Companion.sirenMediaType
 
 /**
  * Represents a service that communicates with a HTTP server.
@@ -34,30 +35,24 @@ abstract class HTTPService(
      * @return the result of the request
      */
     suspend inline fun <reified T> Request.getResponseResult(): HTTPResult<SirenEntity<T>> =
-        httpClient
-            .newCall(request = this)
-            .await()
-            .parseResponse()
+        this.send(httpClient) { response ->
+            val body = response.getBodyOrThrow()
+            val contentType = body.contentType()
+            val resJson = JsonReader(body.charStream())
 
-    /**
-     * Parses the response into a [HTTPResult] of a [SirenEntity] with the specified type.
-     *
-     * @receiver the HTTP response to parse
-     * @return the result of the response
-     */
-    inline fun <reified T> Response.parseResponse(): HTTPResult<SirenEntity<T>> {
-        val body = this.getBodyOrThrow()
-        val resJson = JsonReader(body.charStream())
-
-        return if (this@parseResponse.isSuccessful) {
-            HTTPResult.Success(
-                data = jsonEncoder.fromJson(
-                    resJson,
-                    SirenEntity.getType<T>().type
-                )
-            )
-        } else HTTPResult.Failure(error = jsonEncoder.fromJson(resJson))
-    }
+            when {
+                response.isSuccessful && contentType == sirenMediaType ->
+                    HTTPResult.Success(
+                        data = jsonEncoder.fromJson(
+                            resJson,
+                            SirenEntity.getType<T>().type
+                        )
+                    )
+                !response.isSuccessful && contentType == problemMediaType ->
+                    HTTPResult.Failure(error = jsonEncoder.fromJson(resJson))
+                else -> throw Exception("Unexpected response from server")
+            }
+        }
 
     /**
      * Sends a GET request to the specified link.

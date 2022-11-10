@@ -3,11 +3,6 @@ package pt.isel.pdm.battleships.services.utils.siren
 import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType.Companion.toMediaType
 
-private const val APPLICATION_TYPE = "application"
-private const val SIREN_SUBTYPE = "vnd.siren+json"
-const val SIREN_TYPE = "$APPLICATION_TYPE/$SIREN_SUBTYPE"
-val sirenMediaType = SIREN_TYPE.toMediaType()
-
 /**
  * Siren is a specification for representing hypermedia entities in JSON.
  *
@@ -31,5 +26,11 @@ data class SirenEntity<T>(
     companion object {
         inline fun <reified T> getType(): TypeToken<SirenEntity<T>> =
             object : TypeToken<SirenEntity<T>>() {}
+
+        private const val APPLICATION_TYPE = "application"
+        private const val SIREN_SUBTYPE = "vnd.siren+json"
+        private const val SIREN_TYPE = "$APPLICATION_TYPE/$SIREN_SUBTYPE"
+
+        val sirenMediaType = SIREN_TYPE.toMediaType()
     }
 }

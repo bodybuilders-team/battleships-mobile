@@ -5,8 +5,8 @@ import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.users.dtos.LoginDTO
 import pt.isel.pdm.battleships.services.users.dtos.RegisterDTO
-import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
-import pt.isel.pdm.battleships.services.users.dtos.UsersDTO
+import pt.isel.pdm.battleships.services.users.dtos.RegisterOutputDTO
+import pt.isel.pdm.battleships.services.users.dtos.UserDTO
 import pt.isel.pdm.battleships.services.utils.HTTPResult
 
 /**
@@ -23,28 +23,8 @@ class UsersService(
 ) : HTTPService(apiEndpoint, httpClient, jsonEncoder) {
 
     /**
-     * Logs in the user with the given [username] and [password].
-     *
-     * @param loginLink the link to the login endpoint
-     * @param username the username of the user
-     * @param password the password of the user
-     *
-     * @return the authentication result
-     */
-    suspend fun login(
-        loginLink: String,
-        username: String,
-        password: String
-    ): HTTPResult<TokenDTO> =
-        post(
-            link = loginLink,
-            body = LoginDTO(username, password)
-        )
-
-    /**
      * Registers the user with the given [email], [username] and [password].
      *
-     * @param registerLink the link to the register endpoint
      * @param email the email of the user
      * @param username the username of the user
      * @param password the password of the user
@@ -56,17 +36,32 @@ class UsersService(
         email: String,
         username: String,
         password: String
-    ): HTTPResult<TokenDTO> =
+    ): HTTPResult<RegisterOutputDTO> =
         post(
             link = registerLink,
-            body = RegisterDTO(email, username, password)
+            body = RegisterDTO(username = username, email = email, password = password)
         )
 
     /**
-     * Gets all the users.
+     * Logs in the user with the given [username] and [password].
      *
-     * @param listUsersLink the link to the list users endpoint
+     * @param username the username of the user
+     * @param password the password of the user
+     *
+     * @return the authentication result
      */
-    suspend fun getUsers(listUsersLink: String): HTTPResult<UsersDTO> =
-        get(listUsersLink)
+    suspend fun login(loginLink: String, username: String, password: String): HTTPResult<RegisterOutputDTO> =
+        post(
+            link = loginLink,
+            body = LoginDTO(username, password)
+        )
+
+    /**
+     * Gets the user with the given [username].
+     *
+     * @param username the username of the user
+     * @return the result of the operation
+     */
+    suspend fun getUserByUsername(username: String): HTTPResult<UserDTO> =
+        get(link = "/users/$username")
 }

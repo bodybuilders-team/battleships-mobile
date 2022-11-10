@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.users.dtos.TokenDTO
+import pt.isel.pdm.battleships.services.users.dtos.RegisterOutputDTO
 import pt.isel.pdm.battleships.services.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.ERROR
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.IDLE
@@ -33,7 +33,7 @@ open class AuthenticationViewModel(
      * @param username the username of the user
      * @param res the result of the authentication process
      */
-    protected fun updateState(username: String, res: HTTPResult<TokenDTO>) {
+    protected fun updateState(username: String, res: HTTPResult<RegisterOutputDTO>) {
         state = when (res) {
             is HTTPResult.Success -> {
                 val properties = res.data.properties
