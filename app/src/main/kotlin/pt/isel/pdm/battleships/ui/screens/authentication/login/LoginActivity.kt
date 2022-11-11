@@ -1,9 +1,15 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.login
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.utils.showToast
+import pt.isel.pdm.battleships.utils.Links
+import pt.isel.pdm.battleships.utils.Links.Companion.LINKS_KEY
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
 import pt.isel.pdm.battleships.utils.Rels.LOGIN
 import pt.isel.pdm.battleships.utils.viewModelInit
@@ -16,6 +22,7 @@ import pt.isel.pdm.battleships.utils.viewModelInit
  * @property viewModel the view model used to handle the login process
  */
 class LoginActivity : ComponentActivity() {
+    class LoginResultContract
 
     private val battleshipsService by lazy {
         (application as DependenciesContainer).battleshipsService
@@ -39,6 +46,12 @@ class LoginActivity : ComponentActivity() {
 
         val loginLink = links[LOGIN] ?: throw IllegalStateException("Login link not found")
 
+        lifecycleScope.launch {
+            viewModel.error.collect { errorMessage ->
+                showToast(errorMessage)
+            }
+        }
+
         setContent {
             LoginScreen(
                 viewModel.state,
@@ -50,10 +63,16 @@ class LoginActivity : ComponentActivity() {
                     )
                 },
                 onLoginSuccessful = {
+                    val resultIntent = Intent()
+                    val userHomeLink =
+                        viewModel.link ?: throw IllegalStateException("Link not found")
+                    resultIntent.putExtra(LINKS_KEY, Links(mapOf("user-home" to userHomeLink)))
+
+                    setResult(RESULT_OK, resultIntent)
                     finish()
                 },
-                errorMessage = viewModel.errorMessage,
                 onBackButtonClicked = {
+                    setResult(RESULT_CANCELED, null)
                     finish()
                 }
             )

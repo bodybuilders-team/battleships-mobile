@@ -1,12 +1,15 @@
 package pt.isel.pdm.battleships.services
 
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.stream.JsonReader
+import java.io.IOException
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import pt.isel.pdm.battleships.services.utils.HTTPResult
+import okhttp3.Response
+import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.Problem.Companion.problemMediaType
 import pt.isel.pdm.battleships.services.utils.fromJson
 import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
@@ -28,29 +31,36 @@ abstract class HTTPService(
 ) {
 
     /**
-     * Sends a HTTP request to the server and parses the response into a [HTTPResult] of a
+     * Sends a HTTP request to the server and parses the response into a [APIResult] of a
      * [SirenEntity] with the specified type.
      *
      * @receiver the HTTP request to send
+     *
      * @return the result of the request
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> Request.getResponseResult(): HTTPResult<SirenEntity<T>> =
+    suspend inline fun <reified T> Request.getResponseResult(): APIResult<SirenEntity<T>> =
         this.send(httpClient) { response ->
             val body = response.getBodyOrThrow()
             val contentType = body.contentType()
             val resJson = JsonReader(body.charStream())
 
-            when {
-                response.isSuccessful && contentType == sirenMediaType ->
-                    HTTPResult.Success(
-                        data = jsonEncoder.fromJson(
-                            resJson,
-                            SirenEntity.getType<T>().type
+            try {
+                when {
+                    response.isSuccessful && contentType == sirenMediaType ->
+                        APIResult.Success(
+                            data = jsonEncoder.fromJson(
+                                resJson,
+                                SirenEntity.getType<T>().type
+                            )
                         )
-                    )
-                !response.isSuccessful && contentType == problemMediaType ->
-                    HTTPResult.Failure(error = jsonEncoder.fromJson(resJson))
-                else -> throw Exception("Unexpected response from server")
+                    !response.isSuccessful && contentType == problemMediaType ->
+                        APIResult.Failure(error = jsonEncoder.fromJson(resJson))
+                    else -> throw UnexpectedResponseException(response)
+                }
+            } catch (e: JsonSyntaxException) {
+                throw UnexpectedResponseException(response)
             }
         }
 
@@ -58,9 +68,12 @@ abstract class HTTPService(
      * Sends a GET request to the specified link.
      *
      * @param link the link to send the request to
+     *
      * @return the result of the request
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> get(link: String): HTTPResult<SirenEntity<T>> =
+    suspend inline fun <reified T> get(link: String): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(apiEndpoint + link)
             .build().getResponseResult()
@@ -72,8 +85,10 @@ abstract class HTTPService(
      * @param token the token to send in the header
      *
      * @return the result of the request
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> get(link: String, token: String): HTTPResult<SirenEntity<T>> =
+    suspend inline fun <reified T> get(link: String, token: String): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .header(name = AUTHORIZATION_HEADER, value = "Bearer $token")
@@ -87,8 +102,10 @@ abstract class HTTPService(
      * @param body the body to send in the request
      *
      * @return the result of the request
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> post(link: String, body: Any): HTTPResult<SirenEntity<T>> =
+    suspend inline fun <reified T> post(link: String, body: Any): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .post(
@@ -107,12 +124,14 @@ abstract class HTTPService(
      * @param body the body to send in the request
      *
      * @return the result of the request
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
      */
     suspend inline fun <reified T> post(
         link: String,
         token: String,
         body: Any
-    ): HTTPResult<SirenEntity<T>> =
+    ): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .header(name = AUTHORIZATION_HEADER, value = "Bearer $token")
@@ -131,3 +150,12 @@ abstract class HTTPService(
         const val AUTHORIZATION_HEADER = "Authorization"
     }
 }
+
+/**
+ * Represents an exception thrown when the server responds with an unexpected response.
+ *
+ * @property response the response that caused the exception
+ *
+ */
+class UnexpectedResponseException(val response: Response) :
+    Exception("Unexpected ${response.code} response from the server.")

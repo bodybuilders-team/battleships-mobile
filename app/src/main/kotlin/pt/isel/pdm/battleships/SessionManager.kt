@@ -7,15 +7,19 @@ import androidx.compose.runtime.setValue
 /**
  * Represents the session manager responsible for holding a user's session.
  *
- * @property token the user's token
+ * @property accessToken the user's token
  * @property username the user's username
  */
 class SessionManager {
-    private var _token: String? by mutableStateOf(null)
+    private var _accessToken: String? by mutableStateOf(null)
+    private var _refreshToken: String? by mutableStateOf(null)
     private var _username: String? by mutableStateOf(null)
 
-    val token
-        get() = _token
+    val accessToken
+        get() = _accessToken
+
+    val refreshToken
+        get() = _refreshToken
 
     val username
         get() = _username
@@ -25,16 +29,18 @@ class SessionManager {
      *
      * @return true if the user is logged in, false otherwise
      */
-    fun isLoggedIn() = _token != null
+    fun isLoggedIn() = _accessToken != null
 
     /**
-     * Updates the session with the given token and username.
+     * Updates the session with the given tokens and username.
      *
-     * @param token the user's token
+     *@param accessToken the user's access token
+     * @param refreshToken the user's refresh token
      * @param username the user's username
      */
-    fun setSession(token: String, username: String) {
-        this._token = token
+    fun setSession(accessToken: String, refreshToken: String, username: String) {
+        this._accessToken = accessToken
+        this._refreshToken = refreshToken
         this._username = username
     }
 
@@ -42,7 +48,8 @@ class SessionManager {
      * Clears the session.
      */
     fun clearSession() {
-        this._token = null
+        this._accessToken = null
+        this._refreshToken = null
         this._username = null
     }
 }

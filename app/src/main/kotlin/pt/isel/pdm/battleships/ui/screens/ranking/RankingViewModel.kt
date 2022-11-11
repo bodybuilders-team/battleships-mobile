@@ -5,15 +5,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.users.UsersService
 import pt.isel.pdm.battleships.services.users.dtos.UsersDTO
-import pt.isel.pdm.battleships.services.utils.HTTPResult
-import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.ERROR
+import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.IDLE
+import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for the RankingActivity.
@@ -32,7 +35,9 @@ class RankingViewModel(
 
     var state by mutableStateOf(IDLE)
     var users by mutableStateOf<UsersDTO?>(null)
-    var errorMessage: String? by mutableStateOf(null)
+
+    private val _error = MutableSharedFlow<String>()
+    val error: SharedFlow<String> = _error
 
     /**
      * Gets all the users.
@@ -42,17 +47,30 @@ class RankingViewModel(
     fun getUsers(listUsersLink: String) {
         if (state != IDLE) return
 
+        state = GETTING_USERS
+
         viewModelScope.launch {
-            users = when ( // TODO: fix this
-                val res = usersService.getUsers("$listUsersLink?offset=0&limit=100")
-            ) {
-                is HTTPResult.Success -> {
-                    state = FINISHED
-                    res.data
-                }
+            val httpRes = tryExecuteHttpRequest {
+                usersService.getUsers("$listUsersLink?offset=0&limit=100")
+            }
+
+            val res = when (httpRes) {
+                is HTTPResult.Success -> httpRes.data
                 is HTTPResult.Failure -> {
-                    errorMessage = res.error.title
-                    state = ERROR
+                    _error.emit(httpRes.error)
+                    state = IDLE
+                    return@launch
+                }
+            }
+
+            when (res) {
+                is APIResult.Success -> {
+                    users = res.data
+                    state = FINISHED
+                }
+                is APIResult.Failure -> {
+                    _error.emit(res.error.title)
+                    state = IDLE
                     return@launch
                 }
             }
@@ -70,7 +88,6 @@ class RankingViewModel(
     enum class RankingState {
         IDLE,
         GETTING_USERS,
-        FINISHED,
-        ERROR
+        FINISHED
     }
 }

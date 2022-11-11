@@ -11,7 +11,7 @@ import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
 import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedFleetDTO
-import pt.isel.pdm.battleships.services.utils.HTTPResult
+import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.DEPLOYING_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.ERROR
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED
@@ -48,14 +48,14 @@ class BoardSetupViewModel(
         if (state != LOADING_GAME) return
 
         viewModelScope.launch {
-            val token = sessionManager.token ?: throw IllegalStateException("No token found")
+            val token = sessionManager.accessToken ?: throw IllegalStateException("No token found")
 
             when (val res = gamesService.getGame(token, gameLink)) {
-                is HTTPResult.Success -> {
+                is APIResult.Success -> {
                     game = res.data
                     state = DEPLOYING_FLEET
                 }
-                is HTTPResult.Failure -> {
+                is APIResult.Failure -> {
                     errorMessage = res.error.title
                     state = ERROR
                 }
@@ -73,7 +73,7 @@ class BoardSetupViewModel(
         if (state != DEPLOYING_FLEET) return
 
         viewModelScope.launch {
-            val token = sessionManager.token ?: throw IllegalStateException("No token found")
+            val token = sessionManager.accessToken ?: throw IllegalStateException("No token found")
             val fleetDTOs = fleet.map(Ship::toUndeployedShipDTO)
 
             when (
@@ -83,10 +83,10 @@ class BoardSetupViewModel(
                     fleet = UndeployedFleetDTO(fleetDTOs)
                 )
             ) {
-                is HTTPResult.Success -> {
+                is APIResult.Success -> {
                     state = FLEET_DEPLOYED
                 }
-                is HTTPResult.Failure -> {
+                is APIResult.Failure -> {
                     errorMessage = res.error.title
                     state = ERROR
                 }

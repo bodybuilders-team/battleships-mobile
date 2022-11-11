@@ -7,13 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import java.net.URI
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.utils.HTTPResult
-import pt.isel.pdm.battleships.services.utils.siren.Action
-import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.ERROR
+import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING
@@ -23,7 +23,8 @@ import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.LoadingState.LOADIN
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.LoadingState.LOADING_RANKING
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.LoadingState.LOADING_REGISTER
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.LoadingState.NOT_LOADING
-import java.io.IOException
+import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for the HomeActivity.
@@ -36,7 +37,7 @@ import java.io.IOException
  * @property loadingState the current loading state
  * @property state the current state of the view model
  * @property errorMessage the error message to be displayed
- * @property actions the actions to be displayed
+ * @property links the actions to be displayed
  */
 class HomeViewModel(
     private val battleshipsService: BattleshipsService,
@@ -47,8 +48,10 @@ class HomeViewModel(
 
     var loadingState: LoadingState by mutableStateOf(NOT_LOADING)
     var state by mutableStateOf(IDLE)
-    var errorMessage by mutableStateOf<String?>(null)
-    var actions: Map<String, Action> = emptyMap()
+    var links: Map<String, String> = emptyMap()
+
+    private val _events = MutableSharedFlow<Event>()
+    val events: SharedFlow<Event> = _events
 
     /**
      * Loads the home page.
@@ -59,43 +62,41 @@ class HomeViewModel(
         state = LOADING
 
         viewModelScope.launch {
-            val res = try {
+            val httpRes = tryExecuteHttpRequest {
                 battleshipsService.getHome()
-            } catch (e: IOException) {
-                errorMessage = "Could not connect to the server."
-                state = ERROR
-                return@launch
+            }
+
+            val res = when (httpRes) {
+                is HTTPResult.Success -> httpRes.data
+                is HTTPResult.Failure -> {
+                    _events.emit(Event.Error(httpRes.error))
+                    state = IDLE
+                    return@launch
+                }
             }
 
             when (res) {
-                is HTTPResult.Success -> {
+                is APIResult.Success -> {
                     val resActions = res.data.actions ?: emptyList()
-                    actions = resActions.associateBy(Action::name)
+                    links = resActions.associate { Pair(it.name, it.href.path) }
                     state = LOADED
                 }
-                is HTTPResult.Failure -> {
-                    errorMessage = "Could not load the home page."
-                    state = ERROR
+                is APIResult.Failure -> {
+                    _events.emit(Event.Error(res.error.title))
+                    state = IDLE
                 }
             }
         }
     }
 
-    /**
-     * Executes the given callback when the home page is loaded.
-     *
-     * @param callback the callback to be executed
-     */
-    fun onHomeLoaded(callback: () -> Unit) {
-        if (state == LOADED) return callback()
-
+    fun <T> navigateTo(clazz: Class<T>, linkRels: Set<String>? = null) {
         viewModelScope.launch {
-            while (state != LOADED) {
-                yield()
-            }
-
-            callback()
+            _events.emit(Event.Navigate(clazz, linkRels))
         }
+    }
+
+    inline fun <reified T> navigateTo(linkRels: Set<String>? = null) {
+        navigateTo(T::class.java, linkRels)
     }
 
     /**
@@ -109,8 +110,7 @@ class HomeViewModel(
     enum class HomeState {
         IDLE,
         LOADING,
-        LOADED,
-        ERROR
+        LOADED
     }
 
     /**
@@ -130,5 +130,10 @@ class HomeViewModel(
         LOADING_RANKING,
         LOADING_ABOUT,
         NOT_LOADING
+    }
+
+    sealed class Event {
+        class Error(val message: String) : Event()
+        class Navigate(val clazz: Class<*>, val linkRels: Set<String>? = null) : Event()
     }
 }

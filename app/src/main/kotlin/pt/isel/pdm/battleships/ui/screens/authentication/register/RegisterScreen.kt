@@ -36,21 +36,13 @@ fun RegisterScreen(
     state: AuthenticationState,
     onRegister: (String, String, String) -> Unit,
     onRegisterSuccessful: () -> Unit,
-    errorMessage: String?,
     onBackButtonClicked: () -> Unit
 ) {
     val registerMessage = remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(state) {
-        when (state) {
-            AuthenticationState.ERROR -> {
-                registerMessage.value = errorMessage
-            }
-            AuthenticationState.SUCCESS -> {
-                onRegisterSuccessful()
-            }
-            else -> {}
-        }
+        if (state == AuthenticationState.SUCCESS)
+            onRegisterSuccessful()
     }
 
     val email = remember { mutableStateOf("") }

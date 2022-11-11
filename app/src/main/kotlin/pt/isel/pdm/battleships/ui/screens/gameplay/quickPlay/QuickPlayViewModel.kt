@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
-import pt.isel.pdm.battleships.services.utils.HTTPResult
+import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.screens.gameplay.quickPlay.QuickPlayViewModel.QuickPlayState.ERROR
 import pt.isel.pdm.battleships.ui.screens.gameplay.quickPlay.QuickPlayViewModel.QuickPlayState.MATCHMADE
@@ -61,12 +61,12 @@ class QuickPlayViewModel(
         viewModelScope.launch {
             delay(ANIMATION_DELAY)
 
-            val token = sessionManager.token ?: throw IllegalStateException("No token found")
+            val token = sessionManager.accessToken ?: throw IllegalStateException("No token found")
 
             val gameStateLink = when (
                 val res = gamesService.matchmake(token, matchmakeLink, gameConfigDTO)
             ) {
-                is HTTPResult.Success -> {
+                is APIResult.Success -> {
                     val properties = res.data.properties
                         ?: throw IllegalStateException("Game properties are null")
 
@@ -89,7 +89,7 @@ class QuickPlayViewModel(
 
                     matchGameStateLink
                 }
-                is HTTPResult.Failure -> {
+                is APIResult.Failure -> {
                     errorMessage = res.error.title
                     state = ERROR
                     return@launch
@@ -98,7 +98,7 @@ class QuickPlayViewModel(
 
             while (state != MATCHMADE) {
                 when (val res = gamesService.getGameState(token, gameStateLink)) {
-                    is HTTPResult.Success -> {
+                    is APIResult.Success -> {
                         val properties = res.data.properties
                             ?: throw IllegalStateException("Game state properties are null")
 
@@ -108,7 +108,7 @@ class QuickPlayViewModel(
                             state = MATCHMADE
                         }
                     }
-                    is HTTPResult.Failure -> {
+                    is APIResult.Failure -> {
                         errorMessage = res.error.title
                         state = ERROR
                         return@launch

@@ -8,9 +8,9 @@ import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
  * @property accessToken the access token
  * @property refreshToken the refresh token
  */
-data class RegisterOutputDTOProperties(
+data class AuthenticationOutputDTOProperties(
     val accessToken: String,
     val refreshToken: String
 )
 
-typealias RegisterOutputDTO = SirenEntity<RegisterOutputDTOProperties>
+typealias AuthenticationOutputDTO = SirenEntity<AuthenticationOutputDTOProperties>

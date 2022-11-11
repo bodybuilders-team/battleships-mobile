@@ -27,13 +27,14 @@ class LoginViewModel(
     fun login(loginLink: String, username: String, password: String) {
         viewModelScope.launch {
             state = AuthenticationState.LOADING
-            val res =
+
+            updateState(username) {
                 usersService.login(
                     loginLink = loginLink,
                     username = username,
                     password = password
                 )
-            updateState(username, res)
+            }
         }
     }
 }

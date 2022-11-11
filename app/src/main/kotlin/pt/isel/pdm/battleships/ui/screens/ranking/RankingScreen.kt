@@ -28,7 +28,6 @@ import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 fun RankingScreen(
     state: RankingState,
     users: UsersDTO?,
-    errorMessage: String?,
     onBackButtonClicked: () -> Unit
 ) {
     BattleshipsScreen {
@@ -51,7 +50,6 @@ fun RankingScreen(
                         "Users cannot be null when state is FINISHED"
                     )
                 )
-                RankingState.ERROR -> Text(text = errorMessage ?: "Unknown error")
             }
 
             GoBackButton(onClick = onBackButtonClicked)

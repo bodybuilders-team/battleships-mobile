@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.services.games.GamesService
-import pt.isel.pdm.battleships.services.utils.HTTPResult
+import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.CREATING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.ERROR
@@ -43,7 +43,7 @@ class GameConfigurationViewModel(
 
         viewModelScope.launch {
             when (val res = gamesService.createGame(createGameLink, gameConfig.toDTO())) {
-                is HTTPResult.Success -> {
+                is APIResult.Success -> {
                     val entities = res.data.entities
                         ?: throw IllegalStateException("No entities in response")
 
@@ -53,7 +53,7 @@ class GameConfigurationViewModel(
 
                     state = GAME_CREATED
                 }
-                is HTTPResult.Failure -> {
+                is APIResult.Failure -> {
                     errorMessage = res.error.title
                     state = ERROR
                 }

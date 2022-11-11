@@ -1,6 +1,7 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationActivity
@@ -20,6 +21,7 @@ class GameplayMenuActivity : ComponentActivity() {
 
         val links = intent.getLinks()
 
+        Log.v("GameplayMenuActivityLog", "links: $links")
         setContent {
             GameplayMenuScreen(
                 onQuickPlayClick = {

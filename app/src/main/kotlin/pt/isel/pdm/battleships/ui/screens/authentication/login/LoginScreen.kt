@@ -32,21 +32,13 @@ fun LoginScreen(
     state: AuthenticationState,
     onLogin: (String, String) -> Unit,
     onLoginSuccessful: () -> Unit,
-    errorMessage: String?,
     onBackButtonClicked: () -> Unit
 ) {
     val loginMessage = remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(state) {
-        when (state) {
-            AuthenticationState.ERROR -> {
-                loginMessage.value = errorMessage
-            }
-            AuthenticationState.SUCCESS -> {
-                onLoginSuccessful()
-            }
-            else -> {}
-        }
+        if (state == AuthenticationState.SUCCESS)
+            onLoginSuccessful()
     }
 
     val username = remember { mutableStateOf("") }

@@ -1,12 +1,13 @@
 package pt.isel.pdm.battleships.services
 
 import com.google.gson.Gson
+import java.io.IOException
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.PlayersService
 import pt.isel.pdm.battleships.services.home.dtos.HomeDTO
 import pt.isel.pdm.battleships.services.users.UsersService
-import pt.isel.pdm.battleships.services.utils.HTTPResult
+import pt.isel.pdm.battleships.services.utils.APIResult
 
 /**
  * Represents the service that handles the battleships game.
@@ -48,6 +49,9 @@ class BattleshipsService(
 
     /**
      * Gets the home information.
+     *
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
      */
-    suspend fun getHome(): HTTPResult<HomeDTO> = get(link = "/")
+    suspend fun getHome(): APIResult<HomeDTO> = get(link = "/")
 }

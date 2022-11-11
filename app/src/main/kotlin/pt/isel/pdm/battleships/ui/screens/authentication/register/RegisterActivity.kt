@@ -1,9 +1,14 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.register
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.utils.showToast
+import pt.isel.pdm.battleships.utils.Links
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
 import pt.isel.pdm.battleships.utils.Rels.REGISTER
 import pt.isel.pdm.battleships.utils.viewModelInit
@@ -40,6 +45,12 @@ class RegisterActivity : ComponentActivity() {
         val registerLink = links[REGISTER]
             ?: throw IllegalStateException("$REGISTER link not found")
 
+        lifecycleScope.launch {
+            viewModel.error.collect { errorMessage ->
+                showToast(errorMessage)
+            }
+        }
+
         setContent {
             RegisterScreen(
                 state = viewModel.state,
@@ -52,10 +63,21 @@ class RegisterActivity : ComponentActivity() {
                     )
                 },
                 onRegisterSuccessful = {
+                    val resultIntent = Intent()
+                    val userHomeLink =
+                        viewModel.link ?: throw IllegalStateException("Link not found")
+                    resultIntent.putExtra(
+                        Links.LINKS_KEY,
+                        Links(mapOf("user-home" to userHomeLink))
+                    )
+
+                    setResult(RESULT_OK, resultIntent)
                     finish()
                 },
-                errorMessage = viewModel.errorMessage,
-                onBackButtonClicked = { finish() }
+                onBackButtonClicked = {
+                    setResult(RESULT_CANCELED, null)
+                    finish()
+                }
             )
         }
     }

@@ -3,7 +3,10 @@ package pt.isel.pdm.battleships.ui.screens.ranking
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
 import pt.isel.pdm.battleships.utils.Rels.LIST_USERS
 import pt.isel.pdm.battleships.utils.viewModelInit
@@ -42,16 +45,23 @@ class RankingActivity : ComponentActivity() {
 
         val links = intent.getLinks()
 
-        viewModel.getUsers(
-            links[LIST_USERS]
-                ?: throw IllegalArgumentException("Missing $LIST_USERS link")
-        )
+        val userLink = links[LIST_USERS]
+            ?: throw IllegalArgumentException("Missing $LIST_USERS link")
+
+        lifecycleScope.launch {
+            viewModel.error.collect { errorMessage ->
+                showToast(errorMessage) {
+                    viewModel.getUsers(userLink)
+                }
+            }
+        }
+
+        viewModel.getUsers(userLink)
 
         setContent {
             RankingScreen(
                 state = viewModel.state,
                 users = viewModel.users,
-                errorMessage = viewModel.errorMessage,
                 onBackButtonClicked = { finish() }
             )
         }

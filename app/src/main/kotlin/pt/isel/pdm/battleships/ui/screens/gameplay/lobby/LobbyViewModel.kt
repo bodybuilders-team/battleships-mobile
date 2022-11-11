@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
-import pt.isel.pdm.battleships.services.utils.HTTPResult
+import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.ERROR
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GETTING_GAMES
@@ -44,11 +44,11 @@ class LobbyViewModel(
 
         viewModelScope.launch {
             games = when (val res = gamesService.getAllGames(listGamesLink)) {
-                is HTTPResult.Success -> {
+                is APIResult.Success -> {
                     state = FINISHED
                     res.data
                 }
-                is HTTPResult.Failure -> {
+                is APIResult.Failure -> {
                     errorMessage = res.error.title
                     state = ERROR
                     return@launch

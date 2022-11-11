@@ -1,21 +1,21 @@
 package pt.isel.pdm.battleships.services.utils
 
 /**
- * HTTP Response result.
+ * API Response result.
  */
-sealed class HTTPResult<T> {
+sealed class APIResult<T> {
 
     /**
      * The response was successful.
      *
      * @property data the response data
      */
-    class Success<T>(val data: T) : HTTPResult<T>()
+    class Success<T>(val data: T) : APIResult<T>()
 
     /**
      * The response was unsuccessful.
      *
-     * @property error the error DTO
+     * @property error the Problem object
      */
-    class Failure<T>(val error: Problem) : HTTPResult<T>()
+    class Failure<T>(val error: Problem) : APIResult<T>()
 }

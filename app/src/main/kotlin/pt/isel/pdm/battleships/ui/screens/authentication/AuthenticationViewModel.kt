@@ -4,13 +4,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.users.dtos.RegisterOutputDTO
-import pt.isel.pdm.battleships.services.utils.HTTPResult
-import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.ERROR
+import pt.isel.pdm.battleships.services.users.dtos.AuthenticationOutputDTO
+import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.IDLE
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LOADING
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
+import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for both authentication methods (login and register).
@@ -25,26 +28,52 @@ open class AuthenticationViewModel(
 ) : ViewModel() {
 
     var state by mutableStateOf(IDLE)
-    var errorMessage: String? by mutableStateOf(null)
+    var link by mutableStateOf<String?>(null)
+
+    private val _error = MutableSharedFlow<String>()
+    val error: SharedFlow<String> = _error
 
     /**
      * Updates the state of an authentication view.
      *
      * @param username the username of the user
-     * @param res the result of the authentication process
+     * @param getAuthenticationResult the result of the authentication process
      */
-    protected fun updateState(username: String, res: HTTPResult<RegisterOutputDTO>) {
-        state = when (res) {
-            is HTTPResult.Success -> {
+    protected suspend fun updateState(
+        username: String,
+        getAuthenticationResult: suspend () -> APIResult<AuthenticationOutputDTO>
+    ) {
+        val httpRes = tryExecuteHttpRequest {
+            getAuthenticationResult()
+        }
+
+        val res = when (httpRes) {
+            is HTTPResult.Success -> httpRes.data
+            is HTTPResult.Failure -> {
+                _error.emit(httpRes.error)
+                state = IDLE
+                return
+            }
+        }
+
+        when (res) {
+            is APIResult.Success -> {
                 val properties = res.data.properties
                     ?: throw IllegalStateException("Token properties are null")
 
-                sessionManager.setSession(token = properties.accessToken, username = username)
-                SUCCESS
+                link = res.data.links?.find { it.rel.contains("user-home") }?.href?.path
+                    ?: throw IllegalStateException("User home link not found")
+
+                sessionManager.setSession(
+                    accessToken = properties.accessToken,
+                    refreshToken = properties.refreshToken,
+                    username = username
+                )
+                state = SUCCESS
             }
-            is HTTPResult.Failure -> {
-                errorMessage = res.error.title
-                ERROR
+            is APIResult.Failure -> {
+                _error.emit(res.error.title)
+                state = IDLE
             }
         }
     }
@@ -60,7 +89,6 @@ open class AuthenticationViewModel(
     enum class AuthenticationState {
         IDLE,
         LOADING,
-        SUCCESS,
-        ERROR
+        SUCCESS
     }
 }

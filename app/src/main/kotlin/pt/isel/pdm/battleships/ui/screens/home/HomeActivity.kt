@@ -1,17 +1,27 @@
 package pt.isel.pdm.battleships.ui.screens.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.about.AboutActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.login.LoginActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuActivity
+import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.Event
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
+import pt.isel.pdm.battleships.ui.utils.ToastDuration
+import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.utils.Links
 import pt.isel.pdm.battleships.utils.Links.Companion.LINKS_KEY
 import pt.isel.pdm.battleships.utils.navigateTo
+import pt.isel.pdm.battleships.utils.navigateToForResult
 import pt.isel.pdm.battleships.utils.viewModelInit
 
 /**
@@ -46,8 +56,25 @@ class HomeActivity : ComponentActivity() {
         )
     }
 
+    private val userHomeForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val resultIntent = result.data ?: return@registerForActivityResult
+        // This callback runs on the main thread
+
+        val links = resultIntent.getParcelableExtra<Links>(LINKS_KEY)
+            ?: throw IllegalStateException("Links not found")
+        viewModel.links = viewModel.links + links.links
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            viewModel.events.collect {
+                handleEvent(it)
+            }
+        }
 
         viewModel.loadHome()
 
@@ -56,20 +83,20 @@ class HomeActivity : ComponentActivity() {
                 loggedIn = sessionManager.isLoggedIn(),
                 onGameplayMenuClick = {
                     viewModel.loadingState = HomeViewModel.LoadingState.LOADING_GAMEPLAY_MENU
-                    navigateWithActionTo<GameplayMenuActivity>(
-                        linkKeys = setOf("create-game", "list-games", "matchmake")
+                    viewModel.navigateTo<GameplayMenuActivity>(
+                        linkRels = setOf("user-home")
                     )
                 },
                 onLoginClick = {
                     viewModel.loadingState = HomeViewModel.LoadingState.LOADING_LOGIN
-                    navigateWithActionTo<LoginActivity>(
-                        linkKeys = setOf("login")
+                    viewModel.navigateTo<LoginActivity>(
+                        linkRels = setOf("login")
                     )
                 },
                 onRegisterClick = {
                     viewModel.loadingState = HomeViewModel.LoadingState.LOADING_REGISTER
-                    navigateWithActionTo<RegisterActivity>(
-                        linkKeys = setOf("register")
+                    viewModel.navigateTo<RegisterActivity>(
+                        linkRels = setOf("register")
                     )
                 },
                 onLogoutClick = {
@@ -77,50 +104,75 @@ class HomeActivity : ComponentActivity() {
                 },
                 onRankingClick = {
                     viewModel.loadingState = HomeViewModel.LoadingState.LOADING_RANKING
-                    navigateWithActionTo<RankingActivity>(
-                        linkKeys = setOf("list-users")
+                    viewModel.navigateTo<RankingActivity>(
+                        linkRels = setOf("list-users")
                     )
                 },
                 onAboutClick = {
                     viewModel.loadingState = HomeViewModel.LoadingState.LOADING_ABOUT
-                    navigateWithActionTo<AboutActivity>()
-                },
-                errorMessage = viewModel.errorMessage,
-                onErrorMessageDismissed = {
-                    viewModel.state = HomeViewModel.HomeState.IDLE
-                    viewModel.errorMessage = null
-                    viewModel.loadHome()
+                    viewModel.navigateTo<AboutActivity>()
                 },
                 loadingState = viewModel.loadingState
             )
         }
     }
 
+    private suspend fun handleEvent(event: Event) =
+        when (event) {
+            is Event.Navigate -> {
+                if (event.clazz == LoginActivity::class.java ||
+                    event.clazz == RegisterActivity::class.java
+                ) {
+                    navigateWithLinksToForResult(userHomeForResult, event.clazz, event.linkRels)
+                } else {
+                    navigateWithLinksTo(event.clazz, event.linkRels)
+                }
+            }
+            is Event.Error -> {
+                showToast(event.message, ToastDuration.LONG) {
+                    viewModel.loadHome()
+                }
+            }
+        }
+
     /**
      * Navigates to the specified activity, with the given link keys.
      *
-     * @param T the type of the activity to navigate to
+     * @param clazz the class of the activity to navigate to
      * @param linkKeys the link keys to set before navigating
      */
-    private inline fun <reified T> navigateWithActionTo(
+    private fun navigateWithLinksTo(
+        clazz: Class<*>,
         linkKeys: Set<String>? = null
     ) {
-        viewModel.onHomeLoaded {
-            if (viewModel.state != HomeViewModel.HomeState.LOADED) {
-                return@onHomeLoaded
-            }
+        navigateTo(clazz) { intent ->
+            if (linkKeys == null) return@navigateTo
 
-            navigateTo<T> { intent ->
-                if (linkKeys == null) return@navigateTo
+            val links =
+                viewModel.links
+                    .filter { linkKeys.contains(it.key) }
+                    .mapValues { it.value }
 
-                val links =
-                    viewModel.actions
-                        .filter { linkKeys.contains(it.key) }
-                        .mapValues { it.value.href.path }
-
-                intent.putExtra(LINKS_KEY, Links(links))
-            }
-            viewModel.loadingState = HomeViewModel.LoadingState.NOT_LOADING
+            intent.putExtra(LINKS_KEY, Links(links))
         }
+        viewModel.loadingState = HomeViewModel.LoadingState.NOT_LOADING
+    }
+
+    private fun navigateWithLinksToForResult(
+        activityResultLauncher: ActivityResultLauncher<Intent?>,
+        clazz: Class<*>,
+        linkKeys: Set<String>? = null
+    ) {
+        navigateToForResult(activityResultLauncher, clazz, beforeNavigation = { intent ->
+            if (linkKeys == null) return@navigateToForResult
+
+            val links =
+                viewModel.links
+                    .filter { linkKeys.contains(it.key) }
+                    .mapValues { it.value }
+
+            intent.putExtra(LINKS_KEY, Links(links))
+        })
+        viewModel.loadingState = HomeViewModel.LoadingState.NOT_LOADING
     }
 }
