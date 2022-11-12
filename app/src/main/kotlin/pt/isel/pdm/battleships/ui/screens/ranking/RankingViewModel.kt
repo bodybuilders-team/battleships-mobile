@@ -26,7 +26,6 @@ import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
  *
  * @property state the current state of the view model
  * @property users the list of users
- * @property errorMessage the error message to be displayed
  */
 class RankingViewModel(
     private val usersService: UsersService,
@@ -36,8 +35,8 @@ class RankingViewModel(
     var state by mutableStateOf(IDLE)
     var users by mutableStateOf<UsersDTO?>(null)
 
-    private val _error = MutableSharedFlow<String>()
-    val error: SharedFlow<String> = _error
+    private val _events = MutableSharedFlow<RankingEvent>()
+    val events: SharedFlow<RankingEvent> = _events
 
     /**
      * Gets all the users.
@@ -57,7 +56,7 @@ class RankingViewModel(
             val res = when (httpRes) {
                 is HTTPResult.Success -> httpRes.data
                 is HTTPResult.Failure -> {
-                    _error.emit(httpRes.error)
+                    _events.emit(RankingEvent.Error(httpRes.error))
                     state = IDLE
                     return@launch
                 }
@@ -69,7 +68,7 @@ class RankingViewModel(
                     state = FINISHED
                 }
                 is APIResult.Failure -> {
-                    _error.emit(res.error.title)
+                    _events.emit(RankingEvent.Error(res.error.title))
                     state = IDLE
                     return@launch
                 }
@@ -83,11 +82,17 @@ class RankingViewModel(
      * @property IDLE the get games operation is idle
      * @property GETTING_USERS the get users operation is in progress
      * @property FINISHED the get users operation has finished
-     * @property ERROR the get users operation has failed
      */
     enum class RankingState {
         IDLE,
         GETTING_USERS,
         FINISHED
+    }
+
+    /**
+     * Represents the events that can be emitted.
+     */
+    sealed class RankingEvent {
+        class Error(val message: String) : RankingEvent()
     }
 }

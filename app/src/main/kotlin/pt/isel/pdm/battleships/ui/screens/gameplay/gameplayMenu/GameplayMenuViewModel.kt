@@ -11,22 +11,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import pt.isel.pdm.battleships.services.users.UsersService
 import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuLoadingState.NOT_LOADING
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuState.LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuState.LOADING
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.LoadingState.NOT_LOADING
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 class GameplayMenuViewModel(
     private val usersService: UsersService
 ) : ViewModel() {
-    var loadingState: LoadingState by mutableStateOf(NOT_LOADING)
+    var loadingState: GameplayMenuLoadingState by mutableStateOf(NOT_LOADING)
     var state by mutableStateOf(IDLE)
     var links: Map<String, String> = emptyMap()
 
-    private val _events = MutableSharedFlow<Event>()
-    val events: SharedFlow<Event> = _events
+    private val _events = MutableSharedFlow<GameplayMenuEvent>()
+    val events: SharedFlow<GameplayMenuEvent> = _events
 
     /**
      * Loads the user home links.
@@ -44,7 +44,7 @@ class GameplayMenuViewModel(
             val res = when (httpRes) {
                 is HTTPResult.Success -> httpRes.data
                 is HTTPResult.Failure -> {
-                    _events.emit(Event.Error(httpRes.error))
+                    _events.emit(GameplayMenuEvent.Error(httpRes.error))
                     state = IDLE
                     return@launch
                 }
@@ -57,7 +57,7 @@ class GameplayMenuViewModel(
                     state = LOADED
                 }
                 is APIResult.Failure -> {
-                    _events.emit(Event.Error(res.error.title))
+                    _events.emit(GameplayMenuEvent.Error(res.error.title))
                     state = IDLE
                 }
             }
@@ -68,11 +68,11 @@ class GameplayMenuViewModel(
      * Emits a navigation event to the activity with the given [links].
      */
     fun <T> navigateTo(clazz: Class<T>, linkRels: Set<String>? = null) {
-        loadingState = LoadingState.LOADING
+        loadingState = GameplayMenuLoadingState.LOADING
         viewModelScope.launch {
             while (state != LOADED)
                 yield()
-            _events.emit(Event.Navigate(clazz, linkRels))
+            _events.emit(GameplayMenuEvent.Navigate(clazz, linkRels))
         }
     }
 
@@ -102,16 +102,16 @@ class GameplayMenuViewModel(
      * @property NOT_LOADING the gameplay menu screen is not loading
      * @property LOADING the gameplay menu screen is loading
      */
-    enum class LoadingState {
+    enum class GameplayMenuLoadingState {
         LOADING,
         NOT_LOADING
     }
 
     /**
-     * Represents the events that can be emitted by the gameplay menu screen.
+     * Represents the events that can be emitted by the gameplay menu view model.
      */
-    sealed class Event {
-        class Error(val message: String) : Event()
-        class Navigate(val clazz: Class<*>, val linkRels: Set<String>? = null) : Event()
+    sealed class GameplayMenuEvent {
+        class Error(val message: String) : GameplayMenuEvent()
+        class Navigate(val clazz: Class<*>, val linkRels: Set<String>? = null) : GameplayMenuEvent()
     }
 }

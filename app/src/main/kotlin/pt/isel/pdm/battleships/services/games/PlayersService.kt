@@ -1,13 +1,13 @@
 package pt.isel.pdm.battleships.services.games
 
 import com.google.gson.Gson
+import java.io.IOException
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.games.dtos.ship.DeployFleetResponseDTO
 import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedFleetDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
-import java.io.IOException
 
 /**
  * Represents the service that handles the battleships game.

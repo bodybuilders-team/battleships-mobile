@@ -30,7 +30,6 @@ import pt.isel.pdm.battleships.ui.utils.ScreenTitle
 fun LobbyScreen(
     state: LobbyState,
     games: GamesDTO?,
-    errorMessage: String?,
     onBackButtonClicked: () -> Unit
 ) {
     BattleshipsScreen {
@@ -63,7 +62,6 @@ fun LobbyScreen(
                             )
                         }
                     }
-                LobbyState.ERROR -> Text(text = "Error $errorMessage")
             }
 
             GoBackButton(onClick = onBackButtonClicked)

@@ -21,7 +21,6 @@ import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
  * @property sessionManager the manager used to handle the user session
  *
  * @property state the current state of the view model
- * @property errorMessage the error message to be displayed
  */
 open class AuthenticationViewModel(
     private val sessionManager: SessionManager
@@ -30,8 +29,8 @@ open class AuthenticationViewModel(
     var state by mutableStateOf(IDLE)
     var link by mutableStateOf<String?>(null)
 
-    private val _error = MutableSharedFlow<String>()
-    val error: SharedFlow<String> = _error
+    private val _events = MutableSharedFlow<AuthenticationEvent>()
+    val events: SharedFlow<AuthenticationEvent> = _events
 
     /**
      * Updates the state of an authentication view.
@@ -50,7 +49,7 @@ open class AuthenticationViewModel(
         val res = when (httpRes) {
             is HTTPResult.Success -> httpRes.data
             is HTTPResult.Failure -> {
-                _error.emit(httpRes.error)
+                _events.emit(AuthenticationEvent.Error(httpRes.error))
                 state = IDLE
                 return
             }
@@ -72,8 +71,9 @@ open class AuthenticationViewModel(
                 state = SUCCESS
             }
             is APIResult.Failure -> {
-                _error.emit(res.error.title)
+                _events.emit(AuthenticationEvent.Error(res.error.title))
                 state = IDLE
+                return
             }
         }
     }
@@ -90,5 +90,12 @@ open class AuthenticationViewModel(
         IDLE,
         LOADING,
         SUCCESS
+    }
+
+    /**
+     * Represents the events that can be emitted.
+     */
+    sealed class AuthenticationEvent {
+        class Error(val message: String) : AuthenticationEvent()
     }
 }

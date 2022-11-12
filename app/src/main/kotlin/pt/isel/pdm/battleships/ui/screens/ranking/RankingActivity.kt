@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingEvent
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
 import pt.isel.pdm.battleships.utils.Rels.LIST_USERS
@@ -49,10 +50,8 @@ class RankingActivity : ComponentActivity() {
             ?: throw IllegalArgumentException("Missing $LIST_USERS link")
 
         lifecycleScope.launch {
-            viewModel.error.collect { errorMessage ->
-                showToast(errorMessage) {
-                    viewModel.getUsers(userLink)
-                }
+            viewModel.events.collect {
+                handleEvent(it, userLink)
             }
         }
 
@@ -66,4 +65,13 @@ class RankingActivity : ComponentActivity() {
             )
         }
     }
+
+    private suspend fun handleEvent(event: RankingEvent, userLink: String) =
+        when (event) {
+            is RankingEvent.Error -> {
+                showToast(event.message) {
+                    viewModel.getUsers(userLink)
+                }
+            }
+        }
 }

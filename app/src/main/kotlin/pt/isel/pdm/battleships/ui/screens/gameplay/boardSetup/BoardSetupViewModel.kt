@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.ship.Ship
@@ -14,7 +16,6 @@ import pt.isel.pdm.battleships.services.games.dtos.GameDTO
 import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedFleetDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.DEPLOYING_FLEET
-import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.ERROR
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
@@ -28,7 +29,6 @@ import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
  *
  * @property state the current state of the view model
  * @property game the game being played
- * @property errorMessage the error message to be displayed
  */
 class BoardSetupViewModel(
     battleshipsService: BattleshipsService,
@@ -40,7 +40,9 @@ class BoardSetupViewModel(
 
     var state by mutableStateOf(LOADING_GAME)
     var game by mutableStateOf<GameDTO?>(null)
-    var errorMessage by mutableStateOf<String?>(null)
+
+    private val _events = MutableSharedFlow<BoardSetupEvent>()
+    val events: SharedFlow<BoardSetupEvent> = _events
 
     /**
      * Loads the game.
@@ -61,8 +63,8 @@ class BoardSetupViewModel(
                     httpRes.data
                 }
                 is HTTPResult.Failure -> {
-                    errorMessage = httpRes.error
-                    state = ERROR
+                    _events.emit(BoardSetupEvent.Error(httpRes.error))
+                    state = LOADING_GAME
                     return@launch
                 }
             }
@@ -73,8 +75,9 @@ class BoardSetupViewModel(
                     state = DEPLOYING_FLEET
                 }
                 is APIResult.Failure -> {
-                    errorMessage = res.error.title
-                    state = ERROR
+                    _events.emit(BoardSetupEvent.Error(res.error.title))
+                    state = LOADING_GAME
+                    return@launch
                 }
             }
         }
@@ -94,19 +97,34 @@ class BoardSetupViewModel(
             val fleetDTOs = fleet.map(Ship::toUndeployedShipDTO)
             Log.v("BoardSetupLog", "Deploying fleet: $fleetDTOs")
 
-            when (
-                val res = playersService.deployFleet(
+            val httpRes = tryExecuteHttpRequest {
+                playersService.deployFleet(
                     token = token,
                     deployLink = deployFleetLink,
                     fleet = UndeployedFleetDTO(fleetDTOs)
                 )
-            ) {
+            }
+
+            val res = when (httpRes) {
+                is HTTPResult.Success -> {
+                    httpRes.data
+                }
+                is HTTPResult.Failure -> {
+                    _events.emit(BoardSetupEvent.Error(httpRes.error))
+                    state = DEPLOYING_FLEET
+                    return@launch
+                }
+            }
+
+            when (res) {
                 is APIResult.Success -> {
+                    _events.emit(BoardSetupEvent.NavigateToGameplay)
                     state = FLEET_DEPLOYED
                 }
                 is APIResult.Failure -> {
-                    errorMessage = res.error.title
-                    state = ERROR
+                    _events.emit(BoardSetupEvent.Error(res.error.title))
+                    state = DEPLOYING_FLEET
+                    return@launch
                 }
             }
         }
@@ -118,12 +136,18 @@ class BoardSetupViewModel(
      * @property LOADING_GAME the view model is loading the game
      * @property DEPLOYING_FLEET the view model is deploying the fleet
      * @property FLEET_DEPLOYED the fleet has been deployed
-     * @property ERROR an error occurred
      */
     enum class BoardSetupState {
         LOADING_GAME,
         DEPLOYING_FLEET,
-        FLEET_DEPLOYED,
-        ERROR
+        FLEET_DEPLOYED
+    }
+
+    /**
+     * Represents the events that can be emitted.
+     */
+    sealed class BoardSetupEvent {
+        class Error(val message: String) : BoardSetupEvent()
+        object NavigateToGameplay : BoardSetupEvent()
     }
 }

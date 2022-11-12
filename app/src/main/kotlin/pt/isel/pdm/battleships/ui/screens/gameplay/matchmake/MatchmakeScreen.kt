@@ -15,8 +15,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.
  */
 @Composable
 fun MatchmakeScreen(
-    state: MatchmakeState,
-    errorMessage: String?
+    state: MatchmakeState
 ) {
     BattleshipsScreen {
         Column(
@@ -27,7 +26,6 @@ fun MatchmakeScreen(
             when (state) {
                 MatchmakeState.MATCHMAKING, MatchmakeState.IDLE -> Text(text = "Matchmaking...")
                 MatchmakeState.MATCHMADE -> Text(text = "Matchmade!")
-                MatchmakeState.ERROR -> Text(text = "Error: $errorMessage")
             }
         }
     }

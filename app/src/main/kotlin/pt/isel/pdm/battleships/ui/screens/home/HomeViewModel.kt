@@ -11,10 +11,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.NOT_LOADING
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING
-import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.LoadingState.NOT_LOADING
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
@@ -31,12 +31,12 @@ class HomeViewModel(
     private val battleshipsService: BattleshipsService
 ) : ViewModel() {
 
-    var loadingState: LoadingState by mutableStateOf(NOT_LOADING)
+    var loadingState: HomeLoadingState by mutableStateOf(NOT_LOADING)
     var state by mutableStateOf(IDLE)
     var links: Map<String, String> = emptyMap()
 
-    private val _events = MutableSharedFlow<Event>()
-    val events: SharedFlow<Event> = _events
+    private val _events = MutableSharedFlow<HomeEvent>()
+    val events: SharedFlow<HomeEvent> = _events
 
     /**
      * Loads the home page.
@@ -44,7 +44,7 @@ class HomeViewModel(
     fun loadHome() {
         if (state != IDLE) return
 
-        state = LOADING
+        state = HomeState.LOADING
 
         viewModelScope.launch {
             val httpRes = tryExecuteHttpRequest {
@@ -54,7 +54,7 @@ class HomeViewModel(
             val res = when (httpRes) {
                 is HTTPResult.Success -> httpRes.data
                 is HTTPResult.Failure -> {
-                    _events.emit(Event.Error(httpRes.error))
+                    _events.emit(HomeEvent.Error(httpRes.error))
                     state = IDLE
                     return@launch
                 }
@@ -67,7 +67,7 @@ class HomeViewModel(
                     state = LOADED
                 }
                 is APIResult.Failure -> {
-                    _events.emit(Event.Error(res.error.title))
+                    _events.emit(HomeEvent.Error(res.error.title))
                     state = IDLE
                 }
             }
@@ -75,11 +75,11 @@ class HomeViewModel(
     }
 
     fun <T> navigateTo(clazz: Class<T>, linkRels: Set<String>? = null) {
-        loadingState = LoadingState.LOADING
+        loadingState = HomeLoadingState.LOADING
         viewModelScope.launch {
             while (state != LOADED)
                 yield()
-            _events.emit(Event.Navigate(clazz, linkRels))
+            _events.emit(HomeEvent.Navigate(clazz, linkRels))
         }
     }
 
@@ -106,13 +106,16 @@ class HomeViewModel(
      * @property NOT_LOADING the home screen is not loading
      * @property LOADING the home screen is loading
      */
-    enum class LoadingState {
+    enum class HomeLoadingState {
         LOADING,
         NOT_LOADING
     }
 
-    sealed class Event {
-        class Error(val message: String) : Event()
-        class Navigate(val clazz: Class<*>, val linkRels: Set<String>? = null) : Event()
+    /**
+     * Represents the events of the home view model.
+     */
+    sealed class HomeEvent {
+        class Error(val message: String) : HomeEvent()
+        class Navigate(val clazz: Class<*>, val linkRels: Set<String>? = null) : HomeEvent()
     }
 }

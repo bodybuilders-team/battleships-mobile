@@ -1,13 +1,11 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,7 +13,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -59,31 +56,8 @@ val DEFAULT_SHIP_TYPES = ShipType.values().toList()
 fun GameConfigurationScreen(
     state: GameConfigurationState,
     onGameConfigured: (GameConfig) -> Unit,
-    onGameCreated: () -> Unit,
-    errorMessage: String?,
     onBackButtonClicked: () -> Unit
-
 ) {
-    LaunchedEffect(state) {
-        if (state == GameConfigurationState.GAME_CREATED) {
-            onGameCreated()
-        }
-    }
-
-    val context = LocalContext.current
-
-    LaunchedEffect(errorMessage) {
-        if (errorMessage == null) {
-            return@LaunchedEffect
-        }
-
-        Toast.makeText(
-            context,
-            errorMessage,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
     var boardSize by remember { mutableStateOf(DEFAULT_BOARD_SIZE) }
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
     var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }

@@ -16,7 +16,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.LoadingState
+import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState
 import pt.isel.pdm.battleships.ui.utils.IconButton
 
 private const val LOGO_MAX_SIZE_FACTOR = 0.6f
@@ -43,7 +43,7 @@ fun HomeScreen(
     onLogoutClick: () -> Unit,
     onRankingClick: () -> Unit,
     onAboutClick: () -> Unit,
-    loadingState: LoadingState
+    loadingState: HomeLoadingState
 ) {
     BattleshipsScreen {
         Column(
@@ -65,7 +65,7 @@ fun HomeScreen(
 
             IconButton(
                 onClick = onGameplayMenuClick,
-                enabled = loadingState == LoadingState.NOT_LOADING && loggedIn,
+                enabled = loadingState == HomeLoadingState.NOT_LOADING && loggedIn,
                 imageVector = ImageVector.vectorResource(
                     id = R.drawable.ic_round_play_arrow_24
                 ),
@@ -77,7 +77,7 @@ fun HomeScreen(
             if (!loggedIn) {
                 IconButton(
                     onClick = onLoginClick,
-                    enabled = loadingState == LoadingState.NOT_LOADING,
+                    enabled = loadingState == HomeLoadingState.NOT_LOADING,
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
                     contentDescription = stringResource(
                         R.string.main_menu_login_button_description
@@ -88,7 +88,7 @@ fun HomeScreen(
 
                 IconButton(
                     onClick = onRegisterClick,
-                    enabled = loadingState == LoadingState.NOT_LOADING,
+                    enabled = loadingState == HomeLoadingState.NOT_LOADING,
                     imageVector = ImageVector.vectorResource(
                         id = R.drawable.ic_round_person_add_24
                     ),
@@ -103,7 +103,7 @@ fun HomeScreen(
             } else {
                 IconButton(
                     onClick = onLogoutClick,
-                    enabled = loadingState == LoadingState.NOT_LOADING,
+                    enabled = loadingState == HomeLoadingState.NOT_LOADING,
                     imageVector = ImageVector.vectorResource(
                         id = R.drawable.ic_round_logout_24
                     ),
@@ -117,7 +117,7 @@ fun HomeScreen(
 
             IconButton(
                 onClick = onRankingClick,
-                enabled = loadingState == LoadingState.NOT_LOADING,
+                enabled = loadingState == HomeLoadingState.NOT_LOADING,
                 imageVector = ImageVector.vectorResource(
                     id = R.drawable.ic_round_table_rows_24
                 ),
@@ -130,7 +130,7 @@ fun HomeScreen(
 
             IconButton(
                 onClick = onAboutClick,
-                enabled = loadingState == LoadingState.NOT_LOADING,
+                enabled = loadingState == HomeLoadingState.NOT_LOADING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
                 contentDescription = stringResource(
                     R.string.main_menu_about_button_description

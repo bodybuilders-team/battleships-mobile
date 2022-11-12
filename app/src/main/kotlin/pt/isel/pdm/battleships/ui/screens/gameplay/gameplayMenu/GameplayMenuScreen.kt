@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.LoadingState
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuLoadingState
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.IconButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
@@ -25,7 +25,7 @@ private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
  */
 @Composable
 fun GameplayMenuScreen(
-    loadingState: LoadingState,
+    loadingState: GameplayMenuLoadingState,
     onMatchmakeClick: () -> Unit,
     onCreateGameClick: () -> Unit,
     onLobbyClick: () -> Unit,
@@ -40,7 +40,7 @@ fun GameplayMenuScreen(
 
             IconButton(
                 onClick = onMatchmakeClick,
-                enabled = loadingState == LoadingState.NOT_LOADING,
+                enabled = loadingState == GameplayMenuLoadingState.NOT_LOADING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
                 contentDescription = stringResource(
                     R.string.gameplay_quick_play_button_description
@@ -51,7 +51,7 @@ fun GameplayMenuScreen(
 
             IconButton(
                 onClick = onCreateGameClick,
-                enabled = loadingState == LoadingState.NOT_LOADING,
+                enabled = loadingState == GameplayMenuLoadingState.NOT_LOADING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_add_24),
                 contentDescription = stringResource(R.string.gameplay_new_game_button_description),
                 text = stringResource(id = R.string.gameplay_new_game_button_text),
@@ -60,7 +60,7 @@ fun GameplayMenuScreen(
 
             IconButton(
                 onClick = onLobbyClick,
-                enabled = loadingState == LoadingState.NOT_LOADING,
+                enabled = loadingState == GameplayMenuLoadingState.NOT_LOADING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_search_24),
                 contentDescription = stringResource(
                     R.string.gameplay_search_game_button_description

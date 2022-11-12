@@ -3,7 +3,11 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.lobby
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyEvent
+import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
 import pt.isel.pdm.battleships.utils.Rels.LIST_GAMES
 import pt.isel.pdm.battleships.utils.viewModelInit
@@ -37,18 +41,32 @@ class LobbyActivity : ComponentActivity() {
 
         val links = intent.getLinks()
 
-        viewModel.getAllGames(
-            links[LIST_GAMES]
-                ?: throw IllegalStateException("No $LIST_GAMES link found")
-        )
+        val listGamesLink = links[LIST_GAMES]
+            ?: throw IllegalStateException("No $LIST_GAMES link found")
+
+        lifecycleScope.launch {
+            viewModel.events.collect {
+                handleEvent(it, listGamesLink)
+            }
+        }
+
+        viewModel.getAllGames(listGamesLink)
 
         setContent {
             LobbyScreen(
                 state = viewModel.state,
                 games = viewModel.games,
-                errorMessage = viewModel.errorMessage,
                 onBackButtonClicked = { finish() }
             )
         }
     }
+
+    private suspend fun handleEvent(event: LobbyEvent, listGamesLink: String) =
+        when (event) {
+            is LobbyEvent.Error -> {
+                showToast(event.message) {
+                    viewModel.getAllGames(listGamesLink)
+                }
+            }
+        }
 }

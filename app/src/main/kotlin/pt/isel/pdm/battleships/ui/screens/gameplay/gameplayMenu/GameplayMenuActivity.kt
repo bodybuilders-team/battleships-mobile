@@ -7,7 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationActivity
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.Event
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuEvent
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuLoadingState
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeActivity
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
@@ -67,9 +68,9 @@ class GameplayMenuActivity : ComponentActivity() {
     /**
      * Handles the events emitted by the view model.
      */
-    private suspend fun handleEvent(event: Event, userHomeLink: String) =
+    private suspend fun handleEvent(event: GameplayMenuEvent, userHomeLink: String) =
         when (event) {
-            is Event.Navigate -> {
+            is GameplayMenuEvent.Navigate -> {
                 val links =
                     event.linkRels?.let { rels ->
                         viewModel.links
@@ -78,8 +79,9 @@ class GameplayMenuActivity : ComponentActivity() {
                     }
 
                 navigateWithLinksTo(event.clazz, links)
+                viewModel.loadingState = GameplayMenuLoadingState.NOT_LOADING
             }
-            is Event.Error -> {
+            is GameplayMenuEvent.Error -> {
                 showToast(event.message, ToastDuration.LONG) {
                     viewModel.loadUserHome(userHomeLink)
                 }

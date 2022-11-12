@@ -3,9 +3,12 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.matchmake
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeEvent
+import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
 import pt.isel.pdm.battleships.utils.Rels.MATCHMAKE
 import pt.isel.pdm.battleships.utils.navigateTo
@@ -46,28 +49,41 @@ class MatchmakeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val links = intent.getLinks()
+
         val matchmakeLink =
             links[MATCHMAKE]
                 ?: throw IllegalArgumentException("Missing $MATCHMAKE link")
+
+        lifecycleScope.launch {
+            viewModel.events.collect {
+                handleEvent(it, matchmakeLink)
+            }
+        }
 
         viewModel.matchmake(
             matchmakeLink
         )
 
         setContent {
-            val state = viewModel.state
-            LaunchedEffect(state) {
-                if (state == MatchmakeViewModel.MatchmakeState.MATCHMADE) {
-                    navigateTo<BoardSetupActivity> {
-                        it.putExtra("gameLink", viewModel.gameLink)
-                    }
+            MatchmakeScreen(
+                state = viewModel.state
+            )
+        }
+    }
+
+    private suspend fun handleEvent(event: MatchmakeEvent, matchmadeLink: String) {
+        when (event) {
+            is MatchmakeEvent.NavigateToBoardSetup -> {
+                navigateTo<BoardSetupActivity> {
+                    it.putExtra("gameLink", viewModel.gameLink)
+                }
+                finish()
+            }
+            is MatchmakeEvent.Error -> {
+                showToast(event.message) {
+                    viewModel.matchmake(matchmadeLink)
                 }
             }
-
-            MatchmakeScreen(
-                state = viewModel.state,
-                errorMessage = viewModel.errorMessage
-            )
         }
     }
 }

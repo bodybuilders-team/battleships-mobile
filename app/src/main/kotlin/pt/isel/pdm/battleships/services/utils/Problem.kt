@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.services.utils
 
-import okhttp3.MediaType.Companion.toMediaType
 import java.net.URI
+import okhttp3.MediaType.Companion.toMediaType
 
 /**
  * Represents a problem that occurred during the processing of a request.

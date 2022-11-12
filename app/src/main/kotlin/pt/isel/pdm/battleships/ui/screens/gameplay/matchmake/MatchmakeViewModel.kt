@@ -9,15 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
-import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.ERROR
-import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
-import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
+import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 import pt.isel.pdm.battleships.utils.Rels.GAME
 import pt.isel.pdm.battleships.utils.Rels.MATCHMAKE_STATE
 
@@ -31,7 +32,6 @@ import pt.isel.pdm.battleships.utils.Rels.MATCHMAKE_STATE
  *
  * @property state the current state of the view model
  * @property gameLink the id of the game that was created
- * @property errorMessage the error message to be displayed
  */
 class MatchmakeViewModel(
     private val gamesService: GamesService,
@@ -42,13 +42,15 @@ class MatchmakeViewModel(
 
     var state by mutableStateOf(MatchmakeState.IDLE)
     var gameLink: String? by mutableStateOf(null)
-    var errorMessage: String? by mutableStateOf(null)
 
     // TODO: change this
-    val gameConfigDTO = jsonEncoder.fromJson<GameConfigDTO>(
+    private val gameConfigDTO = jsonEncoder.fromJson<GameConfigDTO>(
         JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
         GameConfigDTO::class.java
     )
+
+    private val _events = MutableSharedFlow<MatchmakeEvent>()
+    val events: SharedFlow<MatchmakeEvent> = _events
 
     /**
      * Matchmakes a game with the default configuration.
@@ -58,60 +60,97 @@ class MatchmakeViewModel(
     fun matchmake(matchmakeLink: String) {
         if (state != MatchmakeState.IDLE) return
 
+        state = MatchmakeState.MATCHMAKING
+
         viewModelScope.launch {
             delay(ANIMATION_DELAY)
 
             val token = sessionManager.accessToken ?: throw IllegalStateException("No token found")
 
-            val gameStateLink = when (
-                val res = gamesService.matchmake(token, matchmakeLink, gameConfigDTO)
-            ) {
-                is APIResult.Success -> {
-                    val properties = res.data.properties
-                        ?: throw IllegalStateException("Game properties are null")
+            var createdGame = false
+            var gameStateLink: String? = null
 
-                    val entities = res.data.entities
-                        ?: throw IllegalStateException("Game entities are null")
-
-                    val matchGameLink = res.data.entities
-                        .filterIsInstance<EmbeddedLink>()
-                        .first { it.rel.contains(GAME) }.href.path
-
-                    val matchGameStateLink = entities
-                        .filterIsInstance<EmbeddedLink>()
-                        .first { it.rel.contains(MATCHMAKE_STATE) }.href.path
-
-                    gameLink = matchGameLink
-                    if (!properties.wasCreated) {
-                        state = MATCHMADE
-                        return@launch
-                    }
-
-                    matchGameStateLink
+            while (!createdGame) {
+                val httpRes = tryExecuteHttpRequest {
+                    gamesService.matchmake(token, matchmakeLink, gameConfigDTO)
                 }
-                is APIResult.Failure -> {
-                    errorMessage = res.error.title
-                    state = ERROR
-                    return@launch
+
+                val res = when (httpRes) {
+                    is HTTPResult.Success -> httpRes.data
+                    is HTTPResult.Failure -> {
+                        _events.emit(MatchmakeEvent.Error(httpRes.error))
+                        state = MatchmakeState.MATCHMAKING
+                        continue
+                    }
+                }
+
+                gameStateLink = when (res) {
+                    is APIResult.Success -> {
+                        val properties = res.data.properties
+                            ?: throw IllegalStateException("Game properties are null")
+
+                        val entities = res.data.entities
+                            ?: throw IllegalStateException("Game entities are null")
+
+                        val matchGameLink = res.data.entities
+                            .filterIsInstance<EmbeddedLink>()
+                            .first { it.rel.contains(GAME) }.href.path
+
+                        val matchGameStateLink = entities
+                            .filterIsInstance<EmbeddedLink>()
+                            .first { it.rel.contains(MATCHMAKE_STATE) }.href.path
+
+                        gameLink = matchGameLink
+                        if (!properties.wasCreated) {
+                            _events.emit(MatchmakeEvent.NavigateToBoardSetup)
+                            state = MatchmakeState.MATCHMADE
+                            return@launch
+                        }
+
+                        createdGame = true
+                        matchGameStateLink
+                    }
+                    is APIResult.Failure -> {
+                        _events.emit(MatchmakeEvent.Error(res.error.title))
+                        state = MatchmakeState.MATCHMAKING
+                        continue
+                    }
                 }
             }
 
-            while (state != MATCHMADE) {
-                when (val res = gamesService.getGameState(token, gameStateLink)) {
+            while (state != MatchmakeState.MATCHMADE) {
+                val gameStateHttpRes = tryExecuteHttpRequest {
+                    gamesService.getGameState(
+                        token,
+                        gameStateLink ?: throw IllegalStateException("Game state link is null")
+                    )
+                }
+
+                val gameStateRes = when (gameStateHttpRes) {
+                    is HTTPResult.Success -> gameStateHttpRes.data
+                    is HTTPResult.Failure -> {
+                        _events.emit(MatchmakeEvent.Error(gameStateHttpRes.error))
+                        state = MatchmakeState.MATCHMAKING
+                        continue
+                    }
+                }
+
+                when (gameStateRes) {
                     is APIResult.Success -> {
-                        val properties = res.data.properties
+                        val properties = gameStateRes.data.properties
                             ?: throw IllegalStateException("Game state properties are null")
 
                         if (properties.phase == "WAITING_FOR_PLAYERS") { // TODO: add constants
                             delay(POLLING_DELAY)
                         } else {
-                            state = MATCHMADE
+                            _events.emit(MatchmakeEvent.NavigateToBoardSetup)
+                            state = MatchmakeState.MATCHMADE
                         }
                     }
                     is APIResult.Failure -> {
-                        errorMessage = res.error.title
-                        state = ERROR
-                        return@launch
+                        _events.emit(MatchmakeEvent.Error(gameStateRes.error.title))
+                        state = MatchmakeState.MATCHMAKING
+                        continue
                     }
                 }
             }
@@ -123,13 +162,19 @@ class MatchmakeViewModel(
      *
      * @property MATCHMAKING the matchmaking is in progress
      * @property MATCHMADE the matchmake was successful
-     * @property ERROR the matchmake failed
      */
     enum class MatchmakeState {
         IDLE,
         MATCHMAKING,
-        MATCHMADE,
-        ERROR
+        MATCHMADE
+    }
+
+    /**
+     * Represents the events that can be emitted.
+     */
+    sealed class MatchmakeEvent {
+        class Error(val message: String) : MatchmakeEvent()
+        object NavigateToBoardSetup : MatchmakeEvent()
     }
 
     companion object {

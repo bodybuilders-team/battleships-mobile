@@ -3,6 +3,7 @@ package pt.isel.pdm.battleships.services
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.stream.JsonReader
+import java.io.IOException
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -15,7 +16,6 @@ import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
 import pt.isel.pdm.battleships.services.utils.send
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity.Companion.sirenMediaType
-import java.io.IOException
 
 /**
  * Represents a service that communicates with a HTTP server.

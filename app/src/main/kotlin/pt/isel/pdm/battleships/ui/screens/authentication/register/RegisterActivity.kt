@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.utils.Links
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
@@ -46,8 +47,8 @@ class RegisterActivity : ComponentActivity() {
             ?: throw IllegalStateException("$REGISTER link not found")
 
         lifecycleScope.launch {
-            viewModel.error.collect { errorMessage ->
-                showToast(errorMessage)
+            viewModel.events.collect {
+                handleEvent(it)
             }
         }
 
@@ -81,4 +82,10 @@ class RegisterActivity : ComponentActivity() {
             )
         }
     }
+
+    private suspend fun handleEvent(event: AuthenticationViewModel.AuthenticationEvent) =
+        when (event) {
+            is AuthenticationViewModel.AuthenticationEvent.Error ->
+                showToast(event.message)
+        }
 }

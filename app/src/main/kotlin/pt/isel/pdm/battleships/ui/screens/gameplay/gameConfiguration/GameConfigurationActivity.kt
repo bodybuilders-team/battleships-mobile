@@ -3,8 +3,11 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
+import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
 import pt.isel.pdm.battleships.utils.Rels.CREATE_GAME
 import pt.isel.pdm.battleships.utils.navigateTo
@@ -30,6 +33,11 @@ class GameConfigurationActivity : ComponentActivity() {
         val createGameLink = links[CREATE_GAME]
             ?: throw IllegalStateException("No create game link found")
 
+        lifecycleScope.launch {
+            viewModel.events.collect {
+                handleEvent(it)
+            }
+        }
         setContent {
             GameConfigurationScreen(
                 viewModel.state,
@@ -39,14 +47,21 @@ class GameConfigurationActivity : ComponentActivity() {
                         gameConfig
                     )
                 },
-                onGameCreated = {
-                    navigateTo<BoardSetupActivity> {
-                        it.putExtra("gameLink", viewModel.gameLink)
-                    }
-                },
-                errorMessage = viewModel.errorMessage,
                 onBackButtonClicked = { finish() }
             )
         }
     }
+
+    private suspend fun handleEvent(event: GameConfigurationViewModel.GameConfigurationEvent) =
+        when (event) {
+            is GameConfigurationViewModel.GameConfigurationEvent.NavigateToBoardSetup -> {
+                navigateTo<BoardSetupActivity> {
+                    it.putExtra("gameLink", viewModel.gameLink)
+                }
+                finish()
+            }
+            is GameConfigurationViewModel.GameConfigurationEvent.Error -> {
+                showToast(event.message)
+            }
+        }
 }

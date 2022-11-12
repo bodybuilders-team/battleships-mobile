@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
-import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
@@ -38,21 +39,16 @@ class BoardSetupActivity : ComponentActivity() {
         val gameLink = intent.getStringExtra("gameLink")
             ?: throw IllegalStateException("No game link found")
 
+        lifecycleScope.launch {
+            viewModel.events.collect {
+                handleEvent(it, gameLink)
+            }
+        }
+
         viewModel.loadGame(gameLink)
 
         setContent {
-            val state = viewModel.state
-            LaunchedEffect(state) {
-                if (state == BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED) {
-                    navigateTo<GameplayActivity> {
-                        it.putExtra("gameLink", gameLink)
-                    }
-                } else if (state == BoardSetupViewModel.BoardSetupState.ERROR) {
-                    showToast(viewModel.errorMessage!!)
-                }
-            }
-
-            when (state) {
+            when (viewModel.state) {
                 BoardSetupViewModel.BoardSetupState.LOADING_GAME -> {
                     Text("Loading Game..")
                 }
@@ -85,4 +81,18 @@ class BoardSetupActivity : ComponentActivity() {
             }
         }
     }
+
+    private suspend fun handleEvent(event: BoardSetupViewModel.BoardSetupEvent, gameLink: String) =
+        when (event) {
+            is BoardSetupViewModel.BoardSetupEvent.NavigateToGameplay -> {
+                navigateTo<GameplayActivity> {
+                    it.putExtra("gameLink", gameLink)
+                }
+                finish()
+            }
+
+            is BoardSetupViewModel.BoardSetupEvent.Error -> {
+                showToast(event.message)
+            }
+        }
 }
