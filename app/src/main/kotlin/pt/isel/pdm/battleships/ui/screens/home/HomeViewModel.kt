@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.utils.APIResult
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING

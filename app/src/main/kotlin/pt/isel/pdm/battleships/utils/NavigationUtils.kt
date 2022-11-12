@@ -32,7 +32,7 @@ inline fun <reified T> Context.navigateTo(
 }
 
 /**
- * Navigates to the specified activity and waits for a result.
+ * Navigates to the specified activity that returns a result to [activityResultLauncher]'s callback.
  *
  * @param clazz the class of the activity to navigate to
  * @param beforeNavigation a function that is called before the navigation is performed
@@ -67,7 +67,8 @@ fun Context.navigateWithLinksTo(
 }
 
 /**
- * Navigates to the specified activity for a result, with the given link keys.
+ * Navigates to the specified activity that returns a result to [activityResultLauncher]'s callback,
+ * with the given link keys.
  *
  * @param clazz the class of the activity to navigate to
  * @param links the link keys to set before navigating

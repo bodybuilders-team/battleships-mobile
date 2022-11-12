@@ -22,8 +22,6 @@ import pt.isel.pdm.battleships.utils.viewModelInit
  * @property viewModel the view model used to handle the login process
  */
 class LoginActivity : ComponentActivity() {
-    class LoginResultContract
-
     private val battleshipsService by lazy {
         (application as DependenciesContainer).battleshipsService
     }
@@ -63,9 +61,10 @@ class LoginActivity : ComponentActivity() {
                     )
                 },
                 onLoginSuccessful = {
+                    val userHomeLink = viewModel.link
+                        ?: throw IllegalStateException("Link not found")
+
                     val resultIntent = Intent()
-                    val userHomeLink =
-                        viewModel.link ?: throw IllegalStateException("Link not found")
                     resultIntent.putExtra(LINKS_KEY, Links(mapOf("user-home" to userHomeLink)))
 
                     setResult(RESULT_OK, resultIntent)

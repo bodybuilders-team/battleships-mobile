@@ -2,9 +2,6 @@ package pt.isel.pdm.battleships.services.utils
 
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
-import java.io.IOException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -18,6 +15,9 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import pt.isel.pdm.battleships.services.HTTPService.Companion.applicationJsonMediaType
+import java.io.IOException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /**
  * Sends a request through the HTTP client and parses the response into a [T].

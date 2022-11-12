@@ -1,7 +1,6 @@
 package pt.isel.pdm.battleships.services.users
 
 import com.google.gson.Gson
-import java.io.IOException
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.UnexpectedResponseException
@@ -11,6 +10,7 @@ import pt.isel.pdm.battleships.services.users.dtos.RegisterDTO
 import pt.isel.pdm.battleships.services.users.dtos.UsersDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
+import java.io.IOException
 
 /**
  * Represents the service that handles the battleships game.

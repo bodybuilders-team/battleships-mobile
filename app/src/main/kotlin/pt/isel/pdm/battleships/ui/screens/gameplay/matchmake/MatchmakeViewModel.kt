@@ -45,7 +45,7 @@ class MatchmakeViewModel(
     var errorMessage: String? by mutableStateOf(null)
 
     // TODO: change this
-     val gameConfigDTO = jsonEncoder.fromJson<GameConfigDTO>(
+    val gameConfigDTO = jsonEncoder.fromJson<GameConfigDTO>(
         JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
         GameConfigDTO::class.java
     )

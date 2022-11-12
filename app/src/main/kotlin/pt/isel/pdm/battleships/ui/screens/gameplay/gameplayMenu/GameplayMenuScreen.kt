@@ -12,7 +12,6 @@ import androidx.compose.ui.res.vectorResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.LoadingState
-import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel
 import pt.isel.pdm.battleships.ui.utils.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.IconButton
 import pt.isel.pdm.battleships.ui.utils.ScreenTitle
