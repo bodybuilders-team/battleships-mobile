@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.gameplay.quickPlay
+package pt.isel.pdm.battleships.ui.screens.gameplay.matchmake
 
 import android.content.res.AssetManager
 import androidx.compose.runtime.getValue
@@ -15,14 +15,14 @@ import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
-import pt.isel.pdm.battleships.ui.screens.gameplay.quickPlay.QuickPlayViewModel.QuickPlayState.ERROR
-import pt.isel.pdm.battleships.ui.screens.gameplay.quickPlay.QuickPlayViewModel.QuickPlayState.MATCHMADE
-import pt.isel.pdm.battleships.ui.screens.gameplay.quickPlay.QuickPlayViewModel.QuickPlayState.MATCHMAKING
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.ERROR
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
 import pt.isel.pdm.battleships.utils.Rels.GAME
 import pt.isel.pdm.battleships.utils.Rels.MATCHMAKE_STATE
 
 /**
- * View model for the QuickPlayActivity.
+ * View model for the [MatchmakeActivity].
  *
  * @property gamesService the service that handles the games
  * @property sessionManager the manager used to handle the user session
@@ -33,19 +33,19 @@ import pt.isel.pdm.battleships.utils.Rels.MATCHMAKE_STATE
  * @property gameLink the id of the game that was created
  * @property errorMessage the error message to be displayed
  */
-class QuickPlayViewModel(
+class MatchmakeViewModel(
     private val gamesService: GamesService,
     private val sessionManager: SessionManager,
     jsonEncoder: Gson,
     assetManager: AssetManager
 ) : ViewModel() {
 
-    var state by mutableStateOf(QuickPlayState.IDLE)
+    var state by mutableStateOf(MatchmakeState.IDLE)
     var gameLink: String? by mutableStateOf(null)
     var errorMessage: String? by mutableStateOf(null)
 
     // TODO: change this
-    private val gameConfigDTO = jsonEncoder.fromJson<GameConfigDTO>(
+     val gameConfigDTO = jsonEncoder.fromJson<GameConfigDTO>(
         JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
         GameConfigDTO::class.java
     )
@@ -56,7 +56,7 @@ class QuickPlayViewModel(
      * @param matchmakeLink the link to the matchmake endpoint
      */
     fun matchmake(matchmakeLink: String) {
-        if (state != QuickPlayState.IDLE) return
+        if (state != MatchmakeState.IDLE) return
 
         viewModelScope.launch {
             delay(ANIMATION_DELAY)
@@ -125,7 +125,7 @@ class QuickPlayViewModel(
      * @property MATCHMADE the matchmake was successful
      * @property ERROR the matchmake failed
      */
-    enum class QuickPlayState {
+    enum class MatchmakeState {
         IDLE,
         MATCHMAKING,
         MATCHMADE,

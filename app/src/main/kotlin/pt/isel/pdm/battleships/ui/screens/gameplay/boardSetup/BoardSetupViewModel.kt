@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,6 +17,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.ERROR
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
+import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for the BoardSetupActivity.
@@ -49,8 +52,22 @@ class BoardSetupViewModel(
 
         viewModelScope.launch {
             val token = sessionManager.accessToken ?: throw IllegalStateException("No token found")
+            val httpRes = tryExecuteHttpRequest {
+                gamesService.getGame(token, gameLink)
+            }
 
-            when (val res = gamesService.getGame(token, gameLink)) {
+            val res = when (httpRes) {
+                is HTTPResult.Success -> {
+                    httpRes.data
+                }
+                is HTTPResult.Failure -> {
+                    errorMessage = httpRes.error
+                    state = ERROR
+                    return@launch
+                }
+            }
+
+            when (res) {
                 is APIResult.Success -> {
                     game = res.data
                     state = DEPLOYING_FLEET
@@ -75,6 +92,7 @@ class BoardSetupViewModel(
         viewModelScope.launch {
             val token = sessionManager.accessToken ?: throw IllegalStateException("No token found")
             val fleetDTOs = fleet.map(Ship::toUndeployedShipDTO)
+            Log.v("BoardSetupLog", "Deploying fleet: $fleetDTOs")
 
             when (
                 val res = playersService.deployFleet(

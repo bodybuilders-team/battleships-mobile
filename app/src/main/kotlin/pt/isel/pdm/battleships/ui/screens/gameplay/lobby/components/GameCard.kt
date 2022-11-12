@@ -105,7 +105,7 @@ fun GameCard(
                 gridSize = 10,
                 maxTimeForLayoutPhase = 60,
                 shotsPerRound = 1,
-                maxTimePerShot = 60,
+                maxTimePerRound = 60,
                 DEFAULT_SHIP_TYPES.map { it.toDTO() }
             )
 

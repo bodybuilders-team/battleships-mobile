@@ -1,8 +1,9 @@
-package pt.isel.pdm.battleships.ui.screens.gameplay.quickPlay
+package pt.isel.pdm.battleships.ui.screens.gameplay.matchmake
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.LaunchedEffect
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
 import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
@@ -18,7 +19,7 @@ import pt.isel.pdm.battleships.utils.viewModelInit
  * @property jsonEncoder the json formatter
  * @property viewModel the view model used to handle the quick play process
  */
-class QuickPlayActivity : ComponentActivity() {
+class MatchmakeActivity : ComponentActivity() {
 
     private val battleshipsService by lazy {
         (application as DependenciesContainer).battleshipsService
@@ -33,7 +34,7 @@ class QuickPlayActivity : ComponentActivity() {
     }
 
     private val viewModel by viewModelInit {
-        QuickPlayViewModel(
+        MatchmakeViewModel(
             sessionManager = sessionManager,
             gamesService = battleshipsService.gamesService,
             jsonEncoder = jsonEncoder,
@@ -45,20 +46,26 @@ class QuickPlayActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val links = intent.getLinks()
-
-        viewModel.matchmake(
+        val matchmakeLink =
             links[MATCHMAKE]
                 ?: throw IllegalArgumentException("Missing $MATCHMAKE link")
+
+        viewModel.matchmake(
+            matchmakeLink
         )
 
         setContent {
-            QuickPlayScreen(
-                state = viewModel.state,
-                onMatchmade = {
+            val state = viewModel.state
+            LaunchedEffect(state) {
+                if (state == MatchmakeViewModel.MatchmakeState.MATCHMADE) {
                     navigateTo<BoardSetupActivity> {
                         it.putExtra("gameLink", viewModel.gameLink)
                     }
-                },
+                }
+            }
+
+            MatchmakeScreen(
+                state = viewModel.state,
                 errorMessage = viewModel.errorMessage
             )
         }

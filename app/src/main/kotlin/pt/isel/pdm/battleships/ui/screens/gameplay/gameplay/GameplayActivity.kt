@@ -3,23 +3,44 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.gameplay
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.google.gson.stream.JsonReader
+import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
+import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 
 /**
  * Activity for the gameplay screen.
  */
 class GameplayActivity : ComponentActivity() {
 
+    val battleshipsService by lazy {
+        (application as DependenciesContainer).battleshipsService
+    }
+
+    val sessionManager by lazy {
+        (application as DependenciesContainer).sessionManager
+    }
+
+    val jsonEncoder by lazy {
+        (application as DependenciesContainer).jsonEncoder
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val myBoard = intent.getParcelableExtra<MyBoard>("board")
-                ?: throw IllegalArgumentException("Board not found")
+            val gameLink = intent.getStringExtra("gameLink")
+                ?: throw IllegalStateException("No game link found")
 
-            val gameConfig = intent.getParcelableExtra<GameConfig>("gameConfig")
-                ?: throw IllegalArgumentException("GameConfig not found")
+            val myBoard = MyBoard()
+
+            val gameConfig = GameConfig(
+                jsonEncoder.fromJson(
+                    JsonReader(assets.open("defaultGameConfig.json").reader()),
+                    GameConfigDTO::class.java
+                )
+            )
 
             GameplayScreen(
                 myBoard = myBoard,

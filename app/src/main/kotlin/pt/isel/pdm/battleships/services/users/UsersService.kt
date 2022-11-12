@@ -1,15 +1,16 @@
 package pt.isel.pdm.battleships.services.users
 
 import com.google.gson.Gson
+import java.io.IOException
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.UnexpectedResponseException
+import pt.isel.pdm.battleships.services.users.dtos.AuthenticationOutputDTO
 import pt.isel.pdm.battleships.services.users.dtos.LoginDTO
 import pt.isel.pdm.battleships.services.users.dtos.RegisterDTO
-import pt.isel.pdm.battleships.services.users.dtos.AuthenticationOutputDTO
 import pt.isel.pdm.battleships.services.users.dtos.UsersDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
-import java.io.IOException
+import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
 /**
  * Represents the service that handles the battleships game.
@@ -78,4 +79,14 @@ class UsersService(
      */
     suspend fun getUsers(listUsersLink: String): APIResult<UsersDTO> =
         get(listUsersLink)
+
+    /**
+     * Gets the user home.
+     *
+     * @param userHomeLink the link to the user home endpoint
+     *
+     * @return the user home
+     */
+    suspend fun getUserHome(userHomeLink: String): APIResult<SirenEntity<Unit>> =
+        get(userHomeLink)
 }

@@ -27,14 +27,15 @@ class GameConfigurationActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val links = intent.getLinks()
+        val createGameLink = links[CREATE_GAME]
+            ?: throw IllegalStateException("No create game link found")
 
         setContent {
             GameConfigurationScreen(
                 viewModel.state,
                 onGameConfigured = { gameConfig ->
                     viewModel.createGame(
-                        links[CREATE_GAME]
-                            ?: throw IllegalStateException("No create game link found"),
+                        createGameLink,
                         gameConfig
                     )
                 },

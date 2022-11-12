@@ -10,7 +10,7 @@ import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
  *
  * @property gridSize The size of the grid.
  * @property shotsPerTurn The number of shots per turn.
- * @property maxTimePerShot The maximum time per shot.
+ * @property maxTimePerRound The maximum time per shot.
  * @property maxTimeForLayoutPhase The maximum time for the layout phase.
  * @property ships The ships to be used in the game.
  */
@@ -18,10 +18,18 @@ import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 data class GameConfig(
     val gridSize: Int,
     val shotsPerTurn: Int,
-    val maxTimePerShot: Int,
+    val maxTimePerRound: Int,
     val maxTimeForLayoutPhase: Int,
     val ships: List<ShipType>
 ) : Parcelable {
+
+    constructor(dto: GameConfigDTO) : this(
+        dto.gridSize,
+        dto.shotsPerRound,
+        dto.maxTimePerRound,
+        dto.maxTimeForLayoutPhase,
+        dto.shipTypes.map { ShipType.fromDTO(it) }
+    )
 
     /**
      * Converts this game configuration to a DTO.
@@ -32,7 +40,7 @@ data class GameConfig(
         gridSize,
         maxTimeForLayoutPhase,
         shotsPerTurn,
-        maxTimePerShot,
+        maxTimePerRound,
         ships.map { it.toDTO() }
     )
 }

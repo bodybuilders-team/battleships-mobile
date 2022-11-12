@@ -1,6 +1,7 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
@@ -8,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
+import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.utils.navigateTo
 import pt.isel.pdm.battleships.utils.viewModelInit
 
@@ -40,15 +42,18 @@ class BoardSetupActivity : ComponentActivity() {
         viewModel.loadGame(gameLink)
 
         setContent {
-            LaunchedEffect(viewModel.state) {
-                if (viewModel.state == BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED) {
+            val state = viewModel.state
+            LaunchedEffect(state) {
+                if (state == BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED) {
                     navigateTo<GameplayActivity> {
                         it.putExtra("gameLink", gameLink)
                     }
+                } else if (state == BoardSetupViewModel.BoardSetupState.ERROR) {
+                    showToast(viewModel.errorMessage!!)
                 }
             }
 
-            when (viewModel.state) {
+            when (state) {
                 BoardSetupViewModel.BoardSetupState.LOADING_GAME -> {
                     Text("Loading Game..")
                 }
@@ -69,8 +74,11 @@ class BoardSetupActivity : ComponentActivity() {
                         boardSize = gridSize,
                         ships = ships,
                         onBoardSetupFinished = { board ->
-                            // TODO fix this shit
-//                            viewModel.deployFleet(board.fleet)
+                            val deployFleetLink =
+                                game.actions?.find { it.name == "deployFleet" }?.href?.path
+                                    ?: throw IllegalStateException("No deploy fleet link found")
+
+                            viewModel.deployFleet(deployFleetLink, board.fleet)
                         },
                         onBackButtonClicked = { finish() }
                     )

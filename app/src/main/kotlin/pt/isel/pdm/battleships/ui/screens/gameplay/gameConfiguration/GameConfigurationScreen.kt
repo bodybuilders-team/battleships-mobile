@@ -166,7 +166,7 @@ fun GameConfigurationScreen(
                         GameConfig(
                             gridSize = boardSize,
                             shotsPerTurn = shotsPerTurn,
-                            maxTimePerShot = timePerTurn,
+                            maxTimePerRound = timePerTurn,
                             maxTimeForLayoutPhase = timeForBoardConfig,
                             ships = ships
                         )

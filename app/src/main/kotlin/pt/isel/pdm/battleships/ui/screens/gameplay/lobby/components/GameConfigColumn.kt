@@ -57,7 +57,7 @@ fun GameConfigColumn(gameConfig: GameConfigDTO) {
         )
 
         Text(
-            text = "Max Time per Shot: ${gameConfig.maxTimePerShot}",
+            text = "Max Time per Shot: ${gameConfig.maxTimePerRound}",
             fontWeight = MaterialTheme.typography.h6.fontWeight,
             style = MaterialTheme.typography.body1
         )

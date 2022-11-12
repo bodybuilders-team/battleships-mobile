@@ -26,7 +26,7 @@ data class Ship(
     val lives: Int = type.size
 ) : Parcelable {
     fun toUndeployedShipDTO(): UndeployedShipDTO =
-        UndeployedShipDTO(type.name, coordinate.toString(), orientation.name)
+        UndeployedShipDTO(type.shipName, coordinate.toCoordinateDTO(), orientation.name)
 
     @IgnoredOnParcel
     val coordinates: List<Coordinate> = getCoordinates(type, coordinate, orientation)

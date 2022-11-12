@@ -7,6 +7,7 @@ import pt.isel.pdm.battleships.domain.games.Coordinate.Companion.maxRowsRange
 import pt.isel.pdm.battleships.domain.games.board.Board.Companion.FIRST_COL
 import pt.isel.pdm.battleships.domain.games.board.Board.Companion.FIRST_ROW
 import pt.isel.pdm.battleships.domain.games.board.Board.Companion.MAX_BOARD_SIZE
+import pt.isel.pdm.battleships.services.games.dtos.CoordinateDTO
 
 /**
  * Coordinate of each board cell.
@@ -42,6 +43,8 @@ data class Coordinate(val col: Char, val row: Int) : Parcelable {
          */
         fun isValid(col: Char, row: Int) = col in maxColsRange && row in maxRowsRange
     }
+
+    fun toCoordinateDTO(): CoordinateDTO = CoordinateDTO(col, row)
 
     override fun toString() = "$col$row"
 }
