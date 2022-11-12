@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState
-import pt.isel.pdm.battleships.ui.utils.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 private const val LOGO_MAX_SIZE_FACTOR = 0.6f
 private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f

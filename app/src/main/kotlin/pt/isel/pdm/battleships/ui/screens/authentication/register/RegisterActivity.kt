@@ -8,18 +8,18 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.REGISTER
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.Links
-import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
-import pt.isel.pdm.battleships.utils.Rels.REGISTER
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the register screen.
  *
  * @property battleshipsService the service used to handle the battleships game
  * @property sessionManager the session manager used to handle the user session
- * @property viewModel the view model used to handle the login process
+ * @property viewModel the view model used to handle the register process
  */
 class RegisterActivity : ComponentActivity() {
 
@@ -65,8 +65,9 @@ class RegisterActivity : ComponentActivity() {
                 },
                 onRegisterSuccessful = {
                     val resultIntent = Intent()
-                    val userHomeLink =
-                        viewModel.link ?: throw IllegalStateException("Link not found")
+                    val userHomeLink = viewModel.link
+                        ?: throw IllegalStateException("Link not found")
+
                     resultIntent.putExtra(
                         Links.LINKS_KEY,
                         Links(mapOf("user-home" to userHomeLink))
@@ -83,9 +84,16 @@ class RegisterActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun handleEvent(event: AuthenticationViewModel.AuthenticationEvent) =
+    /**
+     * Handles the given event.
+     *
+     * @param event the event to handle
+     */
+    private suspend fun handleEvent(event: AuthenticationViewModel.AuthenticationEvent) {
         when (event) {
-            is AuthenticationViewModel.AuthenticationEvent.Error ->
+            is AuthenticationViewModel.AuthenticationEvent.Error -> {
                 showToast(event.message)
+            }
         }
+    }
 }

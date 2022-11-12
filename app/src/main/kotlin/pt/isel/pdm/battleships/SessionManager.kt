@@ -7,7 +7,8 @@ import androidx.compose.runtime.setValue
 /**
  * Represents the session manager responsible for holding a user's session.
  *
- * @property accessToken the user's token
+ * @property accessToken the user's access token
+ * @property refreshToken the user's refresh token
  * @property username the user's username
  */
 class SessionManager {
@@ -34,7 +35,7 @@ class SessionManager {
     /**
      * Updates the session with the given tokens and username.
      *
-     *@param accessToken the user's access token
+     * @param accessToken the user's access token
      * @param refreshToken the user's refresh token
      * @param username the user's username
      */

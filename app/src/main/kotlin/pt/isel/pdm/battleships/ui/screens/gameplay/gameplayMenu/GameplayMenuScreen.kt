@@ -12,16 +12,20 @@ import androidx.compose.ui.res.vectorResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuLoadingState
-import pt.isel.pdm.battleships.ui.utils.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.IconButton
-import pt.isel.pdm.battleships.ui.utils.ScreenTitle
+import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
 private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 
 /**
  * Gameplay menu screen.
  *
- * @param onBackButtonClick the callback to be invoked when the back button is clicked.
+ * @param loadingState the current loading state of the menu
+ * @param onMatchmakeClick the callback to be invoked when the matchmake button is clicked
+ * @param onCreateGameClick the callback to be invoked when the create game button is clicked
+ * @param onLobbyClick the callback to be invoked when the lobby button is clicked
+ * @param onBackButtonClick the callback to be invoked when the back button is clicked
  */
 @Composable
 fun GameplayMenuScreen(

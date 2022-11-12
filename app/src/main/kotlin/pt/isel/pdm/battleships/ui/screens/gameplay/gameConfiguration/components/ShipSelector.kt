@@ -20,7 +20,7 @@ import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.DEFAULT_TILE_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
-import pt.isel.pdm.battleships.ui.utils.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
 private const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f

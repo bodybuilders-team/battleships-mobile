@@ -36,7 +36,7 @@
     <string name="ranking_title">Ranking</string>
     <string name="ranking_search_player_placeholder_text">Search Player</string>
     <string name="ranking_search_player_button_text">Search</string>
-    <string name="ranking_table_label_position">Position</string>
+    <string name="ranking_table_label_rank" translatable="false">Rank</string>
     <string name="ranking_table_label_username">Username</string>
     <string name="ranking_table_label_points">Points</string>
 

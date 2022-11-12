@@ -13,6 +13,7 @@ import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LOADING
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.USER_HOME
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
@@ -21,6 +22,8 @@ import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
  * @property sessionManager the manager used to handle the user session
  *
  * @property state the current state of the view model
+ * @property link the link to the user home screen
+ * @property events the events that occurred in the view model
  */
 open class AuthenticationViewModel(
     private val sessionManager: SessionManager
@@ -60,7 +63,7 @@ open class AuthenticationViewModel(
                 val properties = res.data.properties
                     ?: throw IllegalStateException("Token properties are null")
 
-                link = res.data.links?.find { it.rel.contains("user-home") }?.href?.path
+                link = res.data.links?.find { it.rel.contains(USER_HOME) }?.href?.path
                     ?: throw IllegalStateException("User home link not found")
 
                 sessionManager.setSession(
@@ -84,7 +87,6 @@ open class AuthenticationViewModel(
      * @property IDLE the initial state of the authentication process
      * @property LOADING the state of the authentication process while it is loading
      * @property SUCCESS the state of the authentication process when it is successful
-     * @property ERROR the state of the authentication process when an error occurs
      */
     enum class AuthenticationState {
         IDLE,
@@ -96,6 +98,12 @@ open class AuthenticationViewModel(
      * Represents the events that can be emitted.
      */
     sealed class AuthenticationEvent {
+
+        /**
+         * Represents an error event.
+         *
+         * @property message the message of the error
+         */
         class Error(val message: String) : AuthenticationEvent()
     }
 }

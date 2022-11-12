@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.utils
+package pt.isel.pdm.battleships.ui.utils.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer

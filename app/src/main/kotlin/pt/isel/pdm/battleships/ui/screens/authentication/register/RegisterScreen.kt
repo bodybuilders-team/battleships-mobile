@@ -20,15 +20,15 @@ import pt.isel.pdm.battleships.ui.screens.authentication.register.components.Reg
 import pt.isel.pdm.battleships.ui.screens.authentication.validateEmail
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
-import pt.isel.pdm.battleships.ui.utils.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.ScreenTitle
+import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
 /**
  * Register screen.
  *
  * @param state Authentication state
  * @param onRegister callback to be invoked when the register button is clicked
- * @param errorMessage error message to be displayed
+ * @param onRegisterSuccessful callback to be invoked when the register process is successful
  * @param onBackButtonClicked callback to be invoked when the back button is clicked
  */
 @Composable
@@ -41,8 +41,9 @@ fun RegisterScreen(
     val registerMessage = remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(state) {
-        if (state == AuthenticationState.SUCCESS)
+        if (state == AuthenticationState.SUCCESS) {
             onRegisterSuccessful()
+        }
     }
 
     val email = remember { mutableStateOf("") }

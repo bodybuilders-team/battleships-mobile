@@ -11,6 +11,10 @@ import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 
 /**
  * Activity for the gameplay screen.
+ *
+ * @property battleshipsService the service used to handle the battleships game
+ * @property sessionManager the session manager used to handle the user session
+ * @property jsonEncoder the json formatter
  */
 class GameplayActivity : ComponentActivity() {
 

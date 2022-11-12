@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.ui.utils.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 const val PLACING_MENU_PADDING = 6
 
@@ -26,8 +26,10 @@ const val PLACING_MENU_PADDING = 6
  *
  * @param shipTypes the list of ship types to be presented
  * @param tileSize the size of the tiles in the board
- * @param onRandomBoardButtonPressed the callback to be invoked when the user presses the random board button
- * @param onConfirmBoardButtonPressed the callback to be invoked when the user presses the confirm board button
+ * @param onRandomBoardButtonPressed the callback to be invoked when the user presses the
+ * random board button
+ * @param onConfirmBoardButtonPressed the callback to be invoked when the user presses the
+ * confirm board button
  */
 @Composable
 fun ShipPlacingMenuView(
@@ -35,7 +37,7 @@ fun ShipPlacingMenuView(
     tileSize: Float,
     dragging: (ShipType) -> Boolean,
     onDragStart: (Ship, Offset) -> Unit,
-    onDragEnd: (Ship) -> Unit,
+    onDragEnd: (Ship) -> Unit, // TODO: comment!
     onDragCancel: () -> Unit,
     onDrag: (Offset) -> Unit,
     onRandomBoardButtonPressed: () -> Unit,

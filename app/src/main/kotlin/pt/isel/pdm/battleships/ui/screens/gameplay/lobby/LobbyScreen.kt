@@ -15,15 +15,14 @@ import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
-import pt.isel.pdm.battleships.ui.utils.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.ScreenTitle
+import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
 /**
  * Screen that displays the lobby menu.
  *
  * @param state the current state of the lobby
  * @param games the list of games
- * @param errorMessage the error message to be displayed
  * @param onBackButtonClicked the callback to be invoked when the back button is clicked.
  */
 @Composable

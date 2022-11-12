@@ -37,7 +37,6 @@ fun ShipImage(
             }
         ),
         contentDescription = stringResource(id = R.string.ship_image_content_description),
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     )
 }

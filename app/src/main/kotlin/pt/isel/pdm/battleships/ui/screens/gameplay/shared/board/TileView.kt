@@ -20,7 +20,7 @@ const val DEFAULT_TILE_SIZE = 32.0f
 @Composable
 fun TileView(size: Float) {
     Box(
-        Modifier
+        modifier = Modifier
             .size(size.dp)
             .background(DarkBlue)
             .border((size / DEFAULT_TILE_SIZE).dp, Color.LightGray)

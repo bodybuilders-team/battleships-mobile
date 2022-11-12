@@ -31,7 +31,7 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.DEFAULT_SHIP_TYPES
-import pt.isel.pdm.battleships.ui.utils.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 private const val BUTTON_SIZE = 38
 private const val SPACER_WIDTH = 100
@@ -106,7 +106,7 @@ fun GameCard(
                 maxTimeForLayoutPhase = 60,
                 shotsPerRound = 1,
                 maxTimePerRound = 60,
-                DEFAULT_SHIP_TYPES.map { it.toDTO() }
+                DEFAULT_SHIP_TYPES.map { it.toShipTypeDTO() }
             )
 
             GameConfigColumn(gameConfig)

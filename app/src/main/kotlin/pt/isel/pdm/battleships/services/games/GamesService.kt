@@ -1,7 +1,6 @@
 package pt.isel.pdm.battleships.services.games
 
 import com.google.gson.Gson
-import java.io.IOException
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.UnexpectedResponseException
@@ -12,6 +11,7 @@ import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
 import pt.isel.pdm.battleships.services.games.dtos.MatchmakeDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
+import java.io.IOException
 
 /**
  * Represents the service that handles the battleships game.
@@ -84,7 +84,7 @@ class GamesService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun joinGame(gameLink: String) {
-        // TODO
+        // TODO: To be implemented
     }
 
     /**
@@ -93,7 +93,7 @@ class GamesService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun leaveGame(gameLink: String) {
-        // TODO
+        // TODO: To be implemented
     }
 
     /**

@@ -14,10 +14,19 @@ import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuLoadingState.NOT_LOADING
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuState.LOADED
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuState.LOADING
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
+/**
+ * View model for the [GameplayMenuActivity].
+ *
+ * @property usersService the service that handles the users
+ *
+ * @property loadingState the current loading state of the view model
+ * @property state the current state of the view model
+ * @property links the links to the next screens
+ * @property events the events that can be emitted by the view model
+ */
 class GameplayMenuViewModel(
     private val usersService: UsersService
 ) : ViewModel() {
@@ -34,7 +43,7 @@ class GameplayMenuViewModel(
     fun loadUserHome(userHomeLink: String) {
         if (state != IDLE) return
 
-        state = LOADING
+        state = GameplayMenuState.LOADING
 
         viewModelScope.launch {
             val httpRes = tryExecuteHttpRequest {
@@ -66,6 +75,9 @@ class GameplayMenuViewModel(
 
     /**
      * Emits a navigation event to the activity with the given [links].
+     *
+     * @param clazz the class of the activity to navigate to
+     * @param linkRels the relation links to pass to the activity
      */
     fun <T> navigateTo(clazz: Class<T>, linkRels: Set<String>? = null) {
         loadingState = GameplayMenuLoadingState.LOADING
@@ -78,6 +90,9 @@ class GameplayMenuViewModel(
 
     /**
      * Emits a navigation event to the activity with the given [links].
+     *
+     * @param T the type of the activity to navigate to
+     * @param linkRels the relation links to pass to the activity
      */
     inline fun <reified T> navigateTo(linkRels: Set<String>? = null) {
         navigateTo(T::class.java, linkRels)
@@ -111,7 +126,20 @@ class GameplayMenuViewModel(
      * Represents the events that can be emitted by the gameplay menu view model.
      */
     sealed class GameplayMenuEvent {
+
+        /**
+         * Represents an error event.
+         *
+         * @property error the error message
+         */
         class Error(val message: String) : GameplayMenuEvent()
+
+        /**
+         * Represents a navigation event.
+         *
+         * @property clazz the class of the activity to navigate to
+         * @property linkRels the relation links to pass to the activity
+         */
         class Navigate(val clazz: Class<*>, val linkRels: Set<String>? = null) : GameplayMenuEvent()
     }
 }

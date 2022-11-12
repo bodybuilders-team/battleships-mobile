@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.utils
+package pt.isel.pdm.battleships.ui.utils.navigation
 
 import android.content.Intent
 import android.os.Parcelable

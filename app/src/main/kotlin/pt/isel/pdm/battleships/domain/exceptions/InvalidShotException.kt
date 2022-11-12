@@ -6,3 +6,4 @@ package pt.isel.pdm.battleships.domain.exceptions
  * @param message the message to be displayed
  */
 class InvalidShotException(message: String) : Exception(message)
+// TODO: Whats up with this exceptions?

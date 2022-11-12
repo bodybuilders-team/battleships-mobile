@@ -41,8 +41,8 @@ const val SHIP_SLOTS_FACTOR = 0.6f
 @Composable
 fun ShipSlotsView(
     shipTypes: List<ShipType>,
-    tileSize: Float,
-    dragging: (ShipType) -> Boolean,
+    tileSize: Float, // TODO: remove?
+    dragging: (ShipType) -> Boolean, // TODO: comment!
     onDragStart: (Ship, Offset) -> Unit,
     onDragEnd: (Ship) -> Unit,
     onDragCancel: () -> Unit,
@@ -75,7 +75,7 @@ fun ShipSlotsView(
                                 type = shipType,
                                 orientation = Orientation.VERTICAL,
                                 tileSize = DEFAULT_TILE_SIZE,
-                                modifier = Modifier.alpha(0.5f)
+                                modifier = Modifier.alpha(0.5f) // TODO: constants!
                             )
                         } else {
                             DraggableShipView(

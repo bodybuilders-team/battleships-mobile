@@ -25,6 +25,8 @@ data class Ship(
     val orientation: Orientation,
     val lives: Int = type.size
 ) : Parcelable {
+
+    // TODO: What is this?
     fun toUndeployedShipDTO(): UndeployedShipDTO =
         UndeployedShipDTO(type.shipName, coordinate.toCoordinateDTO(), orientation.name)
 

@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.utils
+package pt.isel.pdm.battleships.ui.utils.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -15,9 +15,7 @@ private const val TITLE_PADDING = 8
  * @param title the title to be displayed
  */
 @Composable
-fun ScreenTitle(
-    title: String
-) {
+fun ScreenTitle(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.h4,

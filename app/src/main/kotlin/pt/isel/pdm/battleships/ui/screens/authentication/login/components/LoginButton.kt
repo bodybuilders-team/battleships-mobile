@@ -8,12 +8,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.ui.utils.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 private const val BUTTON_PADDING = 8
 
 /**
- * Button for login operation
+ * Button for login operation.
  *
  * @param enabled whether the button is enabled or not
  * @param onLoginClickCallback callback to be invoked when the login button is clicked

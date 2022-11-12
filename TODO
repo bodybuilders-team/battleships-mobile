@@ -3,3 +3,8 @@ TODO: Add caching
 TODO: Add tests
 TODO: Add documentation
 TODO: Add ScreenState classes to wrap the state of the screen
+TODO: Review domain model
+TODO: Search for "magic constants" and replace them with constants
+TODO: Author or Developer?
+TODO: Review the DTOs and siren e etc
+TODO: Refresh token mechanism

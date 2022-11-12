@@ -19,13 +19,14 @@ import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
- * View model for the LobbyActivity.
+ * View model for the [LobbyActivity].
  *
  * @property gamesService the service that handles the games
  * @property sessionManager the manager used to handle the user session
  *
  * @property state the current state of the view model
  * @property games the list of games
+ * @property events the events that can be emitted by the view model
  */
 class LobbyViewModel(
     private val gamesService: GamesService,
@@ -91,6 +92,12 @@ class LobbyViewModel(
      * Represents the events that can be emitted.
      */
     sealed class LobbyEvent {
+
+        /**
+         * Represents an error event.
+         *
+         * @property message the error message
+         */
         class Error(val message: String) : LobbyEvent()
     }
 }

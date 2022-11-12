@@ -25,8 +25,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentB
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.PlacedShipView
-import pt.isel.pdm.battleships.ui.utils.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 private const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
 

@@ -1,13 +1,13 @@
 package pt.isel.pdm.battleships.services
 
 import com.google.gson.Gson
-import java.io.IOException
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.PlayersService
 import pt.isel.pdm.battleships.services.home.dtos.HomeDTO
 import pt.isel.pdm.battleships.services.users.UsersService
 import pt.isel.pdm.battleships.services.utils.APIResult
+import java.io.IOException
 
 /**
  * Represents the service that handles the battleships game.
@@ -25,23 +25,6 @@ class BattleshipsService(
     httpClient: OkHttpClient,
     jsonEncoder: Gson
 ) : HTTPService(apiEndpoint, httpClient, jsonEncoder) {
-
-    // TODO: Implement local mode
-    /**
-     * Used to identify how implementations SHOULD behave:
-     *
-     * @property FORCE_REMOTE is used to indicate that the operation MUST try to access
-     * the remote data source
-     * @property FORCE_LOCAL is usd to indicate that the operation SHOULD only use the
-     * the local version of the data, if available
-     * @property AUTO states that the selection of which data to use is left to the
-     * implementation.
-     *//*
-    enum class Mode {
-        FORCE_REMOTE,
-        FORCE_LOCAL,
-        AUTO
-    }*/
 
     val usersService = UsersService(apiEndpoint, httpClient, jsonEncoder)
     val gamesService = GamesService(apiEndpoint, httpClient, jsonEncoder)

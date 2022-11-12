@@ -33,7 +33,6 @@
 
     <string name="ranking_title">Calificaciones</string>
     <string name="ranking_search_player_placeholder_text">Buscar Jugador</string>
-    <string name="ranking_table_label_position">Posición</string>
     <string name="ranking_table_label_username">Nombre de Usuario</string>
     <string name="ranking_table_label_points">Puntos</string>
     <string name="ranking_search_player_button_text">Buscar</string>

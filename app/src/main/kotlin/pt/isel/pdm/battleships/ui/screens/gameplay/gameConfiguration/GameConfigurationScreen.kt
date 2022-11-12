@@ -26,9 +26,9 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigu
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.GameConfigSelector
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.IntSelector
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.ShipSelector
-import pt.isel.pdm.battleships.ui.utils.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.IconButton
-import pt.isel.pdm.battleships.ui.utils.ScreenTitle
+import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
 private const val MIN_SHOTS_PER_TURN = 1
 private const val MAX_SHOTS_PER_TURN = 5
@@ -49,6 +49,7 @@ val DEFAULT_SHIP_TYPES = ShipType.values().toList()
 /**
  * Screen that allows the user to configure a new game before starting it.
  *
+ * @param state the current state of the screen
  * @param onGameConfigured Callback that is called when the user finishes configuring the game
  * @param onBackButtonClicked Callback that is called when the user clicks the back button
  */

@@ -7,7 +7,7 @@ import pt.isel.pdm.battleships.services.users.UsersService
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
 
 /**
- * View model for the RegisterActivity.
+ * View model for the [RegisterActivity].
  *
  * @property usersService the service used to handle the users
  * @param sessionManager the manager used to handle the user session

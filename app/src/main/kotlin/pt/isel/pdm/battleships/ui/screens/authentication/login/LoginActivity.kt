@@ -8,12 +8,12 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.LINKS_KEY
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.LOGIN
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.Links
-import pt.isel.pdm.battleships.utils.Links.Companion.LINKS_KEY
-import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
-import pt.isel.pdm.battleships.utils.Rels.LOGIN
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the login screen.
@@ -79,9 +79,15 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun handleEvent(event: AuthenticationViewModel.AuthenticationEvent) =
+    /**
+     * Handles the events emitted by the view model.
+     *
+     * @param event the event emitted by the view model
+     */
+    private suspend fun handleEvent(event: AuthenticationViewModel.AuthenticationEvent) {
         when (event) {
             is AuthenticationViewModel.AuthenticationEvent.Error ->
                 showToast(event.message)
         }
+    }
 }

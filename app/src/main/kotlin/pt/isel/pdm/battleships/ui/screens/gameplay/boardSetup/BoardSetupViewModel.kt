@@ -22,13 +22,14 @@ import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
- * View model for the BoardSetupActivity.
+ * View model for the [BoardSetupActivity].
  *
  * @param battleshipsService the service of the battleships application
  * @property sessionManager the manager used to handle the user session
  *
  * @property state the current state of the view model
  * @property game the game being played
+ * @property events the events that occurred in the view model
  */
 class BoardSetupViewModel(
     battleshipsService: BattleshipsService,
@@ -147,7 +148,17 @@ class BoardSetupViewModel(
      * Represents the events that can be emitted.
      */
     sealed class BoardSetupEvent {
+
+        /**
+         * Represents an error that occurred.
+         *
+         * @property message the message of the error
+         */
         class Error(val message: String) : BoardSetupEvent()
+
+        /**
+         * Represents the event of navigating to the gameplay screen.
+         */
         object NavigateToGameplay : BoardSetupEvent()
     }
 }

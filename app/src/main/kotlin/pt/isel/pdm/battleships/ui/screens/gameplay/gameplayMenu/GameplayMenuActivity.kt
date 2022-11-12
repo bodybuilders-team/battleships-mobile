@@ -12,13 +12,16 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuView
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeActivity
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
-import pt.isel.pdm.battleships.utils.navigateWithLinksTo
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the gameplay menu screen.
+ *
+ * @property battleshipsService the service used to handle the battleships game
+ * @property viewModel the view model used to handle the gameplay menu screen
  */
 class GameplayMenuActivity : ComponentActivity() {
 
@@ -37,8 +40,8 @@ class GameplayMenuActivity : ComponentActivity() {
 
         val links = intent.getLinks()
 
-        val userHomeLink =
-            links["user-home"] ?: throw IllegalStateException("User home link not found")
+        val userHomeLink = links["user-home"]
+            ?: throw IllegalStateException("User home link not found")
 
         viewModel.loadUserHome(userHomeLink)
 
@@ -67,6 +70,9 @@ class GameplayMenuActivity : ComponentActivity() {
 
     /**
      * Handles the events emitted by the view model.
+     *
+     * @param event the event to handle
+     * @param userHomeLink the link to the user home
      */
     private suspend fun handleEvent(event: GameplayMenuEvent, userHomeLink: String) =
         when (event) {

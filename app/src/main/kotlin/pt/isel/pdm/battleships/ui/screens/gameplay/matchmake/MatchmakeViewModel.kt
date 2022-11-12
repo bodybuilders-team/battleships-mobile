@@ -17,10 +17,13 @@ import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.GAME
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.MATCHMAKE_STATE
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
-import pt.isel.pdm.battleships.utils.Rels.GAME
-import pt.isel.pdm.battleships.utils.Rels.MATCHMAKE_STATE
 
 /**
  * View model for the [MatchmakeActivity].
@@ -32,6 +35,7 @@ import pt.isel.pdm.battleships.utils.Rels.MATCHMAKE_STATE
  *
  * @property state the current state of the view model
  * @property gameLink the id of the game that was created
+ * @property events the events that can be emitted by the view model
  */
 class MatchmakeViewModel(
     private val gamesService: GamesService,
@@ -43,7 +47,6 @@ class MatchmakeViewModel(
     var state by mutableStateOf(MatchmakeState.IDLE)
     var gameLink: String? by mutableStateOf(null)
 
-    // TODO: change this
     private val gameConfigDTO = jsonEncoder.fromJson<GameConfigDTO>(
         JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
         GameConfigDTO::class.java
@@ -60,7 +63,7 @@ class MatchmakeViewModel(
     fun matchmake(matchmakeLink: String) {
         if (state != MatchmakeState.IDLE) return
 
-        state = MatchmakeState.MATCHMAKING
+        state = MATCHMAKING
 
         viewModelScope.launch {
             delay(ANIMATION_DELAY)
@@ -79,7 +82,7 @@ class MatchmakeViewModel(
                     is HTTPResult.Success -> httpRes.data
                     is HTTPResult.Failure -> {
                         _events.emit(MatchmakeEvent.Error(httpRes.error))
-                        state = MatchmakeState.MATCHMAKING
+                        state = MATCHMAKING
                         continue
                     }
                 }
@@ -103,7 +106,7 @@ class MatchmakeViewModel(
                         gameLink = matchGameLink
                         if (!properties.wasCreated) {
                             _events.emit(MatchmakeEvent.NavigateToBoardSetup)
-                            state = MatchmakeState.MATCHMADE
+                            state = MATCHMADE
                             return@launch
                         }
 
@@ -112,13 +115,13 @@ class MatchmakeViewModel(
                     }
                     is APIResult.Failure -> {
                         _events.emit(MatchmakeEvent.Error(res.error.title))
-                        state = MatchmakeState.MATCHMAKING
+                        state = MATCHMAKING
                         continue
                     }
                 }
             }
 
-            while (state != MatchmakeState.MATCHMADE) {
+            while (state != MATCHMADE) {
                 val gameStateHttpRes = tryExecuteHttpRequest {
                     gamesService.getGameState(
                         token,
@@ -130,7 +133,7 @@ class MatchmakeViewModel(
                     is HTTPResult.Success -> gameStateHttpRes.data
                     is HTTPResult.Failure -> {
                         _events.emit(MatchmakeEvent.Error(gameStateHttpRes.error))
-                        state = MatchmakeState.MATCHMAKING
+                        state = MATCHMAKING
                         continue
                     }
                 }
@@ -144,12 +147,12 @@ class MatchmakeViewModel(
                             delay(POLLING_DELAY)
                         } else {
                             _events.emit(MatchmakeEvent.NavigateToBoardSetup)
-                            state = MatchmakeState.MATCHMADE
+                            state = MATCHMADE
                         }
                     }
                     is APIResult.Failure -> {
                         _events.emit(MatchmakeEvent.Error(gameStateRes.error.title))
-                        state = MatchmakeState.MATCHMAKING
+                        state = MATCHMAKING
                         continue
                     }
                 }
@@ -160,6 +163,7 @@ class MatchmakeViewModel(
     /**
      * Represents the quick play operation state.
      *
+     * @property IDLE the idle state
      * @property MATCHMAKING the matchmaking is in progress
      * @property MATCHMADE the matchmake was successful
      */
@@ -173,7 +177,17 @@ class MatchmakeViewModel(
      * Represents the events that can be emitted.
      */
     sealed class MatchmakeEvent {
+
+        /**
+         * Represents an error event.
+         *
+         * @property message the error message
+         */
         class Error(val message: String) : MatchmakeEvent()
+
+        /**
+         * Navigation event to the board setup screen.
+         */
         object NavigateToBoardSetup : MatchmakeEvent()
     }
 

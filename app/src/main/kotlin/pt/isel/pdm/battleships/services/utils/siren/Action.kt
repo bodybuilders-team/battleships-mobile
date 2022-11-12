@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.services.utils.siren
 
-import java.net.URI
 import okhttp3.MediaType
+import java.net.URI
 
 /**
  * An action represents an action that can be performed on an entity.

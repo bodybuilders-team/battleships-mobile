@@ -19,13 +19,14 @@ import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
- * View model for the GameConfigurationActivity.
+ * View model for the [GameConfigurationActivity].
  *
  * @property gamesService the service that handles the games
  *
  * @property state the current state of the view model
  * @property gameLink the link to the game
  * @property errorMessage the error message to be displayed
+ * @property events the events that can be emitted by the view model
  */
 class GameConfigurationViewModel(
     private val gamesService: GamesService
@@ -99,7 +100,17 @@ class GameConfigurationViewModel(
      * Represents the events that can be emitted.
      */
     sealed class GameConfigurationEvent {
+
+        /**
+         * Represents an error event.
+         *
+         * @property message the error message
+         */
         class Error(val message: String) : GameConfigurationEvent()
+
+        /**
+         * Represents a navigation event to the board setup screen.
+         */
         object NavigateToBoardSetup : GameConfigurationEvent()
     }
 }

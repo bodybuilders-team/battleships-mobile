@@ -7,10 +7,10 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingEvent
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.LIST_USERS
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
-import pt.isel.pdm.battleships.utils.Rels.LIST_USERS
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the ranking screen.
@@ -37,7 +37,8 @@ class RankingActivity : ComponentActivity() {
     private val viewModel by viewModelInit {
         RankingViewModel(
             sessionManager = sessionManager,
-            usersService = battleshipsService.usersService
+            usersService = battleshipsService.usersService,
+            jsonEncoder = jsonEncoder
         )
     }
 
@@ -66,7 +67,13 @@ class RankingActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun handleEvent(event: RankingEvent, userLink: String) =
+    /**
+     * Handles the specified event.
+     *
+     * @param event the event to handle
+     * @param userLink the link to the users list
+     */
+    private suspend fun handleEvent(event: RankingEvent, userLink: String) {
         when (event) {
             is RankingEvent.Error -> {
                 showToast(event.message) {
@@ -74,4 +81,5 @@ class RankingActivity : ComponentActivity() {
                 }
             }
         }
+    }
 }

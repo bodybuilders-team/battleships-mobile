@@ -12,14 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.services.users.dtos.UsersDTO
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
+import pt.isel.pdm.battleships.domain.users.RankedUser
 import pt.isel.pdm.battleships.ui.theme.Bronze
 import pt.isel.pdm.battleships.ui.theme.Gold
 import pt.isel.pdm.battleships.ui.theme.Silver
-import pt.isel.pdm.battleships.ui.utils.TABLE_CELL_HEIGHT
-import pt.isel.pdm.battleships.ui.utils.TABLE_CELL_WIDTH
-import pt.isel.pdm.battleships.ui.utils.TableCell
+import pt.isel.pdm.battleships.ui.utils.components.TABLE_CELL_HEIGHT
+import pt.isel.pdm.battleships.ui.utils.components.TABLE_CELL_WIDTH
+import pt.isel.pdm.battleships.ui.utils.components.TableCell
 
 private const val TABLE_BORDER_WIDTH = 5
 private const val TABLE_COLUMNS_COUNT = 3
@@ -31,7 +30,7 @@ private const val TABLE_ROWS_COUNT = 11
  * @param users list of users to show, already sorted by their ranking position
  */
 @Composable
-fun RankingTableView(users: UsersDTO) {
+fun RankingTableView(users: List<RankedUser>) {
     LazyColumn(
         modifier = Modifier
             .width((TABLE_CELL_WIDTH * TABLE_COLUMNS_COUNT).dp)
@@ -41,25 +40,23 @@ fun RankingTableView(users: UsersDTO) {
         // Headers
         item {
             Row {
-                TableCell(text = stringResource(id = R.string.ranking_table_label_position))
+                TableCell(text = stringResource(id = R.string.ranking_table_label_rank))
                 TableCell(text = stringResource(id = R.string.ranking_table_label_username))
                 TableCell(text = stringResource(id = R.string.ranking_table_label_points))
             }
         }
 
         // Data
-        val totalCount = users.properties?.totalCount ?: 0
-        items(totalCount) { index ->
-            val user = users.entities?.get(index) as EmbeddedLink
-            val position = index + 1
-            val username = user.title!!
+        items(users.size) { index ->
+            val user = users[index]
+
             Row {
                 TableCell(
-                    text = position.toString(),
-                    textColor = if (position <= 3) Color.Black else Color.Unspecified,
+                    text = user.rank.toString(),
+                    textColor = if (user.rank <= 3) Color.Black else Color.Unspecified,
                     modifier = Modifier
                         .background(
-                            when (position) {
+                            when (user.rank) {
                                 1 -> Gold
                                 2 -> Silver
                                 3 -> Bronze
@@ -67,8 +64,8 @@ fun RankingTableView(users: UsersDTO) {
                             }
                         )
                 )
-                TableCell(text = username)
-                // TODO: TableCell(text = player.points.toString())
+                TableCell(text = user.username)
+                TableCell(text = user.points.toString())
             }
         }
     }

@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.utils // ktlint-disable filename
+package pt.isel.pdm.battleships.ui.utils // ktlint-disable filename
 
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 /**
  * Initializes a [ViewModel].
  *
- * @param T The type of the [ViewModel] to be initialized
- * @return The initialized [ViewModel]
+ * @param T the type of the [ViewModel] to be initialized
+ * @return the initialized [ViewModel]
  */
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : ViewModel> ComponentActivity.viewModelInit(crossinline block: () -> T) =

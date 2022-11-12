@@ -7,14 +7,17 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.CREATE_GAME
+import pt.isel.pdm.battleships.ui.utils.navigation.navigateTo
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
-import pt.isel.pdm.battleships.utils.Rels.CREATE_GAME
-import pt.isel.pdm.battleships.utils.navigateTo
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
- * Activity for the new game screen.
+ * Activity for the game configuration screen.
+ *
+ * @property battleshipsService @property battleshipsService the service used to handle the battleships game
+ * @property viewModel the view model for the game configuration screen
  */
 class GameConfigurationActivity : ComponentActivity() {
 
@@ -38,6 +41,7 @@ class GameConfigurationActivity : ComponentActivity() {
                 handleEvent(it)
             }
         }
+
         setContent {
             GameConfigurationScreen(
                 viewModel.state,
@@ -52,6 +56,11 @@ class GameConfigurationActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Handles the specified event.
+     *
+     * @param event the event to handle
+     */
     private suspend fun handleEvent(event: GameConfigurationViewModel.GameConfigurationEvent) =
         when (event) {
             is GameConfigurationViewModel.GameConfigurationEvent.NavigateToBoardSetup -> {

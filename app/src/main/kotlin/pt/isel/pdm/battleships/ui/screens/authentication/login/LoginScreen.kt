@@ -19,12 +19,15 @@ import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginB
 import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginTextFields
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
-import pt.isel.pdm.battleships.ui.utils.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.ScreenTitle
+import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
 /**
  * Login screen.
  *
+ * @param state the authentication state
+ * @param onLogin callback to be invoked when the login button is clicked
+ * @param onLoginSuccessful callback to be invoked when the login process is successful
  * @param onBackButtonClicked callback to be invoked when the back button is clicked
  */
 @Composable
@@ -37,8 +40,9 @@ fun LoginScreen(
     val loginMessage = remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(state) {
-        if (state == AuthenticationState.SUCCESS)
+        if (state == AuthenticationState.SUCCESS) {
             onLoginSuccessful()
+        }
     }
 
     val username = remember { mutableStateOf("") }

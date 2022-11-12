@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.utils
+package pt.isel.pdm.battleships.ui.utils.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -20,8 +20,8 @@ const val TABLE_CELL_HEIGHT = 30
  *
  * @param modifier modifier to be applied to the cell
  * @param text text to be displayed
- * @param textColor color of the text
  * @param textModifier modifier to be applied to the text
+ * @param textColor color of the text
  */
 @Composable
 fun TableCell(

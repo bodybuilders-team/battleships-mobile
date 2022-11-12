@@ -1,8 +1,8 @@
-package pt.isel.pdm.battleships.domain
+package pt.isel.pdm.battleships.domain.games
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import pt.isel.pdm.battleships.domain.games.Coordinate
+import kotlin.test.assertTrue
 
 class CoordinateTests {
 
@@ -24,5 +24,15 @@ class CoordinateTests {
     @Test
     fun `Coordinate toString works`() {
         assertEquals("A5", Coordinate(col = 'A', row = 5).toString())
+    }
+
+    @Test
+    fun `Coordinate isValid with column and row inside bounds`() {
+        assertTrue { Coordinate.isValid(col = 'A', row = 5) }
+    }
+
+    @Test
+    fun `Coordinate isValid with column outside bounds`() {
+        assertTrue { !Coordinate.isValid(col = 'Z', row = 5) }
     }
 }

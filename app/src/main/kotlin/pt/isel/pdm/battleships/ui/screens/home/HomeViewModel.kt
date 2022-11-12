@@ -14,18 +14,18 @@ import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.NOT_LOADING
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADED
-import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
- * View model for the HomeActivity.
+ * View model for the [HomeActivity].
  *
  * @property battleshipsService the service of the battleships application
  *
  * @property loadingState the current loading state
  * @property state the current state of the view model
  * @property links the actions to be displayed
+ * @property events the events to be handled
  */
 class HomeViewModel(
     private val battleshipsService: BattleshipsService
@@ -74,6 +74,12 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * Navigates to the given activity with the specified links.
+     *
+     * @param clazz the activity class to navigate to
+     * @param linkRels the link rels to be used to get the link
+     */
     fun <T> navigateTo(clazz: Class<T>, linkRels: Set<String>? = null) {
         loadingState = HomeLoadingState.LOADING
         viewModelScope.launch {
@@ -83,8 +89,15 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * Navigates to the given activity with the specified links.
+     *
+     * @param T the type of the activity to navigate to
+     * @param linkRels the link rels to be used to get the link
+     */
     inline fun <reified T> navigateTo(linkRels: Set<String>? = null) {
         navigateTo(T::class.java, linkRels)
+        // TODO: Pass links instead of linkRels
     }
 
     /**
@@ -115,7 +128,20 @@ class HomeViewModel(
      * Represents the events of the home view model.
      */
     sealed class HomeEvent {
+
+        /**
+         * Represents an error event.
+         *
+         * @property message the error message
+         */
         class Error(val message: String) : HomeEvent()
+
+        /**
+         * Represents a navigation event.
+         *
+         * @property clazz the activity class to navigate to
+         * @property linkRels the link rels to be used to get the link
+         */
         class Navigate(val clazz: Class<*>, val linkRels: Set<String>? = null) : HomeEvent()
     }
 }

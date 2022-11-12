@@ -14,12 +14,12 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuActi
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeEvent
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.LINKS_KEY
+import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
+import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksToForResult
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.Links
-import pt.isel.pdm.battleships.utils.Links.Companion.LINKS_KEY
-import pt.isel.pdm.battleships.utils.navigateWithLinksTo
-import pt.isel.pdm.battleships.utils.navigateWithLinksToForResult
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * This activity is the main entry point of the application.
@@ -27,8 +27,8 @@ import pt.isel.pdm.battleships.utils.viewModelInit
  *
  * @property battleshipsService the service used to handle the battleships game
  * @property sessionManager the session manager used to handle the user session
- * @property jsonEncoder the json formatter used to format the json data
  * @property viewModel the view model used to handle the state of the application
+ * @property userHomeForResult the activity result launcher used to handle the user home result
  */
 class HomeActivity : ComponentActivity() {
 
@@ -41,21 +41,21 @@ class HomeActivity : ComponentActivity() {
     }
 
     private val viewModel by viewModelInit {
-        HomeViewModel(
-            battleshipsService = battleshipsService
-        )
+        HomeViewModel(battleshipsService = battleshipsService)
     }
 
-    private val userHomeForResult = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        val resultIntent = result.data ?: return@registerForActivityResult
-        // This callback runs on the main thread
+    private val userHomeForResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            val resultIntent = result.data ?: return@registerForActivityResult
+            // This callback runs on the main thread
 
-        val links = resultIntent.getParcelableExtra<Links>(LINKS_KEY)
-            ?: throw IllegalStateException("Links not found")
-        viewModel.links = viewModel.links + links.links
-    }
+            val links = resultIntent.getParcelableExtra<Links>(LINKS_KEY)
+                ?: throw IllegalStateException("Links not found")
+
+            viewModel.links = viewModel.links + links.links
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,23 +102,24 @@ class HomeActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Handles the specified event.
+     *
+     * @param event the event to handle
+     */
     private suspend fun handleEvent(event: HomeEvent) =
         when (event) {
             is HomeEvent.Navigate -> {
-                val links =
-                    event.linkRels?.let { rels ->
-                        viewModel.links
-                            .filter { rels.contains(it.key) }
-                            .mapValues { it.value }
-                    }
+                val links = event.linkRels?.let { rels ->
+                    viewModel.links
+                        .filter { rels.contains(it.key) }
+                        .mapValues { it.value }
+                }
 
                 when (event.clazz) {
-                    LoginActivity::class.java, RegisterActivity::class.java -> {
+                    LoginActivity::class.java, RegisterActivity::class.java ->
                         navigateWithLinksToForResult(userHomeForResult, event.clazz, links)
-                    }
-                    else -> {
-                        navigateWithLinksTo(event.clazz, links)
-                    }
+                    else -> navigateWithLinksTo(event.clazz, links)
                 }
                 viewModel.loadingState = HomeViewModel.HomeLoadingState.NOT_LOADING
             }

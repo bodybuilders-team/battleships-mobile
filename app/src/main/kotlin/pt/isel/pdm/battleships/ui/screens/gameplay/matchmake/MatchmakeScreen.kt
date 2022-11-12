@@ -11,12 +11,12 @@ import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState
 
 /**
- * Quick play screen.
+ * Matchmake screen.
+ *
+ * @param state the state of the matchmake screen
  */
 @Composable
-fun MatchmakeScreen(
-    state: MatchmakeState
-) {
+fun MatchmakeScreen(state: MatchmakeState) {
     BattleshipsScreen {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -58,9 +58,7 @@ fun TileSelectionView(
     Box(
         modifier = Modifier
             .size(tileSize.dp)
-            .clickable {
-                onTileClicked()
-            }
+            .clickable { onTileClicked() }
             .then(
                 if (selected) {
                     Modifier.border(

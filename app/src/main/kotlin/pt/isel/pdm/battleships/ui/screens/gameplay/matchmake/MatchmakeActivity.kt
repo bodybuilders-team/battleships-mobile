@@ -8,14 +8,14 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeEvent
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.MATCHMAKE
+import pt.isel.pdm.battleships.ui.utils.navigation.navigateTo
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
-import pt.isel.pdm.battleships.utils.Rels.MATCHMAKE
-import pt.isel.pdm.battleships.utils.navigateTo
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
- * Activity for the quick play screen.
+ * Activity for the matchmake screen.
  *
  * @property battleshipsService the service used to handle the battleships game
  * @property sessionManager the session manager used to handle the user session
@@ -50,9 +50,8 @@ class MatchmakeActivity : ComponentActivity() {
 
         val links = intent.getLinks()
 
-        val matchmakeLink =
-            links[MATCHMAKE]
-                ?: throw IllegalArgumentException("Missing $MATCHMAKE link")
+        val matchmakeLink = links[MATCHMAKE]
+            ?: throw IllegalArgumentException("Missing $MATCHMAKE link")
 
         lifecycleScope.launch {
             viewModel.events.collect {
@@ -65,18 +64,20 @@ class MatchmakeActivity : ComponentActivity() {
         )
 
         setContent {
-            MatchmakeScreen(
-                state = viewModel.state
-            )
+            MatchmakeScreen(state = viewModel.state)
         }
     }
 
+    /**
+     * Handles the specified event.
+     *
+     * @param event the event to handle
+     * @param matchmakeLink the link used to matchmake
+     */
     private suspend fun handleEvent(event: MatchmakeEvent, matchmadeLink: String) {
         when (event) {
             is MatchmakeEvent.NavigateToBoardSetup -> {
-                navigateTo<BoardSetupActivity> {
-                    it.putExtra("gameLink", viewModel.gameLink)
-                }
+                navigateTo<BoardSetupActivity> { it.putExtra("gameLink", viewModel.gameLink) }
                 finish()
             }
             is MatchmakeEvent.Error -> {

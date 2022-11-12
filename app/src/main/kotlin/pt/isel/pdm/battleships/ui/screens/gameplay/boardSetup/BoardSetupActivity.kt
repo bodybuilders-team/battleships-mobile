@@ -9,12 +9,16 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
+import pt.isel.pdm.battleships.ui.utils.navigation.navigateTo
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.navigateTo
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the board setup screen.
+ *
+ * @property battleshipsService the service used to handle the battleships game
+ * @property sessionManager the session manager used to handle the user session
+ * @property viewModel the view model used to handle the board setup screen
  */
 class BoardSetupActivity : ComponentActivity() {
 
@@ -55,15 +59,12 @@ class BoardSetupActivity : ComponentActivity() {
                 else -> {
                     val game = viewModel.game
                         ?: throw IllegalStateException("No game found")
-                    val properties =
-                        game.properties ?: throw IllegalStateException("No game properties found")
+
+                    val properties = game.properties
+                        ?: throw IllegalStateException("No game properties found")
 
                     val gridSize = properties.config.gridSize
-                    val ships = properties.config.shipTypes.map {
-                        ShipType.fromDTO(
-                            it
-                        )
-                    }
+                    val ships = properties.config.shipTypes.map(ShipType::fromShipTypeDTO)
 
                     BoardSetupScreen(
                         boardSize = gridSize,

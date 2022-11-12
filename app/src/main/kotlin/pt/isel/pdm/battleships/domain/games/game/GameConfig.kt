@@ -28,7 +28,7 @@ data class GameConfig(
         dto.shotsPerRound,
         dto.maxTimePerRound,
         dto.maxTimeForLayoutPhase,
-        dto.shipTypes.map { ShipType.fromDTO(it) }
+        dto.shipTypes.map { ShipType.fromShipTypeDTO(it) }
     )
 
     /**
@@ -41,6 +41,6 @@ data class GameConfig(
         maxTimeForLayoutPhase,
         shotsPerTurn,
         maxTimePerRound,
-        ships.map { it.toDTO() }
+        ships.map { it.toShipTypeDTO() }
     )
 }

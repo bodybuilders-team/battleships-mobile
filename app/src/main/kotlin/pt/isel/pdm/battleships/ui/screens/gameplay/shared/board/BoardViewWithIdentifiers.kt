@@ -91,8 +91,7 @@ private fun RowsIdentifierView(
         repeat(boardSize) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(tileSize.dp)
+                modifier = Modifier.size(tileSize.dp)
             ) {
                 Text(
                     text = "${Board.FIRST_ROW + it}",

@@ -7,10 +7,10 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyEvent
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.LIST_GAMES
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.utils.Links.Companion.getLinks
-import pt.isel.pdm.battleships.utils.Rels.LIST_GAMES
-import pt.isel.pdm.battleships.utils.viewModelInit
+import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the lobby screen.
@@ -61,6 +61,12 @@ class LobbyActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Handles the events emitted by the view model.
+     *
+     * @param event the event to be handled
+     * @param listGamesLink the link to the list of games endpoint
+     */
     private suspend fun handleEvent(event: LobbyEvent, listGamesLink: String) =
         when (event) {
             is LobbyEvent.Error -> {
