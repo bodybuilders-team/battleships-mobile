@@ -14,7 +14,6 @@ object Rels {
     const val USER_HOME = "user-home"
     const val CREATE_GAME = "create-game"
     const val MATCHMAKE = "matchmake"
-    const val MATCHMAKE_STATE = "state"
 
     const val GAME = "game"
     const val GAME_STATE = "game-state"

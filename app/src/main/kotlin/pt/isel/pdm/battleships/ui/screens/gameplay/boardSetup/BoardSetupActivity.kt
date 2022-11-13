@@ -63,6 +63,10 @@ class BoardSetupActivity : ComponentActivity() {
                     val properties = game.properties
                         ?: throw IllegalStateException("No game properties found")
 
+                    val deployFleetLink =
+                        game.actions?.find { it.name == "deploy-fleet" }?.href?.path
+                            ?: throw IllegalStateException("No deploy fleet link found")
+
                     val gridSize = properties.config.gridSize
                     val ships = properties.config.shipTypes.map(ShipType::fromShipTypeDTO)
 
@@ -70,10 +74,6 @@ class BoardSetupActivity : ComponentActivity() {
                         boardSize = gridSize,
                         ships = ships,
                         onBoardSetupFinished = { board ->
-                            val deployFleetLink =
-                                game.actions?.find { it.name == "deployFleet" }?.href?.path
-                                    ?: throw IllegalStateException("No deploy fleet link found")
-
                             viewModel.deployFleet(deployFleetLink, board.fleet)
                         },
                         onBackButtonClicked = { finish() }
@@ -93,7 +93,9 @@ class BoardSetupActivity : ComponentActivity() {
             }
 
             is BoardSetupViewModel.BoardSetupEvent.Error -> {
-                showToast(event.message)
+                showToast(event.message) {
+                    viewModel.loadGame(gameLink)
+                }
             }
         }
 }

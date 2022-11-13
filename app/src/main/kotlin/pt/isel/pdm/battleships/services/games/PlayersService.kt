@@ -5,7 +5,10 @@ import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.games.dtos.ship.DeployFleetResponseDTO
+import pt.isel.pdm.battleships.services.games.dtos.ship.GetMyFleetResponseDTO
 import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedFleetDTO
+import pt.isel.pdm.battleships.services.games.dtos.shot.FireShotsDTO
+import pt.isel.pdm.battleships.services.games.dtos.shot.FireShotsResponseDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
 import java.io.IOException
 
@@ -27,9 +30,11 @@ class PlayersService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getPlayerFleet(id: Int) {
-        // TODO: To be implemented
-    }
+    suspend fun getMyFleet(
+        token: String,
+        getMyFleetLink: String
+    ): APIResult<GetMyFleetResponseDTO> =
+        get(link = getMyFleetLink, token = token)
 
     /**
      *
@@ -41,7 +46,7 @@ class PlayersService(
         deployLink: String,
         fleet: UndeployedFleetDTO
     ): APIResult<DeployFleetResponseDTO> =
-        post(deployLink, token, fleet)
+        post(link = deployLink, token = token, body = fleet)
 
     /**
      *
@@ -66,9 +71,12 @@ class PlayersService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun createShots(id: Int) {
-        // TODO: To be implemented
-    }
+    suspend fun fireShots(
+        token: String,
+        fireShotsLink: String,
+        fireShotsDTO: FireShotsDTO
+    ): APIResult<FireShotsResponseDTO> =
+        post(link = fireShotsLink, token = token, body = fireShotsDTO)
 
     /**
      *

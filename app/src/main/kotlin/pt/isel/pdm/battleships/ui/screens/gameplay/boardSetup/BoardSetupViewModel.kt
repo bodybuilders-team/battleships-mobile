@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
@@ -15,10 +16,12 @@ import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
 import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedFleetDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.DEPLOYING_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
@@ -119,8 +122,54 @@ class BoardSetupViewModel(
 
             when (res) {
                 is APIResult.Success -> {
-                    _events.emit(BoardSetupEvent.NavigateToGameplay)
                     state = FLEET_DEPLOYED
+
+                    val gameStateLink = game?.entities
+                        ?.filterIsInstance<EmbeddedLink>()
+                        ?.find { it.rel.contains(Rels.GAME_STATE) }?.href?.path
+                        ?: throw IllegalStateException("Game state link not found")
+
+                    while (true) {
+                        val gameStateHttpRes = tryExecuteHttpRequest {
+                            gamesService.getGameState(
+                                token,
+                                gameStateLink
+                            )
+                        }
+
+                        val gameStateRes = when (gameStateHttpRes) {
+                            is HTTPResult.Success -> gameStateHttpRes.data
+                            is HTTPResult.Failure -> {
+                                _events.emit(
+                                    BoardSetupEvent.Error(
+                                        gameStateHttpRes.error
+                                    )
+                                )
+                                state = FLEET_DEPLOYED
+                                continue
+                            }
+                        }
+
+                        when (gameStateRes) {
+                            is APIResult.Success -> {
+                                val properties = gameStateRes.data.properties
+                                    ?: throw IllegalStateException("Game state properties are null")
+
+                                if (properties.phase == "DEPLOYING_FLEETS") { // TODO: add constants
+                                    delay(1000L)
+                                } else {
+                                    _events.emit(BoardSetupEvent.NavigateToGameplay)
+                                    state = FLEET_DEPLOYED
+                                    break
+                                }
+                            }
+                            is APIResult.Failure -> {
+                                _events.emit(BoardSetupEvent.Error(gameStateRes.error.title))
+                                state = FLEET_DEPLOYED
+                                continue
+                            }
+                        }
+                    }
                 }
                 is APIResult.Failure -> {
                     _events.emit(BoardSetupEvent.Error(res.error.title))

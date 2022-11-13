@@ -17,7 +17,7 @@ data class GameDTOProperties(
     val name: String,
     val creator: String,
     val config: GameConfigDTO,
-    val state: GameStateDTO,
+    val state: GameStateDTOProperties,
     val players: List<PlayerDTO>
 )
 

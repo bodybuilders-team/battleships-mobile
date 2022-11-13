@@ -1,7 +1,5 @@
 package pt.isel.pdm.battleships.domain.games.board
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.Cell
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.ShipCell
@@ -16,14 +14,32 @@ import pt.isel.pdm.battleships.domain.utils.replace
  *
  * @property fleet the fleet of the board
  */
-@Parcelize
 data class MyBoard(
     override val size: Int = DEFAULT_BOARD_SIZE,
     override val grid: List<Cell> = generateEmptyMatrix(size)
-) : Board(size, grid), Parcelable {
+) : Board(size, grid) {
 
     init {
         isValid()
+    }
+
+    companion object {
+        operator fun invoke(size: Int, initialFleet: List<Ship>): MyBoard {
+            val grid = generateEmptyMatrix(size).toMutableList()
+
+            initialFleet.forEach { ship ->
+                ship.coordinates.forEach { coordinate ->
+                    grid[coordinate.toIndex(size)] =
+                        ShipCell(
+                            coordinate = coordinate,
+                            wasHit = false,
+                            ship = ship
+                        )
+                }
+            }
+
+            return MyBoard(size, grid)
+        }
     }
 
     val fleet: List<Ship>

@@ -50,7 +50,7 @@ class GameConfigurationViewModel(
 
         viewModelScope.launch {
             val httpRes = tryExecuteHttpRequest {
-                gamesService.createGame(createGameLink, gameConfig.toDTO())
+                gamesService.createGame(createGameLink, gameConfig.toGameConfigDTO())
             }
 
             val res = when (httpRes) {

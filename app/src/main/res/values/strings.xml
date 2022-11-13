@@ -25,7 +25,7 @@
     <string name="login_title">Login</string>
 
     <string name="authentication_message_invalid_username">Username should have at least 3 characters.</string>
-    <string name="authentication_message_invalid_password">Password should have at least 4 characters.</string>
+    <string name="authentication_message_invalid_password">Password should have at least 8 characters.</string>
     <string name="authentication_message_username_not_found">Username doesn\'t exist.</string>
     <string name="authentication_message_wrong_password">Password is wrong.</string>
     <string name="authentication_message_successful">Login was successful.</string>

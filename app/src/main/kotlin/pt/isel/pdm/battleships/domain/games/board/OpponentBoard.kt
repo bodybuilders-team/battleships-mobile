@@ -41,38 +41,25 @@ data class OpponentBoard(
         copy(grid = grid.replace(at.toIndex(size), cell))
 
     /**
-     * Shoots the cell in [coordinate].
+     * Shoots the [coordinates].
      * If the cell is already hit, the attack is invalid.
      * Otherwise, the cell becomes hit.
      *
-     * @param coordinate coordinate to attack
+     * @param coordinates coordinates to attack
      *
      * @return the board after the attack
      * @throws InvalidShotException if the attack is invalid
      */
-    fun shoot(coordinate: Coordinate): OpponentBoard {
-        val cell = getCell(coordinate)
-
-        if (cell.wasHit) throw InvalidShotException("Cell $coordinate was already hit")
-
-        return when (cell) {
-            is ShipCell -> {
-                val ship = cell.ship
-                val newShip = ship.copy(lives = ship.lives - 1)
-
-                copy(
-                    grid = grid.replaceIf(
-                        predicate = { it is ShipCell && it.ship == ship },
-                        new = {
-                            (it as ShipCell).copy(
-                                ship = newShip,
-                                wasHit = it.wasHit || it == cell
-                            )
-                        }
-                    )
-                )
+    fun shoot(coordinates: List<Coordinate>): OpponentBoard =
+        copy(
+            grid = grid.replaceIf(
+                predicate = { it.coordinate in coordinates }
+            ) {
+                if (it.wasHit) throw InvalidShotException("Cell already hit")
+                when (it) {
+                    is WaterCell -> it.copy(wasHit = true)
+                    is ShipCell -> it.copy(wasHit = true)
+                }
             }
-            is WaterCell -> setCell(coordinate, cell.copy(wasHit = true))
-        }
-    }
+        )
 }

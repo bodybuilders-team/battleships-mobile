@@ -36,7 +36,7 @@ data class GameConfig(
      *
      * @return the DTO
      */
-    fun toDTO(): GameConfigDTO = GameConfigDTO(
+    fun toGameConfigDTO(): GameConfigDTO = GameConfigDTO(
         gridSize,
         maxTimeForLayoutPhase,
         shotsPerTurn,

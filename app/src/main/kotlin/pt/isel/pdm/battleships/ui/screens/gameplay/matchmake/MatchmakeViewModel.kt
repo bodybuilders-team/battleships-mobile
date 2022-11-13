@@ -22,7 +22,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.GAME
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels.MATCHMAKE_STATE
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels.GAME_STATE
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
@@ -87,7 +87,7 @@ class MatchmakeViewModel(
                     }
                 }
 
-                gameStateLink = when (res) {
+                when (res) {
                     is APIResult.Success -> {
                         val properties = res.data.properties
                             ?: throw IllegalStateException("Game properties are null")
@@ -95,13 +95,15 @@ class MatchmakeViewModel(
                         val entities = res.data.entities
                             ?: throw IllegalStateException("Game entities are null")
 
-                        val matchGameLink = res.data.entities
+                        val matchGameLink = entities
                             .filterIsInstance<EmbeddedLink>()
-                            .first { it.rel.contains(GAME) }.href.path
+                            .find { it.rel.contains(GAME) }?.href?.path
+                            ?: throw IllegalStateException("Game link not found")
 
                         val matchGameStateLink = entities
                             .filterIsInstance<EmbeddedLink>()
-                            .first { it.rel.contains(MATCHMAKE_STATE) }.href.path
+                            .find { it.rel.contains(GAME_STATE) }?.href?.path
+                            ?: throw IllegalStateException("Game state link not found")
 
                         gameLink = matchGameLink
                         if (!properties.wasCreated) {
@@ -111,7 +113,7 @@ class MatchmakeViewModel(
                         }
 
                         createdGame = true
-                        matchGameStateLink
+                        gameStateLink = matchGameStateLink
                     }
                     is APIResult.Failure -> {
                         _events.emit(MatchmakeEvent.Error(res.error.title))

@@ -23,7 +23,7 @@
     <string name="login_title">Iniciar Sesión</string>
 
     <string name="authentication_message_invalid_username">Nombre de usuario debe tener al menos 3 caracteres.</string>
-    <string name="authentication_message_invalid_password">Contraseña debe tener al menos 4 caracteres.</string>
+    <string name="authentication_message_invalid_password">Contraseña debe tener al menos 8 caracteres.</string>
     <string name="authentication_message_username_not_found">Nombre de usuario no existe.</string>
     <string name="authentication_message_wrong_password">Contraseña está incorrecta.</string>
     <string name="authentication_message_successful">El inicio de sesión fue un éxito.</string>

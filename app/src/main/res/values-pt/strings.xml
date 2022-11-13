@@ -23,7 +23,7 @@
     <string name="login_title">Iniciar Sessão</string>
 
     <string name="authentication_message_invalid_username">Username deve ter pelo menos 3 caracteres.</string>
-    <string name="authentication_message_invalid_password">Palavra-passe deve ter pelo menos 4 caracteres.</string>
+    <string name="authentication_message_invalid_password">Palavra-passe deve ter pelo menos 8 caracteres.</string>
     <string name="authentication_message_username_not_found">Nome de utilizador não existe.</string>
     <string name="authentication_message_wrong_password">Palavra-passe está errada.</string>
     <string name="authentication_message_successful">Início de sessão realizado um sucesso.</string>

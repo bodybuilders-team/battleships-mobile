@@ -14,6 +14,7 @@ import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.NOT_LOADING
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADED
+import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING
 import pt.isel.pdm.battleships.ui.utils.HTTPResult
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
