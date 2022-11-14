@@ -1,10 +1,10 @@
 package pt.isel.pdm.battleships.services.utils.siren
 
-import java.net.URI
 import okhttp3.MediaType
+import java.net.URI
 
 /**
- * An action represents an action that can be performed on an entity.
+ * An action An action that can be performed on an entity.
  *
  * @property name the name of the action
  * @property class the class of the action (optional)
@@ -24,7 +24,7 @@ data class Action(
     val fields: List<Field>? = null
 ) {
     /**
-     * Represents a field that is part of an action.
+     * A field that is part of an action.
      *
      * @property name the name of the field
      * @property class the class of the field (optional)

@@ -2,10 +2,10 @@ package pt.isel.pdm.battleships.domain.games.ship
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import pt.isel.pdm.battleships.services.games.dtos.ship.ShipTypeDTO
+import pt.isel.pdm.battleships.services.games.models.ShipTypeModel
 
 /**
- * Represents the ship class in the game.
+ * The ship class in the game.
  *
  * @property size the size of the ship
  * @property shipName the name of the ship
@@ -24,11 +24,16 @@ enum class ShipType(
     DESTROYER(size = 2, shipName = "Destroyer", points = 20);
 
     /**
-     * Converts the ship type to a DTO.
+     * Converts the ShipType to a ShipTypeDTO
      *
-     * @return the ship type DTO
+     * @return the ShipTypeDTO
      */
-    fun toShipTypeDTO() = ShipTypeDTO(shipName, size, 1, points) // TODO: Check this, quantity?
+    fun toShipTypeDTO() = ShipTypeModel(
+        shipName = shipName,
+        size = size,
+        quantity = 1,
+        points = points
+    ) // TODO: Check this, quantity?
 
     companion object {
 
@@ -38,6 +43,6 @@ enum class ShipType(
          * @param dto the DTO to convert
          * @return the ship type
          */
-        fun fromShipTypeDTO(dto: ShipTypeDTO) = values().first { it.shipName == dto.shipName }
+        fun fromShipTypeDTO(dto: ShipTypeModel) = values().first { it.shipName == dto.shipName }
     }
 }

@@ -24,6 +24,10 @@ private const val TABLE_BORDER_WIDTH = 5
 private const val TABLE_COLUMNS_COUNT = 3
 private const val TABLE_ROWS_COUNT = 11
 
+private const val GOLD_RANK = 1
+private const val SILVER_RANK = 2
+private const val BRONZE_RANK = 3
+
 /**
  * Table that shows the ranking of users, displaying their ranking position, username and points.
  *
@@ -53,13 +57,13 @@ fun RankingTableView(users: List<RankedUser>) {
             Row {
                 TableCell(
                     text = user.rank.toString(),
-                    textColor = if (user.rank <= 3) Color.Black else Color.Unspecified,
+                    textColor = if (user.rank <= BRONZE_RANK) Color.Black else Color.Unspecified,
                     modifier = Modifier
                         .background(
                             when (user.rank) {
-                                1 -> Gold
-                                2 -> Silver
-                                3 -> Bronze
+                                GOLD_RANK -> Gold
+                                SILVER_RANK -> Silver
+                                BRONZE_RANK -> Bronze
                                 else -> Color.Unspecified
                             }
                         )

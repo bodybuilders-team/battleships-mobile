@@ -11,7 +11,7 @@ import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.toPoint
 
 /**
- * Represents a draggable ship already placed on the board.
+ * A draggable ship already placed on the board.
  *
  * @param ship the ship
  * @param tileSize the size of the tile

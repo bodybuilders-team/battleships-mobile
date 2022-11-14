@@ -4,10 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.Coordinate.Companion.maxColsRange
 import pt.isel.pdm.battleships.domain.games.Coordinate.Companion.maxRowsRange
-import pt.isel.pdm.battleships.domain.games.board.Board.Companion.FIRST_COL
-import pt.isel.pdm.battleships.domain.games.board.Board.Companion.FIRST_ROW
-import pt.isel.pdm.battleships.domain.games.board.Board.Companion.MAX_BOARD_SIZE
-import pt.isel.pdm.battleships.services.games.dtos.CoordinateDTO
+import pt.isel.pdm.battleships.domain.games.board.Board
+import pt.isel.pdm.battleships.services.games.models.CoordinateModel
 
 /**
  * Coordinate of each board cell.
@@ -29,9 +27,18 @@ data class Coordinate(val col: Char, val row: Int) : Parcelable {
         }
     }
 
+    /**
+     * Converts a Coordinate to a CoordinateDTO.
+     *
+     * @return the CoordinateDTO
+     */
+    fun toCoordinateDTO(): CoordinateModel = CoordinateModel(col = col, row = row)
+
+    override fun toString() = "$col$row"
+
     companion object {
-        val maxColsRange = FIRST_COL until FIRST_COL + MAX_BOARD_SIZE
-        val maxRowsRange = FIRST_ROW..MAX_BOARD_SIZE
+        val maxColsRange = Board.FIRST_COL until Board.FIRST_COL + Board.MAX_BOARD_SIZE
+        val maxRowsRange = Board.FIRST_ROW..Board.MAX_BOARD_SIZE
 
         /**
          * Checks if a coordinate is valid.
@@ -43,8 +50,4 @@ data class Coordinate(val col: Char, val row: Int) : Parcelable {
          */
         fun isValid(col: Char, row: Int) = col in maxColsRange && row in maxRowsRange
     }
-
-    fun toCoordinateDTO(): CoordinateDTO = CoordinateDTO(col, row)
-
-    override fun toString() = "$col$row"
 }

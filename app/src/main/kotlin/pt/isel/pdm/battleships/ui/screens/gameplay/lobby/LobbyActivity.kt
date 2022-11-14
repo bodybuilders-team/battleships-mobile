@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyEvent
+import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.LIST_GAMES
 import pt.isel.pdm.battleships.ui.utils.showToast
@@ -46,11 +46,11 @@ class LobbyActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.events.collect {
-                handleEvent(it, listGamesLink)
+                handleEvent(it)
             }
         }
 
-        viewModel.getAllGames(listGamesLink)
+        viewModel.getGames(listGamesLink)
 
         setContent {
             LobbyScreen(
@@ -65,14 +65,10 @@ class LobbyActivity : ComponentActivity() {
      * Handles the events emitted by the view model.
      *
      * @param event the event to be handled
-     * @param listGamesLink the link to the list of games endpoint
      */
-    private suspend fun handleEvent(event: LobbyEvent, listGamesLink: String) =
+    private suspend fun handleEvent(event: Event) {
         when (event) {
-            is LobbyEvent.Error -> {
-                showToast(event.message) {
-                    viewModel.getAllGames(listGamesLink)
-                }
-            }
+            is Event.Error -> showToast(event.message)
         }
+    }
 }

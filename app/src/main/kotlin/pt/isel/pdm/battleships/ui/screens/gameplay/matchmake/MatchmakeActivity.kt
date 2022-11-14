@@ -8,6 +8,8 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeEvent
+import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.MATCHMAKE
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateTo
@@ -55,7 +57,7 @@ class MatchmakeActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.events.collect {
-                handleEvent(it, matchmakeLink)
+                handleEvent(it)
             }
         }
 
@@ -72,19 +74,14 @@ class MatchmakeActivity : ComponentActivity() {
      * Handles the specified event.
      *
      * @param event the event to handle
-     * @param matchmakeLink the link used to matchmake
      */
-    private suspend fun handleEvent(event: MatchmakeEvent, matchmadeLink: String) {
+    private suspend fun handleEvent(event: Event) {
         when (event) {
             is MatchmakeEvent.NavigateToBoardSetup -> {
-                navigateTo<BoardSetupActivity> { it.putExtra("gameLink", viewModel.gameLink) }
+                navigateTo<BoardSetupActivity> { it.putExtra(Links.GAME_LINK, viewModel.gameLink) }
                 finish()
             }
-            is MatchmakeEvent.Error -> {
-                showToast(event.message) {
-                    viewModel.matchmake(matchmadeLink)
-                }
-            }
+            is Event.Error -> showToast(event.message)
         }
     }
 }

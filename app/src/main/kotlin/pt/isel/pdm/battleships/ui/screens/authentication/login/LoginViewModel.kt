@@ -28,7 +28,7 @@ class LoginViewModel(
         viewModelScope.launch {
             state = AuthenticationState.LOADING
 
-            updateState(username) {
+            updateState(username = username) {
                 usersService.login(
                     loginLink = loginLink,
                     username = username,

@@ -2,15 +2,16 @@ package pt.isel.pdm.battleships.services
 
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
+import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.PlayersService
-import pt.isel.pdm.battleships.services.home.dtos.HomeDTO
+import pt.isel.pdm.battleships.services.home.models.getHome.GetHomeOutput
 import pt.isel.pdm.battleships.services.users.UsersService
 import pt.isel.pdm.battleships.services.utils.APIResult
 import java.io.IOException
 
 /**
- * Represents the service that handles the battleships game.
+ * The service that handles the battleships game.
  *
  * @param apiEndpoint the API endpoint
  * @param httpClient the HTTP client
@@ -33,8 +34,14 @@ class BattleshipsService(
     /**
      * Gets the home information.
      *
+     * @return the API result with the home information
+     *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getHome(): APIResult<HomeDTO> = get(link = "/")
+    suspend fun getHome(): APIResult<GetHomeOutput> = get(link = HOME_LINK)
+
+    companion object {
+        private const val HOME_LINK = "/"
+    }
 }

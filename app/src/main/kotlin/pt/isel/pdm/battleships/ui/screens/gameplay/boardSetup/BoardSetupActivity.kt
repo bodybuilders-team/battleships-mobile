@@ -9,6 +9,9 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
+import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateTo
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
@@ -40,7 +43,7 @@ class BoardSetupActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val gameLink = intent.getStringExtra("gameLink")
+        val gameLink = intent.getStringExtra(Links.GAME_LINK)
             ?: throw IllegalStateException("No game link found")
 
         lifecycleScope.launch {
@@ -66,9 +69,9 @@ class BoardSetupActivity : ComponentActivity() {
                     val properties = game.properties
                         ?: throw IllegalStateException("No game properties found")
 
-                    val deployFleetLink =
-                        game.actions?.find { it.name == "deploy-fleet" }?.href?.path
-                            ?: throw IllegalStateException("No deploy fleet link found")
+                    val deployFleetLink = game.actions
+                        ?.find { it.name == Rels.DEPLOY_FLEET }?.href?.path
+                        ?: throw IllegalStateException("No deploy fleet link found")
 
                     val gridSize = properties.config.gridSize
                     val ships = properties.config.shipTypes.map(ShipType::fromShipTypeDTO)
@@ -86,19 +89,16 @@ class BoardSetupActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun handleEvent(event: BoardSetupViewModel.BoardSetupEvent, gameLink: String) =
+    private suspend fun handleEvent(event: Event, gameLink: String) {
         when (event) {
             is BoardSetupViewModel.BoardSetupEvent.NavigateToGameplay -> {
                 navigateTo<GameplayActivity> {
-                    it.putExtra("gameLink", gameLink)
+                    it.putExtra(Links.GAME_LINK, gameLink)
                 }
                 finish()
             }
 
-            is BoardSetupViewModel.BoardSetupEvent.Error -> {
-                showToast(event.message) {
-                    viewModel.loadGame(gameLink)
-                }
-            }
+            is Event.Error -> showToast(event.message)
         }
+    }
 }

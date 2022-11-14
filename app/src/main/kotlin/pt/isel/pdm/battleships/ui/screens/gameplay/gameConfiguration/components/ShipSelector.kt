@@ -26,7 +26,7 @@ const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
 private const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
 
 /**
- * Represents a slot that presents the ship types and allows the user to select the quantity of each type in a game.
+ * A slot that presents the ship types and allows the user to select the quantity of each type in a game.
  *
  * @param shipTypes the list of ship types to be presented
  * @param onShipAdded callback that is called when the user adds a ship of the given type

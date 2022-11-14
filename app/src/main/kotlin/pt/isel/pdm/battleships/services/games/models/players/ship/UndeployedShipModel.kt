@@ -1,0 +1,16 @@
+package pt.isel.pdm.battleships.services.games.models.players.ship
+
+import pt.isel.pdm.battleships.services.games.models.CoordinateModel
+
+/**
+ * The undeployed ship DTO.
+ *
+ * @property type the ship type
+ * @property coordinate the position
+ * @property orientation the orientation
+ */
+data class UndeployedShipModel(
+    val type: String,
+    val coordinate: CoordinateModel,
+    val orientation: String
+)

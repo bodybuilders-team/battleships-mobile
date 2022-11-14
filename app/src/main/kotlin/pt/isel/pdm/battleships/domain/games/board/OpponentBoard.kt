@@ -11,7 +11,7 @@ import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.domain.utils.replace
 
 /**
- * Represents the opponent's board.
+ * The opponent's board.
  *
  * @param size the size of the board
  * @param grid the grid of the board
@@ -28,7 +28,10 @@ data class OpponentBoard(
     }
 
     val fleet: List<Ship>
-        get() = grid.filterIsInstance<ShipCell>().map { it.ship }.distinct()
+        get() = grid
+            .filterIsInstance<ShipCell>()
+            .map { it.ship }
+            .distinct()
 
     /**
      * Returns a new board with the cell in [at] coordinate replaced by [cell].
@@ -39,7 +42,7 @@ data class OpponentBoard(
      * @return new board with the cell in [at] coordinate replaced by [cell]
      */
     private fun setCell(at: Coordinate, cell: Cell) =
-        copy(grid = grid.replace(at.toIndex(size), cell))
+        copy(grid = grid.replace(at.toIndex(size), cell)) // TODO: delete this?
 
     /**
      * Shoots the [firedCoordinates].
@@ -62,10 +65,15 @@ data class OpponentBoard(
                 val fakeShip = Ship(ShipType.DESTROYER, cell.coordinate, Orientation.HORIZONTAL)
 
                 when (cell) {
-                    is WaterCell -> if (hitShip)
-                        ShipCell(cell.coordinate, true, fakeShip)
-                    else
+                    is WaterCell -> if (hitShip) {
+                        ShipCell(
+                            coordinate = cell.coordinate,
+                            wasHit = true,
+                            ship = fakeShip
+                        )
+                    } else {
                         cell.copy(wasHit = true)
+                    }
                     is ShipCell -> throw InvalidShotException("Cell already hit")
                 }
             }

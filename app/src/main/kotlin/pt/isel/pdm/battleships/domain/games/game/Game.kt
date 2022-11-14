@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.domain.games.game
 import pt.isel.pdm.battleships.domain.games.Player
 
 /**
- * Represents a battleship game.
+ * A battleship game.
  *
  * @property player1 the first player
  * @property player2 the second player

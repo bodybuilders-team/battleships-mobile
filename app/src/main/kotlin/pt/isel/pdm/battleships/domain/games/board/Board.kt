@@ -5,7 +5,7 @@ import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.WaterCell
 
 /**
- * Represents a board in the game.
+ * A board in the game.
  *
  * @property size the size of the board
  * @property grid the grid of cells
@@ -33,9 +33,11 @@ abstract class Board(
      * Returns the cell in [coordinate].
      *
      * @param coordinate coordinate to get cell of
+     *
      * @return cell in [coordinate]
+     * @throws IllegalArgumentException if [coordinate] is out of bounds
      */
-    fun getCell(coordinate: Coordinate) = grid[coordinate.toIndex(size)]
+    fun getCell(coordinate: Coordinate): Cell = grid[coordinate.toIndex(size)]
 
     companion object {
         const val DEFAULT_BOARD_SIZE = 10
@@ -72,14 +74,32 @@ abstract class Board(
             val colsRange = getColumnsRange(size)
             val rowsRange = getRowsRange(size)
 
-            require(col in colsRange) {
-                "Invalid Coordinate: Column $col out of range $colsRange."
-            }
-            require(row in rowsRange) {
-                "Invalid Coordinate: Row $row out of range $rowsRange."
+            require(col in colsRange) { "Invalid Coordinate: Column $col out of range $colsRange." }
+            require(row in rowsRange) { "Invalid Coordinate: Row $row out of range $rowsRange." }
+
+            return (row - FIRST_ROW) * size + (col - FIRST_COL)
+        }
+
+        /**
+         * Returns the coordinate obtained from the matrix index.
+         *
+         * @param size the size of the matrix
+         *
+         * @return the coordinate obtained from the matrix index
+         * @throws IllegalArgumentException if the index is out of bounds
+         */
+        fun Int.toCoordinate(size: Int): Coordinate {
+            val colsRange = getColumnsRange(size)
+            val rowsRange = getRowsRange(size)
+
+            require(this in 0 until size * size) {
+                "Invalid index: $this out of range 0..${size * size - 1}."
             }
 
-            return (size - row) * size + (col - FIRST_COL)
+            return Coordinate(
+                col = colsRange.first + this % size,
+                row = rowsRange.first + this / size
+            )
         }
 
         /**
@@ -89,12 +109,9 @@ abstract class Board(
          * @return generated matrix
          */
         fun generateEmptyMatrix(size: Int): List<Cell> =
-            List(size * size) {
+            List(size * size) { idx ->
                 WaterCell(
-                    Coordinate(
-                        row = size - it / size,
-                        col = getColumnsRange(size).first + it % size
-                    ),
+                    coordinate = idx.toCoordinate(size),
                     wasHit = false
                 )
             }

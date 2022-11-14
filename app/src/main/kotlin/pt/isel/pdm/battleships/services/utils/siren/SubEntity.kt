@@ -3,9 +3,9 @@ package pt.isel.pdm.battleships.services.utils.siren
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import okhttp3.MediaType
 import java.lang.reflect.Type
 import java.net.URI
-import okhttp3.MediaType
 
 /**
  * A sub-entity is an entity that is part of another entity.
@@ -61,9 +61,13 @@ class SubEntityDeserializer : JsonDeserializer<SubEntity> {
         typeOfT: Type?,
         context: JsonDeserializationContext
     ): SubEntity =
-        when (json?.asJsonObject?.has("href")) {
+        when (json?.asJsonObject?.has(HREF_KEY)) {
             true -> context.deserialize(json, EmbeddedLink::class.java)
             false -> context.deserialize(json, EmbeddedSubEntity::class.java)
             else -> throw IllegalArgumentException("Invalid sub-entity")
         }
+
+    companion object {
+        private const val HREF_KEY = "href"
+    }
 }

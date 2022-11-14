@@ -19,13 +19,16 @@ import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.LinkBattleshipsService
-import pt.isel.pdm.battleships.services.games.dtos.ship.FleetResponseDTOProperties
-import pt.isel.pdm.battleships.services.games.dtos.shot.FireShotsDTO
-import pt.isel.pdm.battleships.services.games.dtos.shot.UnfiredShotDTO
-import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.services.games.models.players.fireShots.FireShotsInput
+import pt.isel.pdm.battleships.services.games.models.players.ship.GetFleetOutputModel
+import pt.isel.pdm.battleships.services.games.models.players.shot.FiredShotModel
+import pt.isel.pdm.battleships.services.games.models.players.shot.UnfiredShotModel
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.PLAYING_GAME
-import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.handle
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
@@ -36,10 +39,9 @@ class GameplayViewModel(
     private val battleshipsService: BattleshipsService,
     private val sessionManager: SessionManager
 ) : ViewModel() {
-    // TODO: Implement the ViewModel
 
     data class GameplayScreenState(
-        val state: GameplayState = LOADING_GAME,
+        val state: GameplayState = IDLE,
         val gameConfig: GameConfig? = null,
         val opponentBoard: OpponentBoard? = null,
         val myBoard: MyBoard? = null,
@@ -50,8 +52,8 @@ class GameplayViewModel(
     val screenState: GameplayScreenState
         get() = _screenState
 
-    private val _events = MutableSharedFlow<GameplayEvent>()
-    val events: SharedFlow<GameplayEvent> = _events
+    private val _events = MutableSharedFlow<Event>()
+    val events: SharedFlow<Event> = _events
 
     private lateinit var linksBattleshipsService: LinkBattleshipsService
     private val linksGamesService by lazy { linksBattleshipsService.gamesService }
@@ -63,41 +65,31 @@ class GameplayViewModel(
      * @param gameLink the link to the game
      */
     fun loadGame(gameLink: String) {
-        linksBattleshipsService =
-            LinkBattleshipsService(
-                links = mapOf(Rels.GAME to gameLink),
-                sessionManager = sessionManager,
-                battleshipsService = battleshipsService
-            )
+        check(_screenState.state == IDLE) { "The view model is not in idle state." }
+        _screenState = _screenState.copy(state = LOADING_GAME)
 
-        if (_screenState.state != LOADING_GAME) return
+        linksBattleshipsService = LinkBattleshipsService(
+            links = mapOf(Rels.GAME to gameLink),
+            sessionManager = sessionManager,
+            battleshipsService = battleshipsService
+        )
 
         viewModelScope.launch {
-            while (true) {
+            while (screenState.state == LOADING_GAME || screenState.state == LOADING_MY_FLEET) {
                 val httpRes = tryExecuteHttpRequest {
                     linksGamesService.getGame()
                 }
 
-                val res = when (httpRes) {
-                    is HTTPResult.Success -> {
-                        httpRes.data
-                    }
-                    is HTTPResult.Failure -> {
-                        _events.emit(GameplayEvent.Error(httpRes.error))
-                        _screenState = _screenState.copy(state = LOADING_GAME)
-                        continue
-                    }
-                }
+                val res = httpRes.handle(events = _events) ?: return@launch
 
-                when (res) {
-                    is APIResult.Success -> {
-                        val game = res.data
-
+                res.handle(
+                    events = _events,
+                    onSuccess = { gameData ->
                         _screenState = _screenState.copy(state = GameplayState.LOADING_MY_FLEET)
 
                         getMyFleet()
 
-                        val properties = game.properties
+                        val properties = gameData.properties
                             ?: throw IllegalStateException("No game properties found")
 
                         val turn = properties.state.turn
@@ -113,44 +105,32 @@ class GameplayViewModel(
                             myTurn = myTurn
                         )
 
-                        if (!myTurn)
-                            waitForOpponent()
-
-                        break
+                        if (!myTurn) waitForOpponent()
                     }
-                    is APIResult.Failure -> {
-                        _events.emit(GameplayEvent.Error(res.error.title))
-                        _screenState = _screenState.copy(state = LOADING_GAME)
-                        continue
-                    }
-                }
+                )
             }
         }
     }
 
+    /**
+     * Gets the player's fleet.
+     */
     private suspend fun getMyFleet() {
-        while (true) {
+        var fleetLoaded = false
+
+        while (!fleetLoaded) {
             val httpRes = tryExecuteHttpRequest {
                 linksPlayersService.getMyFleet()
             }
 
-            val res = when (httpRes) {
-                is HTTPResult.Success -> {
-                    httpRes.data
-                }
-                is HTTPResult.Failure -> {
-                    _events.emit(GameplayEvent.Error(httpRes.error))
-                    _screenState = _screenState.copy(state = GameplayState.LOADING_MY_FLEET)
-                    continue
-                }
-            }
+            val res = httpRes.handle(events = _events) ?: continue
 
-            when (res) {
-                is APIResult.Success -> {
-                    val getMyFleetData = res.data
-
+            res.handle(
+                events = _events,
+                onSuccess = { myFleetData ->
                     val initialFleet = parseFleet(
-                        getMyFleetData.properties ?: throw IllegalStateException("No ships found")
+                        fleet = myFleetData.properties
+                            ?: throw IllegalStateException("No ships found")
                     )
 
                     val gridSize = _screenState.gameConfig?.gridSize
@@ -160,53 +140,43 @@ class GameplayViewModel(
                         myBoard = MyBoard(gridSize, initialFleet)
                     )
 
-                    break
+                    fleetLoaded = true
                 }
-                is APIResult.Failure -> {
-                    _events.emit(GameplayEvent.Error(res.error.title))
-                    _screenState = _screenState.copy(state = GameplayState.LOADING_MY_FLEET)
-                    continue
-                }
-            }
+            )
         }
     }
 
+    /**
+     * Fires a list of shots.
+     *
+     * @param coordinates the list of coordinates where to fire
+     */
     fun fireShots(coordinates: List<Coordinate>) {
+        check(_screenState.state == PLAYING_GAME) { "The game is not in the playing state" }
+
         viewModelScope.launch {
             val httpRes = tryExecuteHttpRequest {
                 linksPlayersService.fireShots(
-                    fireShotsDTO = FireShotsDTO(
-                        coordinates.map { UnfiredShotDTO(it.toCoordinateDTO()) }
+                    shots = FireShotsInput(
+                        coordinates.map { UnfiredShotModel(it.toCoordinateDTO()) }
                     )
                 )
             }
 
-            val res = when (httpRes) {
-                is HTTPResult.Success -> {
-                    httpRes.data
-                }
-                is HTTPResult.Failure -> {
-                    _events.emit(GameplayEvent.Error(httpRes.error))
-                    _screenState = _screenState.copy(state = PLAYING_GAME)
-                    return@launch
-                }
-            }
+            val res = httpRes.handle(events = _events) ?: return@launch
 
-            when (res) {
-                is APIResult.Success -> {
-                    val fireShotsData = res.data
-                    val firedShots = fireShotsData.properties?.shots?.map {
-                        it.toFiredShot()
-                    }
+            res.handle(
+                events = _events,
+                onSuccess = { fireShotsData ->
+                    val firedShots = fireShotsData.properties?.shots
+                        ?.map(FiredShotModel::toFiredShot)
                         ?: throw IllegalStateException("No shots found")
 
                     _screenState = _screenState.copy(
                         opponentBoard = _screenState.opponentBoard?.shoot(
-                            firedShots.map {
-                                it.coordinate to (
-                                    it.result.result == "HIT" ||
-                                        it.result.result == "SUNK"
-                                    )
+                            firedShots.map { shot ->
+                                shot.coordinate to
+                                    (shot.result.result == "HIT" || shot.result.result == "SUNK")
                             }
                         ),
                         myTurn = false
@@ -214,76 +184,58 @@ class GameplayViewModel(
 
                     waitForOpponent()
                 }
-                is APIResult.Failure -> {
-                    _events.emit(GameplayEvent.Error(res.error.title))
-                    _screenState = _screenState.copy(state = PLAYING_GAME)
-                    return@launch
-                }
-            }
+            )
         }
     }
 
+    /**
+     * Waits for the opponent to play.
+     */
     private suspend fun waitForOpponent() {
+        check(_screenState.state == PLAYING_GAME) { "The game is not in the playing state" }
+
         while (_screenState.myTurn == false) {
             val gameStateHttpRes = tryExecuteHttpRequest {
                 linksGamesService.getGameState()
             }
 
-            val gameStateRes = when (gameStateHttpRes) {
-                is HTTPResult.Success -> gameStateHttpRes.data
-                is HTTPResult.Failure -> {
-                    _events.emit(GameplayEvent.Error(gameStateHttpRes.error))
-                    _screenState = _screenState.copy(state = PLAYING_GAME)
-                    continue
-                }
-            }
+            val res = gameStateHttpRes.handle(events = _events) ?: continue
 
-            when (gameStateRes) {
-                is APIResult.Success -> {
-                    val properties = gameStateRes.data.properties
+            res.handle(
+                events = _events,
+                onSuccess = { gameStateData ->
+                    val properties = gameStateData.properties
                         ?: throw IllegalStateException("Game state properties are null")
 
                     if (properties.phase == "FINISHED") {
                         _screenState = _screenState.copy(state = GameplayState.FINISHED_GAME)
-                        return
                     }
 
                     if (properties.turn != sessionManager.username) { // TODO: add constants
                         delay(1000L)
                     } else {
                         getOpponentShots()
-                        _screenState = _screenState.copy(
-                            state = PLAYING_GAME,
-                            myTurn = true
-                        )
+                        _screenState = _screenState.copy(myTurn = true)
                     }
                 }
-                is APIResult.Failure -> {
-                    _events.emit(GameplayEvent.Error(gameStateRes.error.title))
-                    _screenState = _screenState.copy(state = PLAYING_GAME)
-                    continue
-                }
-            }
+            )
         }
     }
 
+    /**
+     * Gets the opponent's shots.
+     */
     private suspend fun getOpponentShots() {
         val httpRes = tryExecuteHttpRequest {
             linksPlayersService.getOpponentShots()
         }
 
-        val res = when (httpRes) {
-            is HTTPResult.Success -> httpRes.data
-            is HTTPResult.Failure -> {
-                _events.emit(GameplayEvent.Error(httpRes.error))
-                _screenState = _screenState.copy(state = PLAYING_GAME)
-                return
-            }
-        }
+        val res = httpRes.handle(events = _events) ?: return
 
-        when (res) {
-            is APIResult.Success -> {
-                val opponentShots = res.data.properties?.shots
+        res.handle(
+            events = _events,
+            onSuccess = { opponentShotsData ->
+                val opponentShots = opponentShotsData.properties?.shots
                     ?: throw IllegalStateException("No shots found")
 
                 val myBoard = _screenState.myBoard
@@ -300,24 +252,25 @@ class GameplayViewModel(
                     )
                 )
             }
-            is APIResult.Failure -> {
-                _events.emit(GameplayEvent.Error(res.error.title))
-                _screenState = _screenState.copy(state = PLAYING_GAME)
-                return
-            }
-        }
+        )
     }
 
-    private fun parseFleet(fleetResponseDTOProperties: FleetResponseDTOProperties): List<Ship> =
-        fleetResponseDTOProperties.ships.map {
-            val shipType = ShipType.values().find { shipType ->
-                shipType.shipName == it.type
-            }
+    /**
+     * Parses a fleet into a list of ships.
+     *
+     * @param fleet the fleet to parse
+     *
+     * @return the list of ships
+     * @throws IllegalStateException if the fleet is invalid
+     */
+    private fun parseFleet(fleet: GetFleetOutputModel): List<Ship> =
+        fleet.ships.map {
+            val shipType = ShipType.values()
+                .find { shipType -> shipType.shipName == it.type }
                 ?: throw IllegalStateException("Invalid ship type")
 
-            val orientation = Orientation.values().find { orientation ->
-                orientation.name == it.orientation
-            }
+            val orientation = Orientation.values()
+                .find { orientation -> orientation.name == it.orientation }
                 ?: throw IllegalStateException("Invalid ship orientation")
 
             Ship(
@@ -334,22 +287,10 @@ class GameplayViewModel(
      * @property LOADING_GAME the view model is loading the game TODO Comment
      */
     enum class GameplayState {
+        IDLE,
         LOADING_GAME,
         LOADING_MY_FLEET,
         PLAYING_GAME,
         FINISHED_GAME
-    }
-
-    /**
-     * Represents the events that can be emitted.
-     */
-    sealed class GameplayEvent {
-
-        /**
-         * Represents an error that occurred.
-         *
-         * @property message the message of the error
-         */
-        class Error(val message: String) : GameplayEvent()
     }
 }

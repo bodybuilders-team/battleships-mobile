@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.games.GamesService
-import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
-import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutput
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GETTING_GAMES
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.IDLE
-import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.handle
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
@@ -34,49 +34,44 @@ class LobbyViewModel(
 ) : ViewModel() {
 
     var state by mutableStateOf(IDLE)
-    var games by mutableStateOf<GamesDTO?>(null)
+    var games by mutableStateOf<GetGamesOutput?>(null)
 
-    private val _events = MutableSharedFlow<LobbyEvent>()
-    val events: SharedFlow<LobbyEvent> = _events
+    private val _events = MutableSharedFlow<Event>()
+    val events: SharedFlow<Event> = _events
 
     /**
      * Gets the list of games.
      *
      * @param listGamesLink the link to the list of games endpoint
      */
-    fun getAllGames(listGamesLink: String) {
-        if (state != IDLE) return
+    fun getGames(listGamesLink: String) {
+        check(state == IDLE) { "The view model is not in the idle state" }
+
+        state = GETTING_GAMES
 
         viewModelScope.launch {
-            val httpRes = tryExecuteHttpRequest {
-                gamesService.getAllGames(listGamesLink)
-            }
+            while (state == GETTING_GAMES) {
+                val httpRes = tryExecuteHttpRequest {
+                    gamesService.getGames(listGamesLink = listGamesLink)
+                }
 
-            val res = when (httpRes) {
-                is HTTPResult.Success -> httpRes.data
-                is HTTPResult.Failure -> {
-                    _events.emit(LobbyEvent.Error(httpRes.error))
-                    state = IDLE
-                    return@launch
-                }
-            }
+                val res = httpRes.handle(
+                    events = _events
+                ) ?: return@launch
 
-            when (res) {
-                is APIResult.Success -> {
-                    state = FINISHED
-                    games = res.data
-                }
-                is APIResult.Failure -> {
-                    _events.emit(LobbyEvent.Error(res.error.title))
-                    state = IDLE
-                    return@launch
-                }
+                res.handle(
+                    events = _events,
+                    onSuccess = { gamesData ->
+                        state = FINISHED
+                        games = gamesData
+                    }
+                )
             }
         }
     }
 
     /**
-     * Represents the lobby state.
+     * The lobby state.
      *
      * @property IDLE the get games operation is idle
      * @property GETTING_GAMES the get games operation is in progress
@@ -86,18 +81,5 @@ class LobbyViewModel(
         IDLE,
         GETTING_GAMES,
         FINISHED
-    }
-
-    /**
-     * Represents the events that can be emitted.
-     */
-    sealed class LobbyEvent {
-
-        /**
-         * Represents an error event.
-         *
-         * @property message the error message
-         */
-        class Error(val message: String) : LobbyEvent()
     }
 }

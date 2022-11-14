@@ -10,9 +10,9 @@ import pt.isel.pdm.battleships.domain.utils.replace
 import pt.isel.pdm.battleships.domain.utils.replaceIf
 
 /**
- * Represents a board of the player.
+ * A board of the player.
  *
- * @param size the size of the board
+ * @property size the size of the board
  * @property grid the grid of the board
  *
  * @property fleet the fleet of the board
@@ -26,29 +26,15 @@ data class MyBoard(
         isValid()
     }
 
-    companion object {
-        operator fun invoke(size: Int, initialFleet: List<Ship>): MyBoard {
-            val grid = generateEmptyMatrix(size).toMutableList()
+    val initialFleet: List<Ship> = grid
+        .filterIsInstance<ShipCell>()
+        .map { it.ship.copy(lives = it.ship.type.size) }
+        .distinct()
 
-            initialFleet.forEach { ship ->
-                ship.coordinates.forEach { coordinate ->
-                    grid[coordinate.toIndex(size)] =
-                        ShipCell(
-                            coordinate = coordinate,
-                            wasHit = false,
-                            ship = ship
-                        )
-                }
-            }
-
-            return MyBoard(size, grid)
-        }
-    }
-
-    val initialFleet: List<Ship> =
-        grid.filterIsInstance<ShipCell>().map { it.ship.copy(lives = it.ship.type.size) }.distinct()
-
-    val fleet: List<Ship> = grid.filterIsInstance<ShipCell>().map { it.ship }.distinct()
+    val fleet: List<Ship> = grid
+        .filterIsInstance<ShipCell>()
+        .map(ShipCell::ship)
+        .distinct()
 
     /**
      * Returns a new board with the cell in [at] coordinate replaced by [cell].
@@ -97,25 +83,32 @@ data class MyBoard(
                 is WaterCell -> board.setCell(coordinate, cell.copy(wasHit = true))
             }
         }
-//        copy(
-//            grid = grid.map { cell ->
-//                val coordinate = cell.coordinate
-//                if (coordinate !in firedCoordinates) return@map cell
-//
-//                if (cell.wasHit) throw InvalidShotException("Cell $coordinate was already hit")
-//
-//                when (cell) {
-//                    is ShipCell -> {
-//                        val ship = cell.ship
-//                        val newShip = ship.copy(lives = ship.lives - 1)
-//
-//                        cell.copy(
-//                            ship = newShip,
-//                            wasHit = true
-//                        )
-//                    }
-//                    is WaterCell -> cell.copy(wasHit = true)
-//                }
-//            }
-//        )
+
+    companion object {
+
+        /**
+         * Creates a new instance of [MyBoard] with the given size and fleet.
+         *
+         * @param size the size of the board
+         * @param initialFleet the initial fleet of the board
+         *
+         * @return instance of [MyBoard]
+         */
+        operator fun invoke(size: Int, initialFleet: List<Ship>): MyBoard {
+            val grid = generateEmptyMatrix(size).toMutableList()
+
+            initialFleet.forEach { ship ->
+                ship.coordinates.forEach { coordinate ->
+                    grid[coordinate.toIndex(size)] =
+                        ShipCell(
+                            coordinate = coordinate,
+                            wasHit = false,
+                            ship = ship
+                        )
+                }
+            }
+
+            return MyBoard(size, grid)
+        }
+    }
 }

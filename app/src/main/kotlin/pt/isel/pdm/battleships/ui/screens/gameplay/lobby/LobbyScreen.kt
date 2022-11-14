@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
+import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutput
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
@@ -28,7 +28,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 @Composable
 fun LobbyScreen(
     state: LobbyState,
-    games: GamesDTO?,
+    games: GetGamesOutput?,
     onBackButtonClicked: () -> Unit
 ) {
     BattleshipsScreen {

@@ -11,8 +11,10 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuViewModel.GameplayMenuLoadingState
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeActivity
+import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
@@ -38,16 +40,11 @@ class GameplayMenuActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val links = intent.getLinks()
-
-        val userHomeLink = links["user-home"]
-            ?: throw IllegalStateException("User home link not found")
-
-        viewModel.loadUserHome(userHomeLink)
+        viewModel.links = intent.getLinks().links
 
         lifecycleScope.launch {
             viewModel.events.collect {
-                handleEvent(it, userHomeLink)
+                handleEvent(it)
             }
         }
 
@@ -55,13 +52,13 @@ class GameplayMenuActivity : ComponentActivity() {
             GameplayMenuScreen(
                 viewModel.loadingState,
                 onMatchmakeClick = {
-                    viewModel.navigateTo<MatchmakeActivity>(setOf("matchmake"))
+                    viewModel.navigateTo<MatchmakeActivity>(setOf(Rels.MATCHMAKE))
                 },
                 onCreateGameClick = {
-                    viewModel.navigateTo<GameConfigurationActivity>(setOf("create-game"))
+                    viewModel.navigateTo<GameConfigurationActivity>(setOf(Rels.CREATE_GAME))
                 },
                 onLobbyClick = {
-                    viewModel.navigateTo<LobbyActivity>(setOf("list-games"))
+                    viewModel.navigateTo<LobbyActivity>(setOf(Rels.LIST_GAMES))
                 },
                 onBackButtonClick = { finish() }
             )
@@ -72,25 +69,20 @@ class GameplayMenuActivity : ComponentActivity() {
      * Handles the events emitted by the view model.
      *
      * @param event the event to handle
-     * @param userHomeLink the link to the user home
      */
-    private suspend fun handleEvent(event: GameplayMenuEvent, userHomeLink: String) =
+    private suspend fun handleEvent(event: Event) {
         when (event) {
             is GameplayMenuEvent.Navigate -> {
-                val links =
-                    event.linkRels?.let { rels ->
-                        viewModel.links
-                            .filter { rels.contains(it.key) }
-                            .mapValues { it.value }
-                    }
+                val rels = event.linkRels
+                    ?: throw IllegalStateException("No links provided for navigation")
+
+                val links = viewModel.links
+                    .filter { it.key in rels }
 
                 navigateWithLinksTo(event.clazz, links)
                 viewModel.loadingState = GameplayMenuLoadingState.NOT_LOADING
             }
-            is GameplayMenuEvent.Error -> {
-                showToast(event.message, ToastDuration.LONG) {
-                    viewModel.loadUserHome(userHomeLink)
-                }
-            }
+            is Event.Error -> showToast(event.message, ToastDuration.LONG)
         }
+    }
 }

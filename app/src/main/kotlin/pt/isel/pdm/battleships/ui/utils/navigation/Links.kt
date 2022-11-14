@@ -5,7 +5,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * Represents a holder for the relation links map.
+ * A holder for the relation links map.
  *
  * @property links the relation links map
  */
@@ -30,6 +30,7 @@ data class Links(val links: Map<String, String>) : Parcelable {
 
     companion object {
         const val LINKS_KEY = "links"
+        const val GAME_LINK = "gameLink"
 
         /**
          * Gets the links from the specified intent.

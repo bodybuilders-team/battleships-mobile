@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.domain.games
 
+import pt.isel.pdm.battleships.services.games.models.CoordinateModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -19,6 +20,12 @@ class CoordinateTests {
     @Test
     fun `Instantiate Coordinate with column and row inside bounds`() {
         Coordinate(col = 'A', row = 5)
+    }
+
+    @Test
+    fun `toCoordinateDTO returns a CoordinateDTO with the same column and row`() {
+        val coordinateModel = CoordinateModel(col = 'A', row = 5)
+        assertEquals(coordinateModel, Coordinate(col = 'A', row = 5).toCoordinateDTO())
     }
 
     @Test

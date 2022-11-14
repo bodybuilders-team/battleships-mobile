@@ -2,9 +2,6 @@ package pt.isel.pdm.battleships.services.utils
 
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
-import java.io.IOException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -18,12 +15,18 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import pt.isel.pdm.battleships.services.HTTPService.Companion.applicationJsonMediaType
+import java.io.IOException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /**
  * Sends a request through the HTTP client and parses the response into a [T].
  *
  * @receiver the HTTP request to send
+ *
+ * @param okHttpClient the HTTP client
  * @param parseResponse the function that parses the response into a [T]
+ *
  * @return the parsed response
  */
 suspend fun <T> Request.send(okHttpClient: OkHttpClient, parseResponse: (Response) -> T): T =
@@ -53,7 +56,7 @@ suspend fun <T> Request.send(okHttpClient: OkHttpClient, parseResponse: (Respons
  * @receiver the [ResponseBody] to be converted
  * @return the json object
  */
-suspend fun ResponseBody.toJson(): JSONObject =
+suspend fun ResponseBody.toJson(): JSONObject = // TODO: Can delete this function?
     withContext(Dispatchers.IO) {
         val resString = this@toJson.string()
         JSONObject(resString)
@@ -65,7 +68,7 @@ suspend fun ResponseBody.toJson(): JSONObject =
  * @receiver the json object
  * @return the request body
  */
-fun JSONObject.toJsonRequestBody(): RequestBody = this
+fun JSONObject.toJsonRequestBody(): RequestBody = this // TODO: Can delete this function?
     .toString()
     .toRequestBody(applicationJsonMediaType)
 

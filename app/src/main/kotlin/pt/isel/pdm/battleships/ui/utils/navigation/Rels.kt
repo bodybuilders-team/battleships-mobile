@@ -31,5 +31,4 @@ object Rels {
     const val GET_MY_SHOTS = "get-my-shots"
     const val GET_OPPONENT_SHOTS = "get-opponent-shots"
     const val FIRE_SHOTS = "fire-shots"
-    const val GET_MY_BOARD = "get-my-board"
 }

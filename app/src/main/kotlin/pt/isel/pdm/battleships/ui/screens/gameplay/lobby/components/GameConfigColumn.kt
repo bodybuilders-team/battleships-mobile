@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
+import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
 import pt.isel.pdm.battleships.ui.utils.components.TableCell
 
 private const val PADDING = 10
@@ -26,7 +26,7 @@ private const val SHIP_TYPES_TABLE_HEIGHT = 160
  * @param gameConfig the game configuration to be displayed
  */
 @Composable
-fun GameConfigColumn(gameConfig: GameConfigDTO) {
+fun GameConfigColumn(gameConfig: GameConfigModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

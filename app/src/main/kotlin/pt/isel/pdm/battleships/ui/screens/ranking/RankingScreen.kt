@@ -59,7 +59,7 @@ fun RankingScreen(
             }
 
             when (state) {
-                RankingState.GETTING_USERS, RankingState.IDLE -> Text(text = "Searching...")
+                RankingState.GETTING_USERS, RankingState.IDLE -> Text(text = "Searching...") // TODO: add loading spinner
                 RankingState.FINISHED -> RankingTableView(filteredUsers)
             }
 

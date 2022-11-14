@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
@@ -84,10 +85,9 @@ class GameplayActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun handleEvent(event: GameplayViewModel.GameplayEvent) =
+    private suspend fun handleEvent(event: Event) {
         when (event) {
-            is GameplayViewModel.GameplayEvent.Error -> {
-                showToast(event.message)
-            }
+            is Event.Error -> showToast(event.message)
         }
+    }
 }

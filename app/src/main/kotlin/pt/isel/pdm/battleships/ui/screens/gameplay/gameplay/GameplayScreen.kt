@@ -32,7 +32,7 @@ import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
+import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
@@ -97,11 +97,12 @@ fun GameplayScreen(
                                         .size(tileSize.dp)
                                 ) {
                                     val cell = myBoard.getCell(coordinate)
-                                    if (cell.wasHit)
+                                    if (cell.wasHit) {
                                         TileHitView(
                                             tileSize = tileSize,
                                             hitShip = cell is ShipCell
                                         )
+                                    }
                                 }
                             }
                         }
@@ -141,18 +142,20 @@ fun GameplayScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (myTurn)
+            if (myTurn) {
                 opponentBoardComposable()
-            else
+            } else {
                 myBoardComposable()
+            }
 
             Row(modifier = Modifier.fillMaxWidth()) {
-                if (myTurn)
+                if (myTurn) {
                     myBoardComposable()
-                else
+                } else {
                     opponentBoardComposable()
+                }
 
-                if (myTurn)
+                if (myTurn) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -181,6 +184,7 @@ fun GameplayScreen(
                             text = stringResource(id = R.string.gameplay_reset_shots_button_text)
                         )
                     }
+                }
             }
 
             GoBackButton(onClick = onBackButtonClicked)
@@ -193,9 +197,9 @@ fun GameplayScreen(
 fun test() {
     val assetManager = LocalContext.current.assets
 
-    val gameConfigDTO = Gson().fromJson<GameConfigDTO>(
+    val gameConfigModel = Gson().fromJson<GameConfigModel>(
         JsonReader(assetManager.open("defaultGameConfig.json").reader()),
-        GameConfigDTO::class.java
+        GameConfigModel::class.java
     )
 
     GameplayScreen(
@@ -217,7 +221,7 @@ fun test() {
             )
         ).shoot(listOf(Coordinate('C', 2))),
         opponentBoard = OpponentBoard(),
-        gameConfig = GameConfig(gameConfigDTO),
+        gameConfig = GameConfig(gameConfigModel),
         onShootClicked = {}
     ) {
     }

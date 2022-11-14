@@ -12,13 +12,13 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.users.User
 import pt.isel.pdm.battleships.services.users.UsersService
-import pt.isel.pdm.battleships.services.users.dtos.UserDTOProperties
-import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.services.users.models.getUser.GetUserOutputModel
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedSubEntity
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.IDLE
-import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.handle
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
@@ -41,8 +41,8 @@ class RankingViewModel(
     var state by mutableStateOf(IDLE)
     var users by mutableStateOf<List<User>>(emptyList())
 
-    private val _events = MutableSharedFlow<RankingEvent>()
-    val events: SharedFlow<RankingEvent> = _events
+    private val _events = MutableSharedFlow<Event>()
+    val events: SharedFlow<Event> = _events
 
     /**
      * Gets all the users.
@@ -50,55 +50,48 @@ class RankingViewModel(
      * @param listUsersLink the link to the list users endpoint
      */
     fun getUsers(listUsersLink: String) {
-        if (state != IDLE) return
+        check(state == IDLE) { "The view model is not in the idle state" }
 
         state = GETTING_USERS
 
         viewModelScope.launch {
-            val httpRes = tryExecuteHttpRequest {
-                usersService.getUsers("$listUsersLink?$SORT_DIRECTION_PARAM=$SORT_DIRECTION_VALUE")
-            }
-
-            val res = when (httpRes) {
-                is HTTPResult.Success -> httpRes.data
-                is HTTPResult.Failure -> {
-                    _events.emit(RankingEvent.Error(httpRes.error))
-                    state = IDLE
-                    return@launch
+            while (state == GETTING_USERS) {
+                val httpRes = tryExecuteHttpRequest {
+                    usersService.getUsers("$listUsersLink?$SORT_DIRECTION_PARAM=$SORT_DIRECTION_VALUE")
                 }
-            }
 
-            when (res) {
-                is APIResult.Success -> {
-                    val usersData = res.data
-                    users = usersData.entities?.map { userDTO ->
-                        @Suppress("UNCHECKED_CAST")
-                        userDTO as EmbeddedSubEntity<UserDTOProperties>
+                val res = httpRes.handle(
+                    events = _events
+                ) ?: return@launch
 
-                        val userProperties = jsonEncoder.fromJson(
-                            jsonEncoder.toJson(userDTO.properties),
-                            UserDTOProperties::class.java
-                        )
-                        User(
-                            username = userProperties.username,
-                            email = userProperties.email,
-                            points = userProperties.points
-                        )
-                    } ?: emptyList()
+                res.handle(
+                    events = _events,
+                    onSuccess = { usersData ->
+                        users = usersData.entities?.map { user ->
+                            @Suppress("UNCHECKED_CAST")
+                            user as EmbeddedSubEntity<GetUserOutputModel>
 
-                    state = FINISHED
-                }
-                is APIResult.Failure -> {
-                    _events.emit(RankingEvent.Error(res.error.title))
-                    state = IDLE
-                    return@launch
-                }
+                            val userProperties = jsonEncoder.fromJson(
+                                jsonEncoder.toJson(user.properties),
+                                GetUserOutputModel::class.java
+                            )
+
+                            User(
+                                username = userProperties.username,
+                                email = userProperties.email,
+                                points = userProperties.points
+                            )
+                        } ?: emptyList()
+
+                        state = FINISHED
+                    }
+                )
             }
         }
     }
 
     /**
-     * Represents the lobby state.
+     * The ranking state.
      *
      * @property IDLE the get games operation is idle
      * @property GETTING_USERS the get users operation is in progress
@@ -108,19 +101,6 @@ class RankingViewModel(
         IDLE,
         GETTING_USERS,
         FINISHED
-    }
-
-    /**
-     * Represents the events that can be emitted.
-     */
-    sealed class RankingEvent {
-
-        /**
-         * An error event.
-         *
-         * @property message the error message
-         */
-        class Error(val message: String) : RankingEvent()
     }
 
     companion object {

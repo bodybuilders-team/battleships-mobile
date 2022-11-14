@@ -1,10 +1,10 @@
 package pt.isel.pdm.battleships.services.utils.siren
 
-import java.net.URI
 import okhttp3.MediaType
+import java.net.URI
 
 /**
- * A link represents a navigational transition.
+ * A link A navigational transition.
  *
  * @property rel the relation of the link
  * @property class the class of the link (optional)

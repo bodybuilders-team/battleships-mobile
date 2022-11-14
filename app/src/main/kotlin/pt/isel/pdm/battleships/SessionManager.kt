@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 /**
- * Represents the session manager responsible for holding a user's session.
+ * The session manager responsible for holding a user's session.
  *
  * @property accessToken the user's access token
  * @property refreshToken the user's refresh token

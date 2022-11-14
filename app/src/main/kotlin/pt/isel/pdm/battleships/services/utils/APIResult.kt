@@ -2,6 +2,8 @@ package pt.isel.pdm.battleships.services.utils
 
 /**
  * API Response result.
+ *
+ * @param T the type of the response
  */
 sealed class APIResult<T> {
 

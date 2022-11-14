@@ -5,10 +5,10 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.Board
-import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedShipDTO
+import pt.isel.pdm.battleships.services.games.models.players.ship.UndeployedShipModel
 
 /**
- * Represents a ship in the game.
+ * A ship in the game.
  *
  * @property type the type of the ship
  * @property coordinate the coordinate of the ship
@@ -26,15 +26,22 @@ data class Ship(
     val lives: Int = type.size
 ) : Parcelable {
 
-    // TODO: What is this?
-    fun toUndeployedShipDTO(): UndeployedShipDTO =
-        UndeployedShipDTO(type.shipName, coordinate.toCoordinateDTO(), orientation.name)
-
     @IgnoredOnParcel
     val coordinates: List<Coordinate> = getCoordinates(type, coordinate, orientation)
 
     @IgnoredOnParcel
     val isSunk = lives == 0
+
+    /**
+     * Converts the Ship to a UndeployedShipDTO.
+     *
+     * @return the UndeployedShipDTO
+     */
+    fun toUndeployedShipDTO() = UndeployedShipModel(
+        type = type.shipName,
+        coordinate = coordinate.toCoordinateDTO(),
+        orientation = orientation.name
+    )
 
     companion object {
 

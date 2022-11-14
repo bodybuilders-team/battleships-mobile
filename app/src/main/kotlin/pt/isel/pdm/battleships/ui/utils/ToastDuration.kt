@@ -8,6 +8,6 @@ import android.widget.Toast
  * @property duration the duration of the [Toast] message
  */
 enum class ToastDuration(val duration: Int) {
-    SHORT(Toast.LENGTH_SHORT),
-    LONG(Toast.LENGTH_LONG)
+    SHORT(duration = Toast.LENGTH_SHORT),
+    LONG(duration = Toast.LENGTH_LONG)
 }

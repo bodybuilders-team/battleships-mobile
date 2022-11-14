@@ -3,17 +3,18 @@ package pt.isel.pdm.battleships.services.users
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
-import pt.isel.pdm.battleships.services.UnexpectedResponseException
-import pt.isel.pdm.battleships.services.users.dtos.AuthenticationOutputDTO
-import pt.isel.pdm.battleships.services.users.dtos.LoginDTO
-import pt.isel.pdm.battleships.services.users.dtos.RegisterDTO
-import pt.isel.pdm.battleships.services.users.dtos.UsersDTO
+import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
+import pt.isel.pdm.battleships.services.users.models.getUsers.GetUsersOutput
+import pt.isel.pdm.battleships.services.users.models.login.LoginInput
+import pt.isel.pdm.battleships.services.users.models.login.LoginOutput
+import pt.isel.pdm.battleships.services.users.models.register.RegisterInput
+import pt.isel.pdm.battleships.services.users.models.register.RegisterOutput
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 import java.io.IOException
 
 /**
- * Represents the service that handles the battleships game.
+ * The service that handles the battleships game.
  *
  * @property apiEndpoint the API endpoint
  * @property httpClient the HTTP client
@@ -33,7 +34,8 @@ class UsersService(
      * @param username the username of the user
      * @param password the password of the user
      *
-     * @return the authentication result
+     * @return the API result with the authentication output DTO
+     *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
@@ -42,10 +44,10 @@ class UsersService(
         email: String,
         username: String,
         password: String
-    ): APIResult<AuthenticationOutputDTO> =
+    ): APIResult<RegisterOutput> =
         post(
             link = registerLink,
-            body = RegisterDTO(username = username, email = email, password = password)
+            body = RegisterInput(username = username, email = email, password = password)
         )
 
     /**
@@ -55,7 +57,8 @@ class UsersService(
      * @param username the username of the user
      * @param password the password of the user
      *
-     * @return the authentication result
+     * @return the API result with the authentication output DTO
+     *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
@@ -63,10 +66,10 @@ class UsersService(
         loginLink: String,
         username: String,
         password: String
-    ): APIResult<AuthenticationOutputDTO> =
+    ): APIResult<LoginOutput> =
         post(
             link = loginLink,
-            body = LoginDTO(username, password)
+            body = LoginInput(username, password)
         )
 
     /**
@@ -74,18 +77,24 @@ class UsersService(
      *
      * @param listUsersLink the link to the list users endpoint
      *
+     * @return the API result with the users DTO
+     *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getUsers(listUsersLink: String): APIResult<UsersDTO> =
-        get(listUsersLink)
+    suspend fun getUsers(listUsersLink: String): APIResult<GetUsersOutput> =
+        get(link = listUsersLink)
 
     /**
      * Gets the user home.
      *
      * @param userHomeLink the link to the user home endpoint
-     * @return the user home
+     *
+     * @return the API result with the user home Siren entity
+     *
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
      */
     suspend fun getUserHome(userHomeLink: String): APIResult<SirenEntity<Unit>> =
-        get(userHomeLink)
+        get(link = userHomeLink)
 }

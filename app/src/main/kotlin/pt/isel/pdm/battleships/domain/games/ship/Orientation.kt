@@ -6,7 +6,7 @@ import pt.isel.pdm.battleships.domain.games.ship.Orientation.HORIZONTAL
 import pt.isel.pdm.battleships.domain.games.ship.Orientation.VERTICAL
 
 /**
- * Represents the ship's orientation.
+ * The ship's orientation.
  *
  * @property VERTICAL the vertical orientation
  * @property HORIZONTAL the horizontal orientation

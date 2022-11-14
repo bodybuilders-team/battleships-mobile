@@ -9,7 +9,7 @@ import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.domain.utils.replaceIf
 
 /**
- * Represents a board in the game.
+ * A board in the game.
  *
  * @property size the size of the board
  * @property grid the matrix of cells
@@ -42,7 +42,9 @@ data class ConfigurableBoard(
      * Places a ship in the board.
      *
      * @param ship the ship to place
+     *
      * @return the new board with the ship placed
+     * @throws IllegalArgumentException if the ship cannot be placed
      */
     fun placeShip(ship: Ship): ConfigurableBoard {
         require(canPlaceShip(ship)) { "Cannot place ship in its coordinates" }
@@ -61,23 +63,23 @@ data class ConfigurableBoard(
      * @param ship the ship to place
      * @return the new board with the ship placed
      */
-    fun removeShip(ship: Ship): ConfigurableBoard {
-        return copy(
+    fun removeShip(ship: Ship): ConfigurableBoard =
+        copy(
             grid = grid.replaceIf(
                 predicate = { ship.coordinates.contains(it.coordinate) },
                 new = { WaterCell(it.coordinate, it.wasHit) }
             )
         )
-    }
 
     /**
      * Converts this configurable board to a [MyBoard], in order to be played in the gameplay phase.
      *
      * @return the [MyBoard] representation of this board
      */
-    fun toMyBoard() = MyBoard(size, grid)
+    fun toMyBoard() = MyBoard(size, grid) // TODO: Delete this?
 
     companion object {
+
         /**
          * Returns a random board of [size].
          *
@@ -90,7 +92,7 @@ data class ConfigurableBoard(
             size: Int = DEFAULT_BOARD_SIZE,
             ships: List<ShipType> = ShipType.values().toList()
         ) =
-            ConfigurableBoard(size, generateRandomMatrix(size, ships))
+            ConfigurableBoard(size = size, grid = generateRandomMatrix(size, ships))
 
         /**
          * Generates a matrix of cells with the ships placed randomly.
@@ -110,16 +112,16 @@ data class ConfigurableBoard(
                         Orientation.values()
                             .fold(emptyList()) { acc, orientation ->
                                 if (Ship.isValidShipCoordinate(
-                                        cell.coordinate,
-                                        orientation,
-                                        shipType.size,
-                                        size
+                                        coordinate = cell.coordinate,
+                                        orientation = orientation,
+                                        size = shipType.size,
+                                        boardSize = size
                                     )
                                 ) {
                                     val coordinates = Ship.getCoordinates(
-                                        shipType,
-                                        cell.coordinate,
-                                        orientation
+                                        shipType = shipType,
+                                        coordinate = cell.coordinate,
+                                        orientation = orientation
                                     )
 
                                     if (

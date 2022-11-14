@@ -11,12 +11,13 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.services.games.GamesService
-import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.CREATING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.GAME_CREATED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.IDLE
-import pt.isel.pdm.battleships.ui.utils.HTTPResult
+import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.handle
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
@@ -26,7 +27,6 @@ import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
  *
  * @property state the current state of the view model
  * @property gameLink the link to the game
- * @property errorMessage the error message to be displayed
  * @property events the events that can be emitted by the view model
  */
 class GameConfigurationViewModel(
@@ -36,10 +36,9 @@ class GameConfigurationViewModel(
 
     var state by mutableStateOf(IDLE)
     var gameLink: String? by mutableStateOf(null)
-    var errorMessage: String? by mutableStateOf(null)
 
-    private val _events = MutableSharedFlow<GameConfigurationEvent>()
-    val events: SharedFlow<GameConfigurationEvent> = _events
+    private val _events = MutableSharedFlow<Event>()
+    val events: SharedFlow<Event> = _events
 
     /**
      * Creates a new game.
@@ -48,49 +47,43 @@ class GameConfigurationViewModel(
      * @param gameConfig the game configuration
      */
     fun createGame(createGameLink: String, gameConfig: GameConfig) {
+        check(state == IDLE) { "The view model is not in the idle state" }
+
         state = CREATING_GAME
 
         viewModelScope.launch {
-            val httpRes = tryExecuteHttpRequest {
-                gamesService.createGame(
-                    sessionManager.accessToken!!,
-                    createGameLink,
-                    gameConfig.toGameConfigDTO()
+            while (state == CREATING_GAME) {
+                val httpRes = tryExecuteHttpRequest {
+                    gamesService.createGame(
+                        token = sessionManager.accessToken
+                            ?: throw IllegalStateException("The user is not logged in"),
+                        createGameLink = createGameLink,
+                        gameConfig = gameConfig.toGameConfigDTO()
+                    )
+                }
+
+                val res = httpRes.handle(events = _events) ?: return@launch
+
+                res.handle(
+                    events = _events,
+                    onSuccess = { createGameData ->
+                        val entities = createGameData.entities
+                            ?: throw IllegalStateException("No entities in response")
+
+                        gameLink = entities
+                            .filterIsInstance<EmbeddedLink>()
+                            .first { it.rel.contains(Rels.GAME) }.href.path
+
+                        state = GAME_CREATED
+                        _events.emit(GameConfigurationEvent.NavigateToBoardSetup)
+                    }
                 )
-            }
-
-            val res = when (httpRes) {
-                is HTTPResult.Success -> httpRes.data
-                is HTTPResult.Failure -> {
-                    _events.emit(GameConfigurationEvent.Error(httpRes.error))
-                    state = IDLE
-                    return@launch
-                }
-            }
-
-            when (res) {
-                is APIResult.Success -> {
-                    val entities = res.data.entities
-                        ?: throw IllegalStateException("No entities in response")
-
-                    gameLink = entities
-                        .filterIsInstance<EmbeddedLink>()
-                        .first { it.rel.contains("game") }.href.path
-
-                    state = GAME_CREATED
-                    _events.emit(GameConfigurationEvent.NavigateToBoardSetup)
-                }
-                is APIResult.Failure -> {
-                    _events.emit(GameConfigurationEvent.Error(res.error.title))
-                    state = CREATING_GAME
-                    return@launch
-                }
             }
         }
     }
 
     /**
-     * Represents the game configuration state.
+     * The game configuration state.
      *
      * @property IDLE the game configuration operation is idle
      * @property CREATING_GAME creating a new game
@@ -103,19 +96,12 @@ class GameConfigurationViewModel(
     }
 
     /**
-     * Represents the events that can be emitted.
+     * The events that can be emitted.
      */
-    sealed class GameConfigurationEvent {
+    sealed class GameConfigurationEvent : Event {
 
         /**
-         * Represents an error event.
-         *
-         * @property message the error message
-         */
-        class Error(val message: String) : GameConfigurationEvent()
-
-        /**
-         * Represents a navigation event to the board setup screen.
+         * A navigation event to the board setup screen.
          */
         object NavigateToBoardSetup : GameConfigurationEvent()
     }

@@ -7,9 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
+import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.REGISTER
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
@@ -70,7 +71,7 @@ class RegisterActivity : ComponentActivity() {
 
                     resultIntent.putExtra(
                         Links.LINKS_KEY,
-                        Links(mapOf("user-home" to userHomeLink))
+                        Links(mapOf(Rels.USER_HOME to userHomeLink))
                     )
 
                     setResult(RESULT_OK, resultIntent)
@@ -89,9 +90,9 @@ class RegisterActivity : ComponentActivity() {
      *
      * @param event the event to handle
      */
-    private suspend fun handleEvent(event: AuthenticationViewModel.AuthenticationEvent) {
+    private suspend fun handleEvent(event: Event) {
         when (event) {
-            is AuthenticationViewModel.AuthenticationEvent.Error -> {
+            is Event.Error -> {
                 showToast(event.message)
             }
         }

@@ -7,10 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
+import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.LINKS_KEY
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.LOGIN
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
@@ -43,7 +44,8 @@ class LoginActivity : ComponentActivity() {
 
         val links = intent.getLinks()
 
-        val loginLink = links[LOGIN] ?: throw IllegalStateException("Login link not found")
+        val loginLink = links[LOGIN]
+            ?: throw IllegalStateException("Login link not found")
 
         lifecycleScope.launch {
             viewModel.events.collect {
@@ -66,7 +68,7 @@ class LoginActivity : ComponentActivity() {
                         ?: throw IllegalStateException("Link not found")
 
                     val resultIntent = Intent()
-                    resultIntent.putExtra(LINKS_KEY, Links(mapOf("user-home" to userHomeLink)))
+                    resultIntent.putExtra(LINKS_KEY, Links(mapOf(Rels.USER_HOME to userHomeLink)))
 
                     setResult(RESULT_OK, resultIntent)
                     finish()
@@ -84,10 +86,9 @@ class LoginActivity : ComponentActivity() {
      *
      * @param event the event emitted by the view model
      */
-    private suspend fun handleEvent(event: AuthenticationViewModel.AuthenticationEvent) {
+    private suspend fun handleEvent(event: Event) {
         when (event) {
-            is AuthenticationViewModel.AuthenticationEvent.Error ->
-                showToast(event.message)
+            is Event.Error -> showToast(event.message)
         }
     }
 }

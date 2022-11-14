@@ -13,9 +13,11 @@ import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterActivi
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuActivity
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeEvent
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
+import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.LINKS_KEY
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksToForResult
 import pt.isel.pdm.battleships.ui.utils.showToast
@@ -55,6 +57,11 @@ class HomeActivity : ComponentActivity() {
                 ?: throw IllegalStateException("Links not found")
 
             viewModel.links = viewModel.links + links.links
+
+            val userHomeLink = links[Rels.USER_HOME]
+                ?: throw IllegalStateException("User home link not found")
+
+            viewModel.loadUserHome(userHomeLink)
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,25 +80,23 @@ class HomeActivity : ComponentActivity() {
                 loggedIn = sessionManager.isLoggedIn(),
                 onGameplayMenuClick = {
                     viewModel.navigateTo<GameplayMenuActivity>(
-                        linkRels = setOf("user-home")
+                        linkRels = setOf(Rels.MATCHMAKE, Rels.CREATE_GAME, Rels.LIST_GAMES)
                     )
                 },
                 onLoginClick = {
                     viewModel.navigateTo<LoginActivity>(
-                        linkRels = setOf("login")
+                        linkRels = setOf(Rels.LOGIN)
                     )
                 },
                 onRegisterClick = {
                     viewModel.navigateTo<RegisterActivity>(
-                        linkRels = setOf("register")
+                        linkRels = setOf(Rels.REGISTER)
                     )
                 },
-                onLogoutClick = {
-                    sessionManager.clearSession()
-                },
+                onLogoutClick = { sessionManager.clearSession() },
                 onRankingClick = {
                     viewModel.navigateTo<RankingActivity>(
-                        linkRels = setOf("list-users")
+                        linkRels = setOf(Rels.LIST_USERS)
                     )
                 },
                 onAboutClick = {
@@ -107,7 +112,7 @@ class HomeActivity : ComponentActivity() {
      *
      * @param event the event to handle
      */
-    private suspend fun handleEvent(event: HomeEvent) =
+    private suspend fun handleEvent(event: Event) {
         when (event) {
             is HomeEvent.Navigate -> {
                 val links = event.linkRels?.let { rels ->
@@ -123,10 +128,7 @@ class HomeActivity : ComponentActivity() {
                 }
                 viewModel.loadingState = HomeViewModel.HomeLoadingState.NOT_LOADING
             }
-            is HomeEvent.Error -> {
-                showToast(event.message, ToastDuration.LONG) {
-                    viewModel.loadHome()
-                }
-            }
+            is Event.Error -> showToast(event.message, ToastDuration.LONG)
         }
+    }
 }

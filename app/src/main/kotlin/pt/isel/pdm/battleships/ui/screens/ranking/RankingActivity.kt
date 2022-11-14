@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingEvent
+import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.LIST_USERS
 import pt.isel.pdm.battleships.ui.utils.showToast
@@ -52,7 +52,7 @@ class RankingActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.events.collect {
-                handleEvent(it, userLink)
+                handleEvent(it)
             }
         }
 
@@ -71,15 +71,10 @@ class RankingActivity : ComponentActivity() {
      * Handles the specified event.
      *
      * @param event the event to handle
-     * @param userLink the link to the users list
      */
-    private suspend fun handleEvent(event: RankingEvent, userLink: String) {
+    private suspend fun handleEvent(event: Event) {
         when (event) {
-            is RankingEvent.Error -> {
-                showToast(event.message) {
-                    viewModel.getUsers(userLink)
-                }
-            }
+            is Event.Error -> showToast(event.message)
         }
     }
 }

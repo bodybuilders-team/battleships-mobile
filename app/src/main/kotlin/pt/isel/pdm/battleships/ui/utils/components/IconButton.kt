@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 private const val BUTTON_PADDING = 6
 
 /**
- * Represents a button with an icon.
+ * A button with an icon.
  *
  * @param onClick the action to be performed when the button is clicked
  * @param imageVector the icon of the button

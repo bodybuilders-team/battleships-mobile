@@ -7,7 +7,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
+import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.Problem.Companion.problemMediaType
 import pt.isel.pdm.battleships.services.utils.fromJson
@@ -18,7 +18,7 @@ import pt.isel.pdm.battleships.services.utils.siren.SirenEntity.Companion.sirenM
 import java.io.IOException
 
 /**
- * Represents a service that communicates with a HTTP server.
+ * A service that communicates with a HTTP server.
  *
  * @property apiEndpoint the base URL of the API
  * @property httpClient the HTTP client used to communicate with the server
@@ -27,7 +27,7 @@ import java.io.IOException
 abstract class HTTPService(
     protected val apiEndpoint: String,
     protected val httpClient: OkHttpClient,
-    val jsonEncoder: Gson  // TODO See Illegal Access (Private, protected, public, inlines)
+    val jsonEncoder: Gson // TODO See Illegal Access (Private, protected, public, inlines)
 ) {
 
     /**
@@ -94,7 +94,7 @@ abstract class HTTPService(
     ): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
-            .header(name = AUTHORIZATION_HEADER, value = "Bearer $token")
+            .header(name = AUTHORIZATION_HEADER, value = "$TOKEN_TYPE $token")
             .build()
             .getResponseResult()
 
@@ -140,7 +140,7 @@ abstract class HTTPService(
     ): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
-            .header(name = AUTHORIZATION_HEADER, value = "Bearer $token")
+            .header(name = AUTHORIZATION_HEADER, value = "$TOKEN_TYPE $token")
             .post(
                 body = jsonEncoder
                     .toJson(body)
@@ -154,13 +154,6 @@ abstract class HTTPService(
         val applicationJsonMediaType = APPLICATION_JSON.toMediaType()
 
         const val AUTHORIZATION_HEADER = "Authorization"
+        const val TOKEN_TYPE = "Bearer"
     }
 }
-
-/**
- * Represents an exception thrown when the server responds with an unexpected response.
- *
- * @property response the response that caused the exception
- */
-class UnexpectedResponseException(private val response: Response) :
-    Exception("Unexpected ${response.code} response from the server.")

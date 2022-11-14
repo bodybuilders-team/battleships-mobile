@@ -1,9 +1,10 @@
 package pt.isel.pdm.battleships.domain.games
 
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
+import pt.isel.pdm.battleships.domain.games.ship.Ship
 
 /**
- * Represents a player in the game.
+ * A player in the game.
  *
  * @property board the board of the player
  * @property score the points of the player
@@ -13,7 +14,7 @@ import pt.isel.pdm.battleships.domain.games.board.MyBoard
 data class Player(val board: MyBoard, val score: Int = 0) {
 
     val isDefeated: Boolean
-        get() = board.fleet.all { ship -> ship.isSunk }
+        get() = board.fleet.all(Ship::isSunk)
 
     /**
      * Returns a new player with the updated score.

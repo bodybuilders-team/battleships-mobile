@@ -18,7 +18,7 @@ import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
 
 /**
- * Represents a draggable ship.
+ * A draggable ship.
  *
  * @param ship the ship
  * @param tileSize the size of the tile

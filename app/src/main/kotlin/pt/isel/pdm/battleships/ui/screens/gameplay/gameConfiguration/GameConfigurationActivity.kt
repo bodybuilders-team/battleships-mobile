@@ -7,6 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
+import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.CREATE_GAME
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateTo
@@ -16,7 +18,6 @@ import pt.isel.pdm.battleships.ui.utils.viewModelInit
 /**
  * Activity for the game configuration screen.
  *
- * @property battleshipsService @property battleshipsService the service used to handle the battleships game
  * @property viewModel the view model for the game configuration screen
  */
 class GameConfigurationActivity : ComponentActivity() {
@@ -50,8 +51,8 @@ class GameConfigurationActivity : ComponentActivity() {
                 viewModel.state,
                 onGameConfigured = { gameConfig ->
                     viewModel.createGame(
-                        createGameLink,
-                        gameConfig
+                        createGameLink = createGameLink,
+                        gameConfig = gameConfig
                     )
                 },
                 onBackButtonClicked = { finish() }
@@ -64,16 +65,15 @@ class GameConfigurationActivity : ComponentActivity() {
      *
      * @param event the event to handle
      */
-    private suspend fun handleEvent(event: GameConfigurationViewModel.GameConfigurationEvent) =
+    private suspend fun handleEvent(event: Event) {
         when (event) {
             is GameConfigurationViewModel.GameConfigurationEvent.NavigateToBoardSetup -> {
                 navigateTo<BoardSetupActivity> {
-                    it.putExtra("gameLink", viewModel.gameLink)
+                    it.putExtra(Links.GAME_LINK, viewModel.gameLink)
                 }
                 finish()
             }
-            is GameConfigurationViewModel.GameConfigurationEvent.Error -> {
-                showToast(event.message)
-            }
+            is Event.Error -> showToast(event.message)
         }
+    }
 }

@@ -24,6 +24,13 @@ data class SirenEntity<T>(
     val title: String? = null
 ) {
     companion object {
+
+        /**
+         * Gets the generic type of the properties of the entity.
+         *
+         * @param T the type of the properties of the entity
+         * @return the generic type
+         */
         inline fun <reified T> getType(): TypeToken<SirenEntity<T>> =
             object : TypeToken<SirenEntity<T>>() {}
 

@@ -21,7 +21,7 @@ import pt.isel.pdm.battleships.ui.utils.components.IconButton
 const val PLACING_MENU_PADDING = 6
 
 /**
- * A composable that represents the ship placing menu.
+ * A composable that The ship placing menu.
  * It contains the ship slots and some buttons.
  *
  * @param shipTypes the list of ship types to be presented

@@ -32,7 +32,7 @@ private const val SHIP_SLOTS_CORNER_RADIUS = 10
 const val SHIP_SLOTS_FACTOR = 0.6f
 
 /**
- * A composable that represents the ship slots.
+ * A composable that The ship slots.
  * Contains the slots for each ship type.
  *
  * @param shipTypes the list of ship types to be presented

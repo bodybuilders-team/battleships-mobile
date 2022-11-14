@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 
 /**
- * Represents a cell in the board.
+ * A cell in the board.
  *
  * @property coordinate the coordinate of the cell
  * @property wasHit if the cell was hit
@@ -16,7 +16,7 @@ sealed class Cell(
 ) : Parcelable
 
 /**
- * Represents an empty cell.
+ * An empty cell.
  */
 @Parcelize
 data class WaterCell(
@@ -26,7 +26,7 @@ data class WaterCell(
     Cell(coordinate, wasHit), Parcelable
 
 /**
- * Represents a cell that contains a ship.
+ * A cell that contains a ship.
  *
  * @property ship the ship that is in this cell
  */

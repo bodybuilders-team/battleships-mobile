@@ -9,7 +9,7 @@ import pt.isel.pdm.battleships.services.utils.siren.SubEntity
 import pt.isel.pdm.battleships.services.utils.siren.SubEntityDeserializer
 
 /**
- * Represents the Battleships application.
+ * The Battleships application.
  *
  * @property jsonEncoder the JSON formatter used by the application
  * @property sessionManager the session manager used by the application

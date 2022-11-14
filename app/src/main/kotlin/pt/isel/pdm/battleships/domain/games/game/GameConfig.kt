@@ -3,10 +3,10 @@ package pt.isel.pdm.battleships.domain.games.game
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
+import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
 
 /**
- * Represents a game configuration.
+ * A game configuration.
  *
  * @property gridSize The size of the grid.
  * @property shotsPerTurn The number of shots per turn.
@@ -23,7 +23,7 @@ data class GameConfig(
     val ships: List<ShipType>
 ) : Parcelable {
 
-    constructor(dto: GameConfigDTO) : this(
+    constructor(dto: GameConfigModel) : this(
         dto.gridSize,
         dto.shotsPerRound,
         dto.maxTimePerRound,
@@ -34,13 +34,13 @@ data class GameConfig(
     /**
      * Converts this game configuration to a DTO.
      *
-     * @return the DTO
+     * @return the GameConfigDTO
      */
-    fun toGameConfigDTO(): GameConfigDTO = GameConfigDTO(
+    fun toGameConfigDTO(): GameConfigModel = GameConfigModel(
         gridSize,
         maxTimeForLayoutPhase,
         shotsPerTurn,
         maxTimePerRound,
-        ships.map { it.toShipTypeDTO() }
+        ships.map(ShipType::toShipTypeDTO)
     )
 }

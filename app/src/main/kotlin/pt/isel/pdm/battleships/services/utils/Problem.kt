@@ -1,10 +1,10 @@
 package pt.isel.pdm.battleships.services.utils
 
-import java.net.URI
 import okhttp3.MediaType.Companion.toMediaType
+import java.net.URI
 
 /**
- * Represents a problem that occurred during the processing of a request.
+ * A problem that occurred during the processing of a request.
  *
  * @property type a URI that identifies the problem type
  * @property title a short, human-readable summary of the problem
@@ -26,7 +26,6 @@ data class Problem(
         private const val PROBLEM_SUBTYPE = "problem+json"
         private const val PROBLEM_MEDIA_TYPE = "$APPLICATION_TYPE/$PROBLEM_SUBTYPE"
 
-        @Suppress("unused")
         val problemMediaType = PROBLEM_MEDIA_TYPE.toMediaType()
     }
 }
