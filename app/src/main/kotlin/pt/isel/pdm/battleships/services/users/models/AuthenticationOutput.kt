@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.services.users.models
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
 /**
- * The properties of an [AuthenticationOutput]. // TODO: Fix comments!
+ * The Authentication Output Model.
  *
  * @property accessToken the access token
  * @property refreshToken the refresh token
@@ -14,6 +14,6 @@ data class AuthenticationOutputModel(
 )
 
 /**
- * An Authentication Output.
+ * The Authentication Output.
  */
 typealias AuthenticationOutput = SirenEntity<AuthenticationOutputModel>

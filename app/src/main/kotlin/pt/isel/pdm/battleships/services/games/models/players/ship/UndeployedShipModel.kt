@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.services.games.models.players.ship
 import pt.isel.pdm.battleships.services.games.models.CoordinateModel
 
 /**
- * The undeployed ship DTO.
+ * The Undeployed Ship Model.
  *
  * @property type the ship type
  * @property coordinate the position

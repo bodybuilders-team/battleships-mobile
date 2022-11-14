@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.services.home.models
 
 /**
- * An Author.
+ * The Author Model.
  *
  * @property name the name of the author
  * @property email the email of the author

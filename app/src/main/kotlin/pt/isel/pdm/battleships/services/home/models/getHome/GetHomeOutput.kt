@@ -5,7 +5,7 @@ import pt.isel.pdm.battleships.services.home.models.VCRepositoryModel
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
 /**
- * Properties of a [GetHomeOutput].
+ * The Get Home Output Model.
  *
  * @property title the title of the application
  * @property version the version of the application
@@ -22,6 +22,6 @@ data class GetHomeOutputModel(
 )
 
 /**
- * A Home DTO.
+ * The Get Home Output.
  */
 typealias GetHomeOutput = SirenEntity<GetHomeOutputModel>

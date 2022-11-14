@@ -4,7 +4,7 @@ import pt.isel.pdm.battleships.domain.games.shot.FiredShot
 import pt.isel.pdm.battleships.services.games.models.CoordinateModel
 
 /**
- * The DTO of a fired shot.
+ * The Fired Shot Model.
  *
  * @property coordinate the coordinate of the shot
  * @property round the round in which the shot was made
@@ -15,6 +15,12 @@ data class FiredShotModel(
     val round: Int,
     val result: ShotResultModel
 ) {
+
+    /**
+     * Converts this model to a Fired Shot.
+     *
+     * @return the fired shot
+     */
     fun toFiredShot() = FiredShot(
         coordinate = coordinate.toCoordinate(),
         round = round,

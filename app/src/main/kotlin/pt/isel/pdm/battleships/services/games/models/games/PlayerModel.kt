@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.services.games.models.games
 
 /**
- * A Player DTO.
+ * The PlayerModel.
  *
  * @property username the username of the player
  * @property points the points of the player

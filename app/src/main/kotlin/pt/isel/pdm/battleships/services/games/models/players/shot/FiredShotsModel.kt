@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.services.games.models.players.shot
 
 /**
- * A Fired Shots Model.
+ * The Fired Shots Model.
  *
  * @property shots the list of shots created
  */

@@ -3,14 +3,18 @@ package pt.isel.pdm.battleships.services.games.models.players.shot
 import pt.isel.pdm.battleships.domain.games.shot.ShotResult
 
 /**
- * The DTO of a shot result.
+ * The Shot Result Model.
  *
  * @property result the result of the shot
  */
 data class ShotResultModel(
     val result: String
 ) {
-    fun toShotResult() = ShotResult(
-        result = result
-    )
+
+    /**
+     * Converts this model to a Shot Result.
+     *
+     * @return the shot result
+     */
+    fun toShotResult() = ShotResult(result = result)
 }

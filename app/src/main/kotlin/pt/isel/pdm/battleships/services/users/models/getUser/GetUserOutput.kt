@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.services.users.models.getUser
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
 /**
- * The properties of a [GetUserOutput].
+ * The Get User Output Model.
  *
  * @property username the username of the user
  * @property email the email of the user
@@ -16,6 +16,6 @@ data class GetUserOutputModel(
 )
 
 /**
- * A User DTO.
+ * The Get User Output.
  */
 typealias GetUserOutput = SirenEntity<GetUserOutputModel>

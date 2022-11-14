@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.services.games.models.games
 
 /**
- * The properties of a Game State DTO.
+ * The Game State Model.
  *
  * @property phase the phase of the game
  * @property phaseEndTime the time when the current phase ends

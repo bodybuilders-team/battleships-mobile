@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.services.games.models.games
 import pt.isel.pdm.battleships.services.games.models.ShipTypeModel
 
 /**
- * A Game Config DTO.
+ * The Game Config Model.
  *
  * @property gridSize the size of the grid
  * @property maxTimePerRound the maximum time per shot

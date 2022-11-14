@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.services.home.models
 
 /**
- * A Version Control Repository.
+ * The VC Repository Model.
  *
  * @property type the type of the repository, e.g. git
  * @property url the url of the repository

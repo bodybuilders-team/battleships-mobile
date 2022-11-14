@@ -6,7 +6,7 @@ import pt.isel.pdm.battleships.services.games.models.games.PlayerModel
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
 /**
- * The properties of a Game DTO.
+ * The Get Game Output Model.
  *
  * @property id the id of the game
  * @property name the name of the game
@@ -24,4 +24,7 @@ data class GetGameOutputModel(
     val players: List<PlayerModel>
 )
 
+/**
+ * The Get Game Output.
+ */
 typealias GetGameOutput = SirenEntity<GetGameOutputModel>

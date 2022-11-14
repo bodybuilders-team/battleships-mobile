@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.services.users.models.getUsers
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 
 /**
- * The properties of a [GetUsersOutput]
+ * The Get Users Output Model.
  *
  * @property totalCount the total number of users
  */
@@ -12,6 +12,6 @@ data class GetUsersOutputModel(
 )
 
 /**
- * A Get Users DTO.
+ * The Get Users Output.
  */
 typealias GetUsersOutput = SirenEntity<GetUsersOutputModel>

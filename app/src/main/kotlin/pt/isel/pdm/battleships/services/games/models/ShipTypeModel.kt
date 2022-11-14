@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.services.games.models
 
 /**
- * A Ship Type DTO.
+ * The Ship Type Model.
  *
  * @property shipName the name of the ship
  * @property size the size of the ship
