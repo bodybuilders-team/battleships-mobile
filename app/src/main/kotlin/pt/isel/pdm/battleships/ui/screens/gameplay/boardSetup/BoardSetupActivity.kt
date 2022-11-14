@@ -56,6 +56,9 @@ class BoardSetupActivity : ComponentActivity() {
                 BoardSetupViewModel.BoardSetupState.LOADING_GAME -> {
                     Text("Loading Game..")
                 }
+                BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT -> {
+                    Text("Waiting for opponent..")
+                }
                 else -> {
                     val game = viewModel.game
                         ?: throw IllegalStateException("No game found")

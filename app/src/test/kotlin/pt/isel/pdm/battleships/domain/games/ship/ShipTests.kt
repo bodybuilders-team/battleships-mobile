@@ -1,10 +1,10 @@
 package pt.isel.pdm.battleships.domain.games.ship
 
-import pt.isel.pdm.battleships.domain.games.Coordinate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import pt.isel.pdm.battleships.domain.games.Coordinate
 
 class ShipTests {
 

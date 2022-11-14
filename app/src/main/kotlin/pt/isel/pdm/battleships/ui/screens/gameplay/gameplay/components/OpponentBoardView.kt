@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.domain.games.Coordinate
+import pt.isel.pdm.battleships.domain.games.ShipCell
 import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.SMALLER_BOARD_TILE_SIZE_FACTOR
@@ -12,7 +14,6 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIde
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.TileHitView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.TileSelectionView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.PlacedShipView
 
 /**
  * View that shows the opponent's board.
@@ -36,9 +37,9 @@ fun OpponentBoardView(
             if (myTurn) 1.0f
             else SMALLER_BOARD_TILE_SIZE_FACTOR
 
-        opponentBoard.fleet.forEach { ship ->
-            PlacedShipView(ship, tileSize)
-        }
+//        opponentBoard.fleet.forEach { ship ->
+//            PlacedShipView(ship, tileSize)
+//        }
 
         Row {
             repeat(opponentBoard.size) { colIdx ->
@@ -57,14 +58,27 @@ fun OpponentBoardView(
                                 onTileClicked = { onTileClicked(coordinate) }
                             )
 
-                            TileHitView(
-                                tileSize = tileSize,
-                                hit = opponentBoard.getCell(coordinate).wasHit
-                            )
+                            val cell = opponentBoard.getCell(coordinate)
+                            if (cell.wasHit)
+                                TileHitView(
+                                    tileSize = tileSize,
+                                    hitShip = cell is ShipCell
+                                )
                         }
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+@Preview
+fun la() {
+    OpponentBoardView(
+        opponentBoard = OpponentBoard().shoot(listOf(Coordinate('A', 6) to false)),
+        myTurn = true,
+        selectedCells = emptyList(),
+        onTileClicked = {}
+    )
 }

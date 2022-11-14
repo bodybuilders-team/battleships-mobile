@@ -3,9 +3,9 @@ package pt.isel.pdm.battleships.services.utils.siren
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import okhttp3.MediaType
 import java.lang.reflect.Type
 import java.net.URI
+import okhttp3.MediaType
 
 /**
  * A sub-entity is an entity that is part of another entity.

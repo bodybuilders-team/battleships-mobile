@@ -59,7 +59,10 @@ class GameplayActivity : ComponentActivity() {
                     Text("Loading Game..")
                 }
                 GameplayViewModel.GameplayState.LOADING_MY_FLEET -> {
-                    Text("Loading Game..")
+                    Text("Loading Fleet..")
+                }
+                GameplayViewModel.GameplayState.FINISHED_GAME -> {
+                    Text("Game Finished")
                 }
                 else -> {
                     val game = viewModel.screenState.game

@@ -11,12 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.Board
-import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 
 private const val BOARD_VIEW_BOX_SIZE = 320.0f
 const val SELECTED_TILE_BORDER_SIZE = 2
@@ -83,45 +80,38 @@ fun TileSelectionView(
  * The view that shows the tile hit overlay (on top of the tile).
  *
  * @param tileSize the size of the tile
- * @param hit if the tile was hit
+ * @param hitShip if the tile was hit
  */
 @Composable
 fun TileHitView(
     tileSize: Float,
-    hit: Boolean
+    hitShip: Boolean
 ) {
+    val density = LocalDensity.current
+    val borderOffset = 2 * density.density
+
     Box(
         modifier = Modifier
             .size(tileSize.dp)
     ) {
-        if (hit) {
-            Canvas(modifier = Modifier.size(tileSize.dp), onDraw = {
-                drawLine(
-                    color = Color.Red,
-                    start = Offset(tileSize, 0f),
-                    end = Offset(0f, tileSize),
-                    strokeWidth = 5f
-                )
-                drawLine(
-                    color = Color.Red,
-                    start = Offset(tileSize, tileSize),
-                    end = Offset(0f, 0f),
-                    strokeWidth = 5f
-                )
-            })
-        }
+        Canvas(modifier = Modifier.size(tileSize.dp), onDraw = {
+            drawLine(
+                color = if (hitShip) Color.Red else Color.Gray,
+                start = Offset(tileSize * density.density - borderOffset, borderOffset),
+                end = Offset(borderOffset, tileSize * density.density - borderOffset),
+                strokeWidth = 5f
+            )
+            drawLine(
+                color = if (hitShip) Color.Red else Color.Gray,
+                start = Offset(
+                    tileSize * density.density - borderOffset,
+                    tileSize * density.density - borderOffset
+                ),
+                end = Offset(borderOffset, borderOffset),
+                strokeWidth = 5f
+            )
+        })
     }
-}
-
-@Composable
-@Preview
-fun la() {
-    OpponentBoardView(
-        opponentBoard = OpponentBoard().shoot(listOf(Coordinate('A', 6))),
-        myTurn = true,
-        selectedCells = listOf(Coordinate('A', 5)),
-        onTileClicked = {}
-    )
 }
 
 /**

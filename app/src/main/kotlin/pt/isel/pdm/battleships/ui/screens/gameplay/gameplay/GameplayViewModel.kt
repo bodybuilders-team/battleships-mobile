@@ -19,6 +19,7 @@ import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
+import pt.isel.pdm.battleships.services.games.dtos.ship.FleetResponseDTOProperties
 import pt.isel.pdm.battleships.services.games.dtos.shot.FireShotsDTO
 import pt.isel.pdm.battleships.services.games.dtos.shot.UnfiredShotDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
@@ -56,6 +57,9 @@ class GameplayViewModel(
     private val _events = MutableSharedFlow<GameplayEvent>()
     val events: SharedFlow<GameplayEvent> = _events
 
+    private var initialFleet: List<Ship>? = null
+    private var gridSize: Int? = null
+
     /**
      * Loads the game.
      *
@@ -91,7 +95,7 @@ class GameplayViewModel(
                         val game = res.data
 
                         val getMyFleetLink =
-                            game.actions?.find { it.name == "get-my-fleet" }?.href?.path
+                            game.actions?.find { it.name == Rels.GET_MY_FLEET }?.href?.path
                                 ?: throw IllegalStateException("No get my fleet link found")
 
                         Log.v("MyDEBUG", "About to load my fleet")
@@ -103,12 +107,17 @@ class GameplayViewModel(
                             ?: throw IllegalStateException("No turn found")
                         val gridSize = game.properties.config.gridSize
 
+                        val myTurn = turn == sessionManager.username
                         _screenState = _screenState.copy(
                             game = game,
                             state = PLAYING_GAME,
                             opponentBoard = OpponentBoard(gridSize),
-                            myTurn = turn == sessionManager.username
+                            myTurn = myTurn
                         )
+
+                        if (!myTurn)
+                            waitForOpponent()
+
                         Log.v("MyDEBUG", "Loaded Game and My Fleet")
                         break
                     }
@@ -148,28 +157,15 @@ class GameplayViewModel(
                 is APIResult.Success -> {
                     val getMyFleetData = res.data
 
-                    val initialFleet = getMyFleetData.properties?.ships?.map {
-                        val shipType = ShipType.values().find { shipType ->
-                            shipType.shipName == it.type
-                        }
-                            ?: throw IllegalStateException("Invalid ship type")
-
-                        val orientation = Orientation.values().find { orientation ->
-                            orientation.name == it.orientation
-                        }
-                            ?: throw IllegalStateException("Invalid ship orientation")
-
-                        Ship(
-                            type = shipType,
-                            coordinate = it.coordinate.toCoordinate(),
-                            orientation = orientation,
-                            lives = shipType.size
-                        )
-                    }
-                        ?: throw IllegalStateException("No ships found")
+                    val initialFleet = parseFleet(
+                        getMyFleetData.properties ?: throw IllegalStateException("No ships found")
+                    )
 
                     val gridSize = _screenState.game?.properties?.config?.gridSize
                         ?: throw IllegalStateException("No grid size found")
+
+                    this.initialFleet = initialFleet
+                    this.gridSize = gridSize
 
                     _screenState = _screenState.copy(
                         myBoard = MyBoard(gridSize, initialFleet)
@@ -220,54 +216,17 @@ class GameplayViewModel(
 
                     _screenState = _screenState.copy(
                         opponentBoard = _screenState.opponentBoard?.shoot(
-                            firedShots.map { it.coordinate }
+                            firedShots.map {
+                                it.coordinate to (
+                                    it.result.result == "HIT" ||
+                                        it.result.result == "SUNK"
+                                    )
+                            }
                         ),
                         myTurn = false
                     )
 
-                    val gameStateLink = screenState.game?.entities
-                        ?.filterIsInstance<EmbeddedLink>()
-                        ?.find { it.rel.contains(Rels.GAME_STATE) }?.href?.path
-                        ?: throw IllegalStateException("Game state link not found")
-
-                    while (_screenState.myTurn == false) {
-                        val gameStateHttpRes = tryExecuteHttpRequest {
-                            gamesService.getGameState(
-                                token,
-                                gameStateLink
-                            )
-                        }
-
-                        val gameStateRes = when (gameStateHttpRes) {
-                            is HTTPResult.Success -> gameStateHttpRes.data
-                            is HTTPResult.Failure -> {
-                                _events.emit(GameplayEvent.Error(gameStateHttpRes.error))
-                                _screenState = _screenState.copy(state = PLAYING_GAME)
-                                continue
-                            }
-                        }
-
-                        when (gameStateRes) {
-                            is APIResult.Success -> {
-                                val properties = gameStateRes.data.properties
-                                    ?: throw IllegalStateException("Game state properties are null")
-
-                                if (properties.turn != sessionManager.username) { // TODO: add constants
-                                    delay(1000L)
-                                } else {
-                                    _screenState = _screenState.copy(
-                                        state = PLAYING_GAME,
-                                        myTurn = true
-                                    )
-                                }
-                            }
-                            is APIResult.Failure -> {
-                                _events.emit(GameplayEvent.Error(gameStateRes.error.title))
-                                _screenState = _screenState.copy(state = PLAYING_GAME)
-                                continue
-                            }
-                        }
-                    }
+                    waitForOpponent()
                 }
                 is APIResult.Failure -> {
                     _events.emit(GameplayEvent.Error(res.error.title))
@@ -278,6 +237,129 @@ class GameplayViewModel(
         }
     }
 
+    private suspend fun waitForOpponent() {
+        val token = sessionManager.accessToken ?: throw IllegalStateException("No token found")
+
+        val gameStateLink = screenState.game?.entities
+            ?.filterIsInstance<EmbeddedLink>()
+            ?.find { it.rel.contains(Rels.GAME_STATE) }?.href?.path
+            ?: throw IllegalStateException("Game state link not found")
+
+        while (_screenState.myTurn == false) {
+            val gameStateHttpRes = tryExecuteHttpRequest {
+                gamesService.getGameState(
+                    token,
+                    gameStateLink
+                )
+            }
+
+            val gameStateRes = when (gameStateHttpRes) {
+                is HTTPResult.Success -> gameStateHttpRes.data
+                is HTTPResult.Failure -> {
+                    _events.emit(GameplayEvent.Error(gameStateHttpRes.error))
+                    _screenState = _screenState.copy(state = PLAYING_GAME)
+                    continue
+                }
+            }
+
+            when (gameStateRes) {
+                is APIResult.Success -> {
+                    val properties = gameStateRes.data.properties
+                        ?: throw IllegalStateException("Game state properties are null")
+
+                    if (properties.phase == "FINISHED") {
+                        _screenState = _screenState.copy(state = GameplayState.FINISHED_GAME)
+                        return
+                    }
+
+                    if (properties.turn != sessionManager.username) { // TODO: add constants
+                        delay(1000L)
+                    } else {
+                        getOpponentShots()
+                        _screenState = _screenState.copy(
+                            state = PLAYING_GAME,
+                            myTurn = true
+                        )
+                    }
+                }
+                is APIResult.Failure -> {
+                    _events.emit(GameplayEvent.Error(gameStateRes.error.title))
+                    _screenState = _screenState.copy(state = PLAYING_GAME)
+                    continue
+                }
+            }
+        }
+    }
+
+    private suspend fun getOpponentShots() {
+        val token = sessionManager.accessToken ?: throw IllegalStateException("No token found")
+
+        val getOpponentShotsLink =
+            screenState.game?.actions?.find { it.name == Rels.GET_OPPONENT_SHOTS }?.href?.path
+                ?: throw IllegalStateException("Get Opponent link found")
+
+        val httpRes = tryExecuteHttpRequest {
+            playersService.getOpponentShots(
+                token = token,
+                getOpponentShotsLink = getOpponentShotsLink
+            )
+        }
+
+        val res = when (httpRes) {
+            is HTTPResult.Success -> httpRes.data
+            is HTTPResult.Failure -> {
+                _events.emit(GameplayEvent.Error(httpRes.error))
+                _screenState = _screenState.copy(state = PLAYING_GAME)
+                return
+            }
+        }
+
+        when (res) {
+            is APIResult.Success -> {
+                val opponentShots = res.data.properties?.shots
+                    ?: throw IllegalStateException("No shots found")
+
+                _screenState = _screenState.copy(
+                    myBoard =
+                    MyBoard(
+                        gridSize
+                            ?: throw IllegalStateException("Grid size not found"),
+                        initialFleet ?: throw IllegalStateException("Initial fleet not found")
+                    ).shoot(
+                        opponentShots.map {
+                            it.coordinate.toCoordinate()
+                        }
+                    )
+                )
+            }
+            is APIResult.Failure -> {
+                _events.emit(GameplayEvent.Error(res.error.title))
+                _screenState = _screenState.copy(state = PLAYING_GAME)
+                return
+            }
+        }
+    }
+
+    private fun parseFleet(fleetResponseDTOProperties: FleetResponseDTOProperties): List<Ship> =
+        fleetResponseDTOProperties.ships.map {
+            val shipType = ShipType.values().find { shipType ->
+                shipType.shipName == it.type
+            }
+                ?: throw IllegalStateException("Invalid ship type")
+
+            val orientation = Orientation.values().find { orientation ->
+                orientation.name == it.orientation
+            }
+                ?: throw IllegalStateException("Invalid ship orientation")
+
+            Ship(
+                type = shipType,
+                coordinate = it.coordinate.toCoordinate(),
+                orientation = orientation,
+                lives = shipType.size
+            )
+        }
+
     /**
      * The state of the view model.
      *
@@ -286,7 +368,8 @@ class GameplayViewModel(
     enum class GameplayState {
         LOADING_GAME,
         LOADING_MY_FLEET,
-        PLAYING_GAME
+        PLAYING_GAME,
+        FINISHED_GAME
     }
 
     /**

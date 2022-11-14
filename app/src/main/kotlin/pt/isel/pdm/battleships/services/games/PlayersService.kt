@@ -1,16 +1,18 @@
 package pt.isel.pdm.battleships.services.games
 
 import com.google.gson.Gson
+import java.io.IOException
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.games.dtos.ship.DeployFleetResponseDTO
 import pt.isel.pdm.battleships.services.games.dtos.ship.GetMyFleetResponseDTO
+import pt.isel.pdm.battleships.services.games.dtos.ship.GetOpponentFleetResponseDTO
 import pt.isel.pdm.battleships.services.games.dtos.ship.UndeployedFleetDTO
 import pt.isel.pdm.battleships.services.games.dtos.shot.FireShotsDTO
 import pt.isel.pdm.battleships.services.games.dtos.shot.FireShotsResponseDTO
+import pt.isel.pdm.battleships.services.games.dtos.shot.GetOpponentShotsDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
-import java.io.IOException
 
 /**
  * Represents the service that handles the battleships game.
@@ -53,9 +55,11 @@ class PlayersService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getOpponentFleet(id: Int) {
-        // TODO: To be implemented
-    }
+    suspend fun getOpponentFleet(
+        token: String,
+        getOpponentFleetLink: String
+    ): APIResult<GetOpponentFleetResponseDTO> =
+        get(link = getOpponentFleetLink, token = token)
 
     /**
      *
@@ -83,7 +87,9 @@ class PlayersService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getOpponentShots(id: Int) {
-        // TODO: To be implemented
-    }
+    suspend fun getOpponentShots(
+        token: String,
+        getOpponentShotsLink: String
+    ): APIResult<GetOpponentShotsDTO> =
+        get(link = getOpponentShotsLink, token = token)
 }

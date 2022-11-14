@@ -2,10 +2,10 @@ package pt.isel.pdm.battleships.ui.utils // ktlint-disable filename
 
 import android.content.Context
 import android.widget.Toast
-import kotlinx.coroutines.suspendCancellableCoroutine
-import pt.isel.pdm.battleships.services.UnexpectedResponseException
 import java.io.IOException
 import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
+import pt.isel.pdm.battleships.services.UnexpectedResponseException
 
 /**
  * Shows a toast message to the user.
