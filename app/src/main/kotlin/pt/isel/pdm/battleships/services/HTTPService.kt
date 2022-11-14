@@ -3,7 +3,6 @@ package pt.isel.pdm.battleships.services
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.stream.JsonReader
-import java.io.IOException
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,6 +15,7 @@ import pt.isel.pdm.battleships.services.utils.getBodyOrThrow
 import pt.isel.pdm.battleships.services.utils.send
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity.Companion.sirenMediaType
+import java.io.IOException
 
 /**
  * Represents a service that communicates with a HTTP server.
@@ -25,9 +25,9 @@ import pt.isel.pdm.battleships.services.utils.siren.SirenEntity.Companion.sirenM
  * @property jsonEncoder the JSON formatter used to parse the server responses
  */
 abstract class HTTPService(
-    val apiEndpoint: String,
-    val httpClient: OkHttpClient,
-    val jsonEncoder: Gson
+    protected val apiEndpoint: String,
+    protected val httpClient: OkHttpClient,
+    val jsonEncoder: Gson  // TODO See Illegal Access (Private, protected, public, inlines)
 ) {
 
     /**
@@ -40,7 +40,7 @@ abstract class HTTPService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> Request.getResponseResult(): APIResult<SirenEntity<T>> =
+    protected suspend inline fun <reified T> Request.getResponseResult(): APIResult<SirenEntity<T>> =
         this.send(httpClient) { response ->
             val body = response.getBodyOrThrow()
             val contentType = body.contentType()
@@ -73,7 +73,7 @@ abstract class HTTPService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> get(link: String): APIResult<SirenEntity<T>> =
+    protected suspend inline fun <reified T> get(link: String): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(apiEndpoint + link)
             .build().getResponseResult()
@@ -88,7 +88,10 @@ abstract class HTTPService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> get(link: String, token: String): APIResult<SirenEntity<T>> =
+    protected suspend inline fun <reified T> get(
+        link: String,
+        token: String
+    ): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .header(name = AUTHORIZATION_HEADER, value = "Bearer $token")
@@ -105,7 +108,10 @@ abstract class HTTPService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> post(link: String, body: Any): APIResult<SirenEntity<T>> =
+    protected suspend inline fun <reified T> post(
+        link: String,
+        body: Any
+    ): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .post(
@@ -127,7 +133,7 @@ abstract class HTTPService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend inline fun <reified T> post(
+    protected suspend inline fun <reified T> post(
         link: String,
         token: String,
         body: Any

@@ -1,13 +1,13 @@
 package pt.isel.pdm.battleships.services
 
 import com.google.gson.Gson
-import java.io.IOException
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.PlayersService
 import pt.isel.pdm.battleships.services.home.dtos.HomeDTO
 import pt.isel.pdm.battleships.services.users.UsersService
 import pt.isel.pdm.battleships.services.utils.APIResult
+import java.io.IOException
 
 /**
  * Represents the service that handles the battleships game.

@@ -21,12 +21,15 @@ import pt.isel.pdm.battleships.ui.utils.viewModelInit
  */
 class GameConfigurationActivity : ComponentActivity() {
 
-    private val battleshipsService by lazy {
-        (application as DependenciesContainer).battleshipsService
+    private val dependenciesContainer by lazy {
+        (application as DependenciesContainer)
     }
 
     private val viewModel by viewModelInit {
-        GameConfigurationViewModel(gamesService = battleshipsService.gamesService)
+        GameConfigurationViewModel(
+            gamesService = dependenciesContainer.battleshipsService.gamesService,
+            sessionManager = dependenciesContainer.sessionManager
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

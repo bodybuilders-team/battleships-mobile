@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.utils.APIResult
@@ -29,7 +30,8 @@ import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
  * @property events the events that can be emitted by the view model
  */
 class GameConfigurationViewModel(
-    private val gamesService: GamesService
+    private val gamesService: GamesService,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     var state by mutableStateOf(IDLE)
@@ -50,7 +52,11 @@ class GameConfigurationViewModel(
 
         viewModelScope.launch {
             val httpRes = tryExecuteHttpRequest {
-                gamesService.createGame(createGameLink, gameConfig.toGameConfigDTO())
+                gamesService.createGame(
+                    sessionManager.accessToken!!,
+                    createGameLink,
+                    gameConfig.toGameConfigDTO()
+                )
             }
 
             val res = when (httpRes) {

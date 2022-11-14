@@ -45,8 +45,10 @@ data class MyBoard(
         }
     }
 
-    val fleet: List<Ship>
-        get() = grid.filterIsInstance<ShipCell>().map { it.ship }.distinct()
+    val initialFleet: List<Ship> =
+        grid.filterIsInstance<ShipCell>().map { it.ship.copy(lives = it.ship.type.size) }.distinct()
+
+    val fleet: List<Ship> = grid.filterIsInstance<ShipCell>().map { it.ship }.distinct()
 
     /**
      * Returns a new board with the cell in [at] coordinate replaced by [cell].

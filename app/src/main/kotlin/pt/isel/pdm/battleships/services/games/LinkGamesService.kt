@@ -1,9 +1,6 @@
 package pt.isel.pdm.battleships.services.games
 
-import com.google.gson.Gson
-import java.io.IOException
-import okhttp3.OkHttpClient
-import pt.isel.pdm.battleships.services.HTTPService
+import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.games.dtos.GameConfigDTO
 import pt.isel.pdm.battleships.services.games.dtos.GameDTO
@@ -12,42 +9,46 @@ import pt.isel.pdm.battleships.services.games.dtos.GamesDTO
 import pt.isel.pdm.battleships.services.games.dtos.MatchmakeDTO
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
+import pt.isel.pdm.battleships.ui.utils.navigation.Rels
+import java.io.IOException
 
 /**
- * Represents the service that handles the battleships game.
- *
- * @param apiEndpoint the API endpoint
- * @property httpClient the HTTP client
- * @property jsonEncoder the JSON formatter
+ * TODO Comment
  */
-class GamesService(
-    apiEndpoint: String,
-    httpClient: OkHttpClient,
-    jsonEncoder: Gson
-) : HTTPService(apiEndpoint, httpClient, jsonEncoder) {
+class LinkGamesService(
+    private val sessionManager: SessionManager,
+    private val links: MutableMap<String, String>,
+    private val gamesService: GamesService
+) {
+    private val token
+        get() = sessionManager.accessToken
+            ?: throw IllegalStateException("No token available")
 
     /**
      * Gets all the games
      *
-     * @param listGamesLink the link to the list games endpoint
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getAllGames(listGamesLink: String): APIResult<GamesDTO> =
-        get(link = listGamesLink)
+    suspend fun getAllGames(): APIResult<GamesDTO> =
+        gamesService.getAllGames(
+            listGamesLink = links[Rels.LIST_GAMES]
+                ?: throw IllegalArgumentException("The list games link is missing")
+        )
 
     /**
      * Gets a game by id.
-     *
-     * @param token the user token for the authentication
-     * @param gameLink the game link
      *
      * @return the result of the get game operation
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getGame(token: String, gameLink: String): APIResult<GameDTO> =
-        get(link = gameLink, token = token)
+    suspend fun getGame(): APIResult<GameDTO> =
+        gamesService.getGame(
+            token = token,
+            gameLink = links[Rels.GAME]
+                ?: throw IllegalArgumentException("The game link is missing")
+        )
 
     /**
      * Creates a new game.
@@ -55,29 +56,30 @@ class GamesService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun createGame(
-        token: String,
-        createGameLink: String,
-        gameConfig: GameConfigDTO
-    ): APIResult<SirenEntity<Unit>> =
-        post(link = createGameLink, token = token, body = gameConfig)
+    suspend fun createGame(gameConfig: GameConfigDTO): APIResult<SirenEntity<Unit>> =
+        gamesService.createGame(
+            token = token,
+            createGameLink = links[Rels.CREATE_GAME]
+                ?: throw IllegalArgumentException("The create game link is missing"),
+            gameConfig = gameConfig
+        )
 
     /**
      * Matchmakes a game with a specific configuration.
      *
-     * @param token the token of the user that is matchmaking
      * @param gameConfig the DTO with the game's configuration
      *
      * @return the result of the matchmaking operation
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun matchmake(
-        token: String,
-        matchmakeLink: String,
-        gameConfig: GameConfigDTO
-    ): APIResult<MatchmakeDTO> =
-        post(link = matchmakeLink, token = token, body = gameConfig)
+    suspend fun matchmake(gameConfig: GameConfigDTO): APIResult<MatchmakeDTO> =
+        gamesService.matchmake(
+            token = token,
+            matchmakeLink = links[Rels.MATCHMAKE]
+                ?: throw IllegalArgumentException("The matchmake link is missing"),
+            gameConfig = gameConfig
+        )
 
     /**
      *
@@ -100,16 +102,14 @@ class GamesService(
     /**
      * Gets the state of a game.
      *
-     * @param token the token of the user that is matchmaking
-     * @param gameStateLink the game state link
-     *
      * @return the game state
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getGameState(
-        token: String,
-        gameStateLink: String
-    ): APIResult<GameStateDTO> =
-        get(link = gameStateLink, token = token)
+    suspend fun getGameState(): APIResult<GameStateDTO> =
+        gamesService.getGameState(
+            token = token,
+            gameStateLink = links[Rels.GAME_STATE]
+                ?: throw IllegalArgumentException("The game state link is missing")
+        )
 }

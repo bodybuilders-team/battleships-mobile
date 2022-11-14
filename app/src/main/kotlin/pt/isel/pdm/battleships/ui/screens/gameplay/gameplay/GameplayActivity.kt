@@ -7,7 +7,6 @@ import androidx.compose.material.Text
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
@@ -65,18 +64,6 @@ class GameplayActivity : ComponentActivity() {
                     Text("Game Finished")
                 }
                 else -> {
-                    val game = viewModel.screenState.game
-                        ?: throw IllegalStateException("No game found")
-
-                    val properties = game.properties
-                        ?: throw IllegalStateException("No game properties found")
-
-                    val gameConfig = GameConfig(properties.config)
-
-                    val fireShotsLink =
-                        game.actions?.find { it.name == "fire-shots" }?.href?.path
-                            ?: throw IllegalStateException("No fire shots link found")
-
                     GameplayScreen(
                         round = 0,
                         myTurn = viewModel.screenState.myTurn
@@ -85,9 +72,10 @@ class GameplayActivity : ComponentActivity() {
                             ?: throw IllegalStateException("My board not found"),
                         opponentBoard = viewModel.screenState.opponentBoard
                             ?: throw IllegalStateException("Opponent board not found"),
-                        gameConfig = gameConfig,
+                        gameConfig = viewModel.screenState.gameConfig
+                            ?: throw IllegalStateException("Game config not found"),
                         onShootClicked = { coordinates ->
-                            viewModel.fireShots(fireShotsLink, coordinates)
+                            viewModel.fireShots(coordinates)
                         },
                         onBackButtonClicked = { finish() }
                     )
