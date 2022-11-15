@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState
+import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 
 /**
  * Matchmake screen.
@@ -24,7 +25,7 @@ fun MatchmakeScreen(state: MatchmakeState) {
             modifier = Modifier.fillMaxSize()
         ) {
             when (state) {
-                MatchmakeState.MATCHMAKING, MatchmakeState.IDLE -> Text(text = "Matchmaking...")
+                MatchmakeState.MATCHMAKING, MatchmakeState.IDLE -> LoadingSpinner(text = "Matchmaking...")
                 MatchmakeState.MATCHMADE -> Text(text = "Matchmade!")
             }
         }

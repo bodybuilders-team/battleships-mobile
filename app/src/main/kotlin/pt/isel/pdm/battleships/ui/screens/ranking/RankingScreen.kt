@@ -2,7 +2,6 @@ package pt.isel.pdm.battleships.ui.screens.ranking
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +18,7 @@ import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState
 import pt.isel.pdm.battleships.ui.screens.ranking.components.RankingTableView
 import pt.isel.pdm.battleships.ui.screens.ranking.components.SearchPlayerField
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
 /**
@@ -59,7 +59,7 @@ fun RankingScreen(
             }
 
             when (state) {
-                RankingState.GETTING_USERS, RankingState.IDLE -> Text(text = "Searching...") // TODO: add loading spinner
+                RankingState.GETTING_USERS, RankingState.IDLE -> LoadingSpinner()
                 RankingState.FINISHED -> RankingTableView(filteredUsers)
             }
 

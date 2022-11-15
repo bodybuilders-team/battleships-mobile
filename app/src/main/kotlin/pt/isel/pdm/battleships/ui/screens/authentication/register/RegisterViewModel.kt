@@ -1,7 +1,5 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.register
 
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.users.UsersService
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
@@ -26,17 +24,13 @@ class RegisterViewModel(
      * @param password the password of the user
      */
     fun register(registerLink: String, email: String, username: String, password: String) {
-        viewModelScope.launch {
-            state = AuthenticationState.LOADING
-
-            updateState(username = username) {
-                usersService.register(
-                    registerLink = registerLink,
-                    email = email,
-                    username = username,
-                    password = password
-                )
-            }
+        updateState(username = username) {
+            usersService.register(
+                registerLink = registerLink,
+                email = email,
+                username = username,
+                password = password
+            )
         }
     }
 }

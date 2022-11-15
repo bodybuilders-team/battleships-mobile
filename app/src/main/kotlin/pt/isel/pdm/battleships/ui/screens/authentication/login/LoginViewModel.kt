@@ -1,7 +1,5 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.login
 
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.users.UsersService
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
@@ -25,16 +23,12 @@ class LoginViewModel(
      * @param password the password of the user
      */
     fun login(loginLink: String, username: String, password: String) {
-        viewModelScope.launch {
-            state = AuthenticationState.LOADING
-
-            updateState(username = username) {
-                usersService.login(
-                    loginLink = loginLink,
-                    username = username,
-                    password = password
-                )
-            }
+        updateState(username = username) {
+            usersService.login(
+                loginLink = loginLink,
+                username = username,
+                password = password
+            )
         }
     }
 }

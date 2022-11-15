@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +15,7 @@ import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
+import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
 /**
@@ -40,7 +40,7 @@ fun LobbyScreen(
             ScreenTitle(title = stringResource(id = R.string.lobby_title))
 
             when (state) {
-                LobbyState.GETTING_GAMES, LobbyState.IDLE -> Text(text = "Searching...")
+                LobbyState.GETTING_GAMES, LobbyState.IDLE -> LoadingSpinner()
                 LobbyState.FINISHED ->
                     LazyColumn(
                         verticalArrangement = Arrangement.Top,

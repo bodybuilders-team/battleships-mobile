@@ -88,11 +88,7 @@ fun RegisterScreen(
 
                 val hashedPassword = hash(password.value)
 
-                onRegister(
-                    email.value,
-                    username.value,
-                    hashedPassword
-                )
+                onRegister(email.value, username.value, hashedPassword)
             }
 
             registerMessage.value?.let {
@@ -101,9 +97,7 @@ fun RegisterScreen(
                 }
             }
 
-            GoBackButton(
-                onClick = onBackButtonClicked
-            )
+            GoBackButton(onClick = onBackButtonClicked)
         }
     }
 }

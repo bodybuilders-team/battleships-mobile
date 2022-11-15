@@ -20,10 +20,9 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.handle
+import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.GAME
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.GAME_STATE
-import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for the [MatchmakeActivity].
@@ -71,77 +70,62 @@ class MatchmakeViewModel(
             val token = sessionManager.accessToken
                 ?: throw IllegalStateException("No token found")
 
-            var createdGame = false
             var gameStateLink: String? = null
 
-            while (!createdGame && state != MATCHMADE) {
-                val httpRes = tryExecuteHttpRequest {
+            val matchmakeData = executeRequestRetrying(
+                request = {
                     gamesService.matchmake(
-                        token = sessionManager.accessToken
-                            ?: throw IllegalStateException("No token found"),
+                        token = token,
                         matchmakeLink = matchmakeLink,
                         gameConfig = gameConfigModel
                     )
-                }
+                },
+                events = _events
+            )
 
-                val res = httpRes.handle(events = _events) ?: return@launch
+            val properties = matchmakeData.properties
+                ?: throw IllegalStateException("Game properties are null")
 
-                res.handle(
-                    events = _events,
-                    onSuccess = { matchmakeData ->
-                        val properties = matchmakeData.properties
-                            ?: throw IllegalStateException("Game properties are null")
+            val entities = matchmakeData.entities
+                ?: throw IllegalStateException("Game entities are null")
 
-                        val entities = matchmakeData.entities
-                            ?: throw IllegalStateException("Game entities are null")
+            val matchGameLink = entities
+                .filterIsInstance<EmbeddedLink>()
+                .find { it.rel.contains(GAME) }?.href?.path
+                ?: throw IllegalStateException("Game link not found")
 
-                        val matchGameLink = entities
-                            .filterIsInstance<EmbeddedLink>()
-                            .find { it.rel.contains(GAME) }?.href?.path
-                            ?: throw IllegalStateException("Game link not found")
+            val matchGameStateLink = entities
+                .filterIsInstance<EmbeddedLink>()
+                .find { it.rel.contains(GAME_STATE) }?.href?.path
+                ?: throw IllegalStateException("Game state link not found")
 
-                        val matchGameStateLink = entities
-                            .filterIsInstance<EmbeddedLink>()
-                            .find { it.rel.contains(GAME_STATE) }?.href?.path
-                            ?: throw IllegalStateException("Game state link not found")
-
-                        gameLink = matchGameLink
-                        if (properties.wasCreated) {
-                            createdGame = true
-                            gameStateLink = matchGameStateLink
-                        } else {
-                            _events.emit(MatchmakeEvent.NavigateToBoardSetup)
-                            state = MATCHMADE
-                        }
-                    }
-                )
+            gameLink = matchGameLink
+            if (properties.wasCreated) {
+                gameStateLink = matchGameStateLink
+            } else {
+                _events.emit(MatchmakeEvent.NavigateToBoardSetup)
+                state = MATCHMADE
             }
 
-            while (state != MATCHMADE) {
-                val gameStateHttpRes = tryExecuteHttpRequest {
+            val gameStateData = executeRequestRetrying(
+                request = {
                     gamesService.getGameState(
                         token = token,
                         gameStateLink = gameStateLink
                             ?: throw IllegalStateException("Game state link is null")
                     )
-                }
+                },
+                events = _events
+            )
 
-                val gameStateRes = gameStateHttpRes.handle(events = _events) ?: continue
+            val gameStateProperties = gameStateData.properties
+                ?: throw IllegalStateException("Game state properties are null")
 
-                gameStateRes.handle(
-                    events = _events,
-                    onSuccess = { gameStateData ->
-                        val properties = gameStateData.properties
-                            ?: throw IllegalStateException("Game state properties are null")
-
-                        if (properties.phase == WAITING_FOR_PLAYERS_PHASE) {
-                            delay(POLLING_DELAY)
-                        } else {
-                            _events.emit(MatchmakeEvent.NavigateToBoardSetup)
-                            state = MATCHMADE
-                        }
-                    }
-                )
+            if (gameStateProperties.phase == WAITING_FOR_PLAYERS_PHASE) {
+                delay(POLLING_DELAY)
+            } else {
+                _events.emit(MatchmakeEvent.NavigateToBoardSetup)
+                state = MATCHMADE
             }
         }
     }

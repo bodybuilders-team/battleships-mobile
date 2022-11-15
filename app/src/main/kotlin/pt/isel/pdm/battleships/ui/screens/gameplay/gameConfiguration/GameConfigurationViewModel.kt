@@ -4,10 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.services.games.GamesService
@@ -16,9 +14,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigu
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.GAME_CREATED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.handle
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
-import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for the [GameConfigurationActivity].
@@ -51,35 +48,28 @@ class GameConfigurationViewModel(
 
         state = CREATING_GAME
 
-        viewModelScope.launch {
-            while (state == CREATING_GAME) {
-                val httpRes = tryExecuteHttpRequest {
-                    gamesService.createGame(
-                        token = sessionManager.accessToken
-                            ?: throw IllegalStateException("The user is not logged in"),
-                        createGameLink = createGameLink,
-                        gameConfig = gameConfig.toGameConfigDTO()
-                    )
-                }
-
-                val res = httpRes.handle(events = _events) ?: return@launch
-
-                res.handle(
-                    events = _events,
-                    onSuccess = { createGameData ->
-                        val entities = createGameData.entities
-                            ?: throw IllegalStateException("No entities in response")
-
-                        gameLink = entities
-                            .filterIsInstance<EmbeddedLink>()
-                            .first { it.rel.contains(Rels.GAME) }.href.path
-
-                        state = GAME_CREATED
-                        _events.emit(GameConfigurationEvent.NavigateToBoardSetup)
-                    }
+        launchAndExecuteRequestRetrying(
+            request = {
+                gamesService.createGame(
+                    token = sessionManager.accessToken
+                        ?: throw IllegalStateException("The user is not logged in"),
+                    createGameLink = createGameLink,
+                    gameConfig = gameConfig.toGameConfigDTO()
                 )
+            },
+            events = _events,
+            onSuccess = { createGameData ->
+                val entities = createGameData.entities
+                    ?: throw IllegalStateException("No entities in response")
+
+                gameLink = entities
+                    .filterIsInstance<EmbeddedLink>()
+                    .first { it.rel.contains(Rels.GAME) }.href.path
+
+                state = GAME_CREATED
+                _events.emit(GameConfigurationEvent.NavigateToBoardSetup)
             }
-        }
+        )
     }
 
     /**

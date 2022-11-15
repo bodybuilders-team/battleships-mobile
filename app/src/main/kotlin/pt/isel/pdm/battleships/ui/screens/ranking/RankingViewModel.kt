@@ -4,11 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.users.User
 import pt.isel.pdm.battleships.services.users.UsersService
@@ -18,8 +16,7 @@ import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.handle
-import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 
 /**
  * View model for the [RankingActivity].
@@ -54,40 +51,31 @@ class RankingViewModel(
 
         state = GETTING_USERS
 
-        viewModelScope.launch {
-            while (state == GETTING_USERS) {
-                val httpRes = tryExecuteHttpRequest {
-                    usersService.getUsers("$listUsersLink?$SORT_DIRECTION_PARAM=$SORT_DIRECTION_VALUE")
-                }
+        launchAndExecuteRequestRetrying(
+            request = {
+                usersService.getUsers("$listUsersLink?$SORT_DIRECTION_PARAM=$SORT_DIRECTION_VALUE")
+            },
+            events = _events,
+            onSuccess = { usersData ->
+                users = usersData.entities?.map { user ->
+                    @Suppress("UNCHECKED_CAST")
+                    user as EmbeddedSubEntity<GetUserOutputModel>
 
-                val res = httpRes.handle(
-                    events = _events
-                ) ?: return@launch
+                    val userProperties = jsonEncoder.fromJson(
+                        jsonEncoder.toJson(user.properties),
+                        GetUserOutputModel::class.java
+                    )
 
-                res.handle(
-                    events = _events,
-                    onSuccess = { usersData ->
-                        users = usersData.entities?.map { user ->
-                            @Suppress("UNCHECKED_CAST")
-                            user as EmbeddedSubEntity<GetUserOutputModel>
+                    User(
+                        username = userProperties.username,
+                        email = userProperties.email,
+                        points = userProperties.points
+                    )
+                } ?: emptyList()
 
-                            val userProperties = jsonEncoder.fromJson(
-                                jsonEncoder.toJson(user.properties),
-                                GetUserOutputModel::class.java
-                            )
-
-                            User(
-                                username = userProperties.username,
-                                email = userProperties.email,
-                                points = userProperties.points
-                            )
-                        } ?: emptyList()
-
-                        state = FINISHED
-                    }
-                )
+                state = FINISHED
             }
-        }
+        )
     }
 
     /**

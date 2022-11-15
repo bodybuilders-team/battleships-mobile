@@ -4,10 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.games.GamesService
 import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutput
@@ -15,8 +13,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbySta
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GETTING_GAMES
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.handle
-import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 
 /**
  * View model for the [LobbyActivity].
@@ -49,25 +46,14 @@ class LobbyViewModel(
 
         state = GETTING_GAMES
 
-        viewModelScope.launch {
-            while (state == GETTING_GAMES) {
-                val httpRes = tryExecuteHttpRequest {
-                    gamesService.getGames(listGamesLink = listGamesLink)
-                }
-
-                val res = httpRes.handle(
-                    events = _events
-                ) ?: return@launch
-
-                res.handle(
-                    events = _events,
-                    onSuccess = { gamesData ->
-                        state = FINISHED
-                        games = gamesData
-                    }
-                )
+        launchAndExecuteRequestRetrying(
+            request = { gamesService.getGames(listGamesLink = listGamesLink) },
+            events = _events,
+            onSuccess = { gamesData ->
+                state = FINISHED
+                games = gamesData
             }
-        }
+        )
     }
 
     /**

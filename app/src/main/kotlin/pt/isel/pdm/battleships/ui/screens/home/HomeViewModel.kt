@@ -18,8 +18,7 @@ import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING_H
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING_USER_HOME
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.USER_HOME_LOADED
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.handle
-import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 
 /**
  * View model for the [HomeActivity].
@@ -50,24 +49,15 @@ class HomeViewModel(
 
         state = LOADING_HOME
 
-        viewModelScope.launch {
-            while (state == LOADING_HOME) {
-                val httpRes = tryExecuteHttpRequest {
-                    battleshipsService.getHome()
-                }
-
-                val res = httpRes.handle(events = _events) ?: return@launch
-
-                res.handle(
-                    events = _events,
-                    onSuccess = { homeData ->
-                        val resActions = homeData.actions ?: emptyList()
-                        links = resActions.associate { Pair(it.name, it.href.path) }
-                        state = HOME_LOADED
-                    }
-                )
+        launchAndExecuteRequestRetrying(
+            request = { battleshipsService.getHome() },
+            events = _events,
+            onSuccess = { homeData ->
+                val resActions = homeData.actions ?: emptyList()
+                links = resActions.associate { Pair(it.name, it.href.path) }
+                state = HOME_LOADED
             }
-        }
+        )
     }
 
     /**
@@ -78,24 +68,15 @@ class HomeViewModel(
 
         state = LOADING_USER_HOME
 
-        viewModelScope.launch {
-            while (state == LOADING_USER_HOME) {
-                val httpRes = tryExecuteHttpRequest {
-                    battleshipsService.usersService.getUserHome(userHomeLink = userHomeLink)
-                }
-
-                val res = httpRes.handle(events = _events) ?: return@launch
-
-                res.handle(
-                    events = _events,
-                    onSuccess = { userHomeData ->
-                        val resActions = userHomeData.actions ?: emptyList()
-                        links = resActions.associate { Pair(it.name, it.href.path) }
-                        state = USER_HOME_LOADED
-                    }
-                )
+        launchAndExecuteRequestRetrying(
+            request = { battleshipsService.usersService.getUserHome(userHomeLink = userHomeLink) },
+            events = _events,
+            onSuccess = { userHomeData ->
+                val resActions = userHomeData.actions ?: emptyList()
+                links = resActions.associate { Pair(it.name, it.href.path) }
+                state = USER_HOME_LOADED
             }
-        }
+        )
     }
 
     /**

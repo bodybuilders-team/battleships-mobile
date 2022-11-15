@@ -1,6 +1,7 @@
 package pt.isel.pdm.battleships.ui.screens.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState
 import pt.isel.pdm.battleships.ui.utils.components.IconButton
+import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 
 private const val LOGO_MAX_SIZE_FACTOR = 0.6f
 private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
@@ -57,11 +59,19 @@ fun HomeScreen(
                 textAlign = TextAlign.Center
             )
 
-            Image(
-                painter = painterResource(R.drawable.logo),
-                contentDescription = stringResource(R.string.logo_content_description),
-                modifier = Modifier.fillMaxSize(LOGO_MAX_SIZE_FACTOR)
-            )
+            Box {
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = stringResource(R.string.logo_content_description),
+                    modifier = Modifier.fillMaxSize(LOGO_MAX_SIZE_FACTOR)
+                )
+
+                if (loadingState == HomeLoadingState.LOADING) {
+                    Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                        LoadingSpinner()
+                    }
+                }
+            }
 
             IconButton(
                 onClick = onGameplayMenuClick,

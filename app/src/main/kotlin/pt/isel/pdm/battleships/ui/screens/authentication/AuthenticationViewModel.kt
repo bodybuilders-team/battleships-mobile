@@ -13,9 +13,8 @@ import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LOADING
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.handle
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequest
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels.USER_HOME
-import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for both authentication methods (login and register).
@@ -42,24 +41,23 @@ open class AuthenticationViewModel(
      * @param username the username of the user
      * @param getAuthenticationResult the result of the authentication process
      */
-    protected suspend fun updateState(
+    protected fun updateState(
         username: String,
         getAuthenticationResult: suspend () -> APIResult<AuthenticationOutput>
     ) {
-        check(state == LOADING) { "The view model is not in the loading state" }
+        check(state == IDLE) { "The view model is not in the idle state" }
 
-        val httpRes = tryExecuteHttpRequest {
-            getAuthenticationResult()
-        }
+        state = LOADING
 
-        val res = httpRes.handle(
+        launchAndExecuteRequest(
+            request = { getAuthenticationResult() },
             events = _events,
-            onFailure = { state = IDLE }
-        ) ?: return
+            onFinish = { authenticationData ->
+                if (authenticationData == null) {
+                    state = IDLE
+                    return@launchAndExecuteRequest
+                }
 
-        res.handle(
-            events = _events,
-            onSuccess = { authenticationData ->
                 val properties = authenticationData.properties
                     ?: throw IllegalStateException("Token properties are null")
 
@@ -73,8 +71,7 @@ open class AuthenticationViewModel(
                     username = username
                 )
                 state = SUCCESS
-            },
-            onFailure = { state = IDLE }
+            }
         )
     }
 

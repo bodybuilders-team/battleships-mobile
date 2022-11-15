@@ -4,11 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.services.BattleshipsService
@@ -20,9 +18,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.handle
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
-import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for the [BoardSetupActivity].
@@ -63,26 +60,19 @@ class BoardSetupViewModel(
 
         _state = LOADING_GAME
 
-        viewModelScope.launch {
-            while (state == LOADING_GAME) {
+        launchAndExecuteRequestRetrying(
+            request = {
                 val token = sessionManager.accessToken
                     ?: throw IllegalStateException("No token found")
 
-                val httpRes = tryExecuteHttpRequest {
-                    gamesService.getGame(token, gameLink)
-                }
-
-                val res = httpRes.handle(events = _events) ?: return@launch
-
-                res.handle(
-                    events = _events,
-                    onSuccess = { getGameData ->
-                        _game = getGameData
-                        _state = GAME_LOADED
-                    }
-                )
+                gamesService.getGame(token, gameLink)
+            },
+            events = _events,
+            onSuccess = { getGameData ->
+                _game = getGameData
+                _state = GAME_LOADED
             }
-        }
+        )
     }
 
     /**
@@ -96,28 +86,21 @@ class BoardSetupViewModel(
 
         _state = DEPLOYING_FLEET
 
-        viewModelScope.launch {
-            while (state == DEPLOYING_FLEET) {
-                val httpRes = tryExecuteHttpRequest {
-                    playersService.deployFleet(
-                        token = sessionManager.accessToken
-                            ?: throw IllegalStateException("No token found"),
-                        deployFleetLink = deployFleetLink,
-                        fleet = DeployFleetInput(fleet = fleet.map(Ship::toUndeployedShipDTO))
-                    )
-                }
-
-                val res = httpRes.handle(events = _events) ?: return@launch
-
-                res.handle(
-                    events = _events,
-                    onSuccess = {
-                        _state = BoardSetupState.FLEET_DEPLOYED
-                        waitForOpponent()
-                    }
+        launchAndExecuteRequestRetrying(
+            request = {
+                playersService.deployFleet(
+                    token = sessionManager.accessToken
+                        ?: throw IllegalStateException("No token found"),
+                    deployFleetLink = deployFleetLink,
+                    fleet = DeployFleetInput(fleet = fleet.map(Ship::toUndeployedShipDTO))
                 )
+            },
+            events = _events,
+            onSuccess = {
+                _state = BoardSetupState.FLEET_DEPLOYED
+                waitForOpponent()
             }
-        }
+        )
     }
 
     /**
@@ -130,8 +113,8 @@ class BoardSetupViewModel(
 
         _state = WAITING_FOR_OPPONENT
 
-        while (state == WAITING_FOR_OPPONENT) {
-            val gameStateHttpRes = tryExecuteHttpRequest {
+        launchAndExecuteRequestRetrying(
+            request = {
                 gamesService.getGameState(
                     token = sessionManager.accessToken
                         ?: throw IllegalStateException("No token found"),
@@ -140,25 +123,20 @@ class BoardSetupViewModel(
                         ?.find { it.rel.contains(Rels.GAME_STATE) }?.href?.path
                         ?: throw IllegalStateException("Game state link not found")
                 )
-            }
+            },
+            events = _events,
+            onSuccess = { gameStateData ->
+                val properties = gameStateData.properties
+                    ?: throw IllegalStateException("Game state properties are null")
 
-            val gameStateRes = gameStateHttpRes.handle(events = _events) ?: continue
-
-            gameStateRes.handle(
-                events = _events,
-                onSuccess = { gameStateData ->
-                    val properties = gameStateData.properties
-                        ?: throw IllegalStateException("Game state properties are null")
-
-                    if (properties.phase == "DEPLOYING_FLEETS") { // TODO: add constants
-                        delay(1000L)
-                    } else {
-                        _events.emit(BoardSetupEvent.NavigateToGameplay)
-                        _state = BoardSetupState.FINISHED
-                    }
+                if (properties.phase == "DEPLOYING_FLEETS") { // TODO: add constants
+                    delay(1000L)
+                } else {
+                    _events.emit(BoardSetupEvent.NavigateToGameplay)
+                    _state = BoardSetupState.FINISHED
                 }
-            )
-        }
+            }
+        )
     }
 
     /**

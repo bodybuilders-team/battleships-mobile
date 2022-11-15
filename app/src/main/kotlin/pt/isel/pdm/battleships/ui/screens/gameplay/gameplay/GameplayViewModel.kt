@@ -4,11 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
@@ -28,9 +26,9 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.Ga
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.PLAYING_GAME
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.handle
+import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
-import pt.isel.pdm.battleships.ui.utils.tryExecuteHttpRequest
 
 /**
  * View model for the [GameplayActivity].
@@ -40,11 +38,20 @@ class GameplayViewModel(
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
+    /**
+     * The state of the [GameplayScreen].
+     *
+     * @property state the current state of the screen
+     * @property gameConfig the game configuration, null if the game is not loaded
+     * @property myBoard the board of the player, null if the game is not loaded
+     * @property opponentBoard the board of the opponent, null if the game is not loaded
+     * @property myTurn true if it's the player's turn, false otherwise, null if the game is not loaded
+     */
     data class GameplayScreenState(
         val state: GameplayState = IDLE,
         val gameConfig: GameConfig? = null,
-        val opponentBoard: OpponentBoard? = null,
         val myBoard: MyBoard? = null,
+        val opponentBoard: OpponentBoard? = null,
         val myTurn: Boolean? = null
     )
 
@@ -74,76 +81,66 @@ class GameplayViewModel(
             battleshipsService = battleshipsService
         )
 
-        viewModelScope.launch {
-            while (screenState.state == LOADING_GAME || screenState.state == LOADING_MY_FLEET) {
-                val httpRes = tryExecuteHttpRequest {
-                    linksGamesService.getGame()
+        launchAndExecuteRequestRetrying(
+            request = { linksGamesService.getGame() },
+            events = _events,
+            onSuccess = { gameData ->
+                _screenState = _screenState.copy(state = GameplayState.GAME_LOADED)
+
+                getMyFleet()
+
+                check(_screenState.state == GameplayState.MY_FLEET_LOADED) {
+                    "The view model is not in my fleet loaded state."
                 }
 
-                val res = httpRes.handle(events = _events) ?: return@launch
+                val properties = gameData.properties
+                    ?: throw IllegalStateException("No game properties found")
 
-                res.handle(
-                    events = _events,
-                    onSuccess = { gameData ->
-                        _screenState = _screenState.copy(state = GameplayState.LOADING_MY_FLEET)
+                val turn = properties.state.turn
+                    ?: throw IllegalStateException("No turn found")
 
-                        getMyFleet()
+                val gameConfig = GameConfig(properties.config)
 
-                        val properties = gameData.properties
-                            ?: throw IllegalStateException("No game properties found")
-
-                        val turn = properties.state.turn
-                            ?: throw IllegalStateException("No turn found")
-
-                        val gameConfig = GameConfig(properties.config)
-
-                        val myTurn = turn == sessionManager.username
-                        _screenState = _screenState.copy(
-                            gameConfig = gameConfig,
-                            state = PLAYING_GAME,
-                            opponentBoard = OpponentBoard(gameConfig.gridSize),
-                            myTurn = myTurn
-                        )
-
-                        if (!myTurn) waitForOpponent()
-                    }
+                val myTurn = turn == sessionManager.username
+                _screenState = _screenState.copy(
+                    gameConfig = gameConfig,
+                    state = PLAYING_GAME,
+                    opponentBoard = OpponentBoard(gameConfig.gridSize),
+                    myTurn = myTurn
                 )
+
+                if (!myTurn) waitForOpponent()
             }
-        }
+        )
     }
 
     /**
      * Gets the player's fleet.
      */
     private suspend fun getMyFleet() {
-        var fleetLoaded = false
-
-        while (!fleetLoaded) {
-            val httpRes = tryExecuteHttpRequest {
-                linksPlayersService.getMyFleet()
-            }
-
-            val res = httpRes.handle(events = _events) ?: continue
-
-            res.handle(
-                events = _events,
-                onSuccess = { myFleetData ->
-                    val initialFleet = parseFleet(
-                        fleet = myFleetData.properties
-                            ?: throw IllegalStateException("No ships found")
-                    )
-
-                    val gridSize = _screenState.gameConfig?.gridSize
-                        ?: throw IllegalStateException("No game config found")
-
-                    _screenState = _screenState.copy(
-                        myBoard = MyBoard(gridSize, initialFleet)
-                    )
-
-                    fleetLoaded = true
-                }
-            )
+        check(_screenState.state == GameplayState.GAME_LOADED) {
+            "The view model is not in game loaded state."
         }
+
+        _screenState = _screenState.copy(state = LOADING_MY_FLEET)
+
+        val myFleetData = executeRequestRetrying(
+            request = { linksPlayersService.getMyFleet() },
+            events = _events
+        )
+
+        val initialFleet = parseFleet(
+            fleet = myFleetData.properties
+                ?: throw IllegalStateException("No ships found")
+        )
+
+        val gridSize = _screenState.gameConfig?.gridSize
+            ?: throw IllegalStateException("No game config found")
+
+        _screenState = _screenState.copy(
+            myBoard = MyBoard(gridSize, initialFleet),
+            state = GameplayState.MY_FLEET_LOADED
+        )
     }
 
     /**
@@ -153,39 +150,35 @@ class GameplayViewModel(
      */
     fun fireShots(coordinates: List<Coordinate>) {
         check(_screenState.state == PLAYING_GAME) { "The game is not in the playing state" }
+        check(_screenState.myTurn == true) { "It's not your turn" }
 
-        viewModelScope.launch {
-            val httpRes = tryExecuteHttpRequest {
+        launchAndExecuteRequestRetrying(
+            request = {
                 linksPlayersService.fireShots(
                     shots = FireShotsInput(
                         coordinates.map { UnfiredShotModel(it.toCoordinateDTO()) }
                     )
                 )
+            },
+            events = _events,
+            onSuccess = { fireShotsData ->
+                val firedShots = fireShotsData.properties?.shots
+                    ?.map(FiredShotModel::toFiredShot)
+                    ?: throw IllegalStateException("No shots found")
+
+                _screenState = _screenState.copy(
+                    opponentBoard = _screenState.opponentBoard?.shoot(
+                        firedShots.map { shot ->
+                            shot.coordinate to
+                                (shot.result.result == "HIT" || shot.result.result == "SUNK")
+                        }
+                    ),
+                    myTurn = false
+                )
+
+                waitForOpponent()
             }
-
-            val res = httpRes.handle(events = _events) ?: return@launch
-
-            res.handle(
-                events = _events,
-                onSuccess = { fireShotsData ->
-                    val firedShots = fireShotsData.properties?.shots
-                        ?.map(FiredShotModel::toFiredShot)
-                        ?: throw IllegalStateException("No shots found")
-
-                    _screenState = _screenState.copy(
-                        opponentBoard = _screenState.opponentBoard?.shoot(
-                            firedShots.map { shot ->
-                                shot.coordinate to
-                                    (shot.result.result == "HIT" || shot.result.result == "SUNK")
-                            }
-                        ),
-                        myTurn = false
-                    )
-
-                    waitForOpponent()
-                }
-            )
-        }
+        )
     }
 
     /**
@@ -193,32 +186,25 @@ class GameplayViewModel(
      */
     private suspend fun waitForOpponent() {
         check(_screenState.state == PLAYING_GAME) { "The game is not in the playing state" }
+        check(_screenState.myTurn == false) { "It's not the opponent's turn" }
 
-        while (_screenState.myTurn == false) {
-            val gameStateHttpRes = tryExecuteHttpRequest {
-                linksGamesService.getGameState()
-            }
+        val gameStateData = executeRequestRetrying(
+            request = { linksGamesService.getGameState() },
+            events = _events
+        )
 
-            val res = gameStateHttpRes.handle(events = _events) ?: continue
+        val properties = gameStateData.properties
+            ?: throw IllegalStateException("Game state properties are null")
 
-            res.handle(
-                events = _events,
-                onSuccess = { gameStateData ->
-                    val properties = gameStateData.properties
-                        ?: throw IllegalStateException("Game state properties are null")
+        if (properties.phase == "FINISHED") {
+            _screenState = _screenState.copy(state = GameplayState.FINISHED_GAME)
+        }
 
-                    if (properties.phase == "FINISHED") {
-                        _screenState = _screenState.copy(state = GameplayState.FINISHED_GAME)
-                    }
-
-                    if (properties.turn != sessionManager.username) { // TODO: add constants
-                        delay(1000L)
-                    } else {
-                        getOpponentShots()
-                        _screenState = _screenState.copy(myTurn = true)
-                    }
-                }
-            )
+        if (properties.turn != sessionManager.username) { // TODO: add constants
+            delay(1000L)
+        } else {
+            getOpponentShots()
+            _screenState = _screenState.copy(myTurn = true)
         }
     }
 
@@ -226,32 +212,26 @@ class GameplayViewModel(
      * Gets the opponent's shots.
      */
     private suspend fun getOpponentShots() {
-        val httpRes = tryExecuteHttpRequest {
-            linksPlayersService.getOpponentShots()
-        }
+        val opponentShotsData = executeRequestRetrying(
+            request = { linksPlayersService.getOpponentShots() },
+            events = _events
+        )
 
-        val res = httpRes.handle(events = _events) ?: return
+        val opponentShots = opponentShotsData.properties?.shots
+            ?: throw IllegalStateException("No shots found")
 
-        res.handle(
-            events = _events,
-            onSuccess = { opponentShotsData ->
-                val opponentShots = opponentShotsData.properties?.shots
-                    ?: throw IllegalStateException("No shots found")
+        val myBoard = _screenState.myBoard
+            ?: throw IllegalStateException("No my board found")
 
-                val myBoard = _screenState.myBoard
-                    ?: throw IllegalStateException("No my board found")
-
-                _screenState = _screenState.copy(
-                    myBoard = MyBoard(
-                        size = myBoard.size,
-                        initialFleet = myBoard.initialFleet
-                    ).shoot(
-                        opponentShots.map {
-                            it.coordinate.toCoordinate()
-                        }
-                    )
-                )
-            }
+        _screenState = _screenState.copy(
+            myBoard = MyBoard(
+                size = myBoard.size,
+                initialFleet = myBoard.initialFleet
+            ).shoot(
+                opponentShots.map {
+                    it.coordinate.toCoordinate()
+                }
+            )
         )
     }
 
@@ -289,7 +269,9 @@ class GameplayViewModel(
     enum class GameplayState {
         IDLE,
         LOADING_GAME,
+        GAME_LOADED,
         LOADING_MY_FLEET,
+        MY_FLEET_LOADED,
         PLAYING_GAME,
         FINISHED_GAME
     }
