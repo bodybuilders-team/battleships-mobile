@@ -2,6 +2,8 @@ package pt.isel.pdm.battleships.ui.utils.navigation
 
 /**
  * Contains the relation links for the application.
+ *
+ * TODO enum class?
  */
 object Rels {
     const val SELF = "self"

@@ -16,8 +16,7 @@ import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
-import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.LINKS_KEY
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksToForResult
 import pt.isel.pdm.battleships.ui.utils.showToast
@@ -27,23 +26,25 @@ import pt.isel.pdm.battleships.ui.utils.viewModelInit
  * This activity is the main entry point of the application.
  * It is responsible for creating the main view and the view model.
  *
- * @property battleshipsService the service used to handle the battleships game
  * @property sessionManager the session manager used to handle the user session
  * @property viewModel the view model used to handle the state of the application
  * @property userHomeForResult the activity result launcher used to handle the user home result
  */
 class HomeActivity : ComponentActivity() {
 
-    private val battleshipsService by lazy {
-        (application as DependenciesContainer).battleshipsService
+    val dependenciesContainer by lazy {
+        (application as DependenciesContainer)
     }
 
     private val sessionManager by lazy {
-        (application as DependenciesContainer).sessionManager
+        dependenciesContainer.sessionManager
     }
 
     private val viewModel by viewModelInit {
-        HomeViewModel(battleshipsService = battleshipsService)
+        HomeViewModel(
+            battleshipsService = dependenciesContainer.battleshipsService,
+            sessionManager = sessionManager
+        )
     }
 
     private val userHomeForResult =
@@ -53,15 +54,9 @@ class HomeActivity : ComponentActivity() {
             val resultIntent = result.data ?: return@registerForActivityResult
             // This callback runs on the main thread
 
-            val links = resultIntent.getParcelableExtra<Links>(LINKS_KEY)
-                ?: throw IllegalStateException("Links not found")
+            viewModel.updateUserHomeLinks(resultIntent.getLinks())
 
-            viewModel.links = viewModel.links + links.links
-
-            val userHomeLink = links[Rels.USER_HOME]
-                ?: throw IllegalStateException("User home link not found")
-
-            viewModel.loadUserHome(userHomeLink)
+            viewModel.loadUserHome()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,36 +68,32 @@ class HomeActivity : ComponentActivity() {
             }
         }
 
-        viewModel.loadHome()
+        if (viewModel.screenState.state == HomeViewModel.HomeState.IDLE) {
+            viewModel.updateHomeLinks(Links(emptyMap()))
+
+            viewModel.loadHome()
+        }
 
         setContent {
             HomeScreen(
                 loggedIn = sessionManager.isLoggedIn(),
                 onGameplayMenuClick = {
-                    viewModel.navigateTo<GameplayMenuActivity>(
-                        linkRels = setOf(Rels.MATCHMAKE, Rels.CREATE_GAME, Rels.LIST_GAMES)
-                    )
+                    viewModel.navigateTo<GameplayMenuActivity>()
                 },
                 onLoginClick = {
-                    viewModel.navigateTo<LoginActivity>(
-                        linkRels = setOf(Rels.LOGIN)
-                    )
+                    viewModel.navigateTo<LoginActivity>()
                 },
                 onRegisterClick = {
-                    viewModel.navigateTo<RegisterActivity>(
-                        linkRels = setOf(Rels.REGISTER)
-                    )
+                    viewModel.navigateTo<RegisterActivity>()
                 },
                 onLogoutClick = { sessionManager.clearSession() },
                 onRankingClick = {
-                    viewModel.navigateTo<RankingActivity>(
-                        linkRels = setOf(Rels.LIST_USERS)
-                    )
+                    viewModel.navigateTo<RankingActivity>()
                 },
                 onAboutClick = {
                     viewModel.navigateTo<AboutActivity>()
                 },
-                loadingState = viewModel.loadingState
+                loadingState = viewModel.screenState.loadingState
             )
         }
     }
@@ -115,18 +106,15 @@ class HomeActivity : ComponentActivity() {
     private suspend fun handleEvent(event: Event) {
         when (event) {
             is HomeEvent.Navigate -> {
-                val links = event.linkRels?.let { rels ->
-                    viewModel.links
-                        .filter { rels.contains(it.key) }
-                        .mapValues { it.value }
-                }
+                val links = viewModel.getLinks()
 
                 when (event.clazz) {
                     LoginActivity::class.java, RegisterActivity::class.java ->
                         navigateWithLinksToForResult(userHomeForResult, event.clazz, links)
                     else -> navigateWithLinksTo(event.clazz, links)
                 }
-                viewModel.loadingState = HomeViewModel.HomeLoadingState.NOT_LOADING
+
+                viewModel.setLoadingStateToLoaded()
             }
             is Event.Error -> showToast(event.message, ToastDuration.LONG)
         }

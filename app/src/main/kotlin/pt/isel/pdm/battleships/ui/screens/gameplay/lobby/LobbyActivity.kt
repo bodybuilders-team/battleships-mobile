@@ -8,41 +8,29 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels.LIST_GAMES
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the lobby screen.
  *
- * @property battleshipsService the service used to handle the battleships game
- * @property sessionManager the session manager used to handle the user session
  * @property viewModel the view model used to the search game process
  */
 class LobbyActivity : ComponentActivity() {
 
-    private val battleshipsService by lazy {
-        (application as DependenciesContainer).battleshipsService
-    }
-
-    private val sessionManager by lazy {
-        (application as DependenciesContainer).sessionManager
+    val dependenciesContainer by lazy {
+        (application as DependenciesContainer)
     }
 
     private val viewModel by viewModelInit {
         LobbyViewModel(
-            sessionManager = sessionManager,
-            gamesService = battleshipsService.gamesService
+            battleshipsService = dependenciesContainer.battleshipsService,
+            sessionManager = dependenciesContainer.sessionManager
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val links = intent.getLinks()
-
-        val listGamesLink = links[LIST_GAMES]
-            ?: throw IllegalStateException("No $LIST_GAMES link found")
 
         lifecycleScope.launch {
             viewModel.events.collect {
@@ -50,7 +38,11 @@ class LobbyActivity : ComponentActivity() {
             }
         }
 
-        viewModel.getGames(listGamesLink)
+        if (viewModel.state == LobbyViewModel.LobbyState.IDLE) {
+            viewModel.updateLinks(intent.getLinks())
+
+            viewModel.getGames()
+        }
 
         setContent {
             LobbyScreen(

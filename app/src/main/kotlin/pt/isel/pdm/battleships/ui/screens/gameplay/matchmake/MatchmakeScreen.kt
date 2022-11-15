@@ -25,8 +25,8 @@ fun MatchmakeScreen(state: MatchmakeState) {
             modifier = Modifier.fillMaxSize()
         ) {
             when (state) {
-                MatchmakeState.MATCHMAKING, MatchmakeState.IDLE -> LoadingSpinner(text = "Matchmaking...")
                 MatchmakeState.MATCHMADE -> Text(text = "Matchmade!")
+                else -> LoadingSpinner(text = "Matchmaking...")
             }
         }
     }

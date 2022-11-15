@@ -59,8 +59,8 @@ fun RankingScreen(
             }
 
             when (state) {
-                RankingState.GETTING_USERS, RankingState.IDLE -> LoadingSpinner()
                 RankingState.FINISHED -> RankingTableView(filteredUsers)
+                else -> LoadingSpinner()
             }
 
             GoBackButton(onClick = onBackButtonClicked)

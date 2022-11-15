@@ -23,6 +23,16 @@ data class SirenEntity<T>(
     val links: List<Link>? = null,
     val title: String? = null
 ) {
+
+    /**
+     * Gets the links from the actions in a map where the key is the action name and the value is
+     * the action link.
+     *
+     * @return the links from the actions in a map
+     */
+    fun getActionLinks(): Map<String, String> =
+        actions?.associate { it.name to it.href.path } ?: emptyMap()
+
     companion object {
 
         /**

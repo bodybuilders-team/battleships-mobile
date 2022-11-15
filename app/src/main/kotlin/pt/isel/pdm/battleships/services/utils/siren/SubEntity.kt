@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.services.utils.siren
 
+import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -49,7 +50,25 @@ data class EmbeddedSubEntity<T>(
     val entities: List<SubEntity>? = null,
     val actions: List<Action>? = null,
     val links: List<Link>? = null
-) : SubEntity()
+) : SubEntity() {
+
+    inline fun <reified T> getEmbeddedSubEntity(): EmbeddedSubEntity<T> =
+        EmbeddedSubEntity(
+            `class` = `class`,
+            rel = rel,
+            properties = Gson().fromJson(
+                jsonEncoder.toJson(properties),
+                T::class.java
+            ),
+            entities = entities,
+            actions = actions,
+            links = links
+        )
+
+    companion object {
+        val jsonEncoder = Gson()
+    }
+}
 
 /**
  * A deserializer for the [SubEntity] class.

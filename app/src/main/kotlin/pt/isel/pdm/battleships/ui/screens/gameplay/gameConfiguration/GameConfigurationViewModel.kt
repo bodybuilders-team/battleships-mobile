@@ -3,73 +3,59 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
-import pt.isel.pdm.battleships.services.games.GamesService
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
+import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.CREATING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.GAME_CREATED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.LINKS_LOADED
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [GameConfigurationActivity].
  *
- * @property gamesService the service that handles the games
- *
  * @property state the current state of the view model
- * @property gameLink the link to the game
- * @property events the events that can be emitted by the view model
  */
 class GameConfigurationViewModel(
-    private val gamesService: GamesService,
-    private val sessionManager: SessionManager
-) : ViewModel() {
+    battleshipsService: BattleshipsService,
+    sessionManager: SessionManager
+) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
-    var state by mutableStateOf(IDLE)
-    var gameLink: String? by mutableStateOf(null)
-
-    private val _events = MutableSharedFlow<Event>()
-    val events: SharedFlow<Event> = _events
+    private var _state by mutableStateOf(IDLE)
+    val state: GameConfigurationState
+        get() = _state
 
     /**
      * Creates a new game.
      *
-     * @param createGameLink the link to the create game endpoint
      * @param gameConfig the game configuration
      */
-    fun createGame(createGameLink: String, gameConfig: GameConfig) {
-        check(state == IDLE) { "The view model is not in the idle state" }
+    fun createGame(gameConfig: GameConfig) {
+        check(state == LINKS_LOADED) { "The view model is not in the links loaded state" }
 
-        state = CREATING_GAME
+        _state = CREATING_GAME
 
         launchAndExecuteRequestRetrying(
             request = {
-                gamesService.createGame(
-                    token = sessionManager.accessToken
-                        ?: throw IllegalStateException("The user is not logged in"),
-                    createGameLink = createGameLink,
+                battleshipsService.gamesService.createGame(
                     gameConfig = gameConfig.toGameConfigDTO()
                 )
             },
             events = _events,
-            onSuccess = { createGameData ->
-                val entities = createGameData.entities
-                    ?: throw IllegalStateException("No entities in response")
-
-                gameLink = entities
-                    .filterIsInstance<EmbeddedLink>()
-                    .first { it.rel.contains(Rels.GAME) }.href.path
-
-                state = GAME_CREATED
+            onSuccess = {
+                _state = GAME_CREATED
                 _events.emit(GameConfigurationEvent.NavigateToBoardSetup)
             }
         )
+    }
+
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
     }
 
     /**
@@ -81,6 +67,7 @@ class GameConfigurationViewModel(
      */
     enum class GameConfigurationState {
         IDLE,
+        LINKS_LOADED,
         CREATING_GAME,
         GAME_CREATED
     }

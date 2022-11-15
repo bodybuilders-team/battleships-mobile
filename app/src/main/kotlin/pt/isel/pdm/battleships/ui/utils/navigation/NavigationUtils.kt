@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.utils.navigation // ktlint-disable filename
+package pt.isel.pdm.battleships.ui.utils.navigation
 
 import android.content.Context
 import android.content.Intent
@@ -54,15 +54,27 @@ fun <T> Context.navigateToForResult(
  * Navigates to the specified activity, with the given link keys.
  *
  * @param clazz the class of the activity to navigate to
- * @param links the link keys to set before navigating
+ * @param links the links to set before navigating
  */
 fun Context.navigateWithLinksTo(
     clazz: Class<*>,
-    links: Map<String, String>? = null
+    links: Links
 ) {
     navigateTo(clazz) { intent ->
-        links ?: return@navigateTo
-        intent.putExtra(Links.LINKS_KEY, Links(links))
+        intent.putExtra(Links.LINKS_KEY, links)
+    }
+}
+
+/**
+ * Navigates to the specified activity, with the given link keys.
+ *
+ * @param links the links to set before navigating
+ */
+inline fun <reified T> Context.navigateWithLinksTo(
+    links: Links
+) {
+    navigateTo<T> { intent ->
+        intent.putExtra(Links.LINKS_KEY, links)
     }
 }
 
@@ -72,15 +84,14 @@ fun Context.navigateWithLinksTo(
  *
  * @param activityResultLauncher the activity result launcher to use
  * @param clazz the class of the activity to navigate to
- * @param links the link keys to set before navigating
+ * @param links the links to set before navigating
  */
 fun Context.navigateWithLinksToForResult(
     activityResultLauncher: ActivityResultLauncher<Intent?>,
     clazz: Class<*>,
-    links: Map<String, String>? = null
+    links: Links
 ) {
     navigateToForResult(activityResultLauncher, clazz, beforeNavigation = { intent ->
-        links ?: return@navigateToForResult
-        intent.putExtra(Links.LINKS_KEY, Links(links))
+        intent.putExtra(Links.LINKS_KEY, links)
     })
 }

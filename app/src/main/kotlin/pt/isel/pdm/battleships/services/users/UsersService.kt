@@ -5,11 +5,14 @@ import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.users.models.getUsers.GetUsersOutput
+import pt.isel.pdm.battleships.services.users.models.getUsers.GetUsersOutputModel
+import pt.isel.pdm.battleships.services.users.models.getUsers.GetUsersUserModel
 import pt.isel.pdm.battleships.services.users.models.login.LoginInput
 import pt.isel.pdm.battleships.services.users.models.login.LoginOutput
 import pt.isel.pdm.battleships.services.users.models.register.RegisterInput
 import pt.isel.pdm.battleships.services.users.models.register.RegisterOutput
 import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.services.utils.siren.EmbeddedSubEntity
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 import java.io.IOException
 
@@ -82,8 +85,21 @@ class UsersService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getUsers(listUsersLink: String): APIResult<GetUsersOutput> =
-        get(link = listUsersLink)
+    suspend fun getUsers(listUsersLink: String): APIResult<GetUsersOutput> {
+        val getUserResult = get<GetUsersOutputModel>(link = listUsersLink)
+
+        if (getUserResult !is APIResult.Success)
+            return getUserResult
+
+        val data = getUserResult.data.copy(
+            entities = getUserResult.data.entities?.filterIsInstance<EmbeddedSubEntity<*>>()
+                ?.map { entity ->
+                    entity.getEmbeddedSubEntity<GetUsersUserModel>()
+                }
+        )
+
+        return APIResult.Success(data)
+    }
 
     /**
      * Gets the user home.

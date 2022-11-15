@@ -75,7 +75,7 @@ fun HomeScreen(
 
             IconButton(
                 onClick = onGameplayMenuClick,
-                enabled = loadingState == HomeLoadingState.NOT_LOADING && loggedIn,
+                enabled = loadingState != HomeLoadingState.LOADING && loggedIn,
                 imageVector = ImageVector.vectorResource(
                     id = R.drawable.ic_round_play_arrow_24
                 ),
@@ -87,7 +87,7 @@ fun HomeScreen(
             if (!loggedIn) {
                 IconButton(
                     onClick = onLoginClick,
-                    enabled = loadingState == HomeLoadingState.NOT_LOADING,
+                    enabled = loadingState != HomeLoadingState.LOADING,
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
                     contentDescription = stringResource(
                         R.string.main_menu_login_button_description
@@ -98,7 +98,7 @@ fun HomeScreen(
 
                 IconButton(
                     onClick = onRegisterClick,
-                    enabled = loadingState == HomeLoadingState.NOT_LOADING,
+                    enabled = loadingState != HomeLoadingState.LOADING,
                     imageVector = ImageVector.vectorResource(
                         id = R.drawable.ic_round_person_add_24
                     ),
@@ -113,7 +113,7 @@ fun HomeScreen(
             } else {
                 IconButton(
                     onClick = onLogoutClick,
-                    enabled = loadingState == HomeLoadingState.NOT_LOADING,
+                    enabled = loadingState != HomeLoadingState.LOADING,
                     imageVector = ImageVector.vectorResource(
                         id = R.drawable.ic_round_logout_24
                     ),
@@ -127,7 +127,7 @@ fun HomeScreen(
 
             IconButton(
                 onClick = onRankingClick,
-                enabled = loadingState == HomeLoadingState.NOT_LOADING,
+                enabled = loadingState != HomeLoadingState.LOADING,
                 imageVector = ImageVector.vectorResource(
                     id = R.drawable.ic_round_table_rows_24
                 ),
@@ -140,7 +140,7 @@ fun HomeScreen(
 
             IconButton(
                 onClick = onAboutClick,
-                enabled = loadingState == HomeLoadingState.NOT_LOADING,
+                enabled = loadingState != HomeLoadingState.LOADING,
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
                 contentDescription = stringResource(
                     R.string.main_menu_about_button_description

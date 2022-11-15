@@ -40,7 +40,6 @@ fun LobbyScreen(
             ScreenTitle(title = stringResource(id = R.string.lobby_title))
 
             when (state) {
-                LobbyState.GETTING_GAMES, LobbyState.IDLE -> LoadingSpinner()
                 LobbyState.FINISHED ->
                     LazyColumn(
                         verticalArrangement = Arrangement.Top,
@@ -61,6 +60,7 @@ fun LobbyScreen(
                             )
                         }
                     }
+                else -> LoadingSpinner()
             }
 
             GoBackButton(onClick = onBackButtonClicked)

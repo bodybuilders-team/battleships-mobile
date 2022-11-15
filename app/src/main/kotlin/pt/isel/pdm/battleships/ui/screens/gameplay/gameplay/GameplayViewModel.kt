@@ -3,10 +3,7 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.gameplay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
@@ -16,27 +13,30 @@ import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.LinkBattleshipsService
 import pt.isel.pdm.battleships.services.games.models.players.fireShots.FireShotsInput
 import pt.isel.pdm.battleships.services.games.models.players.ship.GetFleetOutputModel
 import pt.isel.pdm.battleships.services.games.models.players.shot.FiredShotModel
 import pt.isel.pdm.battleships.services.games.models.players.shot.UnfiredShotModel
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.FINISHED_GAME
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.GAME_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.MY_FLEET_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.PLAYING_GAME
-import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [GameplayActivity].
  */
 class GameplayViewModel(
-    private val battleshipsService: BattleshipsService,
-    private val sessionManager: SessionManager
-) : ViewModel() {
+    battleshipsService: BattleshipsService,
+    sessionManager: SessionManager
+) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
     /**
      * The state of the [GameplayScreen].
@@ -59,40 +59,20 @@ class GameplayViewModel(
     val screenState: GameplayScreenState
         get() = _screenState
 
-    private val _events = MutableSharedFlow<Event>()
-    val events: SharedFlow<Event> = _events
-
-    private lateinit var linksBattleshipsService: LinkBattleshipsService
-    private val linksGamesService by lazy { linksBattleshipsService.gamesService }
-    private val linksPlayersService by lazy { linksBattleshipsService.playersService }
-
     /**
      * Loads the game.
-     *
-     * @param gameLink the link to the game
      */
-    fun loadGame(gameLink: String) {
-        check(_screenState.state == IDLE) { "The view model is not in idle state." }
+    fun loadGame() {
+        check(_screenState.state == LINKS_LOADED) {
+            "The view model is not in links loaded state."
+        }
+
         _screenState = _screenState.copy(state = LOADING_GAME)
 
-        linksBattleshipsService = LinkBattleshipsService(
-            links = mapOf(Rels.GAME to gameLink),
-            sessionManager = sessionManager,
-            battleshipsService = battleshipsService
-        )
-
         launchAndExecuteRequestRetrying(
-            request = { linksGamesService.getGame() },
+            request = { battleshipsService.gamesService.getGame() },
             events = _events,
             onSuccess = { gameData ->
-                _screenState = _screenState.copy(state = GameplayState.GAME_LOADED)
-
-                getMyFleet()
-
-                check(_screenState.state == GameplayState.MY_FLEET_LOADED) {
-                    "The view model is not in my fleet loaded state."
-                }
-
                 val properties = gameData.properties
                     ?: throw IllegalStateException("No game properties found")
 
@@ -102,12 +82,21 @@ class GameplayViewModel(
                 val gameConfig = GameConfig(properties.config)
 
                 val myTurn = turn == sessionManager.username
+
                 _screenState = _screenState.copy(
+                    state = GAME_LOADED,
                     gameConfig = gameConfig,
-                    state = PLAYING_GAME,
                     opponentBoard = OpponentBoard(gameConfig.gridSize),
                     myTurn = myTurn
                 )
+
+                getMyFleet()
+
+                check(_screenState.state == MY_FLEET_LOADED) {
+                    "The view model is not in my fleet loaded state."
+                }
+
+                _screenState = _screenState.copy(state = PLAYING_GAME)
 
                 if (!myTurn) waitForOpponent()
             }
@@ -118,14 +107,14 @@ class GameplayViewModel(
      * Gets the player's fleet.
      */
     private suspend fun getMyFleet() {
-        check(_screenState.state == GameplayState.GAME_LOADED) {
+        check(_screenState.state == GAME_LOADED) {
             "The view model is not in game loaded state."
         }
 
         _screenState = _screenState.copy(state = LOADING_MY_FLEET)
 
         val myFleetData = executeRequestRetrying(
-            request = { linksPlayersService.getMyFleet() },
+            request = { battleshipsService.playersService.getMyFleet() },
             events = _events
         )
 
@@ -139,7 +128,7 @@ class GameplayViewModel(
 
         _screenState = _screenState.copy(
             myBoard = MyBoard(gridSize, initialFleet),
-            state = GameplayState.MY_FLEET_LOADED
+            state = MY_FLEET_LOADED
         )
     }
 
@@ -154,7 +143,7 @@ class GameplayViewModel(
 
         launchAndExecuteRequestRetrying(
             request = {
-                linksPlayersService.fireShots(
+                battleshipsService.playersService.fireShots(
                     shots = FireShotsInput(
                         coordinates.map { UnfiredShotModel(it.toCoordinateDTO()) }
                     )
@@ -188,23 +177,26 @@ class GameplayViewModel(
         check(_screenState.state == PLAYING_GAME) { "The game is not in the playing state" }
         check(_screenState.myTurn == false) { "It's not the opponent's turn" }
 
-        val gameStateData = executeRequestRetrying(
-            request = { linksGamesService.getGameState() },
-            events = _events
-        )
+        while (true) {
+            val gameStateData = executeRequestRetrying(
+                request = { battleshipsService.gamesService.getGameState() },
+                events = _events
+            )
 
-        val properties = gameStateData.properties
-            ?: throw IllegalStateException("Game state properties are null")
+            val properties = gameStateData.properties
+                ?: throw IllegalStateException("Game state properties are null")
 
-        if (properties.phase == "FINISHED") {
-            _screenState = _screenState.copy(state = GameplayState.FINISHED_GAME)
-        }
+            if (properties.phase == FINISHED_PHASE)
+                _screenState = _screenState.copy(state = FINISHED_GAME)
 
-        if (properties.turn != sessionManager.username) { // TODO: add constants
-            delay(1000L)
-        } else {
-            getOpponentShots()
-            _screenState = _screenState.copy(myTurn = true)
+            if (properties.turn != sessionManager.username) {
+                delay(POLLING_DELAY)
+            } else {
+                getOpponentShots()
+                delay(TURN_SWITCH_DELAY)
+                _screenState = _screenState.copy(myTurn = true)
+                break
+            }
         }
     }
 
@@ -213,7 +205,7 @@ class GameplayViewModel(
      */
     private suspend fun getOpponentShots() {
         val opponentShotsData = executeRequestRetrying(
-            request = { linksPlayersService.getOpponentShots() },
+            request = { battleshipsService.playersService.getOpponentShots() },
             events = _events
         )
 
@@ -261,6 +253,11 @@ class GameplayViewModel(
             )
         }
 
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _screenState = _screenState.copy(state = LINKS_LOADED)
+    }
+
     /**
      * The state of the view model.
      *
@@ -268,11 +265,18 @@ class GameplayViewModel(
      */
     enum class GameplayState {
         IDLE,
+        LINKS_LOADED,
         LOADING_GAME,
         GAME_LOADED,
         LOADING_MY_FLEET,
         MY_FLEET_LOADED,
         PLAYING_GAME,
         FINISHED_GAME
+    }
+
+    companion object {
+        private const val FINISHED_PHASE = "FINISHED"
+        private const val POLLING_DELAY = 500L
+        private const val TURN_SWITCH_DELAY = 1500L
     }
 }

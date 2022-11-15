@@ -22,25 +22,27 @@ import java.io.IOException
  */
 class LinkBattleshipsService(
     links: Map<String, String>,
-    sessionManager: SessionManager,
-    private val battleshipsService: BattleshipsService
+    private val battleshipsService: BattleshipsService,
+    sessionManager: SessionManager
 ) {
-    val links = links.toMutableMap()
+    private val _links = links.toMutableMap()
+    val links
+        get() = _links.toMap()
 
     val usersService = LinkUsersService(
-        links = this.links,
+        links = this._links,
         usersService = battleshipsService.usersService
     )
 
     val gamesService = LinkGamesService(
         sessionManager = sessionManager,
-        links = this.links,
+        links = this._links,
         gamesService = battleshipsService.gamesService
     )
 
     val playersService = LinkPlayersService(
         sessionManager = sessionManager,
-        links = this.links,
+        links = this._links,
         playersService = battleshipsService.playersService
     )
 
@@ -52,5 +54,14 @@ class LinkBattleshipsService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getHome(): APIResult<GetHomeOutput> = battleshipsService.getHome()
+    suspend fun getHome(): APIResult<GetHomeOutput> {
+        val getHomeResult = battleshipsService.getHome()
+
+        if (getHomeResult !is APIResult.Success)
+            return getHomeResult
+
+        _links.putAll(getHomeResult.data.getActionLinks())
+
+        return getHomeResult
+    }
 }

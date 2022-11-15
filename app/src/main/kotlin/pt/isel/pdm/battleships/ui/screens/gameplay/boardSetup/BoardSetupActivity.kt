@@ -7,80 +7,66 @@ import androidx.compose.material.Text
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.domain.games.ship.ShipType
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels
-import pt.isel.pdm.battleships.ui.utils.navigation.navigateTo
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the board setup screen.
  *
- * @property battleshipsService the service used to handle the battleships game
- * @property sessionManager the session manager used to handle the user session
  * @property viewModel the view model used to handle the board setup screen
  */
 class BoardSetupActivity : ComponentActivity() {
 
-    private val battleshipsService by lazy {
-        (application as DependenciesContainer).battleshipsService
-    }
-
-    private val sessionManager by lazy {
-        (application as DependenciesContainer).sessionManager
+    val dependenciesContainer by lazy {
+        (application as DependenciesContainer)
     }
 
     private val viewModel by viewModelInit {
         BoardSetupViewModel(
-            battleshipsService = battleshipsService,
-            sessionManager = sessionManager
+            battleshipsService = dependenciesContainer.battleshipsService,
+            sessionManager = dependenciesContainer.sessionManager
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val gameLink = intent.getStringExtra(Links.GAME_LINK)
-            ?: throw IllegalStateException("No game link found")
-
         lifecycleScope.launch {
             viewModel.events.collect {
-                handleEvent(it, gameLink)
+                handleEvent(it)
             }
         }
 
-        viewModel.loadGame(gameLink)
+        if (viewModel.screenState.state == IDLE) {
+            viewModel.updateLinks(intent.getLinks())
+
+            viewModel.loadGame()
+        }
 
         setContent {
-            when (viewModel.state) {
-                BoardSetupViewModel.BoardSetupState.LOADING_GAME -> {
+            when (viewModel.screenState.state) {
+                IDLE, LINKS_LOADED, LOADING_GAME -> {
                     Text("Loading Game..")
                 }
-                BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT -> {
+                WAITING_FOR_OPPONENT -> {
                     Text("Waiting for opponent..")
                 }
                 else -> {
-                    val game = viewModel.game
-                        ?: throw IllegalStateException("No game found")
-
-                    val properties = game.properties
-                        ?: throw IllegalStateException("No game properties found")
-
-                    val deployFleetLink = game.actions
-                        ?.find { it.name == Rels.DEPLOY_FLEET }?.href?.path
-                        ?: throw IllegalStateException("No deploy fleet link found")
-
-                    val gridSize = properties.config.gridSize
-                    val ships = properties.config.shipTypes.map(ShipType::fromShipTypeDTO)
-
                     BoardSetupScreen(
-                        boardSize = gridSize,
-                        ships = ships,
+                        boardSize = viewModel.screenState.gridSize
+                            ?: throw IllegalStateException("No grid size found"),
+                        ships = viewModel.screenState.ships
+                            ?: throw IllegalStateException("No ships found"),
                         onBoardSetupFinished = { board ->
-                            viewModel.deployFleet(deployFleetLink, board.fleet)
+                            viewModel.deployFleet(board.fleet)
                         },
                         onBackButtonClicked = { finish() }
                     )
@@ -89,15 +75,12 @@ class BoardSetupActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun handleEvent(event: Event, gameLink: String) {
+    private suspend fun handleEvent(event: Event) {
         when (event) {
             is BoardSetupViewModel.BoardSetupEvent.NavigateToGameplay -> {
-                navigateTo<GameplayActivity> {
-                    it.putExtra(Links.GAME_LINK, gameLink)
-                }
+                navigateWithLinksTo<GameplayActivity>(viewModel.getLinks())
                 finish()
             }
-
             is Event.Error -> showToast(event.message)
         }
     }

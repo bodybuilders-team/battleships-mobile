@@ -43,5 +43,13 @@ data class Links(val links: Map<String, String>) : Parcelable {
         fun Intent.getLinks(): Links =
             getParcelableExtra(LINKS_KEY)
                 ?: throw IllegalArgumentException("Links not found in intent")
+
+        /**
+         * Puts the links into the specified intent.
+         *
+         * @receiver the intent to put the links into
+         */
+        fun Intent.putLinks(links: Links) =
+            putExtra(LINKS_KEY, links)
     }
 }

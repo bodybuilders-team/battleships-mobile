@@ -8,42 +8,28 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.showToast
 import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the gameplay screen.
- *
- * @property battleshipsService the service used to handle the battleships game
- * @property sessionManager the session manager used to handle the user session
- * @property jsonEncoder the json formatter
  */
 class GameplayActivity : ComponentActivity() {
 
-    val battleshipsService by lazy {
-        (application as DependenciesContainer).battleshipsService
-    }
-
-    val sessionManager by lazy {
-        (application as DependenciesContainer).sessionManager
-    }
-
-    val jsonEncoder by lazy {
-        (application as DependenciesContainer).jsonEncoder
+    val dependenciesContainer by lazy {
+        (application as DependenciesContainer)
     }
 
     private val viewModel by viewModelInit {
         GameplayViewModel(
-            battleshipsService = battleshipsService,
-            sessionManager = sessionManager
+            battleshipsService = dependenciesContainer.battleshipsService,
+            sessionManager = dependenciesContainer.sessionManager
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val gameLink = intent.getStringExtra("gameLink")
-            ?: throw IllegalStateException("No game link found")
 
         lifecycleScope.launch {
             viewModel.events.collect {
@@ -51,7 +37,11 @@ class GameplayActivity : ComponentActivity() {
             }
         }
 
-        viewModel.loadGame(gameLink)
+        if (viewModel.screenState.state == GameplayViewModel.GameplayState.IDLE) {
+            viewModel.updateLinks(intent.getLinks())
+
+            viewModel.loadGame()
+        }
 
         setContent {
             when (viewModel.screenState.state) {

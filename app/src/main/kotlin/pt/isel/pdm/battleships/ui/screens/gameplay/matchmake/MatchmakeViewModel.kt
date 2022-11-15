@@ -4,79 +4,64 @@ import android.content.res.AssetManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.games.GamesService
+import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels.GAME
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels.GAME_STATE
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [MatchmakeActivity].
  *
- * @property gamesService the service that handles the games
+ * @property battleshipsService the service of the battleships application
  * @property sessionManager the manager used to handle the user session
  * @param jsonEncoder the JSON formatter
  * @param assetManager the asset manager
  *
  * @property state the current state of the view model
- * @property gameLink the id of the game that was created
  * @property events the events that can be emitted by the view model
  */
 class MatchmakeViewModel(
-    private val gamesService: GamesService,
-    private val sessionManager: SessionManager,
+    battleshipsService: BattleshipsService,
+    sessionManager: SessionManager,
     jsonEncoder: Gson,
     assetManager: AssetManager
-) : ViewModel() {
+) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
-    var state by mutableStateOf(IDLE)
-    var gameLink: String? by mutableStateOf(null)
+    private var _state by mutableStateOf(IDLE)
+    val state: MatchmakeState
+        get() = _state
 
     private val gameConfigModel = jsonEncoder.fromJson<GameConfigModel>(
         JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
         GameConfigModel::class.java
     )
 
-    private val _events = MutableSharedFlow<Event>()
-    val events: SharedFlow<Event> = _events
-
     /**
      * Matchmakes a game with the default configuration.
-     *
-     * @param matchmakeLink the link to the matchmake endpoint
      */
-    fun matchmake(matchmakeLink: String) {
-        check(state == IDLE) { "The view model is not in the idle state" }
+    fun matchmake() {
+        check(state == LINKS_LOADED) { "The view model is not in the links loaded state" }
 
-        state = MATCHMAKING
+        _state = MATCHMAKING
 
         viewModelScope.launch {
             delay(ANIMATION_DELAY)
 
-            val token = sessionManager.accessToken
-                ?: throw IllegalStateException("No token found")
-
-            var gameStateLink: String? = null
-
             val matchmakeData = executeRequestRetrying(
                 request = {
-                    gamesService.matchmake(
-                        token = token,
-                        matchmakeLink = matchmakeLink,
+                    battleshipsService.gamesService.matchmake(
                         gameConfig = gameConfigModel
                     )
                 },
@@ -86,48 +71,35 @@ class MatchmakeViewModel(
             val properties = matchmakeData.properties
                 ?: throw IllegalStateException("Game properties are null")
 
-            val entities = matchmakeData.entities
-                ?: throw IllegalStateException("Game entities are null")
-
-            val matchGameLink = entities
-                .filterIsInstance<EmbeddedLink>()
-                .find { it.rel.contains(GAME) }?.href?.path
-                ?: throw IllegalStateException("Game link not found")
-
-            val matchGameStateLink = entities
-                .filterIsInstance<EmbeddedLink>()
-                .find { it.rel.contains(GAME_STATE) }?.href?.path
-                ?: throw IllegalStateException("Game state link not found")
-
-            gameLink = matchGameLink
-            if (properties.wasCreated) {
-                gameStateLink = matchGameStateLink
-            } else {
+            if (!properties.wasCreated) {
                 _events.emit(MatchmakeEvent.NavigateToBoardSetup)
-                state = MATCHMADE
+                _state = MATCHMADE
+                return@launch
             }
 
-            val gameStateData = executeRequestRetrying(
-                request = {
-                    gamesService.getGameState(
-                        token = token,
-                        gameStateLink = gameStateLink
-                            ?: throw IllegalStateException("Game state link is null")
-                    )
-                },
-                events = _events
-            )
+            while (true) {
+                val gameStateData = executeRequestRetrying(
+                    request = { battleshipsService.gamesService.getGameState() },
+                    events = _events
+                )
 
-            val gameStateProperties = gameStateData.properties
-                ?: throw IllegalStateException("Game state properties are null")
+                val gameStateProperties = gameStateData.properties
+                    ?: throw IllegalStateException("Game state properties are null")
 
-            if (gameStateProperties.phase == WAITING_FOR_PLAYERS_PHASE) {
-                delay(POLLING_DELAY)
-            } else {
-                _events.emit(MatchmakeEvent.NavigateToBoardSetup)
-                state = MATCHMADE
+                if (gameStateProperties.phase == WAITING_FOR_PLAYERS_PHASE) {
+                    delay(POLLING_DELAY)
+                } else {
+                    _events.emit(MatchmakeEvent.NavigateToBoardSetup)
+                    _state = MATCHMADE
+                    break
+                }
             }
         }
+    }
+
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
     }
 
     /**
@@ -139,6 +111,7 @@ class MatchmakeViewModel(
      */
     enum class MatchmakeState {
         IDLE,
+        LINKS_LOADED,
         MATCHMAKING,
         MATCHMADE
     }

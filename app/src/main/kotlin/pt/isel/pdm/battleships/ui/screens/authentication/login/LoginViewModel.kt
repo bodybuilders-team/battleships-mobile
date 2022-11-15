@@ -1,31 +1,28 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.login
 
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.users.UsersService
+import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
 
 /**
  * View model for the [LoginActivity].
  *
- * @property usersService the service used to handle the users
  * @param sessionManager the manager used to handle the user session
  */
 class LoginViewModel(
-    private val usersService: UsersService,
+    battleshipsService: BattleshipsService,
     sessionManager: SessionManager
-) : AuthenticationViewModel(sessionManager) {
+) : AuthenticationViewModel(battleshipsService, sessionManager) {
 
     /**
      * Attempts to login the user with the given credentials.
      *
-     * @param loginLink the link to the login endpoint
      * @param username the username of the user
      * @param password the password of the user
      */
-    fun login(loginLink: String, username: String, password: String) {
-        updateState(username = username) {
-            usersService.login(
-                loginLink = loginLink,
+    fun login(username: String, password: String) {
+        executeAuthenticationRequest(username = username) {
+            battleshipsService.usersService.login(
                 username = username,
                 password = password
             )
