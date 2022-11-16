@@ -52,6 +52,62 @@ data class EmbeddedSubEntity<T>(
     val links: List<Link>? = null
 ) : SubEntity() {
 
+    /*
+    TODO Create Entity interface that contains these methods and is used both in EmbeddedSubEntity
+     and SirenEntity
+     */
+
+    /**
+     * Gets the link with the given [rels] from [links].
+     *
+     * @param rels the relations of the link
+     *
+     * @return the link with the given [rels]
+     */
+    fun getLink(vararg rels: String) =
+        links?.single { link -> rels.all { rel -> rel in link.rel } }
+            ?: throw IllegalStateException("There is no links property.")
+
+    /**
+     * Gets the action with the given [name] from [actions].
+     *
+     * @param name the name of the action
+     *
+     * @return the action with the given [name]
+     */
+    fun getAction(name: String) =
+        actions?.single { action -> action.name == name }
+            ?: throw IllegalStateException("There is no actions property.")
+
+    /**
+     * Gets the embedded sub entities with the given [rels] from [entities],
+     * appropriately casting to EmbeddedSubEntity of [T].
+     *
+     * @param T the type of the properties of the sub entities
+     * @param rels the relations of the embedded sub entities
+     *
+     * @return the embedded sub entities with the given [rels]
+     */
+    fun <T> embeddedSubEntities(vararg rels: String) =
+        entities?.filterIsInstance<EmbeddedSubEntity<T>>()
+            ?.filter { link ->
+                rels.all { rel -> rel in link.rel }
+            }
+            ?: throw NoSuchElementException("There are no sub entities of that type and rels.")
+
+    /**
+     * Gets the embedded links with the given [rels] from [entities],
+     * appropriately casting to EmbeddedLink.
+     *
+     * @param rels the relations of the embedded links
+     *
+     * @return the embedded links with the given [rels]
+     */
+    fun embeddedLinks(vararg rels: String) =
+        entities?.filterIsInstance<EmbeddedLink>()
+            ?.filter { link -> rels.all { rel -> rel in link.rel } }
+            ?: throw NoSuchElementException("There are no embedded links of that type and rels.")
+
     inline fun <reified T> getEmbeddedSubEntity(): EmbeddedSubEntity<T> =
         EmbeddedSubEntity(
             `class` = `class`,

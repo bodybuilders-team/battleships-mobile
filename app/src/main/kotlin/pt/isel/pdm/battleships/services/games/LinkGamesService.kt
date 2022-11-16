@@ -10,8 +10,6 @@ import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutp
 import pt.isel.pdm.battleships.services.games.models.games.joinGame.JoinGameOutput
 import pt.isel.pdm.battleships.services.games.models.games.matchmake.MatchmakeOutput
 import pt.isel.pdm.battleships.services.utils.APIResult
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedSubEntity
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import java.io.IOException
@@ -48,20 +46,13 @@ class LinkGamesService(
         if (getGamesResult !is APIResult.Success)
             return getGamesResult
 
-        getGamesResult.data.entities?.filterIsInstance<EmbeddedSubEntity<GetGameOutputModel>>()
-            ?.forEach { entity ->
+        getGamesResult.data.embeddedSubEntities<GetGameOutputModel>(Rels.ITEM, Rels.GAME)
+            .forEach { entity ->
                 val id = entity.properties?.id
                     ?: throw IllegalArgumentException("The properties are missing")
 
-                links["${Rels.GAME}-$id"] = entity.links?.find {
-                    Rels.SELF in it.rel
-                }?.href?.path
-                    ?: throw IllegalArgumentException("The game link is missing")
-
-                links["${Rels.JOIN_GAME}-$id"] = entity.actions?.find {
-                    it.name == Rels.JOIN_GAME
-                }?.href?.path
-                    ?: throw IllegalArgumentException("The join game link is missing")
+                links["${Rels.GAME}-$id"] = entity.getLink(Rels.SELF).href.path
+                links["${Rels.JOIN_GAME}-$id"] = entity.getAction(Rels.JOIN_GAME).href.path
             }
 
         return getGamesResult
@@ -88,14 +79,10 @@ class LinkGamesService(
         if (createGameResult !is APIResult.Success)
             return createGameResult
 
-        val embeddedLinks = createGameResult.data.entities?.filterIsInstance<EmbeddedLink>()
-            ?: throw IllegalStateException("The embedded links are missing")
-
-        links[Rels.GAME] = embeddedLinks.find { Rels.GAME in it.rel }?.href?.path
-            ?: throw IllegalStateException("The game link is missing")
-
-        links[Rels.GAME_STATE] = embeddedLinks.find { Rels.GAME_STATE in it.rel }?.href?.path
-            ?: throw IllegalStateException("The game state link is missing")
+        links[Rels.GAME] =
+            createGameResult.data.embeddedLinks(Rels.GAME).single().href.path
+        links[Rels.GAME_STATE] =
+            createGameResult.data.embeddedLinks(Rels.GAME_STATE).single().href.path
 
         return createGameResult
     }
@@ -121,14 +108,10 @@ class LinkGamesService(
         if (matchmakeResult !is APIResult.Success)
             return matchmakeResult
 
-        val embeddedLinks = matchmakeResult.data.entities?.filterIsInstance<EmbeddedLink>()
-            ?: throw IllegalStateException("The embedded links are missing")
-
-        links[Rels.GAME] = embeddedLinks.find { Rels.GAME in it.rel }?.href?.path
-            ?: throw IllegalStateException("The game link is missing")
-
-        links[Rels.GAME_STATE] = embeddedLinks.find { Rels.GAME_STATE in it.rel }?.href?.path
-            ?: throw IllegalStateException("The game state link is missing")
+        links[Rels.GAME] =
+            matchmakeResult.data.embeddedLinks(Rels.GAME).single().href.path
+        links[Rels.GAME_STATE] =
+            matchmakeResult.data.embeddedLinks(Rels.GAME_STATE).single().href.path
 
         return matchmakeResult
     }
@@ -151,11 +134,8 @@ class LinkGamesService(
         if (getGameResult !is APIResult.Success)
             return getGameResult
 
-        val embeddedLinks = getGameResult.data.entities?.filterIsInstance<EmbeddedLink>()
-            ?: throw IllegalStateException("The embedded links are missing")
-
-        links[Rels.GAME_STATE] = embeddedLinks.find { Rels.GAME_STATE in it.rel }?.href?.path
-            ?: throw IllegalStateException("The game state link is missing")
+        links[Rels.GAME_STATE] =
+            getGameResult.data.embeddedLinks(Rels.GAME_STATE).single().href.path
 
         links.putAll(getGameResult.data.getActionLinks())
 
@@ -195,14 +175,10 @@ class LinkGamesService(
         if (joinGameResult !is APIResult.Success)
             return joinGameResult
 
-        val embeddedLinks = joinGameResult.data.entities?.filterIsInstance<EmbeddedLink>()
-            ?: throw IllegalStateException("The embedded links are missing")
-
-        links[Rels.GAME] = embeddedLinks.find { Rels.GAME in it.rel }?.href?.path
-            ?: throw IllegalStateException("The game link is missing")
-
-        links[Rels.GAME_STATE] = embeddedLinks.find { Rels.GAME_STATE in it.rel }?.href?.path
-            ?: throw IllegalStateException("The game state link is missing")
+        links[Rels.GAME] =
+            joinGameResult.data.embeddedLinks(Rels.GAME).single().href.path
+        links[Rels.GAME_STATE] =
+            joinGameResult.data.embeddedLinks(Rels.GAME_STATE).single().href.path
 
         return joinGameResult
     }

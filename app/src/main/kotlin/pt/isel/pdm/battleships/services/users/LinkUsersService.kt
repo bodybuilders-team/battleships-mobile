@@ -6,7 +6,6 @@ import pt.isel.pdm.battleships.services.users.models.getUsers.GetUsersUserModel
 import pt.isel.pdm.battleships.services.users.models.login.LoginOutput
 import pt.isel.pdm.battleships.services.users.models.register.RegisterOutput
 import pt.isel.pdm.battleships.services.utils.APIResult
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedSubEntity
 import pt.isel.pdm.battleships.services.utils.siren.SirenEntity
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 import java.io.IOException
@@ -63,15 +62,12 @@ class LinkUsersService(
         if (getUsersResult !is APIResult.Success)
             return getUsersResult
 
-        getUsersResult.data.entities?.filterIsInstance<EmbeddedSubEntity<GetUsersUserModel>>()
-            ?.forEach { entity ->
+        getUsersResult.data.embeddedSubEntities<GetUsersUserModel>(Rels.ITEM, Rels.USER)
+            .forEach { entity ->
                 val username = entity.properties?.username
                     ?: throw IllegalArgumentException("The properties are missing")
 
-                links["${Rels.USER}-$username"] = entity.links?.find {
-                    Rels.SELF in it.rel
-                }?.href?.path
-                    ?: throw IllegalArgumentException("The user link is missing")
+                links["${Rels.USER}-$username"] = entity.getLink(Rels.SELF).href.path
             }
 
         return getUsersResult
@@ -105,10 +101,7 @@ class LinkUsersService(
         if (registerResult !is APIResult.Success)
             return registerResult
 
-        links[Rels.USER_HOME] = registerResult.data.links?.find {
-            Rels.USER_HOME in it.rel
-        }?.href?.path
-            ?: throw IllegalStateException("The user home link is missing")
+        links[Rels.USER_HOME] = registerResult.data.getLink(Rels.USER_HOME).href.path
 
         return registerResult
     }
@@ -138,10 +131,7 @@ class LinkUsersService(
         if (loginResult !is APIResult.Success)
             return loginResult
 
-        links[Rels.USER_HOME] = loginResult.data.links?.find {
-            Rels.USER_HOME in it.rel
-        }?.href?.path
-            ?: throw IllegalStateException("The user home link is missing")
+        links[Rels.USER_HOME] = loginResult.data.getLink(Rels.USER_HOME).href.path
 
         return loginResult
     }
