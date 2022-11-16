@@ -1,9 +1,5 @@
 package pt.isel.pdm.battleships.domain.games.ship
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-import pt.isel.pdm.battleships.services.games.models.ShipTypeModel
-
 /**
  * The ship class in the game.
  *
@@ -11,38 +7,24 @@ import pt.isel.pdm.battleships.services.games.models.ShipTypeModel
  * @property shipName the name of the ship
  * @property points the points that the ship is worth
  */
-@Parcelize
-enum class ShipType(
+data class ShipType(
     val size: Int,
     val shipName: String,
-    val points: Int
-) : Parcelable {
-    CARRIER(size = 5, shipName = "Carrier", points = 50),
-    BATTLESHIP(size = 4, shipName = "Battleship", points = 40),
-    CRUISER(size = 3, shipName = "Cruiser", points = 30),
-    SUBMARINE(size = 3, shipName = "Submarine", points = 30),
-    DESTROYER(size = 2, shipName = "Destroyer", points = 20);
-
-    /**
-     * Converts the ShipType to a ShipTypeDTO
-     *
-     * @return the ShipTypeDTO
-     */
-    fun toShipTypeDTO() = ShipTypeModel(
-        shipName = shipName,
-        size = size,
-        quantity = 1,
-        points = points
-    ) // TODO: Check this, quantity?
-
+    val points: Int = size * 10
+) {
     companion object {
+        const val CARRIER = "Carrier"
+        const val BATTLESHIP = "Battleship"
+        const val CRUISER = "Cruiser"
+        const val SUBMARINE = "Submarine"
+        const val DESTROYER = "Destroyer"
 
-        /**
-         * Converts a ShipTypeDTO to a ShipType.
-         *
-         * @param dto the DTO to convert
-         * @return the ship type
-         */
-        fun fromShipTypeDTO(dto: ShipTypeModel) = values().first { it.shipName == dto.shipName }
+        val defaults = listOf(
+            ShipType(size = 5, shipName = CARRIER),
+            ShipType(size = 4, shipName = BATTLESHIP),
+            ShipType(size = 3, shipName = CRUISER),
+            ShipType(size = 3, shipName = SUBMARINE),
+            ShipType(size = 2, shipName = DESTROYER)
+        )
     }
 }

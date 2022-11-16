@@ -1,10 +1,10 @@
 package pt.isel.pdm.battleships.domain.games.shot
 
 /**
- * The result of a shot fired.
- *
- * @property result the result of the shot
+ * The result of a fired shot.
  */
-data class ShotResult(
-    val result: String
-)
+enum class ShotResult {
+    HIT,
+    MISS,
+    SUNK
+}

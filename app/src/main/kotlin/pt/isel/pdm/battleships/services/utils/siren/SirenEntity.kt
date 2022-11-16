@@ -65,9 +65,7 @@ data class SirenEntity<T>(
      */
     fun <T> embeddedSubEntities(vararg rels: String) =
         entities?.filterIsInstance<EmbeddedSubEntity<T>>()
-            ?.filter { link ->
-                rels.all { rel -> rel in link.rel }
-            }
+            ?.filter { link -> rels.all { rel -> rel in link.rel } }
             ?: throw NoSuchElementException("There are no sub entities of that type and rels.")
 
     /**

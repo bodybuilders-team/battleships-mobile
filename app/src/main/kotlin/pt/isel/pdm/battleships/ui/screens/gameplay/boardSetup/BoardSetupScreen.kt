@@ -122,9 +122,7 @@ fun BoardSetupScreen(
                                             }
                                         }
                                 },
-                                onDragCancel = {
-                                    dragState.reset()
-                                },
+                                onDragCancel = { dragState.reset() },
                                 onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
                                 onTap = {
                                     draggableShip.coordinate

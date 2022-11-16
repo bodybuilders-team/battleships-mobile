@@ -1,8 +1,5 @@
 package pt.isel.pdm.battleships.domain.games.ship
 
-import android.os.Parcelable
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.services.games.models.players.ship.UndeployedShipModel
@@ -13,24 +10,16 @@ import pt.isel.pdm.battleships.services.games.models.players.ship.UndeployedShip
  * @property type the type of the ship
  * @property coordinate the coordinate of the ship
  * @property orientation the orientation of the ship
- * @property lives the number of lives of the ship
  *
  * @property coordinates list of coordinates occupied by the ship
- * @property isSunk true if the ship is sunk, false otherwise
  */
-@Parcelize
 data class Ship(
     val type: ShipType,
     val coordinate: Coordinate,
-    val orientation: Orientation,
-    val lives: Int = type.size
-) : Parcelable {
+    val orientation: Orientation
+) {
 
-    @IgnoredOnParcel
     val coordinates: List<Coordinate> = getCoordinates(type, coordinate, orientation)
-
-    @IgnoredOnParcel
-    val isSunk = lives == 0
 
     /**
      * Converts the Ship to a UndeployedShipDTO.

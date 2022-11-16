@@ -4,6 +4,7 @@ import pt.isel.pdm.battleships.domain.exceptions.InvalidShotException
 import pt.isel.pdm.battleships.domain.games.Cell
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.ShipCell
+import pt.isel.pdm.battleships.domain.games.UnknownShipCell
 import pt.isel.pdm.battleships.domain.games.WaterCell
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.utils.replace
@@ -25,11 +26,6 @@ data class MyBoard(
     init {
         isValid()
     }
-
-    val initialFleet: List<Ship> = grid
-        .filterIsInstance<ShipCell>()
-        .map { it.ship.copy(lives = it.ship.type.size) }
-        .distinct()
 
     val fleet: List<Ship> = grid
         .filterIsInstance<ShipCell>()
@@ -58,31 +54,21 @@ data class MyBoard(
      * @throws InvalidShotException if the attack is invalid
      */
     fun shoot(firedCoordinates: List<Coordinate>): MyBoard =
-        firedCoordinates.fold(this) { board, coordinate ->
-            val cell = board.getCell(coordinate)
+        copy(
+            grid = grid
+                .replaceIf(predicate = { cell -> cell.coordinate !in firedCoordinates }) { cell ->
+                    if (cell.wasHit)
+                        throw InvalidShotException("Cell ${cell.coordinate} was already hit")
 
-            if (cell.wasHit) throw InvalidShotException("Cell $coordinate was already hit")
-
-            when (cell) {
-                is ShipCell -> {
-                    val ship = cell.ship
-                    val newShip = ship.copy(lives = ship.lives - 1)
-
-                    board.copy(
-                        grid = board.grid.replaceIf(
-                            predicate = { it is ShipCell && it.ship == ship },
-                            new = {
-                                (it as ShipCell).copy(
-                                    ship = newShip,
-                                    wasHit = it.wasHit || it == cell
-                                )
-                            }
+                    when (cell) {
+                        is ShipCell -> cell.copy(wasHit = true)
+                        is WaterCell -> cell.copy(wasHit = true)
+                        is UnknownShipCell -> throw IllegalStateException( // TODO: OpponentCell?
+                            "UnknownShipCell should not be present in MyBoard"
                         )
-                    )
+                    }
                 }
-                is WaterCell -> board.setCell(coordinate, cell.copy(wasHit = true))
-            }
-        }
+        )
 
     companion object {
 

@@ -15,13 +15,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.gson.Gson
-import com.google.gson.stream.JsonReader
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.ShipCell
@@ -29,10 +25,6 @@ import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
-import pt.isel.pdm.battleships.domain.games.ship.Orientation
-import pt.isel.pdm.battleships.domain.games.ship.Ship
-import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
@@ -189,40 +181,5 @@ fun GameplayScreen(
 
             GoBackButton(onClick = onBackButtonClicked)
         }
-    }
-}
-
-@Preview
-@Composable
-fun test() {
-    val assetManager = LocalContext.current.assets
-
-    val gameConfigModel = Gson().fromJson<GameConfigModel>(
-        JsonReader(assetManager.open("defaultGameConfig.json").reader()),
-        GameConfigModel::class.java
-    )
-
-    GameplayScreen(
-        round = 1,
-        myTurn = false,
-        myBoard = MyBoard(
-            size = 10,
-            initialFleet = listOf(
-                Ship(
-                    type = ShipType.BATTLESHIP,
-                    orientation = Orientation.HORIZONTAL,
-                    coordinate = Coordinate('A', 1)
-                ),
-                Ship(
-                    type = ShipType.DESTROYER,
-                    orientation = Orientation.VERTICAL,
-                    coordinate = Coordinate('B', 2)
-                )
-            )
-        ).shoot(listOf(Coordinate('C', 2))),
-        opponentBoard = OpponentBoard(),
-        gameConfig = GameConfig(gameConfigModel),
-        onShootClicked = {}
-    ) {
     }
 }

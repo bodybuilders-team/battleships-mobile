@@ -1,7 +1,5 @@
 package pt.isel.pdm.battleships.domain.games
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.Coordinate.Companion.maxColsRange
 import pt.isel.pdm.battleships.domain.games.Coordinate.Companion.maxRowsRange
 import pt.isel.pdm.battleships.domain.games.board.Board
@@ -13,8 +11,7 @@ import pt.isel.pdm.battleships.services.games.models.CoordinateModel
  * @property col char in range [maxColsRange]
  * @property row int in range [maxRowsRange]
  */
-@Parcelize
-data class Coordinate(val col: Char, val row: Int) : Parcelable {
+data class Coordinate(val col: Char, val row: Int) {
 
     init {
         require(col in maxColsRange) {

@@ -1,8 +1,7 @@
 package pt.isel.pdm.battleships.domain.games.game
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
+import pt.isel.pdm.battleships.services.games.models.ShipTypeModel
 import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
 
 /**
@@ -14,21 +13,27 @@ import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
  * @property maxTimeForLayoutPhase The maximum time for the layout phase.
  * @property ships The ships to be used in the game.
  */
-@Parcelize
 data class GameConfig(
     val gridSize: Int,
     val shotsPerTurn: Int,
     val maxTimePerRound: Int,
     val maxTimeForLayoutPhase: Int,
     val ships: List<ShipType>
-) : Parcelable {
+) {
 
     constructor(dto: GameConfigModel) : this(
         dto.gridSize,
         dto.shotsPerRound,
         dto.maxTimePerRound,
         dto.maxTimeForLayoutPhase,
-        dto.shipTypes.map { ShipType.fromShipTypeDTO(it) }
+        dto.shipTypes.flatMap { shipType ->
+            List(shipType.quantity) {
+                ShipType(
+                    size = shipType.size,
+                    shipName = shipType.shipName
+                )
+            }
+        }
     )
 
     /**
@@ -41,6 +46,13 @@ data class GameConfig(
         maxTimeForLayoutPhase,
         shotsPerTurn,
         maxTimePerRound,
-        ships.map(ShipType::toShipTypeDTO)
+        ships.distinct().map { ship ->
+            ShipTypeModel(
+                shipName = ship.shipName,
+                size = ship.size,
+                quantity = ships.count { it == ship },
+                points = ship.points
+            )
+        }
     )
 }

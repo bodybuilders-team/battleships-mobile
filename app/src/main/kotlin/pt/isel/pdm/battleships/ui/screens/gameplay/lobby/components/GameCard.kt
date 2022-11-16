@@ -28,9 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.DEFAULT_SHIP_TYPES
 import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 private const val BUTTON_SIZE = 38
@@ -101,15 +99,7 @@ fun GameCard(
         }
 
         if (gameInfoExpanded) {
-            val gameConfig = GameConfigModel(
-                gridSize = 10,
-                maxTimeForLayoutPhase = 60,
-                shotsPerRound = 1,
-                maxTimePerRound = 60,
-                DEFAULT_SHIP_TYPES.map { it.toShipTypeDTO() }
-            )
-
-            GameConfigColumn(gameConfig)
+            // GameConfigColumn(gameConfig)
         }
     }
 }

@@ -15,7 +15,6 @@ import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.models.players.fireShots.FireShotsInput
 import pt.isel.pdm.battleships.services.games.models.players.ship.GetFleetOutputModel
-import pt.isel.pdm.battleships.services.games.models.players.shot.FiredShotModel
 import pt.isel.pdm.battleships.services.games.models.players.shot.UnfiredShotModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.FINISHED_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.GAME_LOADED
@@ -80,7 +79,6 @@ class GameplayViewModel(
                     ?: throw IllegalStateException("No turn found")
 
                 val gameConfig = GameConfig(properties.config)
-
                 val myTurn = turn == sessionManager.username
 
                 _screenState = _screenState.copy(
@@ -120,7 +118,9 @@ class GameplayViewModel(
 
         val initialFleet = parseFleet(
             fleet = myFleetData.properties
-                ?: throw IllegalStateException("No ships found")
+                ?: throw IllegalStateException("No ships found"),
+            shipTypes = _screenState.gameConfig?.ships
+                ?: throw IllegalStateException("No game config found")
         )
 
         val gridSize = _screenState.gameConfig?.gridSize
@@ -151,17 +151,15 @@ class GameplayViewModel(
             },
             events = _events,
             onSuccess = { fireShotsData ->
+                val shipTypes = _screenState.gameConfig?.ships
+                    ?: throw IllegalStateException("No game config found")
+
                 val firedShots = fireShotsData.properties?.shots
-                    ?.map(FiredShotModel::toFiredShot)
+                    ?.map { it.toFiredShot(shipTypes) }
                     ?: throw IllegalStateException("No shots found")
 
                 _screenState = _screenState.copy(
-                    opponentBoard = _screenState.opponentBoard?.shoot(
-                        firedShots.map { shot ->
-                            shot.coordinate to
-                                (shot.result.result == "HIT" || shot.result.result == "SUNK")
-                        }
-                    ),
+                    opponentBoard = _screenState.opponentBoard?.updateWith(firedShots),
                     myTurn = false
                 )
 
@@ -186,8 +184,9 @@ class GameplayViewModel(
             val properties = gameStateData.properties
                 ?: throw IllegalStateException("Game state properties are null")
 
-            if (properties.phase == FINISHED_PHASE)
+            if (properties.phase == FINISHED_PHASE) {
                 _screenState = _screenState.copy(state = FINISHED_GAME)
+            }
 
             if (properties.turn != sessionManager.username) {
                 delay(POLLING_DELAY)
@@ -218,7 +217,7 @@ class GameplayViewModel(
         _screenState = _screenState.copy(
             myBoard = MyBoard(
                 size = myBoard.size,
-                initialFleet = myBoard.initialFleet
+                initialFleet = myBoard.fleet
             ).shoot(
                 opponentShots.map {
                     it.coordinate.toCoordinate()
@@ -235,21 +234,18 @@ class GameplayViewModel(
      * @return the list of ships
      * @throws IllegalStateException if the fleet is invalid
      */
-    private fun parseFleet(fleet: GetFleetOutputModel): List<Ship> =
+    private fun parseFleet(fleet: GetFleetOutputModel, shipTypes: List<ShipType>): List<Ship> =
         fleet.ships.map {
-            val shipType = ShipType.values()
+            val shipType = shipTypes
                 .find { shipType -> shipType.shipName == it.type }
                 ?: throw IllegalStateException("Invalid ship type")
 
-            val orientation = Orientation.values()
-                .find { orientation -> orientation.name == it.orientation }
-                ?: throw IllegalStateException("Invalid ship orientation")
+            val orientation = Orientation.valueOf(it.orientation)
 
             Ship(
                 type = shipType,
                 coordinate = it.coordinate.toCoordinate(),
-                orientation = orientation,
-                lives = shipType.size
+                orientation = orientation
             )
         }
 

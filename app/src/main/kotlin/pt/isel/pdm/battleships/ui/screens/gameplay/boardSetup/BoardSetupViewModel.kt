@@ -63,10 +63,19 @@ class BoardSetupViewModel(
                 val properties = getGameData.properties
                     ?: throw IllegalStateException("No game properties found")
 
+                val shipTypes = properties.config.shipTypes
+
                 _screenState = _screenState.copy(
                     state = GAME_LOADED,
                     gridSize = properties.config.gridSize,
-                    ships = properties.config.shipTypes.map(ShipType::fromShipTypeDTO)
+                    ships = shipTypes.flatMap { shipType ->
+                        List(shipType.quantity) {
+                            ShipType(
+                                size = shipType.size,
+                                shipName = shipType.shipName
+                            )
+                        }
+                    }
                 )
             }
         )

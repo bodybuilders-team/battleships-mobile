@@ -2,13 +2,12 @@ package pt.isel.pdm.battleships.domain.games.board
 
 import pt.isel.pdm.battleships.domain.exceptions.InvalidShotException
 import pt.isel.pdm.battleships.domain.games.Cell
-import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.ShipCell
+import pt.isel.pdm.battleships.domain.games.UnknownShipCell
 import pt.isel.pdm.battleships.domain.games.WaterCell
-import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
-import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.domain.utils.replace
+import pt.isel.pdm.battleships.domain.games.shot.FiredShot
+import pt.isel.pdm.battleships.domain.games.shot.ShotResult
 
 /**
  * The opponent's board.
@@ -30,51 +29,59 @@ data class OpponentBoard(
     val fleet: List<Ship>
         get() = grid
             .filterIsInstance<ShipCell>()
-            .map { it.ship }
+            .map(ShipCell::ship)
             .distinct()
 
     /**
-     * Returns a new board with the cell in [at] coordinate replaced by [cell].
-     *
-     * @param at coordinate of the cell to be replaced
-     * @param cell cell to replace the cell in [at] coordinate
-     *
-     * @return new board with the cell in [at] coordinate replaced by [cell]
-     */
-    private fun setCell(at: Coordinate, cell: Cell) =
-        copy(grid = grid.replace(at.toIndex(size), cell)) // TODO: delete this?
-
-    /**
-     * Shoots the [firedCoordinates].
+     * Shoots the [firedShots].
      * If the cell is already hit, the attack is invalid.
      * Otherwise, the cell becomes hit.
      *
-     * @param firedCoordinates coordinates to attack
+     * @param firedShots coordinates to attack
      *
      * @return the board after the attack
      * @throws InvalidShotException if the attack is invalid
      */
-    fun shoot(firedCoordinates: List<Pair<Coordinate, Boolean>>): OpponentBoard =
+    fun updateWith(firedShots: List<FiredShot>): OpponentBoard =
         copy(
             grid = grid.map { cell ->
-                val hitShip =
-                    firedCoordinates.find { it.first == cell.coordinate }?.second ?: return@map cell
+                val firedShot = firedShots
+                    .find { shot -> shot.coordinate == cell.coordinate }
+                    ?: return@map cell
 
                 if (cell.wasHit) throw InvalidShotException("Cell already hit")
 
-                val fakeShip = Ship(ShipType.DESTROYER, cell.coordinate, Orientation.HORIZONTAL)
-
                 when (cell) {
-                    is WaterCell -> if (hitShip) {
-                        ShipCell(
+                    is WaterCell -> when (firedShot.result) {
+                        ShotResult.HIT -> UnknownShipCell(
                             coordinate = cell.coordinate,
-                            wasHit = true,
-                            ship = fakeShip
+                            wasHit = true
                         )
-                    } else {
-                        cell.copy(wasHit = true)
+                        ShotResult.SUNK -> {
+                            checkNotNull(firedShot.sunkShip) { "Sunk ship cannot be null" }
+
+                            grid.forEach { cell2 ->
+                                if (cell2.coordinate in firedShot.sunkShip.coordinates) {
+                                    if (cell2 !is UnknownShipCell)
+                                        throw InvalidShotException("Cell is not a ship cell")
+
+                                    return@map ShipCell(
+                                        coordinate = cell2.coordinate,
+                                        wasHit = true,
+                                        ship = firedShot.sunkShip
+                                    )
+                                }
+                            }
+
+                            ShipCell(
+                                coordinate = cell.coordinate,
+                                wasHit = true,
+                                ship = firedShot.sunkShip
+                            )
+                        }
+                        else -> cell.copy(wasHit = true)
                     }
-                    is ShipCell -> throw InvalidShotException("Cell already hit")
+                    is ShipCell, is UnknownShipCell -> throw InvalidShotException("Cell already hit")
                 }
             }
         )

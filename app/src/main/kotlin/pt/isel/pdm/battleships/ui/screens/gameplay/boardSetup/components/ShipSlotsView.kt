@@ -58,7 +58,7 @@ fun ShipSlotsView(
         contentAlignment = Alignment.Center
     ) {
         LazyRow {
-            items(ShipType.values()) { shipType ->
+            items(ShipType.defaults) { shipType ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val draggingShip = dragging(shipType)
 

@@ -71,13 +71,6 @@ data class ConfigurableBoard(
             )
         )
 
-    /**
-     * Converts this configurable board to a [MyBoard], in order to be played in the gameplay phase.
-     *
-     * @return the [MyBoard] representation of this board
-     */
-    fun toMyBoard() = MyBoard(size, grid) // TODO: Delete this?
-
     companion object {
 
         /**
@@ -90,7 +83,7 @@ data class ConfigurableBoard(
          */
         fun random(
             size: Int = DEFAULT_BOARD_SIZE,
-            ships: List<ShipType> = ShipType.values().toList()
+            ships: List<ShipType> = ShipType.defaults
         ) =
             ConfigurableBoard(size = size, grid = generateRandomMatrix(size, ships))
 

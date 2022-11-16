@@ -16,5 +16,5 @@ data class ShotResultModel(
      *
      * @return the shot result
      */
-    fun toShotResult() = ShotResult(result = result)
+    fun toShotResult() = ShotResult.valueOf(result)
 }

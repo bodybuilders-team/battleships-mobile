@@ -57,8 +57,7 @@ class LinkBattleshipsService(
     suspend fun getHome(): APIResult<GetHomeOutput> {
         val getHomeResult = battleshipsService.getHome()
 
-        if (getHomeResult !is APIResult.Success)
-            return getHomeResult
+        if (getHomeResult !is APIResult.Success) return getHomeResult
 
         _links.putAll(getHomeResult.data.getActionLinks())
 

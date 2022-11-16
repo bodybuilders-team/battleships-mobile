@@ -42,7 +42,7 @@ fun ShipSelector(
 
     Column {
         LazyRow {
-            items(ShipType.values()) { shipType ->
+            items(ShipType.defaults) { shipType ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
                         modifier = Modifier

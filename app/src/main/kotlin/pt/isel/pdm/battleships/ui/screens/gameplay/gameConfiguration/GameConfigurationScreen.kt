@@ -44,8 +44,6 @@ private const val DEFAULT_TIME_FOR_BOARD_CONFIG = 60 // Seconds
 
 private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 
-val DEFAULT_SHIP_TYPES = ShipType.values().toList()
-
 /**
  * Screen that allows the user to configure a new game before starting it.
  *
@@ -63,7 +61,7 @@ fun GameConfigurationScreen(
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
     var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }
     var timeForBoardConfig by remember { mutableStateOf(DEFAULT_TIME_FOR_BOARD_CONFIG) }
-    var ships by remember { mutableStateOf(DEFAULT_SHIP_TYPES) }
+    var ships by remember { mutableStateOf(ShipType.defaults) }
 
     BattleshipsScreen {
         Column(

@@ -1,41 +1,17 @@
 package pt.isel.pdm.battleships.domain.games.ship
 
+import pt.isel.pdm.battleships.domain.games.Coordinate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import pt.isel.pdm.battleships.domain.games.Coordinate
 
 class ShipTests {
 
     @Test
-    fun `Ship is sunk when it has no more lives`() {
-        val ship = Ship(
-            ShipType.DESTROYER,
-            Coordinate('A', 1),
-            Orientation.VERTICAL,
-            0
-        )
-
-        assertTrue { ship.isSunk }
-    }
-
-    @Test
-    fun `Ship is not sunk when it has more than 0 lives`() {
-        val ship = Ship(
-            ShipType.DESTROYER,
-            Coordinate('A', 1),
-            Orientation.VERTICAL,
-            2
-        )
-
-        assertFalse { ship.isSunk }
-    }
-
-    @Test
     fun `Ship coordinates are correct when vertical`() {
         val ship = Ship(
-            ShipType.DESTROYER,
+            ShipType.defaults[4],
             Coordinate('A', 1),
             Orientation.VERTICAL
         )
@@ -51,7 +27,7 @@ class ShipTests {
     @Test
     fun `Ship coordinates are correct when horizontal`() {
         val ship = Ship(
-            ShipType.DESTROYER,
+            ShipType.defaults[4],
             Coordinate('A', 1),
             Orientation.HORIZONTAL
         )
@@ -66,7 +42,7 @@ class ShipTests {
 
     @Test
     fun `Ship getCoordinates calculates coordinates correctly when vertical`() {
-        val shipType = ShipType.DESTROYER
+        val shipType = ShipType.defaults[4]
         val coordinate = Coordinate('A', 1)
         val orientation = Orientation.VERTICAL
 
@@ -80,7 +56,7 @@ class ShipTests {
 
     @Test
     fun `Ship getCoordinates calculates coordinates correctly when horizontal`() {
-        val shipType = ShipType.DESTROYER
+        val shipType = ShipType.defaults[4]
         val coordinate = Coordinate('A', 1)
         val orientation = Orientation.HORIZONTAL
 
