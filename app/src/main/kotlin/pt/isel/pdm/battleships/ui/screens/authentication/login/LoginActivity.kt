@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.putLinks
@@ -41,18 +42,15 @@ class LoginActivity : ComponentActivity() {
             }
         }
 
-        if (viewModel.state == AuthenticationState.IDLE) {
+        if (viewModel.state == IDLE) {
             viewModel.updateLinks(intent.getLinks())
         }
 
         setContent {
             LoginScreen(
-                viewModel.state,
+                state = viewModel.state,
                 onLogin = { username, password ->
-                    viewModel.login(
-                        username = username,
-                        password = password
-                    )
+                    viewModel.login(username = username, password = password)
                 },
                 onLoginSuccessful = {
                     val resultIntent = Intent()

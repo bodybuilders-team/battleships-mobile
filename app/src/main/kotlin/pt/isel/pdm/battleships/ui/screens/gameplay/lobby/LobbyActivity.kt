@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.showToast
@@ -38,9 +40,8 @@ class LobbyActivity : ComponentActivity() {
             }
         }
 
-        if (viewModel.state == LobbyViewModel.LobbyState.IDLE) {
+        if (viewModel.state == IDLE) {
             viewModel.updateLinks(intent.getLinks())
-
             viewModel.getGames()
         }
 

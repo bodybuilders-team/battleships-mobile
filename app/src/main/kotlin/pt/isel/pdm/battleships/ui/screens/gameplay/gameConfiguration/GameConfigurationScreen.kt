@@ -26,6 +26,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigu
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.GameConfigSelector
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.IntSelector
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.ShipSelector
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.IconButton
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
@@ -53,7 +54,7 @@ private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
  */
 @Composable
 fun GameConfigurationScreen(
-    state: GameConfigurationState,
+    state: BattleshipsViewModel.BattleshipsState,
     onGameConfigured: (GameConfig) -> Unit,
     onBackButtonClicked: () -> Unit
 ) {

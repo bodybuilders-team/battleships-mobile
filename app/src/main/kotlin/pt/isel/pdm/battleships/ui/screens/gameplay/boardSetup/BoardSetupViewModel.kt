@@ -13,7 +13,6 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.GAME_LOADED
-import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
@@ -21,7 +20,6 @@ import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [BoardSetupActivity].
@@ -37,7 +35,6 @@ class BoardSetupViewModel(
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
     data class BoardSetupScreenState(
-        val state: BoardSetupState = IDLE,
         val gridSize: Int? = null,
         val ships: List<ShipType>? = null
     )
@@ -50,11 +47,9 @@ class BoardSetupViewModel(
      * Loads the game.
      */
     fun loadGame() {
-        check(screenState.state == LINKS_LOADED) {
-            "The game is not in the links loaded state"
-        }
+        check(state == LINKS_LOADED) { "The game is not in the links loaded state" }
 
-        _screenState = _screenState.copy(state = LOADING_GAME)
+        _state = LOADING_GAME
 
         launchAndExecuteRequestRetrying(
             request = { battleshipsService.gamesService.getGame() },
@@ -66,7 +61,6 @@ class BoardSetupViewModel(
                 val shipTypes = properties.config.shipTypes
 
                 _screenState = _screenState.copy(
-                    state = GAME_LOADED,
                     gridSize = properties.config.gridSize,
                     ships = shipTypes.flatMap { shipType ->
                         List(shipType.quantity) {
@@ -77,6 +71,7 @@ class BoardSetupViewModel(
                         }
                     }
                 )
+                _state = GAME_LOADED
             }
         )
     }
@@ -87,9 +82,9 @@ class BoardSetupViewModel(
      * @param fleet the fleet to be deployed
      */
     fun deployFleet(fleet: List<Ship>) {
-        check(screenState.state == GAME_LOADED) { "The game is not loaded" }
+        check(state == GAME_LOADED) { "The game is not loaded" }
 
-        _screenState = _screenState.copy(state = DEPLOYING_FLEET)
+        _state = DEPLOYING_FLEET
 
         launchAndExecuteRequestRetrying(
             request = {
@@ -99,7 +94,7 @@ class BoardSetupViewModel(
             },
             events = _events,
             onSuccess = {
-                _screenState = _screenState.copy(state = FLEET_DEPLOYED)
+                _state = FLEET_DEPLOYED
                 waitForOpponent()
             }
         )
@@ -109,11 +104,9 @@ class BoardSetupViewModel(
      * Waits for the opponent to deploy their fleet.
      */
     private suspend fun waitForOpponent() {
-        check(screenState.state == FLEET_DEPLOYED) {
-            "The game is not in the fleet deployed state"
-        }
+        check(state == FLEET_DEPLOYED) { "The game is not in the fleet deployed state" }
 
-        _screenState = _screenState.copy(state = WAITING_FOR_OPPONENT)
+        _state = WAITING_FOR_OPPONENT
 
         while (true) {
             val gameStateData = executeRequestRetrying(
@@ -127,16 +120,11 @@ class BoardSetupViewModel(
             if (properties.phase == DEPLOYING_FLEETS_PHASE) {
                 delay(POLLING_DELAY)
             } else {
+                _state = FINISHED
                 _events.emit(BoardSetupEvent.NavigateToGameplay)
-                _screenState = _screenState.copy(state = FINISHED)
                 break
             }
         }
-    }
-
-    override fun updateLinks(links: Links) {
-        super.updateLinks(links)
-        _screenState = _screenState.copy(state = LINKS_LOADED)
     }
 
     /**
@@ -146,15 +134,13 @@ class BoardSetupViewModel(
      * @property DEPLOYING_FLEET the view model is deploying the fleet
      * @property WAITING_FOR_OPPONENT WAITING_FOR_OPPONENT
      */
-    enum class BoardSetupState {
-        IDLE,
-        LINKS_LOADED,
-        LOADING_GAME,
-        GAME_LOADED,
-        DEPLOYING_FLEET,
-        FLEET_DEPLOYED,
-        WAITING_FOR_OPPONENT,
-        FINISHED
+    object BoardSetupState : BattleshipsState, BattleshipsStateCompanion() {
+        val LOADING_GAME = object : BattleshipsState {}
+        val GAME_LOADED = object : BattleshipsState {}
+        val DEPLOYING_FLEET = object : BattleshipsState {}
+        val FLEET_DEPLOYED = object : BattleshipsState {}
+        val WAITING_FOR_OPPONENT = object : BattleshipsState {}
+        val FINISHED = object : BattleshipsState {}
     }
 
     /**

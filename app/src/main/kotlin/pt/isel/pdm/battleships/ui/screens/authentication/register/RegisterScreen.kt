@@ -20,6 +20,7 @@ import pt.isel.pdm.battleships.ui.screens.authentication.register.components.Reg
 import pt.isel.pdm.battleships.ui.screens.authentication.validateEmail
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
@@ -33,7 +34,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
  */
 @Composable
 fun RegisterScreen(
-    state: AuthenticationState,
+    state: BattleshipsViewModel.BattleshipsState,
     onRegister: (String, String, String) -> Unit,
     onRegisterSuccessful: () -> Unit,
     onBackButtonClicked: () -> Unit

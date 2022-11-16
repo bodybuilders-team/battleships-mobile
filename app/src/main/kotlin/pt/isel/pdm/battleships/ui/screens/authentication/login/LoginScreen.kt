@@ -19,6 +19,7 @@ import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginB
 import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginTextFields
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
@@ -32,7 +33,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
  */
 @Composable
 fun LoginScreen(
-    state: AuthenticationState,
+    state: BattleshipsViewModel.BattleshipsState,
     onLogin: (String, String) -> Unit,
     onLoginSuccessful: () -> Unit,
     onBackButtonClicked: () -> Unit

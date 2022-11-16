@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
@@ -41,17 +42,15 @@ class GameConfigurationActivity : ComponentActivity() {
             }
         }
 
-        if (viewModel.state == GameConfigurationState.IDLE) {
+        if (viewModel.state == IDLE) {
             viewModel.updateLinks(intent.getLinks())
         }
 
         setContent {
             GameConfigurationScreen(
-                viewModel.state,
+                state = viewModel.state,
                 onGameConfigured = { gameConfig ->
-                    viewModel.createGame(
-                        gameConfig = gameConfig
-                    )
+                    viewModel.createGame(gameConfig = gameConfig)
                 },
                 onBackButtonClicked = { finish() }
             )

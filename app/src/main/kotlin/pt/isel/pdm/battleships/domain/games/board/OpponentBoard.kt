@@ -42,8 +42,12 @@ data class OpponentBoard(
      * @return the board after the attack
      * @throws InvalidShotException if the attack is invalid
      */
-    fun updateWith(firedShots: List<FiredShot>): OpponentBoard =
-        copy(
+    fun updateWith(firedShots: List<FiredShot>): OpponentBoard {
+        val sunkCoordinates = firedShots
+            .mapNotNull { shot -> shot.sunkShip }
+            .associateBy { it.coordinates }
+
+        return copy(
             grid = grid.map { cell ->
                 val firedShot = firedShots
                     .find { shot -> shot.coordinate == cell.coordinate }
@@ -51,40 +55,23 @@ data class OpponentBoard(
 
                 if (cell.wasHit) throw InvalidShotException("Cell already hit")
 
-                check(cell is ShipCell || cell is UnknownShipCell) {
-                    "Cell cannot be ShipCell or UnknownShipCell if it was not hit"
-                }
-                cell as WaterCell
+                check(cell is WaterCell) { "Cell can only be water cell if it was not hit" }
 
-                when (firedShot.result) {
-                    ShotResult.HIT -> UnknownShipCell(
-                        coordinate = cell.coordinate,
-                        wasHit = true
-                    )
-                    ShotResult.SUNK -> {
-                        checkNotNull(firedShot.sunkShip) { "Sunk ship cannot be null" }
-
-                        grid.forEach { cell2 ->
-                            if (cell2.coordinate in firedShot.sunkShip.coordinates) {
-                                if (cell2 !is UnknownShipCell)
-                                    throw InvalidShotException("Cell is not a ship cell")
-
-                                return@map ShipCell(
-                                    coordinate = cell2.coordinate,
-                                    wasHit = true,
-                                    ship = firedShot.sunkShip
-                                )
-                            }
-                        }
-
-                        ShipCell(
+                sunkCoordinates.entries
+                    .find { (sunkCoordinates) -> cell.coordinate in sunkCoordinates }
+                    ?.let { (_, sunkShip) ->
+                        return@map ShipCell(
                             coordinate = cell.coordinate,
                             wasHit = true,
-                            ship = firedShot.sunkShip
+                            ship = sunkShip
                         )
                     }
+
+                when (firedShot.result) {
+                    ShotResult.HIT -> UnknownShipCell(coordinate = cell.coordinate, wasHit = true)
                     else -> cell.copy(wasHit = true)
                 }
             }
         )
+    }
 }

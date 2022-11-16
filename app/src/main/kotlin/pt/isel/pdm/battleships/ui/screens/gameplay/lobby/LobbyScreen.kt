@@ -14,6 +14,7 @@ import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
@@ -27,7 +28,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
  */
 @Composable
 fun LobbyScreen(
-    state: LobbyState,
+    state: BattleshipsViewModel.BattleshipsState,
     games: GetGamesOutput?,
     onBackButtonClicked: () -> Unit
 ) {

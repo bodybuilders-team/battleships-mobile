@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 
 /**
@@ -17,7 +18,7 @@ import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
  * @param state the state of the matchmake screen
  */
 @Composable
-fun MatchmakeScreen(state: MatchmakeState) {
+fun MatchmakeScreen(state: BattleshipsViewModel.BattleshipsState) {
     BattleshipsScreen {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -45,14 +45,13 @@ class BoardSetupActivity : ComponentActivity() {
             }
         }
 
-        if (viewModel.screenState.state == IDLE) {
+        if (viewModel.state == IDLE) {
             viewModel.updateLinks(intent.getLinks())
-
             viewModel.loadGame()
         }
 
         setContent {
-            when (viewModel.screenState.state) {
+            when (viewModel.state) {
                 IDLE, LINKS_LOADED, LOADING_GAME -> {
                     Text("Loading Game..")
                 }

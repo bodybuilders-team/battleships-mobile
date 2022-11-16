@@ -56,7 +56,7 @@ data class MyBoard(
     fun shoot(firedCoordinates: List<Coordinate>): MyBoard =
         copy(
             grid = grid
-                .replaceIf(predicate = { cell -> cell.coordinate !in firedCoordinates }) { cell ->
+                .replaceIf(predicate = { cell -> cell.coordinate in firedCoordinates }) { cell ->
                     if (cell.wasHit)
                         throw InvalidShotException("Cell ${cell.coordinate} was already hit")
 

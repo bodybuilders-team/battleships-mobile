@@ -90,10 +90,8 @@ data class EmbeddedSubEntity<T>(
      */
     fun <T> embeddedSubEntities(vararg rels: String) =
         entities?.filterIsInstance<EmbeddedSubEntity<T>>()
-            ?.filter { link ->
-                rels.all { rel -> rel in link.rel }
-            }
-            ?: throw NoSuchElementException("There are no sub entities of that type and rels.")
+            ?.filter { link -> rels.all { rel -> rel in link.rel } }
+            ?: throw NoSuchElementException("There is no entities property.")
 
     /**
      * Gets the embedded links with the given [rels] from [entities],
@@ -106,7 +104,7 @@ data class EmbeddedSubEntity<T>(
     fun embeddedLinks(vararg rels: String) =
         entities?.filterIsInstance<EmbeddedLink>()
             ?.filter { link -> rels.all { rel -> rel in link.rel } }
-            ?: throw NoSuchElementException("There are no embedded links of that type and rels.")
+            ?: throw NoSuchElementException("There is no entities property.")
 
     inline fun <reified T> getEmbeddedSubEntity(): EmbeddedSubEntity<T> =
         EmbeddedSubEntity(

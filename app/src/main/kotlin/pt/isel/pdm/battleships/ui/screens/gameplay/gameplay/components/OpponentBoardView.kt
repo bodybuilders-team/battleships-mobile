@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.ShipCell
+import pt.isel.pdm.battleships.domain.games.UnknownShipCell
 import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.SMALLER_BOARD_TILE_SIZE_FACTOR
@@ -62,7 +63,7 @@ fun OpponentBoardView(
                             if (cell.wasHit) {
                                 TileHitView(
                                     tileSize = tileSize,
-                                    hitShip = cell is ShipCell
+                                    hitShip = cell is ShipCell || cell is UnknownShipCell
                                 )
                             }
                         }

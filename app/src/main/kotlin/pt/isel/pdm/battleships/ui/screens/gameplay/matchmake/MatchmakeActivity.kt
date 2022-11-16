@@ -8,6 +8,8 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeEvent
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
@@ -43,9 +45,8 @@ class MatchmakeActivity : ComponentActivity() {
             }
         }
 
-        if (viewModel.state == MatchmakeViewModel.MatchmakeState.IDLE) {
+        if (viewModel.state == IDLE) {
             viewModel.updateLinks(intent.getLinks())
-
             viewModel.matchmake()
         }
 

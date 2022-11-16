@@ -14,9 +14,9 @@ import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.users.User
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState
 import pt.isel.pdm.battleships.ui.screens.ranking.components.RankingTableView
 import pt.isel.pdm.battleships.ui.screens.ranking.components.SearchPlayerField
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
@@ -30,7 +30,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
  */
 @Composable
 fun RankingScreen(
-    state: RankingState,
+    state: BattleshipsViewModel.BattleshipsState,
     users: List<User>,
     onBackButtonClicked: () -> Unit
 ) {
@@ -59,7 +59,7 @@ fun RankingScreen(
             }
 
             when (state) {
-                RankingState.FINISHED -> RankingTableView(filteredUsers)
+                RankingViewModel.RankingState.FINISHED -> RankingTableView(filteredUsers)
                 else -> LoadingSpinner()
             }
 

@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.showToast
@@ -37,14 +38,13 @@ class GameplayActivity : ComponentActivity() {
             }
         }
 
-        if (viewModel.screenState.state == GameplayViewModel.GameplayState.IDLE) {
+        if (viewModel.state == IDLE) {
             viewModel.updateLinks(intent.getLinks())
-
             viewModel.loadGame()
         }
 
         setContent {
-            when (viewModel.screenState.state) {
+            when (viewModel.state) {
                 GameplayViewModel.GameplayState.LOADING_GAME -> {
                     Text("Loading Game..")
                 }

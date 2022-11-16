@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.putLinks
@@ -41,7 +42,7 @@ class RegisterActivity : ComponentActivity() {
             }
         }
 
-        if (viewModel.state == AuthenticationState.IDLE) {
+        if (viewModel.state == IDLE) {
             viewModel.updateLinks(intent.getLinks())
         }
 
@@ -49,11 +50,7 @@ class RegisterActivity : ComponentActivity() {
             RegisterScreen(
                 state = viewModel.state,
                 onRegister = { email, username, password ->
-                    viewModel.register(
-                        email = email,
-                        username = username,
-                        password = password
-                    )
+                    viewModel.register(email = email, username = username, password = password)
                 },
                 onRegisterSuccessful = {
                     val resultIntent = Intent()

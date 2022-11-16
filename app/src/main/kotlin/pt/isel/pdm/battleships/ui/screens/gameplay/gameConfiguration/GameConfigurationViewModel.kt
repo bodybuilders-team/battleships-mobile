@@ -1,19 +1,14 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.CREATING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.GAME_CREATED
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [GameConfigurationActivity].
@@ -24,10 +19,6 @@ class GameConfigurationViewModel(
     battleshipsService: BattleshipsService,
     sessionManager: SessionManager
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
-
-    private var _state by mutableStateOf(IDLE)
-    val state: GameConfigurationState
-        get() = _state
 
     /**
      * Creates a new game.
@@ -53,23 +44,15 @@ class GameConfigurationViewModel(
         )
     }
 
-    override fun updateLinks(links: Links) {
-        super.updateLinks(links)
-        _state = LINKS_LOADED
-    }
-
     /**
      * The game configuration state.
      *
-     * @property IDLE the game configuration operation is idle
      * @property CREATING_GAME creating a new game
      * @property GAME_CREATED the game was created
      */
-    enum class GameConfigurationState {
-        IDLE,
-        LINKS_LOADED,
-        CREATING_GAME,
-        GAME_CREATED
+    object GameConfigurationState : BattleshipsState, BattleshipsStateCompanion() {
+        val CREATING_GAME = object : BattleshipsState {}
+        val GAME_CREATED = object : BattleshipsState {}
     }
 
     /**

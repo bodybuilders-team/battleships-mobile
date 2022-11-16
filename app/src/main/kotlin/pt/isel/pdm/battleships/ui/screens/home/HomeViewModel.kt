@@ -35,30 +35,23 @@ class HomeViewModel(
     sessionManager: SessionManager
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
-    data class GameplayScreenState(
-        val state: HomeState = IDLE,
-        val loadingState: HomeLoadingState = NOT_LOADING
-    )
-
-    private var _screenState by mutableStateOf(GameplayScreenState())
-    val screenState: GameplayScreenState
-        get() = _screenState
+    private var _loadingState by mutableStateOf(NOT_LOADING)
+    val loadingState: HomeLoadingState
+        get() = _loadingState
 
     /**
      * Loads the home page.
      */
     fun loadHome() {
-        check(screenState.state == LINKS_LOADED) {
-            "The view model is not in the links loaded state"
-        }
+        check(state == LINKS_LOADED) { "The view model is not in the links loaded state." }
 
-        _screenState = _screenState.copy(state = LOADING_HOME)
+        _state = LOADING_HOME
 
         launchAndExecuteRequestRetrying(
             request = { battleshipsService.getHome() },
             events = _events,
             onSuccess = {
-                _screenState = _screenState.copy(state = HOME_LOADED)
+                _state = HOME_LOADED
             }
         )
     }
@@ -67,17 +60,17 @@ class HomeViewModel(
      * Loads the user home links.
      */
     fun loadUserHome() {
-        check(screenState.state == USER_HOME_LINKS_LOADED) {
-            "The view model is not in the user home links loaded state"
+        check(state == USER_HOME_LINKS_LOADED) {
+            "The view model is not in the user home links loaded state."
         }
 
-        _screenState = _screenState.copy(state = LOADING_USER_HOME)
+        _state = LOADING_USER_HOME
 
         launchAndExecuteRequestRetrying(
             request = { battleshipsService.usersService.getUserHome() },
             events = _events,
             onSuccess = {
-                _screenState = _screenState.copy(state = USER_HOME_LOADED)
+                _state = USER_HOME_LOADED
             }
         )
     }
@@ -88,12 +81,10 @@ class HomeViewModel(
      * @param clazz the activity class to navigate to
      */
     fun <T> navigateTo(clazz: Class<T>) {
-        _screenState = _screenState.copy(
-            loadingState = LOADING
-        )
+        _loadingState = LOADING
 
         viewModelScope.launch {
-            while (screenState.state !in listOf(HOME_LOADED, USER_HOME_LOADED))
+            while (state !in listOf(HOME_LOADED, USER_HOME_LOADED))
                 yield()
             _events.emit(HomeEvent.Navigate(clazz))
         }
@@ -112,17 +103,16 @@ class HomeViewModel(
      * Sets the loading state to [LOADED].
      */
     fun setLoadingStateToLoaded() {
-        _screenState = _screenState.copy(loadingState = LOADED)
+        _loadingState = LOADED
     }
 
     fun updateHomeLinks(links: Links) {
         super.updateLinks(links)
-        _screenState = _screenState.copy(state = LINKS_LOADED)
     }
 
     fun updateUserHomeLinks(links: Links) {
         super.updateLinks(links)
-        _screenState = _screenState.copy(state = USER_HOME_LINKS_LOADED)
+        _state = USER_HOME_LINKS_LOADED
     }
 
     /**
@@ -132,14 +122,12 @@ class HomeViewModel(
      * @property LOADING_HOME the home screen is loading
      * @property HOME_LOADED the home screen is loaded
      */
-    enum class HomeState {
-        IDLE,
-        LINKS_LOADED,
-        LOADING_HOME,
-        HOME_LOADED,
-        USER_HOME_LINKS_LOADED,
-        LOADING_USER_HOME,
-        USER_HOME_LOADED
+    object HomeState : BattleshipsState, BattleshipsStateCompanion() {
+        val LOADING_HOME = object : BattleshipsState {}
+        val HOME_LOADED = object : BattleshipsState {}
+        val USER_HOME_LINKS_LOADED = object : BattleshipsState {}
+        val LOADING_USER_HOME = object : BattleshipsState {}
+        val USER_HOME_LOADED = object : BattleshipsState {}
     }
 
     /**
