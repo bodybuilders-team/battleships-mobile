@@ -24,7 +24,7 @@ class LinkUsersService(
     /**
      * Gets the user home.
      *
-     * @return the API result with the user home Siren entity
+     * @return the API result of the get user home request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
@@ -48,7 +48,7 @@ class LinkUsersService(
     /**
      * Gets all the users.
      *
-     * @return the API result with the users DTO
+     * @return the API result of the get users request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
@@ -80,7 +80,7 @@ class LinkUsersService(
      * @param username the username of the user
      * @param password the password of the user
      *
-     * @return the API result with the authentication output DTO
+     * @return the API result of the register request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
@@ -112,7 +112,7 @@ class LinkUsersService(
      * @param username the username of the user
      * @param password the password of the user
      *
-     * @return the API result with the authentication output DTO
+     * @return the API result of the login request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
@@ -138,6 +138,8 @@ class LinkUsersService(
 
     /**
      * Logs the user out.
+     *
+     * @return the API result of the logout request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request

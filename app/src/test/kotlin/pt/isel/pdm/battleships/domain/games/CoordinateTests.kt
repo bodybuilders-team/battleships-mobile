@@ -23,9 +23,9 @@ class CoordinateTests {
     }
 
     @Test
-    fun `toCoordinateDTO returns a CoordinateDTO with the same column and row`() {
+    fun `toCoordinateModel returns a CoordinateModel with the same column and row`() {
         val coordinateModel = CoordinateModel(col = 'A', row = 5)
-        assertEquals(coordinateModel, Coordinate(col = 'A', row = 5).toCoordinateDTO())
+        assertEquals(coordinateModel, Coordinate(col = 'A', row = 5).toCoordinateModel())
     }
 
     @Test

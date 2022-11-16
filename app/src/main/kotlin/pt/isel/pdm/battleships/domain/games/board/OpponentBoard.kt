@@ -51,37 +51,39 @@ data class OpponentBoard(
 
                 if (cell.wasHit) throw InvalidShotException("Cell already hit")
 
-                when (cell) {
-                    is WaterCell -> when (firedShot.result) {
-                        ShotResult.HIT -> UnknownShipCell(
-                            coordinate = cell.coordinate,
-                            wasHit = true
-                        )
-                        ShotResult.SUNK -> {
-                            checkNotNull(firedShot.sunkShip) { "Sunk ship cannot be null" }
+                check(cell is ShipCell || cell is UnknownShipCell) {
+                    "Cell cannot be ShipCell or UnknownShipCell if it was not hit"
+                }
+                cell as WaterCell
 
-                            grid.forEach { cell2 ->
-                                if (cell2.coordinate in firedShot.sunkShip.coordinates) {
-                                    if (cell2 !is UnknownShipCell)
-                                        throw InvalidShotException("Cell is not a ship cell")
+                when (firedShot.result) {
+                    ShotResult.HIT -> UnknownShipCell(
+                        coordinate = cell.coordinate,
+                        wasHit = true
+                    )
+                    ShotResult.SUNK -> {
+                        checkNotNull(firedShot.sunkShip) { "Sunk ship cannot be null" }
 
-                                    return@map ShipCell(
-                                        coordinate = cell2.coordinate,
-                                        wasHit = true,
-                                        ship = firedShot.sunkShip
-                                    )
-                                }
+                        grid.forEach { cell2 ->
+                            if (cell2.coordinate in firedShot.sunkShip.coordinates) {
+                                if (cell2 !is UnknownShipCell)
+                                    throw InvalidShotException("Cell is not a ship cell")
+
+                                return@map ShipCell(
+                                    coordinate = cell2.coordinate,
+                                    wasHit = true,
+                                    ship = firedShot.sunkShip
+                                )
                             }
-
-                            ShipCell(
-                                coordinate = cell.coordinate,
-                                wasHit = true,
-                                ship = firedShot.sunkShip
-                            )
                         }
-                        else -> cell.copy(wasHit = true)
+
+                        ShipCell(
+                            coordinate = cell.coordinate,
+                            wasHit = true,
+                            ship = firedShot.sunkShip
+                        )
                     }
-                    is ShipCell, is UnknownShipCell -> throw InvalidShotException("Cell already hit")
+                    else -> cell.copy(wasHit = true)
                 }
             }
         )

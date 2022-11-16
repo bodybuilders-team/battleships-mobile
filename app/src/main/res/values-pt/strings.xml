@@ -17,7 +17,7 @@
     <string name="main_menu_about_button_text">Sobre</string>
     <string name="main_menu_about_button_description">Botão para o ecrã com informação dos desenvolvedores</string>
 
-    <string name="about_title">Desenvolvedores</string>
+    <string name="about_title">Autores</string>
     <string name="about_repo_github_text">"O código desta aplicação está disponível aqui: "</string>
 
     <string name="login_title">Iniciar Sessão</string>

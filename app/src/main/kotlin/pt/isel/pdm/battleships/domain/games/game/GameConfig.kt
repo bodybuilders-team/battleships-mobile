@@ -21,12 +21,12 @@ data class GameConfig(
     val ships: List<ShipType>
 ) {
 
-    constructor(dto: GameConfigModel) : this(
-        dto.gridSize,
-        dto.shotsPerRound,
-        dto.maxTimePerRound,
-        dto.maxTimeForLayoutPhase,
-        dto.shipTypes.flatMap { shipType ->
+    constructor(gameConfigModel: GameConfigModel) : this(
+        gameConfigModel.gridSize,
+        gameConfigModel.shotsPerRound,
+        gameConfigModel.maxTimePerRound,
+        gameConfigModel.maxTimeForLayoutPhase,
+        gameConfigModel.shipTypes.flatMap { shipType ->
             List(shipType.quantity) {
                 ShipType(
                     size = shipType.size,
@@ -37,16 +37,16 @@ data class GameConfig(
     )
 
     /**
-     * Converts this game configuration to a DTO.
+     * Converts the GameConfig to a GameConfigModel.
      *
-     * @return the GameConfigDTO
+     * @return the GameConfigModel
      */
-    fun toGameConfigDTO(): GameConfigModel = GameConfigModel(
-        gridSize,
-        maxTimeForLayoutPhase,
-        shotsPerTurn,
-        maxTimePerRound,
-        ships.distinct().map { ship ->
+    fun toGameConfigModel(): GameConfigModel = GameConfigModel(
+        gridSize = gridSize,
+        maxTimeForLayoutPhase = maxTimeForLayoutPhase,
+        shotsPerRound = shotsPerTurn,
+        maxTimePerRound = maxTimePerRound,
+        shipTypes = ships.distinct().map { ship ->
             ShipTypeModel(
                 shipName = ship.shipName,
                 size = ship.size,

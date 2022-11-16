@@ -32,7 +32,7 @@ class LinkGamesService(
     /**
      * Gets all the games.
      *
-     * @return the API result of the list games request
+     * @return the API result of the get games request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
@@ -90,7 +90,7 @@ class LinkGamesService(
     /**
      * Matchmakes a game with a specific configuration.
      *
-     * @param gameConfig the DTO with the game's configuration
+     * @param gameConfig the game's configuration
      *
      * @return the API result of the matchmake request
      *
@@ -119,7 +119,7 @@ class LinkGamesService(
     /**
      * Gets a game by id.
      *
-     * @return the result of the get game operation
+     * @return the result of the get game request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request

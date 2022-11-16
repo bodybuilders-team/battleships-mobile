@@ -16,8 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.screens.about.components.DeveloperInfo
-import pt.isel.pdm.battleships.ui.screens.about.components.DeveloperInfoView
+import pt.isel.pdm.battleships.ui.screens.about.components.AuthorInfo
+import pt.isel.pdm.battleships.ui.screens.about.components.AuthorInfoView
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
@@ -27,7 +27,7 @@ private val githubRepoUrl = Uri.parse("https://github.com/isel-leic-daw/2022-daw
 /**
  * About screen.
  *
- * Information shown for each developer:
+ * Information shown for each author:
  * - Student number
  * - First and last name
  * - Personal github profile link
@@ -52,9 +52,9 @@ fun AboutScreen(
         ) {
             ScreenTitle(title = stringResource(R.string.about_title))
 
-            developers.forEach { dev ->
-                DeveloperInfoView(
-                    developer = dev,
+            authors.forEach { dev ->
+                AuthorInfoView(
+                    author = dev,
                     onSendEmail = onSendEmail,
                     onOpenUrl = onOpenUrl
                 )
@@ -80,23 +80,26 @@ fun AboutScreen(
     }
 }
 
-private val developers = listOf(
-    DeveloperInfo(
+private val authors = listOf(
+    AuthorInfo(
         number = "48089",
         name = "André Páscoa",
         githubLink = Uri.parse("https://github.com/devandrepascoa"),
-        email = "48089@alunos.isel.pt"
+        email = "48089@alunos.isel.pt",
+        imageId = R.drawable.andre_jesus // TODO: Change image
     ),
-    DeveloperInfo(
+    AuthorInfo(
         number = "48280",
         name = "André Jesus",
         githubLink = Uri.parse("https://github.com/andre-j3sus"),
-        email = "48280@alunos.isel.pt"
+        email = "48280@alunos.isel.pt",
+        imageId = R.drawable.andre_jesus
     ),
-    DeveloperInfo(
+    AuthorInfo(
         number = "48287",
         name = "Nyckollas Brandão",
         githubLink = Uri.parse("https://github.com/Nyckoka"),
-        email = "48287@alunos.isel.pt"
+        email = "48287@alunos.isel.pt",
+        imageId = R.drawable.andre_jesus // TODO: Change image
     )
 )

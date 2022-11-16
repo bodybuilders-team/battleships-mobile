@@ -145,7 +145,7 @@ class GameplayViewModel(
             request = {
                 battleshipsService.playersService.fireShots(
                     shots = FireShotsInput(
-                        coordinates.map { UnfiredShotModel(it.toCoordinateDTO()) }
+                        coordinates.map { UnfiredShotModel(it.toCoordinateModel()) }
                     )
                 )
             },

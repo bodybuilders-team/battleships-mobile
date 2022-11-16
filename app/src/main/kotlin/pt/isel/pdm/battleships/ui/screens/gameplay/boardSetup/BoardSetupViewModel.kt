@@ -94,7 +94,7 @@ class BoardSetupViewModel(
         launchAndExecuteRequestRetrying(
             request = {
                 battleshipsService.playersService.deployFleet(
-                    fleet = DeployFleetInput(fleet = fleet.map(Ship::toUndeployedShipDTO))
+                    fleet = DeployFleetInput(fleet = fleet.map(Ship::toUndeployedShipModel))
                 )
             },
             events = _events,

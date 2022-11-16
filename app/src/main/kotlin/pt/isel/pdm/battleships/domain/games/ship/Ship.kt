@@ -22,13 +22,13 @@ data class Ship(
     val coordinates: List<Coordinate> = getCoordinates(type, coordinate, orientation)
 
     /**
-     * Converts the Ship to a UndeployedShipDTO.
+     * Converts the Ship to a UndeployedShipModel.
      *
-     * @return the UndeployedShipDTO
+     * @return the UndeployedShipModel
      */
-    fun toUndeployedShipDTO() = UndeployedShipModel(
+    fun toUndeployedShipModel() = UndeployedShipModel(
         type = type.shipName,
-        coordinate = coordinate.toCoordinateDTO(),
+        coordinate = coordinate.toCoordinateModel(),
         orientation = orientation.name
     )
 

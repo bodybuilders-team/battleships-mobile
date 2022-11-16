@@ -14,7 +14,7 @@ data class CoordinateModel(
 ) {
 
     /**
-     * Converts this DTO to a database model.
+     * Converts the CoordinateModel to a Coordinate.
      *
      * @return the database model coordinate
      */

@@ -19,7 +19,7 @@
     <string name="main_menu_about_button_text">About</string>
     <string name="main_menu_about_button_description">Button to about screen</string>
 
-    <string name="about_title">Developers</string>
+    <string name="about_title">Authors</string>
     <string name="about_repo_github_text">"The code for this app is available at: "</string>
 
     <string name="login_title">Login</string>

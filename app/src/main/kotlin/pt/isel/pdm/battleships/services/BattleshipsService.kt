@@ -34,7 +34,7 @@ class BattleshipsService(
     /**
      * Gets the home information.
      *
-     * @return the API result with the home information
+     * @return the API result of the get home request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request

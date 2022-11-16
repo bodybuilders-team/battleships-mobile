@@ -25,11 +25,11 @@ data class Coordinate(val col: Char, val row: Int) {
     }
 
     /**
-     * Converts a Coordinate to a CoordinateDTO.
+     * Converts a Coordinate to a CoordinateModel.
      *
-     * @return the CoordinateDTO
+     * @return the CoordinateModel
      */
-    fun toCoordinateDTO(): CoordinateModel = CoordinateModel(col = col, row = row)
+    fun toCoordinateModel(): CoordinateModel = CoordinateModel(col = col, row = row)
 
     override fun toString() = "$col$row"
 

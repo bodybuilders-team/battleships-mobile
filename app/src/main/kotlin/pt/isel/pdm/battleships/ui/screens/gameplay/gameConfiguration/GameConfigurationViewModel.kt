@@ -42,7 +42,7 @@ class GameConfigurationViewModel(
         launchAndExecuteRequestRetrying(
             request = {
                 battleshipsService.gamesService.createGame(
-                    gameConfig = gameConfig.toGameConfigDTO()
+                    gameConfig = gameConfig.toGameConfigModel()
                 )
             },
             events = _events,
