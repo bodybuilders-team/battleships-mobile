@@ -175,8 +175,7 @@ class LinkGamesService(
         if (joinGameResult !is APIResult.Success)
             return joinGameResult
 
-        links[Rels.GAME] =
-            joinGameResult.data.embeddedLinks(Rels.GAME).single().href.path
+        links[Rels.GAME] = joinGameResult.data.embeddedLinks(Rels.GAME).single().href.path
         links[Rels.GAME_STATE] =
             joinGameResult.data.embeddedLinks(Rels.GAME_STATE).single().href.path
 

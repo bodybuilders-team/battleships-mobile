@@ -3,24 +3,14 @@ package pt.isel.pdm.battleships.domain.users
 /**
  * A user of the application.
  *
- * @param username the user's username
- * @param email the user's email
- * @param points the user's points
+ * @property username the user's username
+ * @property email the user's email
+ * @property points the user's points
+ * @property numberOfGamesPlayed the number of games played by the user
  */
 data class User(
     val username: String,
     val email: String,
-    val points: Int
-) {
-
-    /**
-     * Converts this user to a ranked user.
-     *
-     * @param rank the user's rank
-     */
-    fun toRankedUser(rank: Int) = RankedUser(
-        username = username,
-        points = points,
-        rank = rank
-    )
-}
+    val points: Int,
+    val numberOfGamesPlayed: Int
+)

@@ -1,13 +1,11 @@
 package pt.isel.pdm.battleships.domain.games.board
 
-import pt.isel.pdm.battleships.domain.exceptions.InvalidShotException
 import pt.isel.pdm.battleships.domain.games.Cell
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.ShipCell
 import pt.isel.pdm.battleships.domain.games.UnknownShipCell
 import pt.isel.pdm.battleships.domain.games.WaterCell
 import pt.isel.pdm.battleships.domain.games.ship.Ship
-import pt.isel.pdm.battleships.domain.utils.replace
 import pt.isel.pdm.battleships.domain.utils.replaceIf
 
 /**
@@ -33,17 +31,6 @@ data class MyBoard(
         .distinct()
 
     /**
-     * Returns a new board with the cell in [at] coordinate replaced by [cell].
-     *
-     * @param at coordinate of the cell to be replaced
-     * @param cell cell to replace the cell in [at] coordinate
-     *
-     * @return new board with the cell in [at] coordinate replaced by [cell]
-     */
-    private fun setCell(at: Coordinate, cell: Cell) =
-        copy(grid = grid.replace(at.toIndex(size), cell))
-
-    /**
      * Shoots the [firedCoordinates].
      * If the cell is already hit, the attack is invalid.
      * Otherwise, the cell becomes hit.
@@ -51,19 +38,17 @@ data class MyBoard(
      * @param firedCoordinates coordinates to attack
      *
      * @return the board after the attack
-     * @throws InvalidShotException if the attack is invalid
      */
     fun shoot(firedCoordinates: List<Coordinate>): MyBoard =
         copy(
             grid = grid
                 .replaceIf(predicate = { cell -> cell.coordinate in firedCoordinates }) { cell ->
-                    if (cell.wasHit)
-                        throw InvalidShotException("Cell ${cell.coordinate} was already hit")
+                    check(!cell.wasHit) { "Cell at ${cell.coordinate} was already hit" }
 
                     when (cell) {
                         is ShipCell -> cell.copy(wasHit = true)
                         is WaterCell -> cell.copy(wasHit = true)
-                        is UnknownShipCell -> throw IllegalStateException( // TODO: OpponentCell?
+                        is UnknownShipCell -> throw IllegalStateException(
                             "UnknownShipCell should not be present in MyBoard"
                         )
                     }

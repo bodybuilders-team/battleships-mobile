@@ -86,7 +86,7 @@ private val authors = listOf(
         name = "André Páscoa",
         githubLink = Uri.parse("https://github.com/devandrepascoa"),
         email = "48089@alunos.isel.pt",
-        imageId = R.drawable.andre_jesus // TODO: Change image
+        imageId = R.drawable.andre_pascoa
     ),
     AuthorInfo(
         number = "48280",
@@ -100,6 +100,6 @@ private val authors = listOf(
         name = "Nyckollas Brandão",
         githubLink = Uri.parse("https://github.com/Nyckoka"),
         email = "48287@alunos.isel.pt",
-        imageId = R.drawable.andre_jesus // TODO: Change image
+        imageId = R.drawable.nyckollas_brandao
     )
 )

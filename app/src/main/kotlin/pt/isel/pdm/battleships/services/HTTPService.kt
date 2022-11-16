@@ -7,6 +7,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.EMPTY_REQUEST
 import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.utils.APIResult
 import pt.isel.pdm.battleships.services.utils.Problem.Companion.problemMediaType
@@ -127,7 +128,7 @@ abstract class HTTPService(
      *
      * @param link the link to send the request to
      * @param token the token to send in the header
-     * @param body the body to send in the request
+     * @param body the body to send in the request, if null, an empty request is sent
      *
      * @return the result of the request
      * @throws UnexpectedResponseException if there is an unexpected response from the server
@@ -136,15 +137,17 @@ abstract class HTTPService(
     protected suspend inline fun <reified T> post(
         link: String,
         token: String,
-        body: Any
+        body: Any? = null
     ): APIResult<SirenEntity<T>> =
         Request.Builder()
             .url(url = apiEndpoint + link)
             .header(name = AUTHORIZATION_HEADER, value = "$TOKEN_TYPE $token")
             .post(
-                body = jsonEncoder
-                    .toJson(body)
-                    .toRequestBody(contentType = applicationJsonMediaType)
+                body = body?.let {
+                    jsonEncoder
+                        .toJson(body)
+                        .toRequestBody(contentType = applicationJsonMediaType)
+                } ?: EMPTY_REQUEST
             )
             .build()
             .getResponseResult()

@@ -139,12 +139,17 @@ class LinkUsersService(
     /**
      * Logs the user out.
      *
+     * @param refreshToken the refresh token of the user
+     *
      * @return the API result of the logout request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun logout(): APIResult<SirenEntity<Unit>> {
-        TODO("To be implemented")
-    }
+    suspend fun logout(refreshToken: String): APIResult<SirenEntity<Unit>> =
+        usersService.logout(
+            logoutLink = links[Rels.LOGOUT]
+                ?: throw IllegalArgumentException("The logout link is missing"),
+            refreshToken = refreshToken
+        )
 }

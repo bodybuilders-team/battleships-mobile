@@ -85,7 +85,9 @@ class HomeActivity : ComponentActivity() {
                 onRegisterClick = {
                     viewModel.navigateTo<RegisterActivity>()
                 },
-                onLogoutClick = { sessionManager.clearSession() },
+                onLogoutClick = {
+                    viewModel.logout()
+                },
                 onRankingClick = {
                     viewModel.navigateTo<RankingActivity>()
                 },

@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.users.User
+import pt.isel.pdm.battleships.domain.users.toRankedUsers
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.ranking.components.RankingTableView
 import pt.isel.pdm.battleships.ui.screens.ranking.components.SearchPlayerField
@@ -41,20 +42,12 @@ fun RankingScreen(
         ) {
             ScreenTitle(title = stringResource(id = R.string.ranking_title))
 
-            var filteredUsers by remember {
-                mutableStateOf(
-                    users.mapIndexed { index, user -> user.toRankedUser(rank = index + 1) }
-                )
-            }
-            LaunchedEffect(users) {
-                filteredUsers = users.mapIndexed { index, user ->
-                    user.toRankedUser(rank = index + 1)
-                }
-            }
+            var filteredUsers by remember { mutableStateOf(users.toRankedUsers()) }
+            LaunchedEffect(users) { filteredUsers = users.toRankedUsers() }
 
             SearchPlayerField { searchedName ->
                 filteredUsers = users
-                    .mapIndexed { index, user -> user.toRankedUser(rank = index + 1) }
+                    .toRankedUsers()
                     .filter { user -> user.username.contains(searchedName) }
             }
 

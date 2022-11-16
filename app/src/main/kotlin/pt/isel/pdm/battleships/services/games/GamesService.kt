@@ -41,20 +41,6 @@ class GamesService(
         get(link = listGamesLink)
 
     /**
-     * Gets a game by id.
-     *
-     * @param token the user token for the authentication
-     * @param gameLink the game link
-     *
-     * @return the result of the get game request
-     *
-     * @throws UnexpectedResponseException if there is an unexpected response from the server
-     * @throws IOException if there is an error while sending the request
-     */
-    suspend fun getGame(token: String, gameLink: String): APIResult<GetGameOutput> =
-        get(link = gameLink, token = token)
-
-    /**
      * Creates a new game.
      *
      * @param createGameLink the link to the create game endpoint
@@ -92,6 +78,37 @@ class GamesService(
         post(link = matchmakeLink, token = token, body = gameConfig)
 
     /**
+     * Gets a game by id.
+     *
+     * @param token the user token for the authentication
+     * @param gameLink the game link
+     *
+     * @return the result of the get game request
+     *
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
+     */
+    suspend fun getGame(token: String, gameLink: String): APIResult<GetGameOutput> =
+        get(link = gameLink, token = token)
+
+    /**
+     * Gets the state of a game.
+     *
+     * @param token the token of the user that is matchmaking
+     * @param gameStateLink the game state link
+     *
+     * @return the API result of the get game state request
+     *
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
+     */
+    suspend fun getGameState(
+        token: String,
+        gameStateLink: String
+    ): APIResult<GetGameStateOutput> =
+        get(link = gameStateLink, token = token)
+
+    /**
      * Joins a game.
      *
      * @param token the token of the user that is joining the game
@@ -106,7 +123,7 @@ class GamesService(
         token: String,
         joinGameLink: String
     ): APIResult<JoinGameOutput> =
-        post(link = joinGameLink, token = token, body = {}) // TODO EMPTY BODY
+        post(link = joinGameLink, token = token)
 
     /**
      * Leaves a game.
@@ -125,21 +142,4 @@ class GamesService(
     ) {
         // TODO: To be implemented
     }
-
-    /**
-     * Gets the state of a game.
-     *
-     * @param token the token of the user that is matchmaking
-     * @param gameStateLink the game state link
-     *
-     * @return the API result of the get game state request
-     *
-     * @throws UnexpectedResponseException if there is an unexpected response from the server
-     * @throws IOException if there is an error while sending the request
-     */
-    suspend fun getGameState(
-        token: String,
-        gameStateLink: String
-    ): APIResult<GetGameStateOutput> =
-        get(link = gameStateLink, token = token)
 }

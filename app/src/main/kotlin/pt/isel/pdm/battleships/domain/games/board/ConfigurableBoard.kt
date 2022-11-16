@@ -26,7 +26,10 @@ data class ConfigurableBoard(
     }
 
     val fleet: List<Ship>
-        get() = grid.filterIsInstance<ShipCell>().map { it.ship }.distinct()
+        get() = grid
+            .filterIsInstance<ShipCell>()
+            .map(ShipCell::ship)
+            .distinct()
 
     /**
      * Checks if it is possible to place a ship in its coordinates.

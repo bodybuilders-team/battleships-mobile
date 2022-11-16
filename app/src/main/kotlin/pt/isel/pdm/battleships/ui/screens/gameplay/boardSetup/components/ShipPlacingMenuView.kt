@@ -25,7 +25,11 @@ const val PLACING_MENU_PADDING = 6
  * It contains the ship slots and some buttons.
  *
  * @param shipTypes the list of ship types to be presented
- * @param tileSize the size of the tiles in the board
+ * @param dragging the function that returns true if the ship type is being dragged
+ * @param onDragStart the function that is called when a ship starts being dragged
+ * @param onDragEnd the function that is called when a ship is dropped
+ * @param onDragCancel the function that is called when a ship drag is canceled
+ * @param onDrag the function that is called when a ship is dragged
  * @param onRandomBoardButtonPressed the callback to be invoked when the user presses the
  * random board button
  * @param onConfirmBoardButtonPressed the callback to be invoked when the user presses the
@@ -34,10 +38,9 @@ const val PLACING_MENU_PADDING = 6
 @Composable
 fun ShipPlacingMenuView(
     shipTypes: List<ShipType>,
-    tileSize: Float,
     dragging: (ShipType) -> Boolean,
     onDragStart: (Ship, Offset) -> Unit,
-    onDragEnd: (Ship) -> Unit, // TODO: comment!
+    onDragEnd: (Ship) -> Unit,
     onDragCancel: () -> Unit,
     onDrag: (Offset) -> Unit,
     onRandomBoardButtonPressed: () -> Unit,
@@ -51,7 +54,6 @@ fun ShipPlacingMenuView(
     ) {
         ShipSlotsView(
             shipTypes = shipTypes,
-            tileSize = tileSize,
             dragging = dragging,
             onDragStart = onDragStart,
             onDragEnd = onDragEnd,

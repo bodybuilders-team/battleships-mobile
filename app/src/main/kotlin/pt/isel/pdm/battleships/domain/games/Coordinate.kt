@@ -37,6 +37,8 @@ data class Coordinate(val col: Char, val row: Int) {
         val maxColsRange = Board.FIRST_COL until Board.FIRST_COL + Board.MAX_BOARD_SIZE
         val maxRowsRange = Board.FIRST_ROW..Board.MAX_BOARD_SIZE
 
+        val first = Coordinate(maxColsRange.first, maxRowsRange.first)
+
         /**
          * Checks if a coordinate is valid.
          *

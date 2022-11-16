@@ -3,7 +3,6 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.Text
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.DependenciesContainer
@@ -13,6 +12,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
 import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.showToast
@@ -52,12 +52,8 @@ class BoardSetupActivity : ComponentActivity() {
 
         setContent {
             when (viewModel.state) {
-                IDLE, LINKS_LOADED, LOADING_GAME -> {
-                    Text("Loading Game..")
-                }
-                WAITING_FOR_OPPONENT -> {
-                    Text("Waiting for opponent..")
-                }
+                IDLE, LINKS_LOADED, LOADING_GAME -> LoadingSpinner("Loading Game...")
+                WAITING_FOR_OPPONENT -> LoadingSpinner("Waiting for opponent...")
                 else -> {
                     BoardSetupScreen(
                         boardSize = viewModel.screenState.gridSize

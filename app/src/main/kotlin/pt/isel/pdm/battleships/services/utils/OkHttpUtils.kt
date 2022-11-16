@@ -2,19 +2,13 @@ package pt.isel.pdm.battleships.services.utils
 
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
-import org.json.JSONObject
-import pt.isel.pdm.battleships.services.HTTPService.Companion.applicationJsonMediaType
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -49,28 +43,6 @@ suspend fun <T> Request.send(okHttpClient: OkHttpClient, parseResponse: (Respons
 
         continuation.invokeOnCancellation { call.cancel() }
     }
-
-/**
- * Converts the [ResponseBody] to a [JSONObject].
- *
- * @receiver the [ResponseBody] to be converted
- * @return the json object
- */
-suspend fun ResponseBody.toJson(): JSONObject = // TODO: Can delete this function?
-    withContext(Dispatchers.IO) {
-        val resString = this@toJson.string()
-        JSONObject(resString)
-    }
-
-/**
- * Converts the [JSONObject] to a [RequestBody].
- *
- * @receiver the json object
- * @return the request body
- */
-fun JSONObject.toJsonRequestBody(): RequestBody = this // TODO: Can delete this function?
-    .toString()
-    .toRequestBody(applicationJsonMediaType)
 
 /**
  * Gets the [ResponseBody] from the [Response] body.

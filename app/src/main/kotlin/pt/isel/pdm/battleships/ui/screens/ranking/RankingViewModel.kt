@@ -56,7 +56,8 @@ class RankingViewModel(
                         User(
                             username = userProperties.username,
                             email = userProperties.email,
-                            points = userProperties.points
+                            points = userProperties.points,
+                            numberOfGamesPlayed = userProperties.numberOfGamesPlayed
                         )
                     }
 

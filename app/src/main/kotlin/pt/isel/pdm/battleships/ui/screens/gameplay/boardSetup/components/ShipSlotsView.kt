@@ -29,20 +29,24 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.DEFAULT_TILE_SIZ
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
 
 private const val SHIP_SLOTS_CORNER_RADIUS = 10
-const val SHIP_SLOTS_FACTOR = 0.6f
+private const val SHIP_SLOTS_FACTOR = 0.6f
+private const val SHIP_ALPHA_WHEN_ZERO_QUANTITY = 0.5f
 
 /**
  * A composable that The ship slots.
  * Contains the slots for each ship type.
  *
  * @param shipTypes the list of ship types to be presented
- * @param tileSize the size of the tiles in the board
+ * @param dragging the function that returns true if the ship type is being dragged
+ * @param onDragStart the function that is called when a ship starts being dragged
+ * @param onDragEnd the function that is called when a ship is dropped
+ * @param onDragCancel the function that is called when a ship drag is canceled
+ * @param onDrag the function that is called when a ship is dragged
  */
 @Composable
 fun ShipSlotsView(
     shipTypes: List<ShipType>,
-    tileSize: Float, // TODO: remove?
-    dragging: (ShipType) -> Boolean, // TODO: comment!
+    dragging: (ShipType) -> Boolean,
     onDragStart: (Ship, Offset) -> Unit,
     onDragEnd: (Ship) -> Unit,
     onDragCancel: () -> Unit,
@@ -75,13 +79,13 @@ fun ShipSlotsView(
                                 type = shipType,
                                 orientation = Orientation.VERTICAL,
                                 tileSize = DEFAULT_TILE_SIZE,
-                                modifier = Modifier.alpha(0.5f) // TODO: constants!
+                                modifier = Modifier.alpha(SHIP_ALPHA_WHEN_ZERO_QUANTITY)
                             )
                         } else {
                             DraggableShipView(
                                 ship = Ship(
                                     type = shipType,
-                                    coordinate = Coordinate('A', 1),
+                                    coordinate = Coordinate.first,
                                     orientation = Orientation.VERTICAL
                                 ),
                                 tileSize = DEFAULT_TILE_SIZE,
@@ -89,9 +93,8 @@ fun ShipSlotsView(
                                 onDragEnd = onDragEnd,
                                 onDragCancel = onDragCancel,
                                 onDrag = onDrag,
-                                modifier = Modifier.alpha(
-                                    if (draggingShip && shipTypeCount == 1) 0.5f else 1f
-                                ),
+                                modifier = Modifier
+                                    .alpha(if (draggingShip && shipTypeCount == 1) 0.5f else 1f),
                                 onTap = {}
                             )
                         }

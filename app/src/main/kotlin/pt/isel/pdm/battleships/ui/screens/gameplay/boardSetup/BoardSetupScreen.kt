@@ -163,7 +163,6 @@ fun BoardSetupScreen(
 
                     ShipPlacingMenuView(
                         shipTypes = unplacedShips,
-                        tileSize = tileSize,
                         dragging = { shipType ->
                             dragState.ship?.type == shipType && dragState.isDragging
                         },

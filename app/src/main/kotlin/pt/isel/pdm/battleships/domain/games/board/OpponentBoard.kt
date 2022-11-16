@@ -1,6 +1,5 @@
 package pt.isel.pdm.battleships.domain.games.board
 
-import pt.isel.pdm.battleships.domain.exceptions.InvalidShotException
 import pt.isel.pdm.battleships.domain.games.Cell
 import pt.isel.pdm.battleships.domain.games.ShipCell
 import pt.isel.pdm.battleships.domain.games.UnknownShipCell
@@ -40,7 +39,6 @@ data class OpponentBoard(
      * @param firedShots coordinates to attack
      *
      * @return the board after the attack
-     * @throws InvalidShotException if the attack is invalid
      */
     fun updateWith(firedShots: List<FiredShot>): OpponentBoard {
         val sunkCoordinates = firedShots
@@ -53,12 +51,11 @@ data class OpponentBoard(
                     .find { shot -> shot.coordinate == cell.coordinate }
                     ?: return@map cell
 
-                if (cell.wasHit) throw InvalidShotException("Cell already hit")
-
+                check(!cell.wasHit) { "Cell at ${cell.coordinate} was already hit" }
                 check(cell is WaterCell) { "Cell can only be water cell if it was not hit" }
 
                 sunkCoordinates.entries
-                    .find { (sunkCoordinates) -> cell.coordinate in sunkCoordinates }
+                    .find { (sunkCoordinates, _) -> cell.coordinate in sunkCoordinates }
                     ?.let { (_, sunkShip) ->
                         return@map ShipCell(
                             coordinate = cell.coordinate,

@@ -75,6 +75,18 @@ class HomeViewModel(
         )
     }
 
+    fun logout() {
+        check(sessionManager.isLoggedIn()) { "The user is not logged in." }
+
+        launchAndExecuteRequestRetrying(
+            request = { battleshipsService.usersService.logout(sessionManager.refreshToken!!) },
+            events = _events,
+            onSuccess = {
+                sessionManager.clearSession()
+            }
+        )
+    }
+
     /**
      * Navigates to the given activity.
      *

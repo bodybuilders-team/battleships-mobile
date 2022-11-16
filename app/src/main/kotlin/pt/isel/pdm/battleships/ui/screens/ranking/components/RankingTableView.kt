@@ -56,11 +56,14 @@ fun RankingTableView(users: List<RankedUser>) {
 
             Row {
                 TableCell(
-                    text = user.rank.toString(),
-                    textColor = if (user.rank <= BRONZE_RANK) Color.Black else Color.Unspecified,
+                    text = user.rankByPoints.toString(),
+                    textColor = if (user.rankByPoints <= BRONZE_RANK)
+                        Color.Black
+                    else
+                        Color.Unspecified,
                     modifier = Modifier
                         .background(
-                            when (user.rank) {
+                            when (user.rankByPoints) {
                                 GOLD_RANK -> Gold
                                 SILVER_RANK -> Silver
                                 BRONZE_RANK -> Bronze
