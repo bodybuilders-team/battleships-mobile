@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.shared
+package pt.isel.pdm.battleships.ui.screens
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -9,6 +9,14 @@ import pt.isel.pdm.battleships.services.LinkBattleshipsService
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
+/**
+ * View model for the [BattleshipsActivity].
+ * Base class for all view models that are used in the application.
+ *
+ * @property battleshipsService the service used to handle the battleships game
+ * @property sessionManager the manager used to handle the user session
+ * @property events the events that occurred in the view model
+ */
 abstract class BattleshipsViewModel(
     private val _battleshipsService: BattleshipsService,
     protected val sessionManager: SessionManager

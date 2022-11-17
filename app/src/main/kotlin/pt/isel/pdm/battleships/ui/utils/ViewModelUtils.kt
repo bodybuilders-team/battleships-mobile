@@ -7,12 +7,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.utils.APIResult
+import java.io.IOException
 
 /**
  * Initializes a [ViewModel].
  *
  * @param T the type of the [ViewModel] to be initialized
+ * @param block the block of code to be executed to initialize the [ViewModel]
+ *
  * @return the initialized [ViewModel]
  */
 @Suppress("UNCHECKED_CAST")
@@ -24,20 +28,29 @@ inline fun <reified T : ViewModel> ComponentActivity.viewModelInit(crossinline b
     }
 
 /**
- * An event that occurs in a view model.
+ * Tries to execute the given request and returns a [HTTPResult] with the result.
+ *
+ * If the request fails, the returned [HTTPResult] will be a [HTTPResult.Failure]
+ * with the error message.
+ *
+ * @param executeRequest the request to execute
+ * @return the result of the request
  */
-interface Event {
-
-    /**
-     * An error event.
-     *
-     * @property message the error message
-     */
-    class Error(val message: String) : Event
-}
+suspend fun <T> tryExecuteHttpRequest(
+    executeRequest: suspend () -> T
+): HTTPResult<T> =
+    try {
+        HTTPResult.Success(executeRequest())
+    } catch (e: IOException) {
+        HTTPResult.Failure("Could not connect to the server.")
+    } catch (e: UnexpectedResponseException) {
+        HTTPResult.Failure("Server sent an unexpected response.")
+    }
 
 /**
  * Handles a [HTTPResult].
+ *
+ * @receiver the [HTTPResult] to be handled
  *
  * @param events the events that occurred in the view model
  * @param onFailure the action to be executed when the result is a failure
@@ -60,8 +73,12 @@ suspend inline fun <T> HTTPResult<T>.handle(
 /**
  * Handles a [APIResult].
  *
+ * @receiver the [APIResult] to be handled
+ *
  * @param events the events that occurred in the view model
  * @param onFailure the action to be executed when the result is a failure
+ *
+ * @return the data of the result if it is a success, null otherwise
  */
 suspend fun <T> APIResult<T>.handle(
     events: MutableSharedFlow<Event>,
@@ -82,6 +99,8 @@ suspend fun <T> APIResult<T>.handle(
  *
  * @param request the request to be executed
  * @param events the events that occurred in the view model
+ *
+ * @return the result of the request
  */
 suspend fun <T> executeRequestRetrying(
     request: suspend () -> APIResult<T>,
@@ -89,11 +108,10 @@ suspend fun <T> executeRequestRetrying(
 ): T {
     while (true) {
         // TODO request delay and differentiation between ApiResult.Failure
-        val httpRes = tryExecuteHttpRequest { request() }
-
-        val res = httpRes.handle(events = events) ?: continue
-
-        return res.handle(events = events) ?: continue
+        return tryExecuteHttpRequest { request() }
+            .handle(events = events)
+            ?.handle(events = events)
+            ?: continue
     }
 }
 
@@ -103,17 +121,15 @@ suspend fun <T> executeRequestRetrying(
  *
  * @param request the request to be executed
  * @param events the events that occurred in the view model
+ *
+ * @return the result of the request
  */
 suspend fun <T> executeRequest(
     request: suspend () -> APIResult<T>,
     events: MutableSharedFlow<Event>
-): T? {
-    val httpRes = tryExecuteHttpRequest { request() }
-
-    val res = httpRes.handle(events = events)
-
-    return res?.handle(events = events)
-}
+): T? = tryExecuteHttpRequest { request() }
+    .handle(events = events)
+    ?.handle(events = events)
 
 /**
  * Tries to execute an HTTP request, in a coroutine.

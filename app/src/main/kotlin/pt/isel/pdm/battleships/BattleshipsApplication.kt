@@ -11,8 +11,8 @@ import pt.isel.pdm.battleships.services.utils.siren.SubEntityDeserializer
 /**
  * The Battleships application.
  *
- * @property jsonEncoder the JSON formatter used by the application
- * @property sessionManager the session manager used by the application
+ * @property jsonEncoder the JSON encoder used to serialize/deserialize objects
+ * @property sessionManager the manager used to handle the user session
  * @property battleshipsService the service used to handle the battleships game
  */
 class BattleshipsApplication : DependenciesContainer, Application() {
@@ -23,12 +23,11 @@ class BattleshipsApplication : DependenciesContainer, Application() {
 
     override val sessionManager: SessionManager = SessionManager()
 
-    override val battleshipsService =
-        BattleshipsService(
-            apiEndpoint = API_ENDPOINT,
-            httpClient = OkHttpClient(),
-            jsonEncoder = jsonEncoder
-        )
+    override val battleshipsService = BattleshipsService(
+        apiEndpoint = API_ENDPOINT,
+        httpClient = OkHttpClient(),
+        jsonEncoder = jsonEncoder
+    )
 
     companion object {
         private const val API_ENDPOINT =

@@ -47,8 +47,10 @@ data class Links(val links: Map<String, String>) : Parcelable {
          * Puts the links into the specified intent.
          *
          * @receiver the intent to put the links into
+         *
+         * @param links the links to put into the intent
+         * @return the intent with the links
          */
-        fun Intent.putLinks(links: Links) =
-            putExtra(LINKS_KEY, links)
+        fun Intent.putLinks(links: Links): Intent = putExtra(LINKS_KEY, links)
     }
 }

@@ -13,8 +13,8 @@ import java.io.IOException
  * The service that handles the battleships game, and keeps track of the journey links.
  *
  * @param links the links to the battleships game
- * @param sessionManager the session manager
- * @property battleshipsService the service that handles the battleships game
+ * @param sessionManager the manager used to handle the user session
+ * @property battleshipsService the service used to handle the battleships game
  *
  * @property usersService the service that handles the users
  * @property gamesService the service that handles the games

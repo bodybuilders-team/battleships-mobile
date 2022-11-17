@@ -5,12 +5,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.FINISHED_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
@@ -69,6 +69,11 @@ class GameplayActivity : BattleshipsActivity() {
         }
     }
 
+    /**
+     * Handles the specified event.
+     *
+     * @param event the event to handle
+     */
     private suspend fun handleEvent(event: Event) {
         when (event) {
             is Event.Error -> showToast(event.message)

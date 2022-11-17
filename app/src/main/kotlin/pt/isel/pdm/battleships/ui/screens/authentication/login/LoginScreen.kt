@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
 import pt.isel.pdm.battleships.ui.screens.authentication.hash

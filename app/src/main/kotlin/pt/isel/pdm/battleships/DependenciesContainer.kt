@@ -4,9 +4,9 @@ import com.google.gson.Gson
 import pt.isel.pdm.battleships.services.BattleshipsService
 
 /**
- * This interface is used to provide dependencies to the application.
+ * Provides the dependencies of the application.
  *
- * @property jsonEncoder the JSON formatter used to serialize/deserialize objects
+ * @property jsonEncoder the JSON encoder used to serialize/deserialize objects
  * @property sessionManager the manager used to handle the user session
  * @property battleshipsService the service used to handle the battleships game
  */

@@ -21,7 +21,7 @@ import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.Board.Companion.DEFAULT_BOARD_SIZE
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.GameConfigSelector

@@ -16,10 +16,10 @@ import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.models.players.fireShots.FireShotsInput
 import pt.isel.pdm.battleships.services.games.models.players.ship.GetFleetOutputModel
 import pt.isel.pdm.battleships.services.games.models.players.shot.UnfiredShotModel
+import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
@@ -245,6 +245,11 @@ class GameplayViewModel(
             )
         }
 
+    /**
+     * Updates the links.
+     *
+     * @param links the links to update
+     */
     override fun updateLinks(links: Links) {
         super.updateLinks(links)
         _state = LINKS_LOADED

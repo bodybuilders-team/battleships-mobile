@@ -7,11 +7,11 @@ import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.users.User
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.users.models.getUsers.GetUsersUserModel
+import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.IDLE
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.LINKS_LOADED
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
@@ -19,10 +19,11 @@ import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 /**
  * View model for the [RankingActivity].
  *
- * @property battleshipsService the service of the battleships application
+ * @property battleshipsService the service used to handle the battleships game
  * @property sessionManager the manager used to handle the user session
  *
- * @property events the events that occurred in the view model
+ * @property users the list of users
+ * @property state the current state of the view model
  */
 class RankingViewModel(
     battleshipsService: BattleshipsService,
@@ -74,14 +75,21 @@ class RankingViewModel(
         )
     }
 
+    /**
+     * Updates the links.
+     *
+     * @param links the links to update
+     */
     override fun updateLinks(links: Links) {
         super.updateLinks(links)
         _state = LINKS_LOADED
     }
 
     /**
-     * The ranking state.
+     * The state of the [RankingViewModel].
      *
+     * @property IDLE the view model is idle
+     * @property LINKS_LOADED the links are loaded
      * @property GETTING_USERS the get users operation is in progress
      * @property FINISHED the get users operation has finished
      */

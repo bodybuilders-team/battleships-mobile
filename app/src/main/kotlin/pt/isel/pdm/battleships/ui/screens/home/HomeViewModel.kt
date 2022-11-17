@@ -8,17 +8,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.BattleshipsService
+import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.LOADING
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.NOT_LOADING
+import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.HOME_LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.HOME_LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
-import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING_HOME
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING_USER_HOME
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.USER_HOME_LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.USER_HOME_LOADED
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
@@ -26,9 +26,11 @@ import pt.isel.pdm.battleships.ui.utils.navigation.Links
 /**
  * View model for the [HomeActivity].
  *
- * @property battleshipsService the service of the battleships application
+ * @property battleshipsService the service used to handle the battleships game
+ * @property sessionManager the manager used to handle the user session
  *
- * @property events the events to be handled
+ * @property loadingState the current loading state of the view model
+ * @property state the current state of the view model
  */
 class HomeViewModel(
     battleshipsService: BattleshipsService,
@@ -47,7 +49,7 @@ class HomeViewModel(
      * Loads the home page.
      */
     fun loadHome() {
-        check(state == LINKS_LOADED) { "The view model is not in the links loaded state." }
+        check(state == HOME_LINKS_LOADED) { "The view model is not in the links loaded state." }
 
         _state = LOADING_HOME
 
@@ -79,15 +81,16 @@ class HomeViewModel(
         )
     }
 
+    /**
+     * Logs out the user.
+     */
     fun logout() {
         check(sessionManager.isLoggedIn()) { "The user is not logged in." }
 
         launchAndExecuteRequestRetrying(
             request = { battleshipsService.usersService.logout(sessionManager.refreshToken!!) },
             events = _events,
-            onSuccess = {
-                sessionManager.clearSession()
-            }
+            onSuccess = { sessionManager.clearSession() }
         )
     }
 
@@ -122,26 +125,40 @@ class HomeViewModel(
         _loadingState = LOADED
     }
 
+    /**
+     * Updates the home links.
+     *
+     * @param links the new home links
+     */
     fun updateHomeLinks(links: Links) {
         super.updateLinks(links)
-        _state = LINKS_LOADED
+        _state = HOME_LINKS_LOADED
     }
 
+    /**
+     * Updates the user home links.
+     *
+     * @param links the new user home links
+     */
     fun updateUserHomeLinks(links: Links) {
         super.updateLinks(links)
         _state = USER_HOME_LINKS_LOADED
     }
 
     /**
-     * The state of the home screen.
+     * The state of the [HomeViewModel].
      *
-     * @property IDLE the home screen is idle
+     * @property IDLE the view model is idle
+     * @property HOME_LINKS_LOADED the home links are loaded
      * @property LOADING_HOME the home screen is loading
      * @property HOME_LOADED the home screen is loaded
+     * @property USER_HOME_LINKS_LOADED the user home links are loaded
+     * @property LOADING_USER_HOME the user home screen is loading
+     * @property USER_HOME_LOADED the user home screen is loaded
      */
     enum class HomeState {
         IDLE,
-        LINKS_LOADED,
+        HOME_LINKS_LOADED,
         LOADING_HOME,
         HOME_LOADED,
         USER_HOME_LINKS_LOADED,
@@ -150,7 +167,7 @@ class HomeViewModel(
     }
 
     /**
-     * The state of the home screen loading.
+     * The loading state of the [HomeViewModel].
      *
      * @property NOT_LOADING the home screen is idle
      * @property LOADING the home screen is loading
@@ -163,7 +180,7 @@ class HomeViewModel(
     }
 
     /**
-     * The events of the home view model.
+     * The events of the [HomeViewModel].
      */
     sealed class HomeEvent : Event {
 

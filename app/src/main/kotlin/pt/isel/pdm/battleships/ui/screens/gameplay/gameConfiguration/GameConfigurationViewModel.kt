@@ -6,11 +6,11 @@ import androidx.compose.runtime.setValue
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.services.BattleshipsService
+import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.CREATING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.GAME_CREATED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.LINKS_LOADED
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
@@ -53,6 +53,11 @@ class GameConfigurationViewModel(
         )
     }
 
+    /**
+     * Updates the links.
+     *
+     * @param links the links to update
+     */
     override fun updateLinks(links: Links) {
         super.updateLinks(links)
         _state = LINKS_LOADED

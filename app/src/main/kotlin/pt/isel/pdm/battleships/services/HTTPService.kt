@@ -23,7 +23,7 @@ import java.io.IOException
  *
  * @property apiEndpoint the base URL of the API
  * @property httpClient the HTTP client used to communicate with the server
- * @property jsonEncoder the JSON formatter used to parse the server responses
+ * @property jsonEncoder the JSON encoder used to serialize/deserialize objects
  */
 abstract class HTTPService(
     protected val apiEndpoint: String,

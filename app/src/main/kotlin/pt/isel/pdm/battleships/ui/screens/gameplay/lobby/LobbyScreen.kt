@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutput
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
-import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
@@ -20,7 +20,7 @@ import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
 /**
- * Screen that displays the lobby menu.
+ * Lobby screen.
  *
  * @param state the current state of the lobby
  * @param games the list of games

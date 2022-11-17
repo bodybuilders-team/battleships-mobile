@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.users.User
 import pt.isel.pdm.battleships.domain.users.toRankedUsers
-import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.ranking.components.RankingTableView

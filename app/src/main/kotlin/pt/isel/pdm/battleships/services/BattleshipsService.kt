@@ -15,7 +15,7 @@ import java.io.IOException
  *
  * @param apiEndpoint the API endpoint
  * @param httpClient the HTTP client
- * @param jsonEncoder the JSON formatter
+ * @param jsonEncoder the JSON encoder used to serialize/deserialize objects
  *
  * @property usersService the service that handles the users
  * @property gamesService the service that handles the games

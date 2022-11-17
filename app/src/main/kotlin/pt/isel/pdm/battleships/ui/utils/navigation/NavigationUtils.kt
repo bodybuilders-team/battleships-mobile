@@ -46,7 +46,6 @@ fun <T> Context.navigateToForResult(
     val intent = Intent(this, clazz)
 
     beforeNavigation(intent)
-
     activityResultLauncher.launch(intent)
 }
 
@@ -56,10 +55,7 @@ fun <T> Context.navigateToForResult(
  * @param clazz the class of the activity to navigate to
  * @param links the links to set before navigating
  */
-fun Context.navigateWithLinksTo(
-    clazz: Class<*>,
-    links: Links
-) {
+fun Context.navigateWithLinksTo(clazz: Class<*>, links: Links) {
     navigateTo(clazz) { intent ->
         intent.putExtra(Links.LINKS_KEY, links)
     }
@@ -70,9 +66,7 @@ fun Context.navigateWithLinksTo(
  *
  * @param links the links to set before navigating
  */
-inline fun <reified T> Context.navigateWithLinksTo(
-    links: Links
-) {
+inline fun <reified T> Context.navigateWithLinksTo(links: Links) {
     navigateTo<T> { intent ->
         intent.putExtra(Links.LINKS_KEY, links)
     }
@@ -91,7 +85,9 @@ fun Context.navigateWithLinksToForResult(
     clazz: Class<*>,
     links: Links
 ) {
-    navigateToForResult(activityResultLauncher, clazz, beforeNavigation = { intent ->
-        intent.putExtra(Links.LINKS_KEY, links)
-    })
+    navigateToForResult(
+        activityResultLauncher = activityResultLauncher,
+        clazz = clazz,
+        beforeNavigation = { intent -> intent.putExtra(Links.LINKS_KEY, links) }
+    )
 }

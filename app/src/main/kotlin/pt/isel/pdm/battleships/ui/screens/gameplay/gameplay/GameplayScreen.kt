@@ -25,7 +25,7 @@ import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
-import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.TileHitView

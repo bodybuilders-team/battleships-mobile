@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.about.AboutActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.login.LoginActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterActivity
@@ -12,7 +13,6 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuActi
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeEvent
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
@@ -22,11 +22,7 @@ import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksToForResult
 import pt.isel.pdm.battleships.ui.utils.showToast
 
 /**
- * This activity is the main entry point of the application.
- * It is responsible for creating the main view and the view model.
- *
- * @property viewModel the view model used to handle the state of the application
- * @property userHomeForResult the activity result launcher used to handle the user home result
+ * Activity for the [HomeScreen].
  */
 class HomeActivity : BattleshipsActivity() {
 
@@ -96,8 +92,12 @@ class HomeActivity : BattleshipsActivity() {
 
                 when (event.clazz) {
                     LoginActivity::class.java, RegisterActivity::class.java ->
-                        navigateWithLinksToForResult(userHomeForResult, event.clazz, links)
-                    else -> navigateWithLinksTo(event.clazz, links)
+                        navigateWithLinksToForResult(
+                            activityResultLauncher = userHomeForResult,
+                            clazz = event.clazz,
+                            links = links
+                        )
+                    else -> navigateWithLinksTo(clazz = event.clazz, links = links)
                 }
 
                 viewModel.setLoadingStateToLoaded()

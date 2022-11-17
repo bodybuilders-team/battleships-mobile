@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.about.components.AuthorInfo
 import pt.isel.pdm.battleships.ui.screens.about.components.AuthorInfoView
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton

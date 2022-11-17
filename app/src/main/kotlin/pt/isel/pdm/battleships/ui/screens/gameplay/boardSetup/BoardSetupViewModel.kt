@@ -9,6 +9,7 @@ import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.models.players.deployFleet.DeployFleetInput
+import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.DEPLOYING_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED
@@ -17,7 +18,6 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
@@ -26,7 +26,7 @@ import pt.isel.pdm.battleships.ui.utils.navigation.Links
 /**
  * View model for the [BoardSetupActivity].
  *
- * @param battleshipsService the service of the battleships application
+ * @param battleshipsService the service used to handle the battleships game
  * @property sessionManager the manager used to handle the user session
  *
  * @property events the events that occurred in the view model
@@ -133,6 +133,11 @@ class BoardSetupViewModel(
         }
     }
 
+    /**
+     * Updates the links.
+     *
+     * @param links the links to update
+     */
     override fun updateLinks(links: Links) {
         super.updateLinks(links)
         _state = LINKS_LOADED

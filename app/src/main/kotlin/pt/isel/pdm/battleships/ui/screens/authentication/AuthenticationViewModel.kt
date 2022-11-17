@@ -7,11 +7,11 @@ import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.users.models.AuthenticationOutput
 import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.IDLE
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LOADING
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequest
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
@@ -68,6 +68,11 @@ open class AuthenticationViewModel(
         )
     }
 
+    /**
+     * Updates the links.
+     *
+     * @param links the links to update
+     */
     override fun updateLinks(links: Links) {
         super.updateLinks(links)
         _state = LINKS_LOADED

@@ -4,16 +4,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.IDLE
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.showToast
 
 /**
- * Activity for the lobby screen.
- *
- * @property viewModel the view model used to the search game process
+ * Activity for the [LobbyScreen].
  */
 class LobbyActivity : BattleshipsActivity() {
 
@@ -43,9 +41,9 @@ class LobbyActivity : BattleshipsActivity() {
     }
 
     /**
-     * Handles the events emitted by the view model.
+     * Handles the specified event.
      *
-     * @param event the event to be handled
+     * @param event the event to handle
      */
     private suspend fun handleEvent(event: Event) {
         when (event) {

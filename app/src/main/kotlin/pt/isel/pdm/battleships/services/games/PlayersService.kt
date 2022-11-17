@@ -20,7 +20,7 @@ import java.io.IOException
  *
  * @property apiEndpoint the API endpoint
  * @property httpClient the HTTP client
- * @property jsonEncoder the JSON formatter
+ * @property jsonEncoder the JSON encoder used to serialize/deserialize objects
  */
 class PlayersService(
     apiEndpoint: String,

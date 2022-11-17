@@ -1,11 +1,19 @@
-package pt.isel.pdm.battleships.ui.utils // ktlint-disable filename
+package pt.isel.pdm.battleships.ui.utils
 
 import android.content.Context
 import android.widget.Toast
 import kotlinx.coroutines.suspendCancellableCoroutine
-import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
-import java.io.IOException
 import kotlin.coroutines.resume
+
+/**
+ * Defines the duration of a [Toast] message.
+ *
+ * @property duration the duration of the [Toast] message
+ */
+enum class ToastDuration(val duration: Int) {
+    SHORT(duration = Toast.LENGTH_SHORT),
+    LONG(duration = Toast.LENGTH_LONG)
+}
 
 /**
  * Shows a toast message to the user.
@@ -39,23 +47,3 @@ suspend fun Context.showToast(
 
     if (onDismissed != null) onDismissed()
 }
-
-/**
- * Tries to execute the given request and returns a [HTTPResult] with the result.
- *
- * If the request fails, the returned [HTTPResult] will be a [HTTPResult.Failure]
- * with the error message.
- *
- * @param executeRequest the request to execute
- * @return the result of the request
- */
-suspend fun <T> tryExecuteHttpRequest(
-    executeRequest: suspend () -> T
-): HTTPResult<T> =
-    try {
-        HTTPResult.Success(executeRequest())
-    } catch (e: IOException) {
-        HTTPResult.Failure("Could not connect to the server.")
-    } catch (e: UnexpectedResponseException) {
-        HTTPResult.Failure("Server sent an unexpected response.")
-    }

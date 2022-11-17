@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.IDLE
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.putLinks
@@ -57,9 +57,9 @@ class LoginActivity : BattleshipsActivity() {
     }
 
     /**
-     * Handles the events emitted by the view model.
+     * Handles the specified event.
      *
-     * @param event the event emitted by the view model
+     * @param event the event to handle
      */
     private suspend fun handleEvent(event: Event) {
         when (event) {

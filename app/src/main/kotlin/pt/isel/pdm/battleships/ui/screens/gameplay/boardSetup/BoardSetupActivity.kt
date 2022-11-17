@@ -4,12 +4,12 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
@@ -59,6 +59,11 @@ class BoardSetupActivity : BattleshipsActivity() {
         }
     }
 
+    /**
+     * Handles the specified event.
+     *
+     * @param event the event to handle
+     */
     private suspend fun handleEvent(event: Event) {
         when (event) {
             is BoardSetupViewModel.BoardSetupEvent.NavigateToGameplay -> {

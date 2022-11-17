@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui
+package pt.isel.pdm.battleships.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme

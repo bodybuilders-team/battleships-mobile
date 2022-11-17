@@ -17,7 +17,7 @@ import java.io.IOException
 /**
  * The service that handles the players, and keeps track of the links to the endpoints.
  *
- * @property sessionManager the session manager
+ * @property sessionManager the manager used to handle the user session
  * @property links the links to the endpoints
  * @property playersService the service that handles the players
  */

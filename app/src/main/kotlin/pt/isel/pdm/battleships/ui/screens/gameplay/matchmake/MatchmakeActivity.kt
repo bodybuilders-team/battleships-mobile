@@ -4,19 +4,17 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeEvent
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.IDLE
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.showToast
 
 /**
- * Activity for the matchmake screen.
- *
- * @property viewModel the view model used to handle the quick play process
+ * Activity for the [MatchmakeScreen].
  */
 class MatchmakeActivity : BattleshipsActivity() {
 
@@ -56,7 +54,7 @@ class MatchmakeActivity : BattleshipsActivity() {
     private suspend fun handleEvent(event: Event) {
         when (event) {
             is MatchmakeEvent.NavigateToBoardSetup -> {
-                navigateWithLinksTo<BoardSetupActivity>(viewModel.getLinks())
+                navigateWithLinksTo<BoardSetupActivity>(links = viewModel.getLinks())
                 finish()
             }
             is Event.Error -> showToast(event.message)

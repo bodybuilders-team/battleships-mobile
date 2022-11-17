@@ -12,11 +12,11 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
@@ -24,13 +24,12 @@ import pt.isel.pdm.battleships.ui.utils.navigation.Links
 /**
  * View model for the [MatchmakeActivity].
  *
- * @property battleshipsService the service of the battleships application
+ * @property battleshipsService the service used to handle the battleships game
  * @property sessionManager the manager used to handle the user session
- * @param jsonEncoder the JSON formatter
+ * @param jsonEncoder the JSON encoder used to serialize/deserialize objects
  * @param assetManager the asset manager
  *
  * @property state the current state of the view model
- * @property events the events that can be emitted by the view model
  */
 class MatchmakeViewModel(
     battleshipsService: BattleshipsService,
@@ -96,14 +95,21 @@ class MatchmakeViewModel(
         }
     }
 
+    /**
+     * Updates the links.
+     *
+     * @param links the links to update
+     */
     override fun updateLinks(links: Links) {
         super.updateLinks(links)
         _state = LINKS_LOADED
     }
 
     /**
-     * The matchmake operation state.
+     * The state of the [MatchmakeViewModel].
      *
+     * @property IDLE the view model is idle
+     * @property LINKS_LOADED the links are loaded
      * @property MATCHMAKING the matchmaking is in progress
      * @property MATCHMADE the matchmake was successful
      */
@@ -115,7 +121,7 @@ class MatchmakeViewModel(
     }
 
     /**
-     * The events that can be emitted.
+     * The events of the [MatchmakeViewModel].
      */
     sealed class MatchmakeEvent : Event {
 

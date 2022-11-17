@@ -25,7 +25,7 @@ import pt.isel.pdm.battleships.domain.games.board.ConfigurableBoard
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.PlacedDraggableShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.ShipPlacingMenuView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
