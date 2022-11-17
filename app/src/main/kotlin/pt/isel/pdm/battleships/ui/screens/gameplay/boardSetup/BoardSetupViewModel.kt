@@ -13,6 +13,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.GAME_LOADED
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
@@ -20,6 +21,7 @@ import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [BoardSetupActivity].
@@ -42,6 +44,10 @@ class BoardSetupViewModel(
     private var _screenState by mutableStateOf(BoardSetupScreenState())
     val screenState: BoardSetupScreenState
         get() = _screenState
+
+    private var _state: BoardSetupState by mutableStateOf(IDLE)
+    val state
+        get() = _state
 
     /**
      * Loads the game.
@@ -127,6 +133,11 @@ class BoardSetupViewModel(
         }
     }
 
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
+    }
+
     /**
      * The state of the view model.
      *
@@ -134,13 +145,15 @@ class BoardSetupViewModel(
      * @property DEPLOYING_FLEET the view model is deploying the fleet
      * @property WAITING_FOR_OPPONENT WAITING_FOR_OPPONENT
      */
-    object BoardSetupState : BattleshipsState, BattleshipsStateCompanion() {
-        val LOADING_GAME = object : BattleshipsState {}
-        val GAME_LOADED = object : BattleshipsState {}
-        val DEPLOYING_FLEET = object : BattleshipsState {}
-        val FLEET_DEPLOYED = object : BattleshipsState {}
-        val WAITING_FOR_OPPONENT = object : BattleshipsState {}
-        val FINISHED = object : BattleshipsState {}
+    enum class BoardSetupState {
+        IDLE,
+        LINKS_LOADED,
+        LOADING_GAME,
+        GAME_LOADED,
+        DEPLOYING_FLEET,
+        FLEET_DEPLOYED,
+        WAITING_FOR_OPPONENT,
+        FINISHED
     }
 
     /**

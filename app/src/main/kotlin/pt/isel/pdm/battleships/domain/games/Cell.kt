@@ -27,7 +27,7 @@ data class WaterCell(
  *
  * @property ship the ship that is in this cell
  */
-data class ShipCell( // TODO: Rename to SunkShipCell or SunkCell?
+data class ShipCell(
     override val coordinate: Coordinate,
     override val wasHit: Boolean,
     val ship: Ship
@@ -38,7 +38,7 @@ data class ShipCell( // TODO: Rename to SunkShipCell or SunkCell?
  * A cell that contains a ship that is not sunk.
  * It does not contain the ship itself, since it is not sunk.
  */
-data class UnknownShipCell( // TODO: Rename to ShipCell (if ShipCell is renamed to SunkShipCell)? or HitShipCell?
+data class UnknownShipCell(
     override val coordinate: Coordinate,
     override val wasHit: Boolean
 ) :

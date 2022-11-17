@@ -8,9 +8,11 @@ import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutput
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GETTING_GAMES
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [LobbyActivity].
@@ -27,6 +29,10 @@ class LobbyViewModel(
     private var _games by mutableStateOf<GetGamesOutput?>(null)
     val games
         get() = _games
+
+    private var _state: LobbyState by mutableStateOf(IDLE)
+    val state
+        get() = _state
 
     /**
      * Gets the list of games.
@@ -46,14 +52,21 @@ class LobbyViewModel(
         )
     }
 
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
+    }
+
     /**
      * The lobby state.
      *
      * @property GETTING_GAMES the get games operation is in progress
      * @property FINISHED the get games operation has finished
      */
-    object LobbyState : BattleshipsState, BattleshipsStateCompanion() {
-        val GETTING_GAMES = object : BattleshipsState {}
-        val FINISHED = object : BattleshipsState {}
+    enum class LobbyState {
+        IDLE,
+        LINKS_LOADED,
+        GETTING_GAMES,
+        FINISHED
     }
 }

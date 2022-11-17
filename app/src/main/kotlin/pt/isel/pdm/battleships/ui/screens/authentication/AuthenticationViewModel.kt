@@ -1,14 +1,19 @@
 package pt.isel.pdm.battleships.ui.screens.authentication
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.users.models.AuthenticationOutput
 import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.IDLE
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LOADING
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequest
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for both authentication methods (login and register).
@@ -22,6 +27,10 @@ open class AuthenticationViewModel(
     battleshipsService: BattleshipsService,
     sessionManager: SessionManager
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
+
+    private var _state: AuthenticationState by mutableStateOf(IDLE)
+    val state
+        get() = _state
 
     /**
      * Executes an authentication request.
@@ -59,14 +68,21 @@ open class AuthenticationViewModel(
         )
     }
 
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
+    }
+
     /**
      * The state of an authentication process.
      *
      * @property LOADING the state of the authentication process while it is loading
      * @property SUCCESS the state of the authentication process when it is successful
      */
-    object AuthenticationState : BattleshipsState, BattleshipsStateCompanion() {
-        val LOADING = object : BattleshipsState {}
-        val SUCCESS = object : BattleshipsState {}
+    enum class AuthenticationState {
+        IDLE,
+        LINKS_LOADED,
+        LOADING,
+        SUCCESS
     }
 }

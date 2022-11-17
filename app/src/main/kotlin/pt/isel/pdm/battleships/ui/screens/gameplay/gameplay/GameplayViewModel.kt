@@ -16,16 +16,13 @@ import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.models.players.fireShots.FireShotsInput
 import pt.isel.pdm.battleships.services.games.models.players.ship.GetFleetOutputModel
 import pt.isel.pdm.battleships.services.games.models.players.shot.UnfiredShotModel
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.FINISHED_GAME
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.GAME_LOADED
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.MY_FLEET_LOADED
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.PLAYING_GAME
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [GameplayActivity].
@@ -54,6 +51,10 @@ class GameplayViewModel(
     val screenState: GameplayScreenState
         get() = _screenState
 
+    private var _state: GameplayState by mutableStateOf(IDLE)
+    val state
+        get() = _state
+
     /**
      * Loads the game.
      */
@@ -80,15 +81,15 @@ class GameplayViewModel(
                     opponentBoard = OpponentBoard(gameConfig.gridSize),
                     myTurn = myTurn
                 )
-                _state = GAME_LOADED
+                _state = GameplayState.GAME_LOADED
 
                 getMyFleet()
 
-                check(state == MY_FLEET_LOADED) {
+                check(state == GameplayState.MY_FLEET_LOADED) {
                     "The view model is not in my fleet loaded state."
                 }
 
-                _state = PLAYING_GAME
+                _state = GameplayState.PLAYING_GAME
 
                 if (!myTurn) waitForOpponent()
             }
@@ -99,9 +100,9 @@ class GameplayViewModel(
      * Gets the player's fleet.
      */
     private suspend fun getMyFleet() {
-        check(state == GAME_LOADED) { "The view model is not in game loaded state." }
+        check(state == GameplayState.GAME_LOADED) { "The view model is not in game loaded state." }
 
-        _state = LOADING_MY_FLEET
+        _state = GameplayState.LOADING_MY_FLEET
 
         val myFleetData = executeRequestRetrying(
             request = { battleshipsService.playersService.getMyFleet() },
@@ -119,7 +120,7 @@ class GameplayViewModel(
             ?: throw IllegalStateException("No game config found")
 
         _screenState = _screenState.copy(myBoard = MyBoard(gridSize, initialFleet))
-        _state = MY_FLEET_LOADED
+        _state = GameplayState.MY_FLEET_LOADED
     }
 
     /**
@@ -128,7 +129,7 @@ class GameplayViewModel(
      * @param coordinates the list of coordinates where to fire
      */
     fun fireShots(coordinates: List<Coordinate>) {
-        check(state == PLAYING_GAME) { "The game is not in the playing state" }
+        check(state == GameplayState.PLAYING_GAME) { "The game is not in the playing state" }
         check(_screenState.myTurn == true) { "It's not your turn" }
 
         launchAndExecuteRequestRetrying(
@@ -168,7 +169,7 @@ class GameplayViewModel(
      * Waits for the opponent to play.
      */
     private suspend fun waitForOpponent() {
-        check(state == PLAYING_GAME) { "The game is not in the playing state" }
+        check(state == GameplayState.PLAYING_GAME) { "The game is not in the playing state" }
         check(_screenState.myTurn == false) { "It's not the opponent's turn" }
 
         while (true) {
@@ -181,7 +182,7 @@ class GameplayViewModel(
                 ?: throw IllegalStateException("Game state properties are null")
 
             if (properties.phase == FINISHED_PHASE)
-                _state = FINISHED_GAME
+                _state = GameplayState.FINISHED_GAME
 
             if (properties.turn != sessionManager.username) {
                 delay(POLLING_DELAY)
@@ -244,18 +245,25 @@ class GameplayViewModel(
             )
         }
 
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
+    }
+
     /**
      * The state of the view model.
      *
      * @property LOADING_GAME the view model is loading the game TODO Comment
      */
-    object GameplayState : BattleshipsState, BattleshipsStateCompanion() {
-        val LOADING_GAME = object : BattleshipsState {}
-        val GAME_LOADED = object : BattleshipsState {}
-        val LOADING_MY_FLEET = object : BattleshipsState {}
-        val MY_FLEET_LOADED = object : BattleshipsState {}
-        val PLAYING_GAME = object : BattleshipsState {}
-        val FINISHED_GAME = object : BattleshipsState {}
+    enum class GameplayState {
+        IDLE,
+        LINKS_LOADED,
+        LOADING_GAME,
+        GAME_LOADED,
+        LOADING_MY_FLEET,
+        MY_FLEET_LOADED,
+        PLAYING_GAME,
+        FINISHED_GAME
     }
 
     companion object {

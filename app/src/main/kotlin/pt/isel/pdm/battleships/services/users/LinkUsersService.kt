@@ -48,14 +48,17 @@ class LinkUsersService(
     /**
      * Gets all the users.
      *
+     * @param sortParam the parameter used to sort the users
+     * @param sortValue the value used to sort the users by the [sortParam]
+     *
      * @return the API result of the get users request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getUsers(): APIResult<GetUsersOutput> {
+    suspend fun getUsers(sortParam: String, sortValue: String): APIResult<GetUsersOutput> {
         val getUsersResult = usersService.getUsers(
-            listUsersLink = links[Rels.LIST_USERS]
+            listUsersLink = links[Rels.LIST_USERS]?.let { "$it?$sortParam=$sortValue" }
                 ?: throw IllegalArgumentException("The list users link is missing")
         )
 

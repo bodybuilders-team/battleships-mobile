@@ -1,6 +1,9 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.matchmake
 
 import android.content.res.AssetManager
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
@@ -9,12 +12,14 @@ import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.BattleshipsService
 import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [MatchmakeActivity].
@@ -39,6 +44,10 @@ class MatchmakeViewModel(
         JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
         GameConfigModel::class.java
     )
+
+    private var _state: MatchmakeState by mutableStateOf(IDLE)
+    val state
+        get() = _state
 
     /**
      * Matchmakes a game with the default configuration.
@@ -87,15 +96,22 @@ class MatchmakeViewModel(
         }
     }
 
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
+    }
+
     /**
      * The matchmake operation state.
      *
      * @property MATCHMAKING the matchmaking is in progress
      * @property MATCHMADE the matchmake was successful
      */
-    object MatchmakeState : BattleshipsState, BattleshipsStateCompanion() {
-        val MATCHMAKING = object : BattleshipsState {}
-        val MATCHMADE = object : BattleshipsState {}
+    enum class MatchmakeState {
+        IDLE,
+        LINKS_LOADED,
+        MATCHMAKING,
+        MATCHMADE
     }
 
     /**

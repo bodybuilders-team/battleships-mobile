@@ -13,6 +13,7 @@ import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 
 /**
@@ -32,6 +33,10 @@ class RankingViewModel(
     val users: List<User>
         get() = _users
 
+    private var _state: RankingState by mutableStateOf(IDLE)
+    val state
+        get() = _state
+
     /**
      * Gets all the users.
      */
@@ -42,7 +47,10 @@ class RankingViewModel(
 
         launchAndExecuteRequestRetrying(
             request = {
-                battleshipsService.usersService.getUsers() // TODO query params "$listUsersLink?$SORT_DIRECTION_PARAM=$SORT_DIRECTION_VALUE"
+                battleshipsService.usersService.getUsers(
+                    sortParam = SORT_DIRECTION_PARAM,
+                    sortValue = SORT_DIRECTION_VALUE
+                )
             },
             events = _events,
             onSuccess = { usersData ->
@@ -66,17 +74,22 @@ class RankingViewModel(
         )
     }
 
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
+    }
+
     /**
      * The ranking state.
      *
-     * @property IDLE the get games operation is idle
-     * @property LINKS_LOADED
      * @property GETTING_USERS the get users operation is in progress
      * @property FINISHED the get users operation has finished
      */
-    object RankingState : BattleshipsState, BattleshipsStateCompanion() {
-        val GETTING_USERS = object : BattleshipsState {}
-        val FINISHED = object : BattleshipsState {}
+    enum class RankingState {
+        IDLE,
+        LINKS_LOADED,
+        GETTING_USERS,
+        FINISHED
     }
 
     companion object {

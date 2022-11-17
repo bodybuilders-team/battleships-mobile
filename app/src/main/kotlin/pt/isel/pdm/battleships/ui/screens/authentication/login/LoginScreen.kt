@@ -14,12 +14,12 @@ import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
+import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
 import pt.isel.pdm.battleships.ui.screens.authentication.hash
 import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginButton
 import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginTextFields
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
@@ -33,7 +33,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
  */
 @Composable
 fun LoginScreen(
-    state: BattleshipsViewModel.BattleshipsState,
+    state: AuthenticationState,
     onLogin: (String, String) -> Unit,
     onLoginSuccessful: () -> Unit,
     onBackButtonClicked: () -> Unit
@@ -41,7 +41,7 @@ fun LoginScreen(
     val loginMessage = remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(state) {
-        if (state == AuthenticationState.SUCCESS) {
+        if (state == SUCCESS) {
             onLoginSuccessful()
         }
     }

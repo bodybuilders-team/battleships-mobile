@@ -13,8 +13,8 @@ import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutp
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
@@ -28,7 +28,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
  */
 @Composable
 fun LobbyScreen(
-    state: BattleshipsViewModel.BattleshipsState,
+    state: LobbyState,
     games: GetGamesOutput?,
     onBackButtonClicked: () -> Unit
 ) {
@@ -41,7 +41,7 @@ fun LobbyScreen(
             ScreenTitle(title = stringResource(id = R.string.lobby_title))
 
             when (state) {
-                LobbyState.FINISHED ->
+                FINISHED ->
                     LazyColumn(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.Start

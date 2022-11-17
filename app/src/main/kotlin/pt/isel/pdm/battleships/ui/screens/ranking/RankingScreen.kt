@@ -15,9 +15,10 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.users.User
 import pt.isel.pdm.battleships.domain.users.toRankedUsers
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState
+import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.ranking.components.RankingTableView
 import pt.isel.pdm.battleships.ui.screens.ranking.components.SearchPlayerField
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
@@ -31,7 +32,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
  */
 @Composable
 fun RankingScreen(
-    state: BattleshipsViewModel.BattleshipsState,
+    state: RankingState,
     users: List<User>,
     onBackButtonClicked: () -> Unit
 ) {
@@ -52,7 +53,7 @@ fun RankingScreen(
             }
 
             when (state) {
-                RankingViewModel.RankingState.FINISHED -> RankingTableView(filteredUsers)
+                FINISHED -> RankingTableView(filteredUsers)
                 else -> LoadingSpinner()
             }
 

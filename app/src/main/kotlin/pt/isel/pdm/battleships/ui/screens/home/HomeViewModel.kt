@@ -39,6 +39,10 @@ class HomeViewModel(
     val loadingState: HomeLoadingState
         get() = _loadingState
 
+    private var _state: HomeState by mutableStateOf(IDLE)
+    val state
+        get() = _state
+
     /**
      * Loads the home page.
      */
@@ -120,6 +124,7 @@ class HomeViewModel(
 
     fun updateHomeLinks(links: Links) {
         super.updateLinks(links)
+        _state = LINKS_LOADED
     }
 
     fun updateUserHomeLinks(links: Links) {
@@ -134,12 +139,14 @@ class HomeViewModel(
      * @property LOADING_HOME the home screen is loading
      * @property HOME_LOADED the home screen is loaded
      */
-    object HomeState : BattleshipsState, BattleshipsStateCompanion() {
-        val LOADING_HOME = object : BattleshipsState {}
-        val HOME_LOADED = object : BattleshipsState {}
-        val USER_HOME_LINKS_LOADED = object : BattleshipsState {}
-        val LOADING_USER_HOME = object : BattleshipsState {}
-        val USER_HOME_LOADED = object : BattleshipsState {}
+    enum class HomeState {
+        IDLE,
+        LINKS_LOADED,
+        LOADING_HOME,
+        HOME_LOADED,
+        USER_HOME_LINKS_LOADED,
+        LOADING_USER_HOME,
+        USER_HOME_LOADED
     }
 
     /**

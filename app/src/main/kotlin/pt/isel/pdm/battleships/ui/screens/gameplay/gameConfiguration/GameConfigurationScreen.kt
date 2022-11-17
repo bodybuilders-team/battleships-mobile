@@ -23,10 +23,10 @@ import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.GameConfigSelector
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.IntSelector
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.ShipSelector
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.IconButton
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
@@ -54,7 +54,7 @@ private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
  */
 @Composable
 fun GameConfigurationScreen(
-    state: BattleshipsViewModel.BattleshipsState,
+    state: GameConfigurationState,
     onGameConfigured: (GameConfig) -> Unit,
     onBackButtonClicked: () -> Unit
 ) {
@@ -134,7 +134,7 @@ fun GameConfigurationScreen(
                 })
 
             IconButton(
-                enabled = state != GameConfigurationState.CREATING_GAME,
+                enabled = state in listOf(LINKS_LOADED),
                 onClick = {
                     onGameConfigured(
                         GameConfig(

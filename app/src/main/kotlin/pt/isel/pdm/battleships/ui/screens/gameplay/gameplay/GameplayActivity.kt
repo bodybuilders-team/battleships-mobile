@@ -5,9 +5,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.FINISHED_GAME
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
+import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.showToast
 
@@ -34,13 +39,13 @@ class GameplayActivity : BattleshipsActivity() {
 
         setContent {
             when (viewModel.state) {
-                GameplayViewModel.GameplayState.LOADING_GAME -> {
-                    Text("Loading Game..")
+                IDLE, LINKS_LOADED, LOADING_GAME -> {
+                    LoadingSpinner("Loading Game..")
                 }
-                GameplayViewModel.GameplayState.LOADING_MY_FLEET -> {
-                    Text("Loading Fleet..")
+                LOADING_MY_FLEET -> {
+                    LoadingSpinner("Loading Fleet..")
                 }
-                GameplayViewModel.GameplayState.FINISHED_GAME -> {
+                FINISHED_GAME -> {
                     Text("Game Finished")
                 }
                 else -> {

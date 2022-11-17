@@ -10,9 +10,9 @@ import pt.isel.pdm.battleships.ui.screens.authentication.login.LoginActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuActivity
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeEvent
+import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
 import pt.isel.pdm.battleships.ui.utils.navigation.Links

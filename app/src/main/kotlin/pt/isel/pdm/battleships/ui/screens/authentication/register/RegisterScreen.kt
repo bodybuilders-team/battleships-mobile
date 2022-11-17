@@ -14,13 +14,13 @@ import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
+import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
 import pt.isel.pdm.battleships.ui.screens.authentication.hash
 import pt.isel.pdm.battleships.ui.screens.authentication.register.components.RegisterButton
 import pt.isel.pdm.battleships.ui.screens.authentication.register.components.RegisterTextFields
 import pt.isel.pdm.battleships.ui.screens.authentication.validateEmail
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
-import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
 import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
 
@@ -34,7 +34,7 @@ import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
  */
 @Composable
 fun RegisterScreen(
-    state: BattleshipsViewModel.BattleshipsState,
+    state: AuthenticationState,
     onRegister: (String, String, String) -> Unit,
     onRegisterSuccessful: () -> Unit,
     onBackButtonClicked: () -> Unit
@@ -42,7 +42,7 @@ fun RegisterScreen(
     val registerMessage = remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(state) {
-        if (state == AuthenticationState.SUCCESS) {
+        if (state == SUCCESS) {
             onRegisterSuccessful()
         }
     }
