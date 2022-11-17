@@ -34,6 +34,7 @@ class MatchmakeViewModel(
     assetManager: AssetManager
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
+    // TODO should this be attached to viewModel or application data?
     private val gameConfigModel = jsonEncoder.fromJson<GameConfigModel>(
         JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
         GameConfigModel::class.java

@@ -7,6 +7,7 @@ import pt.isel.pdm.battleships.domain.games.WaterCell
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.shot.FiredShot
 import pt.isel.pdm.battleships.domain.games.shot.ShotResult
+import pt.isel.pdm.battleships.domain.utils.findValueByKey
 
 /**
  * The opponent's board.
@@ -52,19 +53,11 @@ data class OpponentBoard(
                     ?: return@map cell
 
                 check(!cell.wasHit) { "Cell at ${cell.coordinate} was already hit" }
-                check(cell is WaterCell) { "Cell can only be water cell if it was not hit" }
+                check(cell is WaterCell) { "Opponent cell can only be not hit if it is water cell" }
 
-                sunkCoordinates.entries
-                    .find { (sunkCoordinates, _) -> cell.coordinate in sunkCoordinates }
-                    ?.let { (_, sunkShip) ->
-                        return@map ShipCell(
-                            coordinate = cell.coordinate,
-                            wasHit = true,
-                            ship = sunkShip
-                        )
-                    }
-
-                when (firedShot.result) {
+                sunkCoordinates.findValueByKey { cell.coordinate in it }?.let {
+                    ShipCell(coordinate = cell.coordinate, wasHit = true, ship = it)
+                } ?: when (firedShot.result) {
                     ShotResult.HIT -> UnknownShipCell(coordinate = cell.coordinate, wasHit = true)
                     else -> cell.copy(wasHit = true)
                 }

@@ -1,18 +1,17 @@
 package pt.isel.pdm.battleships.ui.screens.home
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.about.AboutActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.login.LoginActivity
 import pt.isel.pdm.battleships.ui.screens.authentication.register.RegisterActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuActivity
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeEvent
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.ToastDuration
@@ -21,32 +20,18 @@ import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksToForResult
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * This activity is the main entry point of the application.
  * It is responsible for creating the main view and the view model.
  *
- * @property sessionManager the session manager used to handle the user session
  * @property viewModel the view model used to handle the state of the application
  * @property userHomeForResult the activity result launcher used to handle the user home result
  */
-class HomeActivity : ComponentActivity() {
+class HomeActivity : BattleshipsActivity() {
 
-    val dependenciesContainer by lazy {
-        (application as DependenciesContainer)
-    }
-
-    private val sessionManager by lazy {
-        dependenciesContainer.sessionManager
-    }
-
-    private val viewModel by viewModelInit {
-        HomeViewModel(
-            battleshipsService = dependenciesContainer.battleshipsService,
-            sessionManager = sessionManager
-        )
-    }
+    private val viewModel by getViewModel(::HomeViewModel)
+    private val sessionManager by lazy { dependenciesContainer.sessionManager }
 
     private val userHomeForResult =
         registerForActivityResult(

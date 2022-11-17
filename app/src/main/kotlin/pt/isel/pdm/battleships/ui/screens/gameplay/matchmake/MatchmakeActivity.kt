@@ -1,36 +1,29 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.matchmake
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeEvent
-import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsViewModel.BattleshipsState.Companion.IDLE
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the matchmake screen.
  *
  * @property viewModel the view model used to handle the quick play process
  */
-class MatchmakeActivity : ComponentActivity() {
+class MatchmakeActivity : BattleshipsActivity() {
 
-    val dependenciesContainer by lazy {
-        (application as DependenciesContainer)
-    }
-
-    private val viewModel by viewModelInit {
+    private val viewModel by getViewModel { battleshipsService, sessionManager ->
         MatchmakeViewModel(
-            battleshipsService = dependenciesContainer.battleshipsService,
-            sessionManager = dependenciesContainer.sessionManager,
+            battleshipsService = battleshipsService,
+            sessionManager = sessionManager,
             jsonEncoder = dependenciesContainer.jsonEncoder,
             assetManager = assets
         )

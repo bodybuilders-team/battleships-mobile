@@ -148,10 +148,16 @@ class GameplayViewModel(
                     ?.map { it.toFiredShot(shipTypes) }
                     ?: throw IllegalStateException("No shots found")
 
+                val opponentBoard = _screenState.opponentBoard
+                    ?: throw IllegalStateException("No opponent board found")
+
                 _screenState = _screenState.copy(
-                    opponentBoard = _screenState.opponentBoard?.updateWith(firedShots),
-                    myTurn = false
+                    opponentBoard = opponentBoard.updateWith(firedShots)
                 )
+
+                delay(TURN_SWITCH_DELAY)
+
+                _screenState = _screenState.copy(myTurn = false)
 
                 waitForOpponent()
             }

@@ -1,13 +1,14 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.register.components
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 private const val BUTTON_PADDING = 8
 
@@ -15,19 +16,19 @@ private const val BUTTON_PADDING = 8
  * Button for register operation.
  *
  * @param enabled whether the button is enabled or not
- * @param onLoginClickCallback callback to be invoked when the register button is clicked
+ * @param onRegisterClickCallback callback to be invoked when the register button is clicked
  */
 @Composable
 fun RegisterButton(
     enabled: Boolean = true,
-    onLoginClickCallback: () -> Unit
+    onRegisterClickCallback: () -> Unit
 ) {
-    Button(
-        onClick = onLoginClickCallback,
-        modifier = Modifier.padding(end = BUTTON_PADDING.dp),
-        enabled = enabled
-
-    ) {
-        Text(text = stringResource(id = R.string.register_register_button_text))
-    }
+    IconButton(
+        onClick = onRegisterClickCallback,
+        enabled = enabled,
+        modifier = Modifier.padding(BUTTON_PADDING.dp),
+        text = stringResource(id = R.string.register_register_button_text),
+        imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_person_add_24),
+        contentDescription = stringResource(id = R.string.main_menu_register_button_description)
+    )
 }

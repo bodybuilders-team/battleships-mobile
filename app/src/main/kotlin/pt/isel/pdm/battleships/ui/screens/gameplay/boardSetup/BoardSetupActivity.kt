@@ -1,40 +1,29 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
+import pt.isel.pdm.battleships.ui.screens.shared.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.utils.showToast
-import pt.isel.pdm.battleships.ui.utils.viewModelInit
 
 /**
  * Activity for the board setup screen.
  *
  * @property viewModel the view model used to handle the board setup screen
  */
-class BoardSetupActivity : ComponentActivity() {
+class BoardSetupActivity : BattleshipsActivity() {
 
-    val dependenciesContainer by lazy {
-        (application as DependenciesContainer)
-    }
-
-    private val viewModel by viewModelInit {
-        BoardSetupViewModel(
-            battleshipsService = dependenciesContainer.battleshipsService,
-            sessionManager = dependenciesContainer.sessionManager
-        )
-    }
+    private val viewModel by getViewModel(::BoardSetupViewModel)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.utils // ktlint-disable filename
+package pt.isel.pdm.battleships.ui.utils
 
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -88,6 +88,7 @@ suspend fun <T> executeRequestRetrying(
     events: MutableSharedFlow<Event>
 ): T {
     while (true) {
+        // TODO request delay and differentiation between ApiResult.Failure
         val httpRes = tryExecuteHttpRequest { request() }
 
         val res = httpRes.handle(events = events) ?: continue
