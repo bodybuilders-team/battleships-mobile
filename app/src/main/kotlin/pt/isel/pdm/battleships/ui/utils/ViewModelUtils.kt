@@ -5,11 +5,17 @@ import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import java.io.IOException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.utils.APIResult
-import java.io.IOException
+import pt.isel.pdm.battleships.services.utils.Problem
+import pt.isel.pdm.battleships.services.utils.isFailure
+import pt.isel.pdm.battleships.services.utils.isSuccess
+
+const val RETRY_DELAY = 1000L
 
 /**
  * Initializes a [ViewModel].
@@ -53,21 +59,17 @@ suspend fun <T> tryExecuteHttpRequest(
  * @receiver the [HTTPResult] to be handled
  *
  * @param events the events that occurred in the view model
- * @param onFailure the action to be executed when the result is a failure
  *
  * @return the data of the result if it is a success, null otherwise
  */
 suspend inline fun <T> HTTPResult<T>.handle(
-    events: MutableSharedFlow<Event>,
-    onFailure: (String) -> Unit = {}
-): T? =
-    when (this) {
-        is HTTPResult.Success -> this.data
-        is HTTPResult.Failure -> {
-            events.emit(Event.Error(this.error))
-            onFailure(this.error)
-            null
-        }
+    events: MutableSharedFlow<Event>
+): HTTPResult<T> =
+    if (this.isSuccess())
+        HTTPResult.Success(this.data)
+    else {
+        events.emit(Event.Error(this.error))
+        HTTPResult.Failure(this.error)
     }
 
 /**
@@ -76,21 +78,17 @@ suspend inline fun <T> HTTPResult<T>.handle(
  * @receiver the [APIResult] to be handled
  *
  * @param events the events that occurred in the view model
- * @param onFailure the action to be executed when the result is a failure
  *
  * @return the data of the result if it is a success, null otherwise
  */
-suspend fun <T> APIResult<T>.handle(
-    events: MutableSharedFlow<Event>,
-    onFailure: () -> Unit = {}
-): T? =
-    when (this) {
-        is APIResult.Success -> this.data
-        is APIResult.Failure -> {
-            events.emit(Event.Error(this.error.title))
-            onFailure()
-            null
-        }
+suspend inline fun <T> APIResult<T>.handle(
+    events: MutableSharedFlow<Event>
+): APIResult<T> =
+    if (this.isSuccess())
+        APIResult.Success(this.data)
+    else {
+        events.emit(Event.Error(this.error.title))
+        APIResult.Failure(this.error)
     }
 
 /**
@@ -102,22 +100,30 @@ suspend fun <T> APIResult<T>.handle(
  *
  * @return the result of the request
  */
-suspend fun <T> executeRequestRetrying(
+suspend fun <T> executeRequestThrowing(
     request: suspend () -> APIResult<T>,
     events: MutableSharedFlow<Event>
 ): T {
     while (true) {
-        // TODO request delay and differentiation between ApiResult.Failure
-        return tryExecuteHttpRequest { request() }
+        val httpResult = tryExecuteHttpRequest { request() }
             .handle(events = events)
-            ?.handle(events = events)
-            ?: continue
+
+        if (httpResult.isFailure()) {
+            delay(RETRY_DELAY)
+            continue
+        }
+
+        val apiResult = httpResult.data.handle(events = events)
+
+        if (apiResult.isFailure()) throw IllegalStateException(apiResult.error.title)
+
+        return apiResult.data
     }
 }
 
 /**
  * Tries to execute an HTTP request.
- * If the request fails, it won't be executed again.
+ * If the request fails, it will be executed again.
  *
  * @param request the request to be executed
  * @param events the events that occurred in the view model
@@ -126,10 +132,31 @@ suspend fun <T> executeRequestRetrying(
  */
 suspend fun <T> executeRequest(
     request: suspend () -> APIResult<T>,
-    events: MutableSharedFlow<Event>
-): T? = tryExecuteHttpRequest { request() }
-    .handle(events = events)
-    ?.handle(events = events)
+    events: MutableSharedFlow<Event>,
+    retryOnHttpResultFailure: (String) -> Boolean = { true },
+    retryOnApiResultFailure: (Problem) -> Boolean = { false }
+): T? {
+    while (true) {
+        val httpResult = tryExecuteHttpRequest { request() }
+            .handle(events = events)
+
+        if (httpResult.isFailure()) {
+            if (retryOnHttpResultFailure(httpResult.error)) return null
+            delay(RETRY_DELAY)
+            continue
+        }
+
+        val apiResult = httpResult.data.handle(events = events)
+
+        if (apiResult.isFailure()) {
+            if (!retryOnApiResultFailure(apiResult.error)) return null
+            delay(RETRY_DELAY)
+            continue
+        }
+
+        return apiResult.data
+    }
+}
 
 /**
  * Tries to execute an HTTP request, in a coroutine.
@@ -139,19 +166,19 @@ suspend fun <T> executeRequest(
  * @param events the events that occurred in the view model
  * @param onSuccess the action to be executed when the result is a success
  */
-fun <T> ViewModel.launchAndExecuteRequestRetrying(
+fun <T> ViewModel.launchAndExecuteRequestThrowing(
     request: suspend () -> APIResult<T>,
     events: MutableSharedFlow<Event>,
     onSuccess: suspend (T) -> Unit
 ) {
     viewModelScope.launch {
-        onSuccess(executeRequestRetrying(request, events))
+        onSuccess(executeRequestThrowing(request, events))
     }
 }
 
 /**
  * Tries to execute an HTTP request, in a coroutine.
- * If the request fails, it won't be executed again.
+ * If the request fails, it will be executed again.
  *
  * @param request the request to be executed
  * @param events the events that occurred in the view model
@@ -160,9 +187,18 @@ fun <T> ViewModel.launchAndExecuteRequestRetrying(
 fun <T> ViewModel.launchAndExecuteRequest(
     request: suspend () -> APIResult<T>,
     events: MutableSharedFlow<Event>,
-    onFinish: suspend (T?) -> Unit
+    onFinish: suspend (T?) -> Unit,
+    retryOnHttpResultFailure: (String) -> Boolean = { true },
+    retryOnApiResultFailure: (Problem) -> Boolean = { true }
 ) {
     viewModelScope.launch {
-        onFinish(executeRequest(request, events))
+        onFinish(
+            executeRequest(
+                request,
+                events,
+                retryOnHttpResultFailure,
+                retryOnApiResultFailure
+            )
+        )
     }
 }

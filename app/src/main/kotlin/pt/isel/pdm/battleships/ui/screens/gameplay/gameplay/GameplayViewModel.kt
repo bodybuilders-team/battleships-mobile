@@ -13,6 +13,7 @@ import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.services.BattleshipsService
+import pt.isel.pdm.battleships.services.games.models.games.getGame.GetGameOutput
 import pt.isel.pdm.battleships.services.games.models.players.fireShots.FireShotsInput
 import pt.isel.pdm.battleships.services.games.models.players.ship.GetFleetOutputModel
 import pt.isel.pdm.battleships.services.games.models.players.shot.UnfiredShotModel
@@ -20,8 +21,8 @@ import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
-import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.executeRequestThrowing
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
@@ -63,10 +64,10 @@ class GameplayViewModel(
 
         _state = LOADING_GAME
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = { battleshipsService.gamesService.getGame() },
             events = _events,
-            onSuccess = { gameData ->
+            onSuccess = { gameData: GetGameOutput ->
                 val properties = gameData.properties
                     ?: throw IllegalStateException("No game properties found")
 
@@ -104,7 +105,7 @@ class GameplayViewModel(
 
         _state = GameplayState.LOADING_MY_FLEET
 
-        val myFleetData = executeRequestRetrying(
+        val myFleetData = executeRequestThrowing(
             request = { battleshipsService.playersService.getMyFleet() },
             events = _events
         )
@@ -132,7 +133,7 @@ class GameplayViewModel(
         check(state == GameplayState.PLAYING_GAME) { "The game is not in the playing state" }
         check(_screenState.myTurn == true) { "It's not your turn" }
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = {
                 battleshipsService.playersService.fireShots(
                     shots = FireShotsInput(
@@ -173,7 +174,7 @@ class GameplayViewModel(
         check(_screenState.myTurn == false) { "It's not the opponent's turn" }
 
         while (true) {
-            val gameStateData = executeRequestRetrying(
+            val gameStateData = executeRequestThrowing(
                 request = { battleshipsService.gamesService.getGameState() },
                 events = _events
             )
@@ -199,7 +200,7 @@ class GameplayViewModel(
      * Gets the opponent's shots.
      */
     private suspend fun getOpponentShots() {
-        val opponentShotsData = executeRequestRetrying(
+        val opponentShotsData = executeRequestThrowing(
             request = { battleshipsService.playersService.getOpponentShots() },
             events = _events
         )

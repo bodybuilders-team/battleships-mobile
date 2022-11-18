@@ -11,7 +11,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbySta
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GETTING_GAMES
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.LINKS_LOADED
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
@@ -44,7 +44,7 @@ class LobbyViewModel(
 
         _state = GETTING_GAMES
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = { battleshipsService.gamesService.getGames() },
             events = _events,
             onSuccess = { gamesData ->

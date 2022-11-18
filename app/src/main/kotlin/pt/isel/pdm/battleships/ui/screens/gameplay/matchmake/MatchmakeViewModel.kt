@@ -18,7 +18,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.executeRequestThrowing
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
@@ -59,7 +59,7 @@ class MatchmakeViewModel(
         viewModelScope.launch {
             delay(ANIMATION_DELAY)
 
-            val matchmakeData = executeRequestRetrying(
+            val matchmakeData = executeRequestThrowing(
                 request = {
                     battleshipsService.gamesService.matchmake(gameConfig = gameConfigModel)
                 },
@@ -76,7 +76,7 @@ class MatchmakeViewModel(
             }
 
             while (true) {
-                val gameStateData = executeRequestRetrying(
+                val gameStateData = executeRequestThrowing(
                     request = { battleshipsService.gamesService.getGameState() },
                     events = _events
                 )

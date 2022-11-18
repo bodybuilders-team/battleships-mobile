@@ -12,7 +12,7 @@ import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.IDLE
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.LINKS_LOADED
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 import pt.isel.pdm.battleships.ui.utils.navigation.Rels
 
@@ -46,7 +46,7 @@ class RankingViewModel(
 
         _state = GETTING_USERS
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = {
                 battleshipsService.usersService.getUsers(
                     sortParam = SORT_DIRECTION_PARAM,

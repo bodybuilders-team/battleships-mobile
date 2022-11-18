@@ -12,8 +12,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigu
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
 
 /**
  * View model for the [GameConfigurationActivity].
@@ -39,7 +38,7 @@ class GameConfigurationViewModel(
 
         _state = CREATING_GAME
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = {
                 battleshipsService.gamesService.createGame(
                     gameConfig = gameConfig.toGameConfigModel()
@@ -51,16 +50,6 @@ class GameConfigurationViewModel(
                 _events.emit(GameConfigurationEvent.NavigateToBoardSetup)
             }
         )
-    }
-
-    /**
-     * Updates the links.
-     *
-     * @param links the links to update
-     */
-    override fun updateLinks(links: Links) {
-        super.updateLinks(links)
-        _state = LINKS_LOADED
     }
 
     /**

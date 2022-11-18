@@ -19,8 +19,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.executeRequestRetrying
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.executeRequestThrowing
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
@@ -57,7 +57,7 @@ class BoardSetupViewModel(
 
         _state = LOADING_GAME
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = { battleshipsService.gamesService.getGame() },
             events = _events,
             onSuccess = { getGameData ->
@@ -92,7 +92,7 @@ class BoardSetupViewModel(
 
         _state = DEPLOYING_FLEET
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = {
                 battleshipsService.playersService.deployFleet(
                     fleet = DeployFleetInput(fleet = fleet.map(Ship::toUndeployedShipModel))
@@ -115,7 +115,7 @@ class BoardSetupViewModel(
         _state = WAITING_FOR_OPPONENT
 
         while (true) {
-            val gameStateData = executeRequestRetrying(
+            val gameStateData = executeRequestThrowing(
                 request = { battleshipsService.gamesService.getGameState() },
                 events = _events
             )

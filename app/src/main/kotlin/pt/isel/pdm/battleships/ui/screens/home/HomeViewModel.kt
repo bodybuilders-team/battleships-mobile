@@ -20,7 +20,7 @@ import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING_U
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.USER_HOME_LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.USER_HOME_LOADED
 import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestRetrying
+import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
@@ -53,7 +53,7 @@ class HomeViewModel(
 
         _state = LOADING_HOME
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = { battleshipsService.getHome() },
             events = _events,
             onSuccess = {
@@ -72,7 +72,7 @@ class HomeViewModel(
 
         _state = LOADING_USER_HOME
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = { battleshipsService.usersService.getUserHome() },
             events = _events,
             onSuccess = {
@@ -87,7 +87,7 @@ class HomeViewModel(
     fun logout() {
         check(sessionManager.isLoggedIn()) { "The user is not logged in." }
 
-        launchAndExecuteRequestRetrying(
+        launchAndExecuteRequestThrowing(
             request = { battleshipsService.usersService.logout(sessionManager.refreshToken!!) },
             events = _events,
             onSuccess = { sessionManager.clearSession() }

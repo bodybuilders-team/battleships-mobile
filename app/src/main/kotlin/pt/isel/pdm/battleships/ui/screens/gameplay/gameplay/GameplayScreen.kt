@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,6 +56,13 @@ fun GameplayScreen(
     onBackButtonClicked: () -> Unit
 ) {
     var selectedCells by remember { mutableStateOf(listOf<Coordinate>()) }
+
+    var canFireShots by remember { mutableStateOf(myTurn) }
+
+    LaunchedEffect(myTurn) {
+        if (myTurn)
+            canFireShots = true
+    }
 
     val myBoardComposable = @Composable {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -113,16 +121,15 @@ fun GameplayScreen(
                 myTurn = myTurn,
                 selectedCells = selectedCells,
                 onTileClicked = { coordinate ->
-                    if (myTurn) {
-                        if (!opponentBoard.getCell(coordinate).wasHit) {
-                            selectedCells = when {
-                                coordinate in selectedCells -> selectedCells - coordinate
-                                selectedCells.size < gameConfig.shotsPerTurn ->
-                                    selectedCells + coordinate
-                                gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
-                                else -> selectedCells
-                            }
-                        }
+                    if (!canFireShots || opponentBoard.getCell(coordinate).wasHit)
+                        return@OpponentBoardView
+
+                    selectedCells = when {
+                        coordinate in selectedCells -> selectedCells - coordinate
+                        selectedCells.size < gameConfig.shotsPerTurn ->
+                            selectedCells + coordinate
+                        gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
+                        else -> selectedCells
                     }
                 }
             )
@@ -156,9 +163,14 @@ fun GameplayScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                onShootClicked(selectedCells)
+                                canFireShots = false
+
+                                val shots = selectedCells
                                 selectedCells = emptyList()
+
+                                onShootClicked(shots)
                             },
+                            enabled = canFireShots,
                             imageVector = ImageVector.vectorResource(R.drawable.ic_missile),
                             contentDescription = stringResource(
                                 R.string.gameplay_shoot_button_description
