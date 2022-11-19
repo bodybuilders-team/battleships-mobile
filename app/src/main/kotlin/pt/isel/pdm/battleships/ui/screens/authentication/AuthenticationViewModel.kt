@@ -49,12 +49,7 @@ open class AuthenticationViewModel(
         launchAndExecuteRequest(
             request = { getAuthenticationResult() },
             events = _events,
-            onFinish = { authenticationData ->
-                if (authenticationData == null) {
-                    _state = LINKS_LOADED
-                    return@launchAndExecuteRequest
-                }
-
+            onSuccess = { authenticationData ->
                 val properties = authenticationData.properties
                     ?: throw IllegalStateException("Token properties are null")
 
@@ -64,6 +59,10 @@ open class AuthenticationViewModel(
                     username = username
                 )
                 _state = SUCCESS
+            },
+            retryOnApiResultFailure = {
+                _state = LINKS_LOADED
+                false
             }
         )
     }

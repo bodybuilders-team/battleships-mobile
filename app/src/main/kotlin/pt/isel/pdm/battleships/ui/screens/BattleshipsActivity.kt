@@ -17,18 +17,22 @@ open class BattleshipsActivity : ComponentActivity() {
     }
 
     /**
-     * Gets the view model for this activity.
+     * Gets an initialized [BattleshipsViewModel].
      *
-     * @param viewModelConstructor the constructor for the view model
+     * @param T the type of the [BattleshipsViewModel] to be initialized
+     * @param constructor the constructor for the view model
+     *
+     * // TODO See this crossinline later / Is function viewModelInit needed at all?
+     *
      * @return the view model
-     */ // TODO See this crossinline later / Is function viewModelInit needed at all?
+     */
     protected inline fun <reified T : BattleshipsViewModel> getViewModel(
-        crossinline viewModelConstructor: (
+        crossinline constructor: (
             battleshipsService: BattleshipsService,
             sessionManager: SessionManager
         ) -> T
     ) = viewModelInit {
-        viewModelConstructor(
+        constructor(
             dependenciesContainer.battleshipsService,
             dependenciesContainer.sessionManager
         )
