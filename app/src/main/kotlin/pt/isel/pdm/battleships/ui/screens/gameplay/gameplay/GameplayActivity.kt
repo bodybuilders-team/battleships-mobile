@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.FINISHED_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
@@ -59,10 +60,15 @@ class GameplayActivity : BattleshipsActivity() {
                             ?: throw IllegalStateException("Opponent board not found"),
                         gameConfig = viewModel.screenState.gameConfig
                             ?: throw IllegalStateException("Game config not found"),
+                        gameEnded = false,
+                        playerInfo = PlayerInfo("Jesus", R.drawable.andre_jesus),
+                        opponentInfo = PlayerInfo("Nyck", R.drawable.nyckollas_brandao),
                         onShootClicked = { coordinates ->
                             viewModel.fireShots(coordinates)
                         },
-                        onBackButtonClicked = { finish() }
+                        onBackButtonClicked = { finish() },
+                        onPlayAgainButtonClicked = {},
+                        onBackToMenuButtonClicked = {}
                     )
                 }
             }
