@@ -3,10 +3,13 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -16,6 +19,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.Board.Companion.DEFAULT_BOARD_SIZE
@@ -41,7 +46,11 @@ private const val DEFAULT_TIME_PER_TURN = 30 // Seconds
 
 private const val MIN_TIME_FOR_BOARD_CONFIG = 10 // Seconds
 private const val MAX_TIME_FOR_BOARD_CONFIG = 120 // Seconds
-private const val DEFAULT_TIME_FOR_BOARD_CONFIG = 60 // Seconds
+private const val DEFAULT_TIME_FOR_LAYOUT_PHASE = 60 // Seconds
+
+const val NAME_TEXT_FIELD_HORIZONTAL_PADDING = 32
+const val NAME_TEXT_FIELD_BOTTOM_PADDING = 10
+private const val MAX_NAME_LENGTH = 40
 
 private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 
@@ -55,104 +64,192 @@ private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 @Composable
 fun GameConfigurationScreen(
     state: GameConfigurationState,
-    onGameConfigured: (GameConfig) -> Unit,
+    onGameConfigured: (gameName: String, gameConfig: GameConfig) -> Unit,
     onBackButtonClicked: () -> Unit
 ) {
+    var gameName by remember { mutableStateOf("") }
     var boardSize by remember { mutableStateOf(DEFAULT_BOARD_SIZE) }
     var shotsPerTurn by remember { mutableStateOf(DEFAULT_SHOTS_PER_TURN) }
     var timePerTurn by remember { mutableStateOf(DEFAULT_TIME_PER_TURN) }
-    var timeForBoardConfig by remember { mutableStateOf(DEFAULT_TIME_FOR_BOARD_CONFIG) }
-    var ships by remember { mutableStateOf(ShipType.defaults) }
+    var timeForLayoutPhase by remember { mutableStateOf(DEFAULT_TIME_FOR_LAYOUT_PHASE) }
+    val ships =
+        remember { mutableStateMapOf<ShipType, Int>() }.also { it.putAll(ShipType.defaultsMap) }
 
     BattleshipsScreen {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            ScreenTitle(title = stringResource(R.string.game_config_title))
+            ScreenTitle(title = stringResource(R.string.gameConfig_title))
 
-            // Grid Size Selector
-            IntSelector(
-                defaultValue = boardSize,
-                valueRange = Board.MIN_BOARD_SIZE..Board.MAX_BOARD_SIZE,
-                label = stringResource(R.string.game_config_grid_size_text),
-                valueLabel = { "$it x $it" },
-                onValueChange = { boardSize = it }
+            GameNameTextFieldView(gameName = gameName, onValueChange = { gameName = it })
+            GridSizeSelector(boardSize = boardSize, onValueChange = { boardSize = it })
+            BoardConfigurationTimeSelector(
+                timeForLayoutPhase = timeForLayoutPhase,
+                onValueChange = { timeForLayoutPhase = it }
             )
-
-            // Board Configuration Time
-            IntSelector(
-                defaultValue = timeForBoardConfig,
-                valueRange = MIN_TIME_FOR_BOARD_CONFIG..MAX_TIME_FOR_BOARD_CONFIG,
-                label = stringResource(R.string.game_config_time_for_board_config_text),
-                valueLabel = { "$it s" },
-                onValueChange = { timeForBoardConfig = it }
-            )
-
-            // Shots Per Turn Selector
-            IntSelector(
-                defaultValue = shotsPerTurn,
-                valueRange = MIN_SHOTS_PER_TURN..MAX_SHOTS_PER_TURN,
-                label = stringResource(R.string.game_config_shots_per_turn_text),
-                onValueChange = { shotsPerTurn = it }
-            )
-
-            // Time Per Turn Selector
-            IntSelector(
-                defaultValue = timePerTurn,
-                valueRange = MIN_TIME_PER_TURN..MAX_TIME_PER_TURN,
-                label = stringResource(R.string.game_config_time_per_turn_text),
-                valueLabel = { "$it s" },
-                onValueChange = { timePerTurn = it }
-            )
-
-            // Ship Selector
-            // TODO limitation on number of ships based on board size (type of ship also matters)
-            //  50% of the board max?
-            GameConfigSelector(leftSideContent = {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = stringResource(R.string.game_config_ships_text),
-                        style = MaterialTheme.typography.h6,
-                        textAlign = TextAlign.Center
-                    )
-                    IconButton(
-                        onClick = { },
-                        imageVector = ImageVector.vectorResource(
-                            R.drawable.ic_round_directions_boat_24
-                        ),
-                        contentDescription = "",
-                        text = "Manage ships"
-                    )
+            ShotsPerTurnSelector(shotsPerTurn = shotsPerTurn, onValueChange = { shotsPerTurn = it })
+            TimePerTurnSelector(timePerTurn = timePerTurn, onValueChange = { timePerTurn = it })
+            GameConfigShipSelector(
+                ships = ships,
+                boardSize = boardSize,
+                onShipAdded = { ships[it] = ships[it]!! + 1 },
+                onShipRemoved = {
+                    if (ships[it]!! > 0)
+                        ships[it] = ships[it]!! - 1
                 }
-            }, rightSideContent = {
-                    ShipSelector(
-                        shipTypes = ships,
-                        onShipAdded = { ships = ships + it },
-                        onShipRemoved = { ships = ships - it }
-                    )
-                })
+            )
 
-            IconButton(
-                enabled = state in listOf(LINKS_LOADED),
-                onClick = {
-                    onGameConfigured(
-                        GameConfig(
-                            gridSize = boardSize,
-                            shotsPerTurn = shotsPerTurn,
-                            maxTimePerRound = timePerTurn,
-                            maxTimeForLayoutPhase = timeForBoardConfig,
-                            ships = ships
-                        )
-                    )
-                },
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_add_24),
-                contentDescription = stringResource(R.string.gameplay_new_game_button_description),
-                text = stringResource(id = R.string.game_config_create_game_button_text),
-                modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
+            CreateGameButton(
+                state = state,
+                gameName = gameName,
+                boardSize = boardSize,
+                shotsPerTurn = shotsPerTurn,
+                timePerTurn = timePerTurn,
+                timeForLayoutPhase = timeForLayoutPhase,
+                ships = ships,
+                onGameConfigured = onGameConfigured
             )
 
             GoBackButton(onClick = onBackButtonClicked)
         }
     }
+}
+
+@Composable
+private fun GameNameTextFieldView(
+    gameName: String,
+    onValueChange: (String) -> Unit
+) {
+    TextField(
+        label = {
+            Text(text = stringResource(R.string.gameConfig_gameNameTextField_label))
+        },
+        value = gameName,
+        onValueChange = {
+            if (it.length <= MAX_NAME_LENGTH)
+                onValueChange(it.trim())
+        },
+        placeholder = { Text(text = stringResource(R.string.gameConfig_gameNameTextField_placeholder)) },
+        singleLine = true,
+        modifier = Modifier.padding(horizontal = NAME_TEXT_FIELD_HORIZONTAL_PADDING.dp)
+            .padding(bottom = NAME_TEXT_FIELD_BOTTOM_PADDING.dp)
+            .fillMaxWidth()
+    )
+}
+
+@Composable
+private fun GridSizeSelector(boardSize: Int, onValueChange: (Int) -> Unit) {
+    IntSelector(
+        defaultValue = boardSize,
+        valueRange = Board.MIN_BOARD_SIZE..Board.MAX_BOARD_SIZE,
+        label = stringResource(R.string.gameConfig_gridSize_text),
+        valueLabel = { "$it x $it" },
+        onValueChange = onValueChange
+    )
+}
+
+@Composable
+fun BoardConfigurationTimeSelector(timeForLayoutPhase: Int, onValueChange: (Int) -> Unit) {
+    IntSelector(
+        defaultValue = timeForLayoutPhase,
+        valueRange = MIN_TIME_FOR_BOARD_CONFIG..MAX_TIME_FOR_BOARD_CONFIG,
+        label = stringResource(R.string.gameConfig_timeForGridLayout_text),
+        valueLabel = { "$it s" },
+        onValueChange = onValueChange
+    )
+}
+
+@Composable
+private fun ShotsPerTurnSelector(shotsPerTurn: Int, onValueChange: (Int) -> Unit) {
+    IntSelector(
+        defaultValue = shotsPerTurn,
+        valueRange = MIN_SHOTS_PER_TURN..MAX_SHOTS_PER_TURN,
+        label = stringResource(R.string.gameConfig_shotsPerTurn_text),
+        onValueChange = onValueChange
+    )
+}
+
+@Composable
+private fun TimePerTurnSelector(timePerTurn: Int, onValueChange: (Int) -> Unit) {
+    IntSelector(
+        defaultValue = timePerTurn,
+        valueRange = MIN_TIME_PER_TURN..MAX_TIME_PER_TURN,
+        label = stringResource(R.string.gameConfig_timePerTurn_text),
+        valueLabel = { "$it s" },
+        onValueChange = onValueChange
+    )
+}
+
+@Composable
+private fun GameConfigShipSelector(
+    ships: Map<ShipType, Int>,
+    boardSize: Int,
+    onShipAdded: (ShipType) -> Unit,
+    onShipRemoved: (ShipType) -> Unit
+) {
+    GameConfigSelector(leftSideContent = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = stringResource(R.string.gameConfig_ships_label),
+                style = MaterialTheme.typography.h6,
+                textAlign = TextAlign.Center
+            )
+            IconButton(
+                onClick = { },
+                imageVector = ImageVector.vectorResource(R.drawable.ic_boat_24),
+                contentDescription = stringResource(R.string.gameConfig_manageShipsButton_iconDescription),
+                text = stringResource(R.string.gameConfig_manageShipsButton_text)
+            )
+        }
+    }, rightSideContent = {
+            ShipSelector(
+                shipTypes = ships,
+                boardSize = boardSize,
+                onShipAdded = onShipAdded,
+                onShipRemoved = onShipRemoved
+            )
+        })
+}
+
+@Composable
+private fun CreateGameButton(
+    state: GameConfigurationState,
+    gameName: String,
+    boardSize: Int,
+    shotsPerTurn: Int,
+    timePerTurn: Int,
+    timeForLayoutPhase: Int,
+    ships: Map<ShipType, Int>,
+    onGameConfigured: (gameName: String, gameConfig: GameConfig) -> Unit
+) {
+    IconButton(
+        enabled = state == LINKS_LOADED,
+        onClick = {
+            onGameConfigured(
+                gameName.ifEmpty { "Game" },
+                GameConfig(
+                    gridSize = boardSize,
+                    shotsPerTurn = shotsPerTurn,
+                    maxTimePerRound = timePerTurn,
+                    maxTimeForLayoutPhase = timeForLayoutPhase,
+                    ships = ships
+                )
+            )
+        },
+        imageVector = ImageVector.vectorResource(R.drawable.ic_round_add_24),
+        contentDescription = stringResource(R.string.gameConfig_createGameButton_iconDescription),
+        text = stringResource(R.string.gameConfig_createGameButton_text),
+        modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
+    )
+}
+
+@Preview
+@Composable
+fun GameConfigurationScreenPreview() {
+    GameConfigurationScreen(
+        state = LINKS_LOADED,
+        onGameConfigured = { _, _ -> },
+        onBackButtonClicked = { }
+    )
 }

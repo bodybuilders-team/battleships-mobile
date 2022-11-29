@@ -11,7 +11,7 @@ class ShipTests {
     @Test
     fun `Ship coordinates are correct when vertical`() {
         val ship = Ship(
-            ShipType.defaults[4],
+            ShipType.DESTROYER,
             Coordinate('A', 1),
             Orientation.VERTICAL
         )
@@ -27,7 +27,7 @@ class ShipTests {
     @Test
     fun `Ship coordinates are correct when horizontal`() {
         val ship = Ship(
-            ShipType.defaults[4],
+            ShipType.DESTROYER,
             Coordinate('A', 1),
             Orientation.HORIZONTAL
         )
@@ -42,7 +42,7 @@ class ShipTests {
 
     @Test
     fun `Ship getCoordinates calculates coordinates correctly when vertical`() {
-        val shipType = ShipType.defaults[4]
+        val shipType = ShipType.DESTROYER
         val coordinate = Coordinate('A', 1)
         val orientation = Orientation.VERTICAL
 
@@ -56,7 +56,7 @@ class ShipTests {
 
     @Test
     fun `Ship getCoordinates calculates coordinates correctly when horizontal`() {
-        val shipType = ShipType.defaults[4]
+        val shipType = ShipType.DESTROYER
         val coordinate = Coordinate('A', 1)
         val orientation = Orientation.HORIZONTAL
 

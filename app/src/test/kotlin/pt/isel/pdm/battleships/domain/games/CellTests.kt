@@ -22,7 +22,7 @@ class CellTests {
             coordinate = coordinate,
             wasHit = false,
             ship = Ship(
-                type = ShipType.defaults[0],
+                type = ShipType.CARRIER,
                 orientation = Orientation.HORIZONTAL,
                 coordinate = coordinate
             )

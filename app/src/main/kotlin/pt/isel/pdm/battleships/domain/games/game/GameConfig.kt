@@ -18,7 +18,7 @@ data class GameConfig(
     val shotsPerTurn: Int,
     val maxTimePerRound: Int,
     val maxTimeForLayoutPhase: Int,
-    val ships: List<ShipType>
+    val ships: Map<ShipType, Int>
 ) {
 
     constructor(gameConfigModel: GameConfigModel) : this(
@@ -26,13 +26,8 @@ data class GameConfig(
         gameConfigModel.shotsPerRound,
         gameConfigModel.maxTimePerRound,
         gameConfigModel.maxTimeForLayoutPhase,
-        gameConfigModel.shipTypes.flatMap { shipType ->
-            List(shipType.quantity) {
-                ShipType(
-                    size = shipType.size,
-                    shipName = shipType.shipName
-                )
-            }
+        gameConfigModel.shipTypes.associate {
+            ShipType(size = it.size, shipName = it.shipName) to it.quantity
         }
     )
 
@@ -46,12 +41,12 @@ data class GameConfig(
         maxTimeForLayoutPhase = maxTimeForLayoutPhase,
         shotsPerRound = shotsPerTurn,
         maxTimePerRound = maxTimePerRound,
-        shipTypes = ships.distinct().map { ship ->
+        shipTypes = ships.map { (shipType, quantity) ->
             ShipTypeModel(
-                shipName = ship.shipName,
-                size = ship.size,
-                quantity = ships.count { it == ship },
-                points = ship.points
+                shipName = shipType.shipName,
+                size = shipType.size,
+                quantity = quantity,
+                points = shipType.points
             )
         }
     )

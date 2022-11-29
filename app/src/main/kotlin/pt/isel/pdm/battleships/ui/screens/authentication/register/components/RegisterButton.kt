@@ -27,8 +27,8 @@ fun RegisterButton(
         onClick = onRegisterClickCallback,
         enabled = enabled,
         modifier = Modifier.padding(BUTTON_PADDING.dp),
-        text = stringResource(id = R.string.register_register_button_text),
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_person_add_24),
-        contentDescription = stringResource(id = R.string.main_menu_register_button_description)
+        text = stringResource(R.string.register_registerButton_text),
+        imageVector = ImageVector.vectorResource(R.drawable.ic_round_person_add_24),
+        contentDescription = stringResource(R.string.mainMenu_registerButton_description)
     )
 }

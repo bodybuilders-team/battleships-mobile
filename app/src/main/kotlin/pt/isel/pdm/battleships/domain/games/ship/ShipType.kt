@@ -13,18 +13,27 @@ data class ShipType(
     val points: Int = size * 10
 ) {
     companion object {
-        const val CARRIER = "Carrier"
-        const val BATTLESHIP = "Battleship"
-        const val CRUISER = "Cruiser"
-        const val SUBMARINE = "Submarine"
-        const val DESTROYER = "Destroyer"
+        const val CARRIER_NAME = "Carrier"
+        const val BATTLESHIP_NAME = "Battleship"
+        const val CRUISER_NAME = "Cruiser"
+        const val SUBMARINE_NAME = "Submarine"
+        const val DESTROYER_NAME = "Destroyer"
+
+        val CARRIER = ShipType(5, CARRIER_NAME)
+        val BATTLESHIP = ShipType(4, BATTLESHIP_NAME)
+        val CRUISER = ShipType(3, CRUISER_NAME)
+        val SUBMARINE = ShipType(3, SUBMARINE_NAME)
+        val DESTROYER = ShipType(2, DESTROYER_NAME)
 
         val defaults = listOf(
-            ShipType(size = 5, shipName = CARRIER),
-            ShipType(size = 4, shipName = BATTLESHIP),
-            ShipType(size = 3, shipName = CRUISER),
-            ShipType(size = 3, shipName = SUBMARINE),
-            ShipType(size = 2, shipName = DESTROYER)
+            CARRIER,
+            BATTLESHIP,
+            CRUISER,
+            SUBMARINE,
+            DESTROYER
         )
+
+        val defaultsMap
+            get() = defaults.associateWith { 1 }
     }
 }

@@ -53,7 +53,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = stringResource(id = R.string.app_name),
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.h3,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
@@ -77,10 +77,10 @@ fun HomeScreen(
                 onClick = onGameplayMenuClick,
                 enabled = loadingState != HomeLoadingState.LOADING && loggedIn,
                 imageVector = ImageVector.vectorResource(
-                    id = R.drawable.ic_round_play_arrow_24
+                    R.drawable.ic_round_play_arrow_24
                 ),
-                contentDescription = stringResource(R.string.main_menu_play_button_description),
-                text = stringResource(id = R.string.main_menu_play_button_text),
+                contentDescription = stringResource(R.string.mainMenu_playButton_description),
+                text = stringResource(R.string.mainMenu_playButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
 
@@ -88,11 +88,11 @@ fun HomeScreen(
                 IconButton(
                     onClick = onLoginClick,
                     enabled = loadingState != HomeLoadingState.LOADING,
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_login_24),
                     contentDescription = stringResource(
-                        R.string.main_menu_login_button_description
+                        R.string.mainMenu_loginButton_description
                     ),
-                    text = stringResource(id = R.string.main_menu_login_button_text),
+                    text = stringResource(R.string.mainMenu_loginButton_text),
                     modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
                 )
 
@@ -100,13 +100,13 @@ fun HomeScreen(
                     onClick = onRegisterClick,
                     enabled = loadingState != HomeLoadingState.LOADING,
                     imageVector = ImageVector.vectorResource(
-                        id = R.drawable.ic_round_person_add_24
+                        R.drawable.ic_round_person_add_24
                     ),
                     contentDescription = stringResource(
-                        R.string.main_menu_register_button_description
+                        R.string.mainMenu_registerButton_description
                     ),
                     text = stringResource(
-                        id = R.string.main_menu_register_button_text
+                        R.string.mainMenu_registerButton_text
                     ),
                     modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
                 )
@@ -115,12 +115,12 @@ fun HomeScreen(
                     onClick = onLogoutClick,
                     enabled = loadingState != HomeLoadingState.LOADING,
                     imageVector = ImageVector.vectorResource(
-                        id = R.drawable.ic_round_logout_24
+                        R.drawable.ic_round_logout_24
                     ),
                     contentDescription = stringResource(
-                        R.string.main_menu_logout_button_description
+                        R.string.mainMenu_logoutButton_description
                     ),
-                    text = stringResource(id = R.string.main_menu_logout_button_text),
+                    text = stringResource(R.string.mainMenu_logoutButton_text),
                     modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
                 )
             }
@@ -129,23 +129,23 @@ fun HomeScreen(
                 onClick = onRankingClick,
                 enabled = loadingState != HomeLoadingState.LOADING,
                 imageVector = ImageVector.vectorResource(
-                    id = R.drawable.ic_round_table_rows_24
+                    R.drawable.ic_round_table_rows_24
                 ),
                 contentDescription = stringResource(
-                    R.string.main_menu_ranking_button_description
+                    R.string.mainMenu_rankingButton_description
                 ),
-                text = stringResource(id = R.string.main_menu_ranking_button_text),
+                text = stringResource(R.string.mainMenu_rankingButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
 
             IconButton(
                 onClick = onAboutClick,
                 enabled = loadingState != HomeLoadingState.LOADING,
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_info_24),
                 contentDescription = stringResource(
-                    R.string.main_menu_about_button_description
+                    R.string.mainMenu_aboutButton_description
                 ),
-                text = stringResource(id = R.string.main_menu_about_button_text),
+                text = stringResource(R.string.mainMenu_aboutButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
         }

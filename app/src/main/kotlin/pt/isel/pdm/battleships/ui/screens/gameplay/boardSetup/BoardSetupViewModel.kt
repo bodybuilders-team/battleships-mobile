@@ -38,7 +38,7 @@ class BoardSetupViewModel(
 
     data class BoardSetupScreenState(
         val gridSize: Int? = null,
-        val ships: List<ShipType>? = null
+        val ships: Map<ShipType, Int>? = null
     )
 
     private var _screenState by mutableStateOf(BoardSetupScreenState())
@@ -68,13 +68,8 @@ class BoardSetupViewModel(
 
                 _screenState = _screenState.copy(
                     gridSize = properties.config.gridSize,
-                    ships = shipTypes.flatMap { shipType ->
-                        List(shipType.quantity) {
-                            ShipType(
-                                size = shipType.size,
-                                shipName = shipType.shipName
-                            )
-                        }
+                    ships = shipTypes.associate {
+                        ShipType(size = it.size, shipName = it.shipName) to it.quantity
                     }
                 )
                 _state = GAME_LOADED

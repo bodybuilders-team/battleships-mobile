@@ -39,7 +39,7 @@ fun RegisterTextFields(
         value = email,
         onValueChange = onEmailChangeCallback,
         placeholder = {
-            Text(text = stringResource(id = R.string.authentication_email_placeholder_text))
+            Text(text = stringResource(R.string.register_email_placeholderText))
         },
         modifier = Modifier.padding(bottom = EMAIL_PADDING.dp)
     )
@@ -48,7 +48,7 @@ fun RegisterTextFields(
         value = username,
         onValueChange = onUsernameChangeCallback,
         placeholder = {
-            Text(text = stringResource(id = R.string.authentication_username_placeholder_text))
+            Text(text = stringResource(R.string.authentication_usernameTextField_placeholderText))
         },
         modifier = Modifier.padding(bottom = USERNAME_PADDING.dp)
     )
@@ -57,7 +57,7 @@ fun RegisterTextFields(
         value = password,
         onValueChange = onPasswordChangeCallback,
         placeholder = {
-            Text(text = stringResource(id = R.string.authentication_password_placeholder_text))
+            Text(text = stringResource(R.string.authentication_passwordTextField_placeholderText))
         },
         visualTransformation = PasswordVisualTransformation()
     )

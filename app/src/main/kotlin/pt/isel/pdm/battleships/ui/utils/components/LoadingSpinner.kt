@@ -19,7 +19,7 @@ private const val STROKE_WIDTH = 4
  * @param text the text to be shown below the spinner
  */
 @Composable
-fun LoadingSpinner(text: String = stringResource(id = R.string.loading)) {
+fun LoadingSpinner(text: String = stringResource(R.string.defaultLoading_text)) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

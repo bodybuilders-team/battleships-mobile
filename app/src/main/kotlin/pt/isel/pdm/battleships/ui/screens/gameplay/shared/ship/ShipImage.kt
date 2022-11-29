@@ -29,20 +29,20 @@ fun ShipImage(
         Image(
             painter = painterResource(
                 id = when (type.shipName) {
-                    ShipType.BATTLESHIP -> if (orientation.isVertical()) R.drawable.ship_battleship_v
+                    ShipType.BATTLESHIP_NAME -> if (orientation.isVertical()) R.drawable.ship_battleship_v
                     else R.drawable.ship_battleship_h
-                    ShipType.CARRIER -> if (orientation.isVertical()) R.drawable.ship_carrier_v
+                    ShipType.CARRIER_NAME -> if (orientation.isVertical()) R.drawable.ship_carrier_v
                     else R.drawable.ship_carrier_h
-                    ShipType.CRUISER -> if (orientation.isVertical()) R.drawable.ship_cruiser_v
+                    ShipType.CRUISER_NAME -> if (orientation.isVertical()) R.drawable.ship_cruiser_v
                     else R.drawable.ship_cruiser_h
-                    ShipType.DESTROYER -> if (orientation.isVertical()) R.drawable.ship_destroyer_v
+                    ShipType.DESTROYER_NAME -> if (orientation.isVertical()) R.drawable.ship_destroyer_v
                     else R.drawable.ship_destroyer_h
-                    ShipType.SUBMARINE -> if (orientation.isVertical()) R.drawable.ship_submarine_v
+                    ShipType.SUBMARINE_NAME -> if (orientation.isVertical()) R.drawable.ship_submarine_v
                     else R.drawable.ship_submarine_h
                     else -> throw IllegalArgumentException("Invalid ship type")
                 }
             ),
-            contentDescription = stringResource(id = R.string.ship_image_content_description),
+            contentDescription = stringResource(R.string.shipImage_contentDescription),
             modifier = Modifier.fillMaxSize()
         )
     else

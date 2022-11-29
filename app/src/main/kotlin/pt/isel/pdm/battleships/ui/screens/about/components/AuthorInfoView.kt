@@ -84,15 +84,15 @@ fun AuthorInfoView(
             )
             Row {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_github_dark),
-                    contentDescription = stringResource(id = R.string.github_logo_content_description),
+                    painter = painterResource(R.drawable.ic_github_dark),
+                    contentDescription = stringResource(R.string.about_githubLogo_contentDescription),
                     modifier = Modifier
                         .clickable { onOpenUrl(author.githubLink) }
                         .padding(IMAGE_PADDING.dp)
                 )
                 Image(
-                    painter = painterResource(id = R.drawable.ic_email),
-                    contentDescription = stringResource(id = R.string.email_icon_content_description),
+                    painter = painterResource(R.drawable.ic_email),
+                    contentDescription = stringResource(R.string.about_emailIcon_contentDescription),
                     modifier = Modifier
                         .clickable { onSendEmail(author.email) }
                         .padding(IMAGE_PADDING.dp)

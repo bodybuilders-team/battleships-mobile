@@ -24,6 +24,7 @@ import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
 private const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
+private const val MAX_BOARD_OCCUPANCY_PERCENTAGE = 0.5f
 
 /**
  * A slot that presents the ship types and allows the user to select the quantity of each type in a game.
@@ -34,15 +35,20 @@ private const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
  */
 @Composable
 fun ShipSelector(
-    shipTypes: List<ShipType>,
+    shipTypes: Map<ShipType, Int>,
+    boardSize: Int,
     onShipAdded: (ShipType) -> Unit,
     onShipRemoved: (ShipType) -> Unit
 ) {
     val tileSize = DEFAULT_TILE_SIZE
 
+    val totalTilesOccupied = shipTypes.entries.fold(0) { acc, (ship, count) ->
+        acc + ship.size * count
+    }
+
     Column {
         LazyRow {
-            items(ShipType.defaults) { shipType ->
+            items(shipTypes.entries.toList()) { (shipType, quantity) ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
                         modifier = Modifier
@@ -60,20 +66,18 @@ fun ShipSelector(
                     IconButton(
                         onClick = { onShipAdded(shipType) },
                         imageVector = ImageVector.vectorResource(R.drawable.ic_round_add_24),
-                        contentDescription = stringResource(
-                            id = R.string.increment_ship_button_icon_content_description
-                        ),
-                        modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
+                        contentDescription = stringResource(R.string.gameConfig_incrementShipButtonIcon_contentDescription),
+                        modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp),
+                        enabled = totalTilesOccupied + shipType.size
+                            < boardSize * boardSize * MAX_BOARD_OCCUPANCY_PERCENTAGE
                     )
 
-                    Text(text = shipTypes.count { it == shipType }.toString())
+                    Text(text = quantity.toString())
 
                     IconButton(
                         onClick = { onShipRemoved(shipType) },
                         imageVector = ImageVector.vectorResource(R.drawable.ic_round_remove_24),
-                        contentDescription = stringResource(
-                            id = R.string.decrement_ship_button_icon_content_description
-                        ),
+                        contentDescription = stringResource(R.string.gameConfig_decrementShipButtonIcon_contentDescription),
                         modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
                     )
                 }

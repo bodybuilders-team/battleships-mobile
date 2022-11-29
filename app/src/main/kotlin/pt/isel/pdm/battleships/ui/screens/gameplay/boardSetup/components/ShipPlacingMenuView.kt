@@ -37,7 +37,7 @@ const val PLACING_MENU_PADDING = 6
  */
 @Composable
 fun ShipPlacingMenuView(
-    shipTypes: List<ShipType>,
+    shipTypes: Map<ShipType, Int>,
     dragging: (ShipType) -> Boolean,
     onDragStart: (Ship, Offset) -> Unit,
     onDragEnd: (Ship) -> Unit,
@@ -70,18 +70,14 @@ fun ShipPlacingMenuView(
             IconButton(
                 onClick = onRandomBoardButtonPressed,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_round_cycle_24),
-                contentDescription = stringResource(
-                    id = R.string.gameplay_random_board_button_description
-                ),
-                text = stringResource(id = R.string.gameplay_random_board_button_text)
+                contentDescription = stringResource(R.string.gameplay_randomBoardButton_description),
+                text = stringResource(R.string.gameplay_randomBoardButton_text)
             )
             IconButton(
                 onClick = onConfirmBoardButtonPressed,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_round_check_24),
-                contentDescription = stringResource(
-                    id = R.string.game_config_confirm_board_button_description
-                ),
-                text = stringResource(id = R.string.game_config_confirm_board_button_text)
+                contentDescription = stringResource(R.string.gameplay_confirmBoardButton_description),
+                text = stringResource(R.string.gameplay_confirmBoardButton_text)
             )
         }
     }

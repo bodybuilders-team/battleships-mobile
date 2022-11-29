@@ -13,6 +13,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigu
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.GameConfigurationViewModel.GameConfigurationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.utils.Event
 import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
+import pt.isel.pdm.battleships.ui.utils.navigation.Links
 
 /**
  * View model for the [GameConfigurationActivity].
@@ -31,9 +32,10 @@ class GameConfigurationViewModel(
     /**
      * Creates a new game.
      *
+     * @param name the name of the game
      * @param gameConfig the game configuration
      */
-    fun createGame(gameConfig: GameConfig) {
+    fun createGame(name: String, gameConfig: GameConfig) {
         check(state == LINKS_LOADED) { "The view model is not in the links loaded state" }
 
         _state = CREATING_GAME
@@ -41,6 +43,7 @@ class GameConfigurationViewModel(
         launchAndExecuteRequestThrowing(
             request = {
                 battleshipsService.gamesService.createGame(
+                    name = name,
                     gameConfig = gameConfig.toGameConfigModel()
                 )
             },
@@ -50,6 +53,16 @@ class GameConfigurationViewModel(
                 _events.emit(GameConfigurationEvent.NavigateToBoardSetup)
             }
         )
+    }
+
+    /**
+     * Updates the links.
+     *
+     * @param links the links to update
+     */
+    override fun updateLinks(links: Links) {
+        super.updateLinks(links)
+        _state = LINKS_LOADED
     }
 
     /**

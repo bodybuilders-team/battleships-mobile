@@ -37,8 +37,8 @@ class GameConfigurationActivity : BattleshipsActivity() {
         setContent {
             GameConfigurationScreen(
                 state = viewModel.state,
-                onGameConfigured = { gameConfig ->
-                    viewModel.createGame(gameConfig = gameConfig)
+                onGameConfigured = { gameName, gameConfig ->
+                    viewModel.createGame(name = gameName, gameConfig = gameConfig)
                 },
                 onBackButtonClicked = { finish() }
             )

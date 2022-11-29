@@ -25,8 +25,8 @@ fun GoBackButton(onClick: () -> Unit) {
         IconButton(
             onClick = onClick,
             imageVector = Icons.Rounded.ArrowBack,
-            contentDescription = stringResource(id = R.string.back_button_text),
-            text = stringResource(id = R.string.back_button_text)
+            contentDescription = stringResource(R.string.backButton_text),
+            text = stringResource(R.string.backButton_text)
         )
     }
 }

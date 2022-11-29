@@ -85,15 +85,15 @@ fun GameCard(
                     gameInfoExpanded = !gameInfoExpanded
                     onGameInfoRequest()
                 },
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_info_24),
-                contentDescription = stringResource(id = R.string.info_icon_description),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_info_24),
+                contentDescription = stringResource(R.string.lobby_info_iconDescription),
                 modifier = Modifier.size(BUTTON_SIZE.dp)
             )
 
             IconButton(
                 onClick = onJoinGameRequest,
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
-                contentDescription = stringResource(id = R.string.join_icon_description),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_play_arrow_24),
+                contentDescription = stringResource(R.string.lobby_join_iconDescription),
                 modifier = Modifier.size(BUTTON_SIZE.dp)
             )
         }

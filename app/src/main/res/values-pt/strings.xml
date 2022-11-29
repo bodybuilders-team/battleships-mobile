@@ -1,94 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="back_button_text">Voltar</string>
+    <string name="backButton_text">Voltar</string>
 
-    <string name="main_menu_play_button_text">Jogar</string>
-    <string name="main_menu_play_button_description">Botão para o ecrã do menu de jogabilidade</string>
+    <string name="mainMenu_playButton_text">Jogar</string>
+    <string name="mainMenu_playButton_description">Botão para o ecrã do menu de jogabilidade</string>
 
-    <string name="main_menu_login_button_text">Entrar</string>
-    <string name="main_menu_login_button_description">Botão para o ecrã de início de sessão</string>
+    <string name="mainMenu_loginButton_text">Entrar</string>
+    <string name="mainMenu_loginButton_description">Botão para o ecrã de início de sessão</string>
 
-    <string name="main_menu_register_button_text">Registar</string>
-    <string name="main_menu_register_button_description">Botão para o ecrã de registo</string>
+    <string name="mainMenu_registerButton_text">Registar</string>
+    <string name="mainMenu_registerButton_description">Botão para o ecrã de registo</string>
 
-    <string name="main_menu_ranking_button_text">Classificações</string>
-    <string name="main_menu_ranking_button_description">Botão para o ecrã da tabela de classificação dos jogadores</string>
+    <string name="mainMenu_rankingButton_text">Classificações</string>
+    <string name="mainMenu_rankingButton_description">Botão para o ecrã da tabela de classificação dos jogadores</string>
 
-    <string name="main_menu_about_button_text">Sobre</string>
-    <string name="main_menu_about_button_description">Botão para o ecrã com informação dos desenvolvedores</string>
+    <string name="mainMenu_aboutButton_text">Sobre</string>
+    <string name="mainMenu_aboutButton_description">Botão para o ecrã com informação dos desenvolvedores</string>
 
     <string name="about_title">Autores</string>
-    <string name="about_repo_github_text">"O código desta aplicação está disponível aqui: "</string>
+    <string name="about_repoGithub_text">"O código desta aplicação está disponível aqui: "</string>
 
     <string name="login_title">Iniciar Sessão</string>
 
-    <string name="authentication_message_invalid_username">Username deve ter pelo menos 3 caracteres.</string>
-    <string name="authentication_message_invalid_password">Palavra-passe deve ter pelo menos 8 caracteres.</string>
-    <string name="authentication_message_username_not_found">Nome de utilizador não existe.</string>
-    <string name="authentication_message_wrong_password">Palavra-passe está errada.</string>
-    <string name="authentication_message_successful">Início de sessão realizado um sucesso.</string>
+    <string name="authentication_message_invalidUsername">Username deve ter pelo menos 3 caracteres.</string>
+    <string name="authentication_message_invalidPassword">Palavra-passe deve ter pelo menos 8 caracteres.</string>
+    <string name="login_message_usernameNotFound">Nome de utilizador não existe.</string>
+    <string name="login_message_wrongPassword">Palavra-passe está errada.</string>
+    <string name="login_message_successful">Início de sessão realizado um sucesso.</string>
 
-    <string name="register_message_user_exists">Nome de utilizador já existe.</string>
+    <string name="register_message_userExists">Nome de utilizador já existe.</string>
     <string name="register_message_successful">Utilizador registado com sucesso.</string>
 
     <string name="ranking_title">Classificações</string>
-    <string name="ranking_search_player_placeholder_text">Procurar Jogador</string>
+    <string name="ranking_searchPlayerTextField_placeholderText">Procurar Jogador</string>
     <string name="ranking_table_label_username">Nome de Utilizador</string>
     <string name="ranking_table_label_points">Pontos</string>
-    <string name="ranking_search_player_button_text">Procurar</string>
+    <string name="ranking_searchPlayerButton_text">Procurar</string>
 
-    <string name="authentication_username_placeholder_text">Nome de Utilizador</string>
-    <string name="authentication_password_placeholder_text">Palavra-passe</string>
+    <string name="authentication_usernameTextField_placeholderText">Nome de Utilizador</string>
+    <string name="authentication_passwordTextField_placeholderText">Palavra-passe</string>
 
-    <string name="login_button_text">Iniciar Sessão</string>
-    <string name="register_button_text">Registar</string>
+    <string name="gameplay_randomBoardButton_text">Tabuleiro Aleatório</string>
+    <string name="gameplay_randomBoardButton_description">Botão para o gerar um tabuleiro aleatório</string>
 
-    <string name="gameplay_change_orientation_button_text">Mudar Orientação</string>
-    <string name="gameplay_random_board_button_text">Tabuleiro Aleatório</string>
-    <string name="gameplay_random_board_button_description">Botão para o gerar um tabuleiro aleatório</string>
+    <string name="gameConfig_title">Configuração do Jogo</string>
+    <string name="gameConfig_gridSize_text">Tamanho da grelha</string>
 
-    <string name="game_config_title">Configuração do Jogo</string>
-    <string name="game_config_grid_size_text">Tamanho da grelha</string>
+    <string name="gameplayMenu_newGameButton_text">Novo Jogo</string>
+    <string name="gameplayMenu_newGameButton_description">Botão para criar um novo jogo</string>
 
-    <string name="gameplay_new_game_button_text">Novo Jogo</string>
-    <string name="gameplay_new_game_button_description">Botão para criar um novo jogo</string>
+    <string name="gameplayMenu_searchGameButton_text">Procurar Jogo</string>
+    <string name="gameplayMenu_searchGameButton_description">Botão para pesquisar jogos</string>
 
-    <string name="gameplay_search_game_button_text">Procurar Jogo</string>
-    <string name="gameplay_search_game_button_description">Botão para pesquisar jogos</string>
+    <string name="gameConfig_createGameButton_text">Criar Jogo</string>
 
-    <string name="game_config_create_game_button_text">Criar Jogo</string>
+    <string name="gameplay_confirmBoardButton_text">Confirmar Tabuleiro</string>
+    <string name="gameplay_confirmBoardButton_description">Botão para confirmar o tabuleiro</string>
 
-    <string name="game_config_confirm_board_button_text">Confirmar Tabuleiro</string>
-    <string name="game_config_confirm_board_button_description">Botão para confirmar o tabuleiro</string>
+    <string name="gameConfig_shotsPerTurn_text">Tiros por Turno</string>
+    <string name="gameConfig_timePerTurn_text">Tempo por Turno</string>
+    <string name="gameConfig_timeForGridLayout_text">Tempo para configuração do tabuleiro</string>
 
-    <string name="game_config_shots_per_turn_text">Tiros por Turno</string>
-    <string name="game_config_time_per_turn_text">Tempo por Turno</string>
-    <string name="game_config_time_for_board_config_text">Tempo para configuração do tabuleiro</string>
+    <string name="shipImage_contentDescription">Navio</string>
+    <string name="gameplay_opponentBoard_description">Tabuleiro do Oponente</string>
+    <string name="gameplay_myBoard_description">Meu Tabuleiro</string>
+    <string name="gameplayMenu_title">Menu de Jogabilidade</string>
+    <string name="gameConfig_ships_label">Navios</string>
 
-    <string name="ship_image_content_description">Navio</string>
-    <string name="opponent_board_description">Tabuleiro do Oponente</string>
-    <string name="my_board_description">Meu Tabuleiro</string>
-    <string name="gameplay_menu_title">Menu de Jogabilidade</string>
-    <string name="search_game_title">Pesquisar Jogos</string>
-    <string name="game_config_ships_text">Navios</string>
+    <string name="gameConfig_incrementShipButtonIcon_contentDescription">Botão para incrementar a quantidade do navio</string>
+    <string name="gameConfig_decrementShipButtonIcon_contentDescription">Botão para decrementar a quantidade do navio</string>
 
-    <string name="increment_ship_button_icon_content_description">Botão para incrementar a quantidade do navio</string>
-    <string name="decrement_ship_button_icon_content_description">Botão para decrementar a quantidade do navio</string>
-
-    <string name="register_register_button_text">Registar</string>
-    <string name="authentication_message_invalid_email">Email inválido</string>
+    <string name="register_registerButton_text">Registar</string>
+    <string name="register_message_invalidEmail">Email inválido</string>
 
     <string name="register_title">Registar</string>
 
-    <string name="gameplay_quick_play_button_text">Jogo Rápido</string>
-    <string name="gameplay_quick_play_button_description">Botão para o ecrã de jogo rápido</string>
+    <string name="gameplayMenu_quickPlayButton_text">Jogo Rápido</string>
+    <string name="gameplayMenu_quickPlayButton_description">Botão para o ecrã de jogo rápido</string>
 
-    <string name="gameplay_shoot_button_text">Disparar!</string>
+    <string name="gameplay_shoot_buttonText">Disparar!</string>
     <string name="gameplay_shoot_button_description">Botão para disparar</string>
 
-    <string name="gameplay_reset_shots_button_text">Reiniciar tiros</string>
-    <string name="gameplay_reset_shots_button_description">Botão para reiniciar tiros</string>
+    <string name="gameplay_resetShotsButton_text">Reiniciar tiros</string>
+    <string name="gameplay_resetShotsButton_description">Botão para reiniciar tiros</string>
 
-    <string name="main_menu_logout_button_description">Botão para fechar sessão</string>
-    <string name="main_menu_logout_button_text">Fechar sessão</string>
+    <string name="mainMenu_logoutButton_description">Botão para fechar sessão</string>
+    <string name="mainMenu_logoutButton_text">Fechar sessão</string>
+    <string name="defaultLoading_text">Carregando...</string>
+    <string name="endgame_playAgainButton_description">Botão para jogar outra vez</string>
+    <string name="endgame_youWon_text">Tu venceste!</string>
+    <string name="endgame_youLost_text">Tu perdeste!</string>
+    <string name="endgame_playAgainButton_text">Jogar Outra Vez</string>
+    <string name="endgame_mainMenuButton_text">Menu Principal</string>
+    <string name="endgame_mainMenuButton_description">Botão para ir ao menu principal</string>
+    <string name="lobby_info_iconDescription">Ícone de informação</string>
+    <string name="lobby_join_iconDescription">Ícone de juntar-se a um jogo</string>
+    <string name="about_emailIcon_contentDescription">Ícone de email</string>
+    <string name="about_githubLogo_contentDescription">Logo do Github</string>
+    <string name="login_loginButton_text">Iniciar Sessão</string>
+    <string name="login_loginButton_description">Botão para iniciar sessão</string>
+    <string name="register_registerButton_description">Botão para registar</string>
+    <string name="gameConfig_gameNameTextField_label">Nome do Jogo</string>
+    <string name="gameConfig_gameNameTextField_placeholder">Jogo</string>
+    <string name="gameConfig_manageShipsButton_iconDescription">Ícone de Navio</string>
+    <string name="gameConfig_createGameButton_iconDescription">Ícone de Soma</string>
+    <string name="endgame_points_text">pontos</string>
+    <string name="gameConfig_manageShipsButton_text">Gerir Navios</string>
 </resources>

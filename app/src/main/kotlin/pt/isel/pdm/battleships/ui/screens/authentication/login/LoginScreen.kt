@@ -50,9 +50,9 @@ fun LoginScreen(
     val password = remember { mutableStateOf("") }
 
     val authenticationMessageInvalidUsername =
-        stringResource(id = R.string.authentication_message_invalid_username)
+        stringResource(R.string.authentication_message_invalidUsername)
     val authenticationMessageInvalidPassword =
-        stringResource(id = R.string.authentication_message_invalid_password)
+        stringResource(R.string.authentication_message_invalidPassword)
 
     BattleshipsScreen {
         Column(

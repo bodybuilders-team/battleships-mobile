@@ -60,7 +60,7 @@ fun AboutScreen(
                 )
             }
 
-            Text(text = stringResource(id = R.string.about_repo_github_text))
+            Text(text = stringResource(R.string.about_repoGithub_text))
             Image(
                 painter = painterResource(
                     id = if (isSystemInDarkTheme()) {
@@ -69,7 +69,7 @@ fun AboutScreen(
                         R.drawable.ic_github_dark
                     }
                 ),
-                contentDescription = stringResource(id = R.string.github_logo_content_description),
+                contentDescription = stringResource(R.string.about_githubLogo_contentDescription),
                 modifier = Modifier
                     .clickable { onOpenUrl(githubRepoUrl) }
                     .padding(IMAGE_PADDING.dp)

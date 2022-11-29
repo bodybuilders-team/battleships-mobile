@@ -2,107 +2,145 @@
     <string name="app_name" translatable="false">Battleships ⚓</string>
     <string name="logo_content_description" translatable="false">Battleships Logo</string>
 
-    <string name="back_button_text">Go Back</string>
+    <string name="backButton_text">Go Back</string>
+    <string name="defaultLoading_text">Loading...</string>
 
-    <string name="main_menu_play_button_text">Play</string>
-    <string name="main_menu_play_button_description">Button to gameplay menu screen</string>
+    <!-- Main Menu -->
 
-    <string name="main_menu_login_button_text">Login</string>
-    <string name="main_menu_login_button_description">Button to login screen</string>
+    <string name="mainMenu_playButton_text">Play</string>
+    <string name="mainMenu_playButton_description">Button to gameplay menu screen</string>
 
-    <string name="main_menu_register_button_text">Register</string>
-    <string name="main_menu_register_button_description">Button to register screen</string>
+    <string name="mainMenu_loginButton_text">Login</string>
+    <string name="mainMenu_loginButton_description">Button to login screen</string>
 
-    <string name="main_menu_ranking_button_text">Ranking</string>
-    <string name="main_menu_ranking_button_description">Button to players\' ranking screen</string>
+    <string name="mainMenu_registerButton_text">Register</string>
+    <string name="mainMenu_registerButton_description">Button to register screen</string>
 
-    <string name="main_menu_about_button_text">About</string>
-    <string name="main_menu_about_button_description">Button to about screen</string>
+    <string name="mainMenu_rankingButton_text">Ranking</string>
+    <string name="mainMenu_rankingButton_description">Button to players\' ranking screen</string>
 
-    <string name="about_title">Authors</string>
-    <string name="about_repo_github_text">"The code for this app is available at: "</string>
+    <string name="mainMenu_aboutButton_text">About</string>
+    <string name="mainMenu_aboutButton_description">Button to about screen</string>
+
+    <string name="mainMenu_logoutButton_text">Logout</string>
+    <string name="mainMenu_logoutButton_description">Button to logout</string>
+
+    <!-- Authentication (Both Login and Register) -->
+
+    <string name="authentication_message_invalidUsername">Username should have at least 3 characters.</string>
+    <string name="authentication_message_invalidPassword">Password should have at least 8 characters.</string>
+    <string name="authentication_usernameTextField_placeholderText">Username</string>
+    <string name="authentication_passwordTextField_placeholderText">Password</string>
+
+    <!-- Login -->
 
     <string name="login_title">Login</string>
+    <string name="login_loginButton_text">Login</string>
+    <string name="login_loginButton_description">Button to login</string>
 
-    <string name="authentication_message_invalid_username">Username should have at least 3 characters.</string>
-    <string name="authentication_message_invalid_password">Password should have at least 8 characters.</string>
-    <string name="authentication_message_username_not_found">Username doesn\'t exist.</string>
-    <string name="authentication_message_wrong_password">Password is wrong.</string>
-    <string name="authentication_message_successful">Login was successful.</string>
+    <string name="login_message_usernameNotFound">Username doesn\'t exist.</string>
+    <string name="login_message_wrongPassword">Password is wrong.</string>
+    <string name="login_message_successful">Login was successful.</string>
 
-    <string name="register_message_user_exists">Username already exists.</string>
+    <!-- Register -->
+    <string name="register_title">Register</string>
+    <string name="register_registerButton_text">Register</string>
+    <string name="register_registerButton_description">Button to register</string>
+
+    <string name="register_email_placeholderText" translatable="false">Email</string>
+    <string name="register_message_invalidEmail">Invalid Email</string>
+    <string name="register_message_userExists">Username already exists.</string>
     <string name="register_message_successful">User registered successfully.</string>
 
+    <!-- Ranking -->
+
     <string name="ranking_title">Ranking</string>
-    <string name="ranking_search_player_placeholder_text">Search Player</string>
-    <string name="ranking_search_player_button_text">Search</string>
+    <string name="ranking_searchPlayerTextField_placeholderText">Search Player</string>
+    <string name="ranking_searchPlayerButton_text">Search</string>
     <string name="ranking_table_label_rank" translatable="false">Rank</string>
     <string name="ranking_table_label_username">Username</string>
     <string name="ranking_table_label_points">Points</string>
 
-    <string name="authentication_username_placeholder_text">Username</string>
-    <string name="authentication_password_placeholder_text">Password</string>
+    <!-- Play Menu -->
 
-    <string name="login_button_text">Login</string>
-    <string name="register_button_text">Register</string>
+    <string name="gameplayMenu_title">Gameplay Menu</string>
 
-    <string name="gameplay_change_orientation_button_text">Change Orientation</string>
+    <string name="gameplayMenu_quickPlayButton_text">Quick Play</string>
+    <string name="gameplayMenu_quickPlayButton_description">Button to quick play screen</string>
 
-    <string name="gameplay_random_board_button_text">Random Board</string>
-    <string name="gameplay_random_board_button_description">Button to get a random board</string>
+    <string name="gameplayMenu_newGameButton_text">New Game</string>
+    <string name="gameplayMenu_newGameButton_description">Plus Icon</string>
 
-    <string name="github_logo_content_description" translatable="false">Github Logo</string>
-    <string name="email_icon_content_description" translatable="false">Email Icon</string>
+    <string name="gameplayMenu_searchGameButton_text">Search Game</string>
+    <string name="gameplayMenu_searchGameButton_description">Button to search games</string>
 
-    <string name="game_config_title">Game Configuration</string>
-    <string name="game_config_grid_size_text">Grid Size</string>
+    <!-- Game Config -->
 
-    <string name="gameplay_new_game_button_text">New Game</string>
-    <string name="gameplay_new_game_button_description">Button to create a new game</string>
+    <string name="gameConfig_title">Game Configuration</string>
 
-    <string name="gameplay_search_game_button_text">Search Game</string>
-    <string name="gameplay_search_game_button_description">Button to search games</string>
+    <string name="gameConfig_gameNameTextField_label">Game Name</string>
+    <string name="gameConfig_gameNameTextField_placeholder">Game</string>
+    <string name="gameConfig_gridSize_text">Grid Size</string>
+    <string name="gameConfig_shotsPerTurn_text">Shots per Turn</string>
+    <string name="gameConfig_timePerTurn_text">Time per Turn</string>
+    <string name="gameConfig_timeForGridLayout_text">Board Layout Time</string>
+    <string name="gameConfig_ships_label">Ships</string>
+    <string name="gameConfig_manageShipsButton_text">Manage Ships</string>
+    <string name="gameConfig_manageShipsButton_iconDescription">Ship Icon</string>
+    <string name="gameConfig_createGameButton_text">Create Game</string>
+    <string name="gameConfig_createGameButton_iconDescription">Plus Icon</string>
 
-    <string name="game_config_create_game_button_text">Create Game</string>
+    <string name="gameConfig_incrementShipButtonIcon_contentDescription">Button to increment a ship quantity</string>
+    <string name="gameConfig_decrementShipButtonIcon_contentDescription">Button to decrement a ship quantity</string>
 
-    <string name="game_config_confirm_board_button_text">Confirm Board</string>
-    <string name="game_config_confirm_board_button_description">Button to confirm board</string>
+    <string name="shipImage_contentDescription">Ship</string>
 
-    <string name="game_config_shots_per_turn_text">Shots per Turn</string>
-    <string name="game_config_time_per_turn_text">Time per Turn</string>
-    <string name="game_config_time_for_board_config_text">Board Layout Time</string>
+    <!-- Gameplay - Grid Layout -->
 
-    <string name="ship_image_content_description">Ship</string>
-    <string name="opponent_board_description">Opponent Board</string>
-    <string name="my_board_description">My Board</string>
-    <string name="gameplay_menu_title">Gameplay Menu</string>
-    <string name="search_game_title">Search Games</string>
-    <string name="game_config_ships_text">Ships</string>
+    <string name="gameplay_randomBoardButton_text">Random Board</string>
+    <string name="gameplay_randomBoardButton_description">Button to get a random board</string>
 
-    <string name="increment_ship_button_icon_content_description">Button to increment a ship quantity</string>
-    <string name="decrement_ship_button_icon_content_description">Button to decrement a ship quantity</string>
+    <string name="gameplay_confirmBoardButton_text">Confirm Board</string>
+    <string name="gameplay_confirmBoardButton_description">Button to confirm board</string>
 
-    <string name="register_register_button_text">Register</string>
-    <string name="authentication_message_invalid_email">Invalid Email</string>
-    <string name="authentication_email_placeholder_text" translatable="false">Email</string>
+    <!-- Gameplay -->
 
-    <string name="register_title">Register</string>
+    <string name="gameplay_opponentBoard_description">Opponent Board</string>
+    <string name="gameplay_myBoard_description">My Board</string>
 
-    <string name="gameplay_quick_play_button_text">Quick Play</string>
-    <string name="gameplay_quick_play_button_description">Button to quick play screen</string>
-
-    <string name="join_icon_description" translatable="false">Join Icon</string>
-    <string name="info_icon_description" translatable="false">Info icon</string>
-
-    <string name="gameplay_shoot_button_text">Shoot!</string>
+    <string name="gameplay_shoot_buttonText">Shoot!</string>
     <string name="gameplay_shoot_button_description">Button to shoot</string>
 
-    <string name="gameplay_reset_shots_button_text">Reset shots</string>
-    <string name="gameplay_reset_shots_button_description">Button to reset shots</string>
+    <string name="gameplay_resetShotsButton_text">Reset shots</string>
+    <string name="gameplay_resetShotsButton_description">Button to reset shots</string>
 
+    <!-- EndGame -->
+
+    <string name="endgame_youWon_text">You Won!</string>
+    <string name="endgame_youLost_text">You Lost!</string>
+
+    <string name="endgame_byFleetDestruction_text">by fleet destruction</string>
+    <string name="endgame_byResignation_text">by resignation</string>
+
+    <string name="endgame_points_text">points</string>
+
+    <string name="endgame_winnersAvatar_description">Winner\'s Avatar</string>
+    <string name="endgame_losersAvatar_description">Loser\'s Avatar</string>
+
+    <string name="endgame_playAgainButton_text">Play Again</string>
+    <string name="endgame_playAgainButton_description">Button to play again</string>
+
+    <string name="endgame_mainMenuButton_text">Main Menu</string>
+    <string name="endgame_mainMenuButton_description">Button to go to the main menu</string>
+
+    <!-- Lobby -->
     <string name="lobby_title" translatable="false">Lobby</string>
+    <string name="lobby_join_iconDescription">Join Icon</string>
+    <string name="lobby_info_iconDescription">Info icon</string>
 
-    <string name="main_menu_logout_button_text">Logout</string>
-    <string name="main_menu_logout_button_description">Button to logout</string>
-    <string name="loading">Loading...</string>
+    <!-- About -->
+    <string name="about_title">Authors</string>
+    <string name="about_repoGithub_text">"The code for this app is available at: "</string>
+    <string name="about_githubLogo_contentDescription">Github Logo</string>
+    <string name="about_emailIcon_contentDescription">Email Icon</string>
 </resources>

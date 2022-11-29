@@ -27,8 +27,8 @@ fun LoginButton(
         onClick = onLoginClickCallback,
         enabled = enabled,
         modifier = Modifier.padding(BUTTON_PADDING.dp),
-        text = stringResource(id = R.string.login_button_text),
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_login_24),
-        contentDescription = stringResource(id = R.string.main_menu_login_button_description)
+        text = stringResource(R.string.login_loginButton_text),
+        imageVector = ImageVector.vectorResource(R.drawable.ic_round_login_24),
+        contentDescription = stringResource(R.string.login_loginButton_description)
     )
 }

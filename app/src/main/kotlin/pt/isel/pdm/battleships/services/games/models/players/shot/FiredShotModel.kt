@@ -26,13 +26,13 @@ data class FiredShotModel(
      *
      * @return the fired shot
      */
-    fun toFiredShot(shipTypes: List<ShipType>) = FiredShot(
+    fun toFiredShot(shipTypes: Map<ShipType, Int>) = FiredShot(
         coordinate = coordinate.toCoordinate(),
         round = round,
         result = result.toShotResult(),
         sunkShip = sunkShip?.let {
             Ship(
-                type = shipTypes
+                type = shipTypes.keys
                     .find { shipType -> shipType.shipName == sunkShip.type }
                     ?: throw IllegalStateException("Invalid ship type"),
                 coordinate = sunkShip.coordinate.toCoordinate(),

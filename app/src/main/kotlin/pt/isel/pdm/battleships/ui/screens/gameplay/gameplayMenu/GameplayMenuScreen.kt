@@ -37,33 +37,31 @@ fun GameplayMenuScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            ScreenTitle(title = stringResource(R.string.gameplay_menu_title))
+            ScreenTitle(title = stringResource(R.string.gameplayMenu_title))
 
             IconButton(
                 onClick = onMatchmakeClick,
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_play_arrow_24),
-                contentDescription = stringResource(
-                    R.string.gameplay_quick_play_button_description
-                ),
-                text = stringResource(id = R.string.gameplay_quick_play_button_text),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_play_arrow_24),
+                contentDescription = stringResource(R.string.gameplayMenu_quickPlayButton_description),
+                text = stringResource(R.string.gameplayMenu_quickPlayButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
 
             IconButton(
                 onClick = onCreateGameClick,
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_add_24),
-                contentDescription = stringResource(R.string.gameplay_new_game_button_description),
-                text = stringResource(id = R.string.gameplay_new_game_button_text),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_add_24),
+                contentDescription = stringResource(R.string.gameplayMenu_newGameButton_description),
+                text = stringResource(R.string.gameplayMenu_newGameButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
 
             IconButton(
                 onClick = onLobbyClick,
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_round_search_24),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_round_search_24),
                 contentDescription = stringResource(
-                    R.string.gameplay_search_game_button_description
+                    R.string.gameplayMenu_searchGameButton_description
                 ),
-                text = stringResource(id = R.string.gameplay_search_game_button_text),
+                text = stringResource(R.string.gameplayMenu_searchGameButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )
 

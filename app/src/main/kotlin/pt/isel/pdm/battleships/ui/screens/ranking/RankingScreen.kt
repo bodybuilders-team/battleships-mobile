@@ -41,7 +41,7 @@ fun RankingScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            ScreenTitle(title = stringResource(id = R.string.ranking_title))
+            ScreenTitle(title = stringResource(R.string.ranking_title))
 
             var filteredUsers by remember { mutableStateOf(users.toRankedUsers()) }
             LaunchedEffect(users) { filteredUsers = users.toRankedUsers() }

@@ -38,7 +38,7 @@ fun LobbyScreen(
             verticalArrangement = Arrangement.Top,
             modifier = Modifier.fillMaxSize()
         ) {
-            ScreenTitle(title = stringResource(id = R.string.lobby_title))
+            ScreenTitle(title = stringResource(R.string.lobby_title))
 
             when (state) {
                 FINISHED ->

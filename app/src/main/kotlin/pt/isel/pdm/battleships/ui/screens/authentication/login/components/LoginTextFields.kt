@@ -33,7 +33,7 @@ fun LoginTextFields(
         value = username,
         onValueChange = onUsernameChangeCallback,
         placeholder = {
-            Text(text = stringResource(id = R.string.authentication_username_placeholder_text))
+            Text(text = stringResource(R.string.authentication_usernameTextField_placeholderText))
         },
         modifier = Modifier.padding(bottom = USERNAME_PADDING.dp)
     )
@@ -42,7 +42,7 @@ fun LoginTextFields(
         value = password,
         onValueChange = onPasswordChangeCallback,
         placeholder = {
-            Text(text = stringResource(id = R.string.authentication_password_placeholder_text))
+            Text(text = stringResource(R.string.authentication_passwordTextField_placeholderText))
         },
         visualTransformation = PasswordVisualTransformation()
     )

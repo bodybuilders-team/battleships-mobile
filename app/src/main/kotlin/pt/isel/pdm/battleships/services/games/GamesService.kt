@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.services.HTTPService
 import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.services.games.models.games.createGame.CreateGameInput
 import pt.isel.pdm.battleships.services.games.models.games.createGame.CreateGameOutput
 import pt.isel.pdm.battleships.services.games.models.games.getGame.GetGameOutput
 import pt.isel.pdm.battleships.services.games.models.games.getGameState.GetGameStateOutput
@@ -44,7 +45,7 @@ class GamesService(
      * Creates a new game.
      *
      * @param createGameLink the link to the create game endpoint
-     * @param gameConfig the game configuration
+     * @param createGameInput the input for create game
      *
      * @return the API result of the create game request
      *
@@ -54,9 +55,9 @@ class GamesService(
     suspend fun createGame(
         token: String,
         createGameLink: String,
-        gameConfig: GameConfigModel
+        createGameInput: CreateGameInput
     ): APIResult<CreateGameOutput> =
-        post(link = createGameLink, token = token, body = gameConfig)
+        post(link = createGameLink, token = token, body = createGameInput)
 
     /**
      * Matchmakes a game with a specific configuration.

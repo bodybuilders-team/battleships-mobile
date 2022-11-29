@@ -3,6 +3,7 @@ package pt.isel.pdm.battleships.services.games
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.services.exceptions.UnexpectedResponseException
 import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.services.games.models.games.createGame.CreateGameInput
 import pt.isel.pdm.battleships.services.games.models.games.getGame.GetGameOutput
 import pt.isel.pdm.battleships.services.games.models.games.getGame.GetGameOutputModel
 import pt.isel.pdm.battleships.services.games.models.games.getGameState.GetGameStateOutput
@@ -61,6 +62,7 @@ class LinkGamesService(
     /**
      * Creates a new game.
      *
+     * @param name the name of the game
      * @param gameConfig the game configuration
      *
      * @return the API result of the create game request
@@ -68,12 +70,12 @@ class LinkGamesService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun createGame(gameConfig: GameConfigModel): APIResult<SirenEntity<Unit>> {
+    suspend fun createGame(name: String, gameConfig: GameConfigModel): APIResult<SirenEntity<Unit>> {
         val createGameResult = gamesService.createGame(
             token = token,
             createGameLink = links[Rels.CREATE_GAME]
                 ?: throw IllegalStateException("The create game link is missing"),
-            gameConfig = gameConfig
+            createGameInput = CreateGameInput(name = name, gameConfig = gameConfig)
         )
 
         if (createGameResult !is APIResult.Success)

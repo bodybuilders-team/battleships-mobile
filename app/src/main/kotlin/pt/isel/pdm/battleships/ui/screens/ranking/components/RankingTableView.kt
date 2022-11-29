@@ -44,9 +44,9 @@ fun RankingTableView(users: List<RankedUser>) {
         // Headers
         item {
             Row {
-                TableCell(text = stringResource(id = R.string.ranking_table_label_rank))
-                TableCell(text = stringResource(id = R.string.ranking_table_label_username))
-                TableCell(text = stringResource(id = R.string.ranking_table_label_points))
+                TableCell(text = stringResource(R.string.ranking_table_label_rank))
+                TableCell(text = stringResource(R.string.ranking_table_label_username))
+                TableCell(text = stringResource(R.string.ranking_table_label_points))
             }
         }
 

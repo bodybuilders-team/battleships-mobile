@@ -231,9 +231,9 @@ class GameplayViewModel(
      * @return the list of ships
      * @throws IllegalStateException if the fleet is invalid
      */
-    private fun parseFleet(fleet: GetFleetOutputModel, shipTypes: List<ShipType>): List<Ship> =
+    private fun parseFleet(fleet: GetFleetOutputModel, shipTypes: Map<ShipType, Int>): List<Ship> =
         fleet.ships.map {
-            val shipType = shipTypes
+            val shipType = shipTypes.keys
                 .find { shipType -> shipType.shipName == it.type }
                 ?: throw IllegalStateException("Invalid ship type")
 

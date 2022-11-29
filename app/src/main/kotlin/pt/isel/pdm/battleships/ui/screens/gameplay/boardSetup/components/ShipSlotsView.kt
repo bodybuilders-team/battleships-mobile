@@ -45,7 +45,7 @@ private const val SHIP_ALPHA_WHEN_ZERO_QUANTITY = 0.5f
  */
 @Composable
 fun ShipSlotsView(
-    shipTypes: List<ShipType>,
+    shipTypes: Map<ShipType, Int>,
     dragging: (ShipType) -> Boolean,
     onDragStart: (Ship, Offset) -> Unit,
     onDragEnd: (Ship) -> Unit,
@@ -62,11 +62,9 @@ fun ShipSlotsView(
         contentAlignment = Alignment.Center
     ) {
         LazyRow {
-            items(ShipType.defaults) { shipType ->
+            items(shipTypes.entries.toList()) { (shipType, quantity) ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val draggingShip = dragging(shipType)
-
-                    val shipTypeCount = shipTypes.count { it == shipType }
 
                     Box(
                         modifier = Modifier
@@ -74,7 +72,7 @@ fun ShipSlotsView(
                             .width(DEFAULT_TILE_SIZE.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (shipTypeCount == 0) {
+                        if (quantity == 0) {
                             ShipView(
                                 type = shipType,
                                 orientation = Orientation.VERTICAL,
@@ -94,14 +92,14 @@ fun ShipSlotsView(
                                 onDragCancel = onDragCancel,
                                 onDrag = onDrag,
                                 modifier = Modifier
-                                    .alpha(if (draggingShip && shipTypeCount == 1) 0.5f else 1f),
+                                    .alpha(if (draggingShip && quantity == 1) 0.5f else 1f),
                                 onTap = {}
                             )
                         }
                     }
 
                     Text(
-                        text = (shipTypeCount - if (draggingShip && shipTypeCount != 0) 1 else 0)
+                        text = (quantity - if (draggingShip && quantity > 0) 1 else 0)
                             .toString()
                     )
                 }
