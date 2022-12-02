@@ -11,12 +11,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.users.User
 import pt.isel.pdm.battleships.domain.users.toRankedUsers
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.FINISHED
+import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
 import pt.isel.pdm.battleships.ui.screens.ranking.components.RankingTableView
 import pt.isel.pdm.battleships.ui.screens.ranking.components.SearchPlayerField
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
@@ -60,4 +62,26 @@ fun RankingScreen(
             GoBackButton(onClick = onBackButtonClicked)
         }
     }
+}
+
+@Preview
+@Composable
+private fun RankingScreenPreview() {
+    RankingScreen(
+        state = FINISHED,
+        users = List(100) {
+            User("User$it", "user$it@fake.com", it, it * 2)
+        },
+        onBackButtonClicked = {}
+    )
+}
+
+@Preview
+@Composable
+private fun RankingScreenGettingUsersPreview() {
+    RankingScreen(
+        state = GETTING_USERS,
+        users = listOf(),
+        onBackButtonClicked = {}
+    )
 }

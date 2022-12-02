@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
@@ -103,3 +104,13 @@ private val authors = listOf(
         imageId = R.drawable.nyckollas_brandao
     )
 )
+
+@Preview
+@Composable
+private fun AboutScreenPreview() {
+    AboutScreen(
+        onOpenUrl = {},
+        onSendEmail = {},
+        onBackButtonClicked = {}
+    )
+}

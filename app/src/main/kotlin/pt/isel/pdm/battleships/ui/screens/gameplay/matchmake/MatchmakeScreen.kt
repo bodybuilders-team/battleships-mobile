@@ -7,9 +7,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
+import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
 import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
 
 /**
@@ -31,4 +33,16 @@ fun MatchmakeScreen(state: MatchmakeState) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun MatchmakeScreenPreview() {
+    MatchmakeScreen(state = MATCHMADE)
+}
+
+@Preview
+@Composable
+private fun MatchmakeScreenMatchmakingPreview() {
+    MatchmakeScreen(state = MATCHMAKING)
 }

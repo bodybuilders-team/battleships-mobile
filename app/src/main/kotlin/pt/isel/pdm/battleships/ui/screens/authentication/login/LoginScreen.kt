@@ -1,16 +1,17 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.login
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
@@ -38,21 +39,18 @@ fun LoginScreen(
     onLoginSuccessful: () -> Unit,
     onBackButtonClicked: () -> Unit
 ) {
-    val loginMessage = remember { mutableStateOf<String?>(null) }
-
     LaunchedEffect(state) {
         if (state == SUCCESS) {
             onLoginSuccessful()
         }
     }
 
-    val username = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-    val authenticationMessageInvalidUsername =
-        stringResource(R.string.authentication_message_invalidUsername)
-    val authenticationMessageInvalidPassword =
-        stringResource(R.string.authentication_message_invalidPassword)
+    val invalidFields = (username.isEmpty() || password.isEmpty()) ||
+        username.isNotEmpty() && !validateUsername(username) ||
+        password.isNotEmpty() && !validatePassword(password)
 
     BattleshipsScreen {
         Column(
@@ -62,36 +60,33 @@ fun LoginScreen(
             ScreenTitle(title = stringResource(R.string.login_title))
 
             LoginTextFields(
-                username = username.value,
-                password = password.value,
-                onUsernameChangeCallback = { username.value = it },
-                onPasswordChangeCallback = { password.value = it }
+                username = username,
+                password = password,
+                onUsernameChangeCallback = { username = it },
+                onPasswordChangeCallback = { password = it }
             )
 
             LoginButton(enabled = state != AuthenticationState.LOADING) {
-                val message = when {
-                    !validateUsername(username.value) -> authenticationMessageInvalidUsername
-                    !validatePassword(password.value) -> authenticationMessageInvalidPassword
-                    else -> null
-                }
-
-                if (message != null) {
-                    loginMessage.value = message
+                if (invalidFields)
                     return@LoginButton
-                }
 
-                val hashedPassword = hash(password.value)
+                val hashedPassword = hash(password)
 
-                onLogin(username.value, hashedPassword)
-            }
-
-            loginMessage.value?.let {
-                AnimatedVisibility(visible = true) {
-                    Text(text = it)
-                }
+                onLogin(username, hashedPassword)
             }
 
             GoBackButton(onClick = onBackButtonClicked)
         }
     }
+}
+
+@Preview
+@Composable
+private fun LoginScreenPreview() {
+    LoginScreen(
+        state = AuthenticationState.IDLE,
+        onLogin = { _, _ -> },
+        onLoginSuccessful = { },
+        onBackButtonClicked = { }
+    )
 }

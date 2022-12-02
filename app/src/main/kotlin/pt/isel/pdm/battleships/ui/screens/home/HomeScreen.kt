@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState
@@ -150,4 +151,34 @@ fun HomeScreen(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun HomeScreenPreview() {
+    HomeScreen(
+        loggedIn = false,
+        onGameplayMenuClick = {},
+        onLoginClick = {},
+        onRegisterClick = {},
+        onLogoutClick = {},
+        onRankingClick = {},
+        onAboutClick = {},
+        loadingState = HomeLoadingState.LOADED
+    )
+}
+
+@Preview
+@Composable
+private fun UserHomeScreenPreview() {
+    HomeScreen(
+        loggedIn = true,
+        onGameplayMenuClick = {},
+        onLoginClick = {},
+        onRegisterClick = {},
+        onLogoutClick = {},
+        onRankingClick = {},
+        onAboutClick = {},
+        loadingState = HomeLoadingState.LOADED
+    )
 }

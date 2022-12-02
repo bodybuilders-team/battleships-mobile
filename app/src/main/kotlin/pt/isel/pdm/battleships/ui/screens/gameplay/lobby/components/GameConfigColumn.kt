@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
-import pt.isel.pdm.battleships.ui.utils.components.TableCell
+import pt.isel.pdm.battleships.ui.utils.components.NormalTableCell
 
 private const val PADDING = 10
 private const val CONFIG_TITLE_FONT_SIZE = 18
@@ -68,10 +68,10 @@ fun GameConfigColumn(gameConfig: GameConfigModel) {
             style = MaterialTheme.typography.body1
         )
         Row {
-            TableCell(text = "Ship Type")
-            TableCell(text = "Size")
-            TableCell(text = "Quantity")
-            TableCell(text = "Points")
+            NormalTableCell(text = "Ship Type")
+            NormalTableCell(text = "Size")
+            NormalTableCell(text = "Quantity")
+            NormalTableCell(text = "Points")
         }
 
         LazyColumn(
@@ -81,10 +81,10 @@ fun GameConfigColumn(gameConfig: GameConfigModel) {
         ) {
             items(gameConfig.shipTypes) { shipType ->
                 Row {
-                    TableCell(text = shipType.shipName)
-                    TableCell(text = shipType.size.toString())
-                    TableCell(text = shipType.quantity.toString())
-                    TableCell(text = shipType.points.toString())
+                    NormalTableCell(text = shipType.shipName)
+                    NormalTableCell(text = shipType.size.toString())
+                    NormalTableCell(text = shipType.quantity.toString())
+                    NormalTableCell(text = shipType.points.toString())
                 }
             }
         }

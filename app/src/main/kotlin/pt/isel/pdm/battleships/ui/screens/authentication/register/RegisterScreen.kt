@@ -1,16 +1,17 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.register
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
@@ -39,24 +40,20 @@ fun RegisterScreen(
     onRegisterSuccessful: () -> Unit,
     onBackButtonClicked: () -> Unit
 ) {
-    val registerMessage = remember { mutableStateOf<String?>(null) }
-
     LaunchedEffect(state) {
         if (state == SUCCESS) {
             onRegisterSuccessful()
         }
     }
 
-    val email = remember { mutableStateOf("") }
-    val username = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-    val authenticationMessageInvalidUsername =
-        stringResource(R.string.authentication_message_invalidUsername)
-    val authenticationMessageInvalidEmail =
-        stringResource(R.string.register_message_invalidEmail)
-    val authenticationMessageInvalidPassword =
-        stringResource(R.string.authentication_message_invalidPassword)
+    val invalidFields = (email.isEmpty() || username.isEmpty() || password.isEmpty()) ||
+        email.isNotEmpty() && !validateEmail(email) ||
+        username.isNotEmpty() && !validateUsername(username) ||
+        password.isNotEmpty() && !validatePassword(password)
 
     BattleshipsScreen {
         Column(
@@ -66,39 +63,35 @@ fun RegisterScreen(
             ScreenTitle(title = stringResource(R.string.register_title))
 
             RegisterTextFields(
-                email = email.value,
-                username = username.value,
-                password = password.value,
-                onEmailChangeCallback = { email.value = it },
-                onUsernameChangeCallback = { username.value = it },
-                onPasswordChangeCallback = { password.value = it }
+                email = email,
+                username = username,
+                password = password,
+                onEmailChangeCallback = { email = it },
+                onUsernameChangeCallback = { username = it },
+                onPasswordChangeCallback = { password = it }
             )
 
             RegisterButton(enabled = state != AuthenticationState.LOADING) {
-                val message = when {
-                    !validateEmail(email.value) -> authenticationMessageInvalidEmail
-                    !validateUsername(username.value) -> authenticationMessageInvalidUsername
-                    !validatePassword(password.value) -> authenticationMessageInvalidPassword
-                    else -> null
-                }
-
-                if (message != null) {
-                    registerMessage.value = message
+                if (invalidFields)
                     return@RegisterButton
-                }
 
-                val hashedPassword = hash(password.value)
+                val hashedPassword = hash(password)
 
-                onRegister(email.value, username.value, hashedPassword)
-            }
-
-            registerMessage.value?.let {
-                AnimatedVisibility(visible = true) {
-                    Text(text = it)
-                }
+                onRegister(email, username, hashedPassword)
             }
 
             GoBackButton(onClick = onBackButtonClicked)
         }
     }
+}
+
+@Preview
+@Composable
+private fun RegisterScreenPreview() {
+    RegisterScreen(
+        state = AuthenticationState.IDLE,
+        onRegister = { _, _, _ -> },
+        onRegisterSuccessful = { },
+        onBackButtonClicked = { }
+    )
 }

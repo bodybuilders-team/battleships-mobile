@@ -29,8 +29,8 @@
 
     <string name="authentication_message_invalidUsername">Username should have at least 3 characters.</string>
     <string name="authentication_message_invalidPassword">Password should have at least 8 characters.</string>
-    <string name="authentication_usernameTextField_placeholderText">Username</string>
-    <string name="authentication_passwordTextField_placeholderText">Password</string>
+    <string name="authentication_usernameTextField_label">Username</string>
+    <string name="authentication_passwordTextField_label">Password</string>
 
     <!-- Login -->
 
@@ -47,7 +47,7 @@
     <string name="register_registerButton_text">Register</string>
     <string name="register_registerButton_description">Button to register</string>
 
-    <string name="register_email_placeholderText" translatable="false">Email</string>
+    <string name="register_emailTextField_label" translatable="false">Email</string>
     <string name="register_message_invalidEmail">Invalid Email</string>
     <string name="register_message_userExists">Username already exists.</string>
     <string name="register_message_successful">User registered successfully.</string>

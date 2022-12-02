@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
@@ -68,4 +69,15 @@ fun GameplayMenuScreen(
             GoBackButton(onClick = onBackButtonClick)
         }
     }
+}
+
+@Preview
+@Composable
+private fun GameplayMenuScreenPreview() {
+    GameplayMenuScreen(
+        onMatchmakeClick = {},
+        onCreateGameClick = {},
+        onLobbyClick = {},
+        onBackButtonClick = {}
+    )
 }

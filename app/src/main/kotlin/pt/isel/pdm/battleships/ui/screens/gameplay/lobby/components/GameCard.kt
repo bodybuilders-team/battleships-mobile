@@ -28,7 +28,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.services.games.models.games.getGame.GetGameOutputModel
 import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
+import pt.isel.pdm.battleships.services.utils.siren.EmbeddedSubEntity
 import pt.isel.pdm.battleships.ui.utils.components.IconButton
 
 private const val BUTTON_SIZE = 38
@@ -48,7 +50,7 @@ private const val CARD_BORDER_WIDTH = 1
  */
 @Composable
 fun GameCard(
-    game: EmbeddedLink,
+    game: EmbeddedSubEntity<GetGameOutputModel>,
     onGameInfoRequest: () -> Unit,
     onJoinGameRequest: () -> Unit
 ) {
@@ -74,7 +76,7 @@ fun GameCard(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Text(
-                text = game.title ?: "Game",
+                text = game.properties?.name ?: "Game",
                 style = MaterialTheme.typography.h6
             )
 

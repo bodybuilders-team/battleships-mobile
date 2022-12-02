@@ -1,16 +1,16 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.login.components
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.ui.screens.authentication.components.PasswordTextField
+import pt.isel.pdm.battleships.ui.screens.authentication.components.UsernameTextField
 
-private const val USERNAME_PADDING = 8
+private const val USERNAME_TO_PASSWORD_PADDING = 8
+private const val TEXT_FIELD_WIDTH_FACTOR = 0.6f
 
 /**
  * The text fields for the login operation on the login page:
@@ -29,21 +29,12 @@ fun LoginTextFields(
     onUsernameChangeCallback: (String) -> Unit,
     onPasswordChangeCallback: (String) -> Unit
 ) {
-    TextField(
-        value = username,
-        onValueChange = onUsernameChangeCallback,
-        placeholder = {
-            Text(text = stringResource(R.string.authentication_usernameTextField_placeholderText))
-        },
-        modifier = Modifier.padding(bottom = USERNAME_PADDING.dp)
-    )
-
-    TextField(
-        value = password,
-        onValueChange = onPasswordChangeCallback,
-        placeholder = {
-            Text(text = stringResource(R.string.authentication_passwordTextField_placeholderText))
-        },
-        visualTransformation = PasswordVisualTransformation()
-    )
+    Column(modifier = Modifier.fillMaxWidth(TEXT_FIELD_WIDTH_FACTOR)) {
+        UsernameTextField(
+            username = username,
+            onUsernameChangeCallback = onUsernameChangeCallback,
+            modifier = Modifier.padding(bottom = USERNAME_TO_PASSWORD_PADDING.dp)
+        )
+        PasswordTextField(password = password, onPasswordChangeCallback = onPasswordChangeCallback)
+    }
 }

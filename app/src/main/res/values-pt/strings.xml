@@ -37,8 +37,8 @@
     <string name="ranking_table_label_points">Pontos</string>
     <string name="ranking_searchPlayerButton_text">Procurar</string>
 
-    <string name="authentication_usernameTextField_placeholderText">Nome de Utilizador</string>
-    <string name="authentication_passwordTextField_placeholderText">Palavra-passe</string>
+    <string name="authentication_usernameTextField_label">Nome de Utilizador</string>
+    <string name="authentication_passwordTextField_label">Palavra-passe</string>
 
     <string name="gameplay_randomBoardButton_text">Tabuleiro Aleatório</string>
     <string name="gameplay_randomBoardButton_description">Botão para o gerar um tabuleiro aleatório</string>

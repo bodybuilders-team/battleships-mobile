@@ -132,7 +132,8 @@ private fun GameNameTextFieldView(
         },
         placeholder = { Text(text = stringResource(R.string.gameConfig_gameNameTextField_placeholder)) },
         singleLine = true,
-        modifier = Modifier.padding(horizontal = NAME_TEXT_FIELD_HORIZONTAL_PADDING.dp)
+        modifier = Modifier
+            .padding(horizontal = NAME_TEXT_FIELD_HORIZONTAL_PADDING.dp)
             .padding(bottom = NAME_TEXT_FIELD_BOTTOM_PADDING.dp)
             .fillMaxWidth()
     )

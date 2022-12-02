@@ -4,10 +4,10 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
 private const val MIN_USERNAME_LENGTH = 3
-private const val MAX_USERNAME_LENGTH = 40
+const val MAX_USERNAME_LENGTH = 40
 
 private const val MIN_PASSWORD_LENGTH = 8
-private const val MAX_PASSWORD_LENGTH = 127
+const val MAX_PASSWORD_LENGTH = 127
 
 private const val EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$"
 
