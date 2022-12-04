@@ -83,7 +83,10 @@ fun GameConfigurationScreen(
             ScreenTitle(title = stringResource(R.string.gameConfig_title))
 
             GameNameTextFieldView(gameName = gameName, onValueChange = { gameName = it })
-            GridSizeSelector(boardSize = boardSize, onValueChange = { boardSize = it })
+            GridSizeSelector(boardSize = boardSize, onValueChange = {
+                boardSize = it
+                ships.keys.forEach { shipType -> ships[shipType] = 1 }
+            })
             BoardConfigurationTimeSelector(
                 timeForLayoutPhase = timeForLayoutPhase,
                 onValueChange = { timeForLayoutPhase = it }

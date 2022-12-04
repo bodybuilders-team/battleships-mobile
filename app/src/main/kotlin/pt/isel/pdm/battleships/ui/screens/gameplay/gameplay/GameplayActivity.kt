@@ -51,7 +51,6 @@ class GameplayActivity : BattleshipsActivity() {
                 }
                 else -> {
                     GameplayScreen(
-                        round = 0,
                         myTurn = viewModel.screenState.myTurn
                             ?: throw IllegalStateException("My turn not found"),
                         myBoard = viewModel.screenState.myBoard
@@ -60,15 +59,16 @@ class GameplayActivity : BattleshipsActivity() {
                             ?: throw IllegalStateException("Opponent board not found"),
                         gameConfig = viewModel.screenState.gameConfig
                             ?: throw IllegalStateException("Game config not found"),
-                        gameEnded = false,
+                        gameState = viewModel.screenState.gameState
+                            ?: throw IllegalStateException("Game state not found"),
                         playerInfo = PlayerInfo("Jesus", R.drawable.andre_jesus),
                         opponentInfo = PlayerInfo("Nyck", R.drawable.nyckollas_brandao),
                         onShootClicked = { coordinates ->
                             viewModel.fireShots(coordinates)
                         },
                         onBackButtonClicked = { finish() },
-                        onPlayAgainButtonClicked = {},
-                        onBackToMenuButtonClicked = {}
+                        onPlayAgainButtonClicked = { finish() },
+                        onBackToMenuButtonClicked = { /*TODO*/ }
                     )
                 }
             }

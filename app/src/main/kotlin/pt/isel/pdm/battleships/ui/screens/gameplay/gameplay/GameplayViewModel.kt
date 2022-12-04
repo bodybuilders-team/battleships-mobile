@@ -9,6 +9,7 @@ import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
+import pt.isel.pdm.battleships.domain.games.game.GameState
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
@@ -43,6 +44,7 @@ class GameplayViewModel(
      */
     data class GameplayScreenState(
         val gameConfig: GameConfig? = null,
+        val gameState: GameState? = null,
         val myBoard: MyBoard? = null,
         val opponentBoard: OpponentBoard? = null,
         val myTurn: Boolean? = null
@@ -71,14 +73,16 @@ class GameplayViewModel(
                 val properties = gameData.properties
                     ?: throw IllegalStateException("No game properties found")
 
-                val turn = properties.state.turn
-                    ?: throw IllegalStateException("No turn found")
-
                 val gameConfig = GameConfig(properties.config)
+                val gameState = GameState(properties.state)
+
+                val turn = gameState.turn ?: throw IllegalStateException("No turn found")
+
                 val myTurn = turn == sessionManager.username
 
                 _screenState = _screenState.copy(
                     gameConfig = gameConfig,
+                    gameState = gameState,
                     opponentBoard = OpponentBoard(gameConfig.gridSize),
                     myTurn = myTurn
                 )

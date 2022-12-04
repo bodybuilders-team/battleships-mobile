@@ -22,11 +22,11 @@ data class GameConfig(
 ) {
 
     constructor(gameConfigModel: GameConfigModel) : this(
-        gameConfigModel.gridSize,
-        gameConfigModel.shotsPerRound,
-        gameConfigModel.maxTimePerRound,
-        gameConfigModel.maxTimeForLayoutPhase,
-        gameConfigModel.shipTypes.associate {
+        gridSize = gameConfigModel.gridSize,
+        shotsPerTurn = gameConfigModel.shotsPerRound,
+        maxTimePerRound = gameConfigModel.maxTimePerRound,
+        maxTimeForLayoutPhase = gameConfigModel.maxTimeForLayoutPhase,
+        ships = gameConfigModel.shipTypes.associate {
             ShipType(size = it.size, shipName = it.shipName) to it.quantity
         }
     )
@@ -38,9 +38,9 @@ data class GameConfig(
      */
     fun toGameConfigModel(): GameConfigModel = GameConfigModel(
         gridSize = gridSize,
-        maxTimeForLayoutPhase = maxTimeForLayoutPhase,
         shotsPerRound = shotsPerTurn,
         maxTimePerRound = maxTimePerRound,
+        maxTimeForLayoutPhase = maxTimeForLayoutPhase,
         shipTypes = ships.map { (shipType, quantity) ->
             ShipTypeModel(
                 shipName = shipType.shipName,

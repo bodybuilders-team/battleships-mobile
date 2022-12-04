@@ -101,8 +101,8 @@ data class ConfigurableBoard(
         private fun generateRandomMatrix(size: Int, ships: Map<ShipType, Int>): List<Cell> {
             val grid = generateEmptyMatrix(size).toMutableList()
 
-            val shuffledShips = ships.entries.flatMap { (type, count) ->
-                List(type.size * count) { type }
+            val shuffledShips = ships.entries.flatMap { (type, quantity) ->
+                List(quantity) { type }
             }.shuffled()
 
             shuffledShips.forEach { shipType ->

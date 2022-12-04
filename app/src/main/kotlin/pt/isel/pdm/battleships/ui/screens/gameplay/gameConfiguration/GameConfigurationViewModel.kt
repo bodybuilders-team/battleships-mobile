@@ -33,9 +33,9 @@ class GameConfigurationViewModel(
      * Creates a new game.
      *
      * @param name the name of the game
-     * @param gameConfig the game configuration
+     * @param config the game configuration
      */
-    fun createGame(name: String, gameConfig: GameConfig) {
+    fun createGame(name: String, config: GameConfig) {
         check(state == LINKS_LOADED) { "The view model is not in the links loaded state" }
 
         _state = CREATING_GAME
@@ -44,7 +44,7 @@ class GameConfigurationViewModel(
             request = {
                 battleshipsService.gamesService.createGame(
                     name = name,
-                    gameConfig = gameConfig.toGameConfigModel()
+                    config = config.toGameConfigModel()
                 )
             },
             events = _events,

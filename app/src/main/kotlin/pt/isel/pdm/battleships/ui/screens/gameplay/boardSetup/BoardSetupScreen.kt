@@ -207,17 +207,13 @@ fun BoardSetupScreen(
                         onDragCancel = { dragState.reset() },
                         onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
                         onRandomBoardButtonPressed = {
-                            draggableShips = mutableListOf()
+                            draggableShips = emptyList()
 
                             board = ConfigurableBoard.random(size = board.size, ships = ships)
 
-                            board.fleet.forEach { ship ->
-                                draggableShips = draggableShips + ship
+                            draggableShips = board.fleet
 
-                                if (unplacedShips[ship.type]!! > 0) {
-                                    unplacedShips[ship.type] = unplacedShips[ship.type]!! - 1
-                                }
-                            }
+                            unplacedShips.keys.forEach { unplacedShips[it] = 0 }
                         },
                         onConfirmBoardButtonPressed = {
                             if (board.fleet.size == ships.size) {
