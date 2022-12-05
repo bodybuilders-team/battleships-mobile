@@ -9,9 +9,9 @@ import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.LINKS_LOADED
@@ -107,8 +107,8 @@ class MatchmakeViewModel(
     /**
      * The state of the [MatchmakeViewModel].
      *
-     * @property IDLE the view model is idle
-     * @property LINKS_LOADED the links are loaded
+     * @property IDLE the initial state
+     * @property LINKS_LOADED the state when the links are loaded
      * @property MATCHMAKING the matchmaking is in progress
      * @property MATCHMADE the matchmake was successful
      */

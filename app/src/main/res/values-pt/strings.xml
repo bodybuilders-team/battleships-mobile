@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="backButton_text">Voltar</string>
-    <string name="defaultLoading_text">Carregando...</string>
+    <string name="defaultLoading_text" tools:ignore="TypographyEllipsis">Carregando...</string>
 
     <!-- Main Menu -->
 
@@ -22,6 +22,9 @@
 
     <string name="mainMenu_logoutButton_description">Botão para fechar sessão</string>
     <string name="mainMenu_logoutButton_text">Fechar sessão</string>
+
+    <string name="gameplay_leaveGameButton_text">Abandonar Jogo</string>
+    <string name="gameplay_leaveGameButton_description">Botão para abandonar o jogo</string>
 
     <!-- Authentication (Both Login and Register) -->
 

@@ -4,11 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.service.services.games.models.players.deployFleet.DeployFleetInput
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.DEPLOYING_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FINISHED
@@ -36,6 +36,12 @@ class BoardSetupViewModel(
     sessionManager: SessionManager
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
+    /**
+     * The state of the board setup screen.
+     *
+     * @property gridSize the size of the grid
+     * @property ships the ships that are available to be deployed
+     */
     data class BoardSetupScreenState(
         val gridSize: Int? = null,
         val ships: Map<ShipType, Int>? = null
@@ -142,8 +148,8 @@ class BoardSetupViewModel(
     /**
      * The state of the view model.
      *
-     * @property IDLE the view model is idle
-     * @property LINKS_LOADED the links are loaded
+     * @property IDLE the initial state
+     * @property LINKS_LOADED the state when the links are loaded
      * @property LOADING_GAME the view model is loading the game
      * @property GAME_LOADED the game is loaded
      * @property DEPLOYING_FLEET the view model is deploying the fleet

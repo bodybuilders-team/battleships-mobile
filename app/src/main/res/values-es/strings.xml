@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="backButton_text">Volver</string>
-    <string name="defaultLoading_text">Cargando...</string>
+    <string name="defaultLoading_text" tools:ignore="TypographyEllipsis">Cargando...</string>
 
     <!-- Main Menu -->
 
@@ -114,6 +114,9 @@
 
     <string name="gameplay_resetShotsButton_text">Reiniciar tiros</string>
     <string name="gameplay_resetShotsButton_description">Botón para reiniciar disparos</string>
+
+    <string name="gameplay_leaveGameButton_text">Abandonar el Juego</string>
+    <string name="gameplay_leaveGameButton_description">Botón de salida del juego</string>
 
     <!-- EndGame -->
 

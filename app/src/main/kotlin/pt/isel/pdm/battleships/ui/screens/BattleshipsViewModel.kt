@@ -3,9 +3,9 @@ package pt.isel.pdm.battleships.ui.screens
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.service.LinkBattleshipsService
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.shared.Event
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 

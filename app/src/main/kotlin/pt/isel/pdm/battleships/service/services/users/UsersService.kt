@@ -6,13 +6,14 @@ import pt.isel.pdm.battleships.service.HTTPService
 import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
 import pt.isel.pdm.battleships.service.media.siren.EmbeddedSubEntity
-import pt.isel.pdm.battleships.service.media.siren.SirenEntity
+import pt.isel.pdm.battleships.service.services.users.models.getUserHome.GetUserHomeOutput
 import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersOutput
 import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersOutputModel
 import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersUserModel
 import pt.isel.pdm.battleships.service.services.users.models.login.LoginInput
 import pt.isel.pdm.battleships.service.services.users.models.login.LoginOutput
 import pt.isel.pdm.battleships.service.services.users.models.logout.LogoutInput
+import pt.isel.pdm.battleships.service.services.users.models.logout.LogoutOutput
 import pt.isel.pdm.battleships.service.services.users.models.register.RegisterInput
 import pt.isel.pdm.battleships.service.services.users.models.register.RegisterOutput
 import java.io.IOException
@@ -40,7 +41,7 @@ class UsersService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getUserHome(userHomeLink: String): APIResult<SirenEntity<Unit>> =
+    suspend fun getUserHome(userHomeLink: String): APIResult<GetUserHomeOutput> =
         get(link = userHomeLink)
 
     /**
@@ -128,7 +129,7 @@ class UsersService(
     suspend fun logout(
         logoutLink: String,
         refreshToken: String
-    ): APIResult<SirenEntity<Unit>> =
+    ): APIResult<LogoutOutput> =
         post(
             link = logoutLink,
             body = LogoutInput(refreshToken)

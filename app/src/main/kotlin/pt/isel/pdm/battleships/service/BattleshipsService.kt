@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
+import pt.isel.pdm.battleships.service.services.games.GamesService
 import pt.isel.pdm.battleships.service.services.games.PlayersService
 import pt.isel.pdm.battleships.service.services.home.models.getHome.GetHomeOutput
 import pt.isel.pdm.battleships.service.services.users.UsersService
@@ -27,11 +28,7 @@ class BattleshipsService(
 ) : HTTPService(apiEndpoint, httpClient, jsonEncoder) {
 
     val usersService = UsersService(apiEndpoint, httpClient, jsonEncoder)
-    val gamesService = pt.isel.pdm.battleships.service.services.games.GamesService(
-        apiEndpoint,
-        httpClient,
-        jsonEncoder
-    )
+    val gamesService = GamesService(apiEndpoint, httpClient, jsonEncoder)
     val playersService = PlayersService(apiEndpoint, httpClient, jsonEncoder)
 
     /**

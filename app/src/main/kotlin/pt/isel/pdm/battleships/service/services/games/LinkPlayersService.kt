@@ -1,6 +1,7 @@
+@file:Suppress("unused")
+
 package pt.isel.pdm.battleships.service.services.games
 
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
 import pt.isel.pdm.battleships.service.services.games.models.players.deployFleet.DeployFleetInput
@@ -11,6 +12,7 @@ import pt.isel.pdm.battleships.service.services.games.models.players.getMyFleet.
 import pt.isel.pdm.battleships.service.services.games.models.players.getMyShots.GetMyShotsOutput
 import pt.isel.pdm.battleships.service.services.games.models.players.getOpponentFleet.GetOpponentFleetOutput
 import pt.isel.pdm.battleships.service.services.games.models.players.getOpponentShots.GetOpponentShotsOutput
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 import java.io.IOException
 

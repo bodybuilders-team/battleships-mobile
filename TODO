@@ -1,11 +1,9 @@
 Important Tasks:
 TODO: Timer to board layout phase and fix other timers
-TODO: Leave game mechanism
 TODO: Load unfinished game
 TODO: Refresh token mechanism
 TODO: Implement Profile page????
 TODO: Finish EndGamePopUp
-TODO: Save session in local storage
 
 Refactoring Tasks:
 TODO: Add documentation

@@ -1,11 +1,11 @@
 package pt.isel.pdm.battleships.service
 
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
 import pt.isel.pdm.battleships.service.services.games.LinkPlayersService
 import pt.isel.pdm.battleships.service.services.home.models.getHome.GetHomeOutput
 import pt.isel.pdm.battleships.service.services.users.LinkUsersService
+import pt.isel.pdm.battleships.session.SessionManager
 import java.io.IOException
 
 /**

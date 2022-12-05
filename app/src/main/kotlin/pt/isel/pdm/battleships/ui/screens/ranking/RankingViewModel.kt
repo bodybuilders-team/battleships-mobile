@@ -3,10 +3,10 @@ package pt.isel.pdm.battleships.ui.screens.ranking
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.users.User
 import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersUserModel
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
@@ -89,8 +89,8 @@ class RankingViewModel(
     /**
      * The state of the [RankingViewModel].
      *
-     * @property IDLE the view model is idle
-     * @property LINKS_LOADED the links are loaded
+     * @property IDLE the initial state
+     * @property LINKS_LOADED the state when the links are loaded
      * @property GETTING_USERS the get users operation is in progress
      * @property FINISHED the get users operation has finished
      */

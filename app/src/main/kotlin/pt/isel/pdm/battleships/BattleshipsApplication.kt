@@ -7,6 +7,8 @@ import okhttp3.OkHttpClient
 import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.service.media.siren.SubEntity
 import pt.isel.pdm.battleships.service.media.siren.SubEntityDeserializer
+import pt.isel.pdm.battleships.session.SessionManager
+import pt.isel.pdm.battleships.session.SessionManagerSharedPrefs
 
 /**
  * The Battleships application.
@@ -21,7 +23,7 @@ class BattleshipsApplication : DependenciesContainer, Application() {
         .registerTypeAdapter(SubEntity::class.java, SubEntityDeserializer())
         .create()
 
-    override val sessionManager: SessionManager = SessionManager()
+    override val sessionManager: SessionManager = SessionManagerSharedPrefs(context = this)
 
     override val battleshipsService = BattleshipsService(
         apiEndpoint = API_ENDPOINT,
@@ -31,7 +33,7 @@ class BattleshipsApplication : DependenciesContainer, Application() {
 
     companion object {
         private const val API_ENDPOINT =
-            "https://1579-95-92-69-229.eu.ngrok.io"
+            "https://1132-95-92-69-229.eu.ngrok.io"
         const val TAG = "BattleshipsApp"
     }
 }

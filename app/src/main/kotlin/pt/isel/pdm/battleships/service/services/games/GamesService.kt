@@ -15,6 +15,7 @@ import pt.isel.pdm.battleships.service.services.games.models.games.getGameState.
 import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetGamesOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetGamesOutputModel
 import pt.isel.pdm.battleships.service.services.games.models.games.joinGame.JoinGameOutput
+import pt.isel.pdm.battleships.service.services.games.models.games.leaveGame.LeaveGameOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.matchmake.MatchmakeOutput
 import java.io.IOException
 
@@ -95,7 +96,7 @@ class GamesService(
         post(link = matchmakeLink, token = token, body = gameConfig)
 
     /**
-     * Gets a game by id.
+     * Gets a game using its link.
      *
      * @param token the user token for the authentication
      * @param gameLink the game link
@@ -105,7 +106,10 @@ class GamesService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getGame(token: String, gameLink: String): APIResult<GetGameOutput> =
+    suspend fun getGame(
+        token: String,
+        gameLink: String
+    ): APIResult<GetGameOutput> =
         get(link = gameLink, token = token)
 
     /**
@@ -146,7 +150,7 @@ class GamesService(
      * Leaves a game.
      *
      * @param token the token of the user that is leaving the game
-     * @param gameLink the link to the game
+     * @param leaveGameLink the link to the leave game endpoint
      *
      * @return the API result of the leave game request
      *
@@ -155,8 +159,7 @@ class GamesService(
      */
     suspend fun leaveGame(
         token: String,
-        gameLink: String
-    ) {
-        // TODO: To be implemented
-    }
+        leaveGameLink: String
+    ): APIResult<LeaveGameOutput> =
+        post(link = leaveGameLink, token = token)
 }

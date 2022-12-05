@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package pt.isel.pdm.battleships.ui.screens.shared.navigation
 
 /**
@@ -21,6 +23,7 @@ object Rels {
     const val CREATE_GAME = "create-game"
     const val MATCHMAKE = "matchmake"
     const val JOIN_GAME = "join-game"
+    const val LEAVE_GAME = "leave-game"
     const val GAME = "game"
     const val GAME_STATE = "game-state"
 

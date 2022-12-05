@@ -32,12 +32,14 @@ sealed class HTTPResult<out T> {
  *
  * @return true if the result is a success, false otherwise
  */
+@Suppress("unused")
 @OptIn(ExperimentalContracts::class)
 fun <T> HTTPResult<T>.isSuccess(): Boolean {
     contract {
         returns(true) implies (this@isSuccess is HTTPResult.Success)
         returns(false) implies (this@isSuccess is HTTPResult.Failure)
     }
+
     return this is HTTPResult.Success
 }
 
@@ -52,5 +54,6 @@ fun <T> HTTPResult<T>.isFailure(): Boolean {
         returns(true) implies (this@isFailure is HTTPResult.Failure)
         returns(false) implies (this@isFailure is HTTPResult.Success)
     }
+
     return this is HTTPResult.Failure
 }

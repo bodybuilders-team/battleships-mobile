@@ -5,12 +5,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -33,7 +31,6 @@ import pt.isel.pdm.battleships.service.services.games.models.games.getGame.GetGa
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 
 private const val BUTTON_SIZE = 38
-private const val SPACER_WIDTH = 100
 private const val CARD_WIDTH_FACTOR = 0.8f
 private const val CARD_HEIGHT = 60
 private const val CARD_PADDING = 10
@@ -73,14 +70,18 @@ fun GameCard(
                 .fillMaxWidth()
                 .height(CARD_HEIGHT.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text(
-                text = gameProps.name,
-                style = MaterialTheme.typography.h6
-            )
-
-            Spacer(modifier = Modifier.width(SPACER_WIDTH.dp))
+            Column {
+                Text(
+                    text = gameProps.name,
+                    style = MaterialTheme.typography.h6
+                )
+                Text(
+                    text = "Created by ${gameProps.creator}",
+                    style = MaterialTheme.typography.body2
+                )
+            }
 
             IconButton(
                 onClick = { gameInfoExpanded = !gameInfoExpanded },

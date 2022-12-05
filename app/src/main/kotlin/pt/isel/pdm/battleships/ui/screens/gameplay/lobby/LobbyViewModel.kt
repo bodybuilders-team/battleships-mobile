@@ -3,14 +3,14 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.lobby
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetGamesOutput
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
-import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GAMES_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GETTING_GAMES
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.JOINED_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.JOINING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.shared.Event
@@ -71,7 +71,7 @@ class LobbyViewModel(
             events = _events,
             onSuccess = {
                 _events.emit(LobbyEvent.NavigateToBoardSetup)
-                _state = FINISHED
+                _state = JOINED_GAME
             }
         )
     }
@@ -94,7 +94,7 @@ class LobbyViewModel(
      * @property GETTING_GAMES the get games operation is in progress
      * @property GAMES_LOADED the games are loaded
      * @property JOINING_GAME the join game operation is in progress
-     * @property FINISHED the get games operation has finished
+     * @property JOINED_GAME the user joined a game
      */
     enum class LobbyState {
         IDLE,
@@ -102,7 +102,7 @@ class LobbyViewModel(
         GETTING_GAMES,
         GAMES_LOADED,
         JOINING_GAME,
-        FINISHED
+        JOINED_GAME
     }
 
     /**

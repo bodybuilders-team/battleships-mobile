@@ -19,19 +19,13 @@ data class ShipType(
         const val SUBMARINE_NAME = "Submarine"
         const val DESTROYER_NAME = "Destroyer"
 
-        val CARRIER = ShipType(5, CARRIER_NAME)
-        val BATTLESHIP = ShipType(4, BATTLESHIP_NAME)
-        val CRUISER = ShipType(3, CRUISER_NAME)
-        val SUBMARINE = ShipType(3, SUBMARINE_NAME)
-        val DESTROYER = ShipType(2, DESTROYER_NAME)
+        val CARRIER = ShipType(size = 5, shipName = CARRIER_NAME)
+        val BATTLESHIP = ShipType(size = 4, shipName = BATTLESHIP_NAME)
+        val CRUISER = ShipType(size = 3, shipName = CRUISER_NAME)
+        val SUBMARINE = ShipType(size = 3, shipName = SUBMARINE_NAME)
+        val DESTROYER = ShipType(size = 2, shipName = DESTROYER_NAME)
 
-        val defaults = listOf(
-            CARRIER,
-            BATTLESHIP,
-            CRUISER,
-            SUBMARINE,
-            DESTROYER
-        )
+        val defaults = listOf(CARRIER, BATTLESHIP, CRUISER, SUBMARINE, DESTROYER)
 
         val defaultsMap
             get() = defaults.associateWith { 1 }

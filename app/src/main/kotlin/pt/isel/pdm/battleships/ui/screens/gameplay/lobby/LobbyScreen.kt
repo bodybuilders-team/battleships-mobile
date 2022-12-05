@@ -10,9 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.service.media.siren.Action
 import pt.isel.pdm.battleships.service.media.siren.EmbeddedSubEntity
 import pt.isel.pdm.battleships.service.media.siren.Link
+import pt.isel.pdm.battleships.service.services.games.models.ShipTypeModel
 import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigModel
 import pt.isel.pdm.battleships.service.services.games.models.games.GameStateModel
 import pt.isel.pdm.battleships.service.services.games.models.games.PlayerModel
@@ -21,7 +23,6 @@ import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetG
 import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetGamesOutputModel
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
-import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GAMES_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
 import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
@@ -96,30 +97,31 @@ fun LobbyScreen(
 @Composable
 private fun LobbyScreenPreview() {
     LobbyScreen(
-        state = FINISHED,
+        state = GAMES_LOADED,
         games = GetGamesOutput(
             properties = GetGamesOutputModel(1),
-            entities = listOf(
+            entities = List(20) { game ->
                 EmbeddedSubEntity(
-                    rel = listOf(Rels.ITEM, Rels.GAME, "${Rels.GAME}-1"),
+                    rel = listOf(Rels.ITEM, Rels.GAME, "${Rels.GAME}-$game"),
                     properties = GetGameOutputModel(
                         id = 1,
-                        name = "Game 1",
+                        name = "Test Game $game",
                         creator = "joe",
                         config = GameConfigModel(
                             gridSize = 10,
                             maxTimeForLayoutPhase = 10,
                             shotsPerRound = 10,
                             maxTimePerRound = 10,
-                            shipTypes = emptyList()
+                            shipTypes = ShipType.defaults.map {
+                                ShipTypeModel(
+                                    shipName = it.shipName,
+                                    size = it.size,
+                                    quantity = 1,
+                                    points = it.points
+                                )
+                            }
                         ),
-                        state = GameStateModel(
-                            "WAITING_FOR_PLAYERS",
-                            0,
-                            null,
-                            null,
-                            null
-                        ),
+                        state = GameStateModel("WAITING_FOR_PLAYERS", 0, null, null, null),
                         players = listOf(PlayerModel("joe", 0))
                     ),
                     links = listOf(
@@ -137,7 +139,7 @@ private fun LobbyScreenPreview() {
                         )
                     )
                 )
-            )
+            }
         ),
         onJoinGameRequest = {},
         onBackButtonClicked = { }
@@ -148,7 +150,7 @@ private fun LobbyScreenPreview() {
 @Composable
 private fun EmptyLobbyScreenPreview() {
     LobbyScreen(
-        state = FINISHED,
+        state = GAMES_LOADED,
         games = GetGamesOutput(
             properties = GetGamesOutputModel(0),
             entities = listOf()

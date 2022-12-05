@@ -8,6 +8,7 @@ const val MAX_USERNAME_LENGTH = 40
 
 private const val MIN_PASSWORD_LENGTH = 8
 const val MAX_PASSWORD_LENGTH = 127
+private const val PASSWORD_HASH_ALGORITHM = "SHA-256"
 
 private const val EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$"
 
@@ -44,10 +45,8 @@ fun validatePassword(password: String): Boolean =
  * @return hashed text
  */
 fun hash(text: String): String {
-    val digest = MessageDigest.getInstance("SHA-256")
-    val encodedHash = digest.digest(
-        text.toByteArray(StandardCharsets.UTF_8)
-    )
+    val digest = MessageDigest.getInstance(PASSWORD_HASH_ALGORITHM)
+    val encodedHash = digest.digest(text.toByteArray(StandardCharsets.UTF_8))
 
     return encodedHash.fold("") { str, it -> str + "%02x".format(it) }
 }

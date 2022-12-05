@@ -41,11 +41,16 @@ fun RegisterTextFields(
             onEmailChangeCallback = onEmailChangeCallback,
             modifier = Modifier.padding(bottom = EMAIL_TO_USERNAME_PADDING.dp)
         )
+
         UsernameTextField(
             username = username,
             onUsernameChangeCallback = onUsernameChangeCallback,
             modifier = Modifier.padding(bottom = USERNAME_TO_PASSWORD_PADDING.dp)
         )
-        PasswordTextField(password = password, onPasswordChangeCallback = onPasswordChangeCallback)
+
+        PasswordTextField(
+            password = password,
+            onPasswordChangeCallback = onPasswordChangeCallback
+        )
     }
 }

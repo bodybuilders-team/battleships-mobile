@@ -60,7 +60,10 @@ class GameplayActivity : BattleshipsActivity() {
                             playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
                             opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
                             onShootClicked = { coordinates -> viewModel.fireShots(coordinates) },
-                            onBackButtonClicked = { finish() },
+                            onLeaveGameButtonClicked = {
+                                viewModel.leaveGame()
+                                finish()
+                            },
                             onPlayAgainButtonClicked = { finish() },
                             onBackToMenuButtonClicked = { /*TODO*/ }
                         )

@@ -15,7 +15,6 @@ import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
 import pt.isel.pdm.battleships.ui.screens.shared.Event
 import pt.isel.pdm.battleships.ui.screens.shared.ToastDuration
-import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links.Companion.getLinks
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.navigateWithLinksTo
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.navigateWithLinksToForResult
@@ -27,18 +26,16 @@ import pt.isel.pdm.battleships.ui.screens.shared.showToast
 class HomeActivity : BattleshipsActivity() {
 
     private val viewModel by getViewModel(::HomeViewModel)
-    private val sessionManager by lazy { dependenciesContainer.sessionManager }
 
-    private val userHomeForResult =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            val resultIntent = result.data ?: return@registerForActivityResult
-            // This callback runs on the main thread
+    private val userHomeForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val resultIntent = result.data ?: return@registerForActivityResult
+        // This callback runs on the main thread
 
-            viewModel.updateUserHomeLinks(resultIntent.getLinks())
-            viewModel.loadUserHome()
-        }
+        viewModel.updateUserHomeLinks(resultIntent.getLinks())
+        viewModel.loadUserHome()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,13 +47,13 @@ class HomeActivity : BattleshipsActivity() {
         }
 
         if (viewModel.state == IDLE) {
-            viewModel.updateHomeLinks(Links(emptyMap()))
+            viewModel.updateHomeLinks()
             viewModel.loadHome()
         }
 
         setContent {
             HomeScreen(
-                loggedIn = sessionManager.isLoggedIn(),
+                loggedIn = viewModel.isLoggedIn,
                 onGameplayMenuClick = { viewModel.navigateTo<GameplayMenuActivity>() },
                 onLoginClick = { viewModel.navigateTo<LoginActivity>() },
                 onRegisterClick = { viewModel.navigateTo<RegisterActivity>() },

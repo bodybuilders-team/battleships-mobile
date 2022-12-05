@@ -32,6 +32,7 @@ import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.domain.games.game.GameState
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
@@ -41,12 +42,17 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIde
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.TileHitView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.PlacedShipView
-import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 import java.time.Instant
 
 const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
 
+/**
+ * Information about a player.
+ *
+ * @param name the name of the player
+ * @param avatarId the id of the avatar of the player
+ */
 data class PlayerInfo(
     val name: String,
     val avatarId: Int
@@ -55,10 +61,18 @@ data class PlayerInfo(
 /**
  * The gameplay screen.
  *
+ * @param myTurn whether it's the player's turn
  * @param myBoard the player's board
+ * @param opponentBoard the opponent's board
  * @param gameConfig the game configuration
+ * @param gameState the game state
+ * @param playerInfo the player's info
+ * @param opponentInfo the opponent's info
+ *
  * @param onShootClicked the callback to be invoked when the player shoots
- * @param onBackButtonClicked the callback to be invoked when the back button is clicked
+ * @param onLeaveGameButtonClicked the callback to be invoked when the player leaves the game
+ * @param onPlayAgainButtonClicked the callback to be invoked when the player wants to play again
+ * @param onBackToMenuButtonClicked the callback to be invoked when the player wants to go back to the menu
  */
 @Composable
 fun GameplayScreen(
@@ -70,7 +84,7 @@ fun GameplayScreen(
     playerInfo: PlayerInfo,
     opponentInfo: PlayerInfo,
     onShootClicked: (List<Coordinate>) -> Unit,
-    onBackButtonClicked: () -> Unit,
+    onLeaveGameButtonClicked: () -> Unit,
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
 ) {
@@ -127,12 +141,7 @@ fun GameplayScreen(
                     if (!myTurn) 1.0f
                     else SMALLER_BOARD_TILE_SIZE_FACTOR
 
-                myBoard.fleet.forEach { ship ->
-                    PlacedShipView(
-                        ship = ship,
-                        tileSize = tileSize
-                    )
-                }
+                myBoard.fleet.forEach { ship -> PlacedShipView(ship = ship, tileSize = tileSize) }
 
                 Row {
                     repeat(opponentBoard.size) { colIdx ->
@@ -174,8 +183,7 @@ fun GameplayScreen(
 
                     selectedCells = when {
                         coordinate in selectedCells -> selectedCells - coordinate
-                        selectedCells.size < gameConfig.shotsPerTurn ->
-                            selectedCells + coordinate
+                        selectedCells.size < gameConfig.shotsPerTurn -> selectedCells + coordinate
                         gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
                         else -> selectedCells
                     }
@@ -238,6 +246,7 @@ fun GameplayScreen(
                         )
                         IconButton(
                             onClick = { selectedCells = emptyList() },
+                            enabled = canFireShots,
                             imageVector = ImageVector.vectorResource(
                                 R.drawable.ic_round_refresh_24
                             ),
@@ -250,7 +259,17 @@ fun GameplayScreen(
                 }
             }
 
-            GoBackButton(onClick = onBackButtonClicked)
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                IconButton(
+                    onClick = onLeaveGameButtonClicked,
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_exit_to_app_24),
+                    contentDescription = stringResource(R.string.gameplay_leaveGameButton_description),
+                    text = stringResource(R.string.gameplay_leaveGameButton_text)
+                )
+            }
 
             if (gameState.winner != null)
                 EndGamePopUp(
@@ -269,47 +288,51 @@ fun GameplayScreen(
 @Preview
 @Composable
 private fun GameplayScreenPreview() {
-    GameplayScreen(
-        myTurn = true,
-        myBoard = MyBoard(),
-        opponentBoard = OpponentBoard(),
-        gameConfig = GameConfig(10, 1, 30, 30, ShipType.defaultsMap),
-        gameState = GameState(
-            phase = "",
-            phaseEndTime = Instant.now().plusMillis(30000L).toEpochMilli(),
-            round = 1,
-            turn = "Jesus",
-            winner = null
-        ),
-        playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
-        opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
-        onShootClicked = { },
-        onBackButtonClicked = { },
-        onPlayAgainButtonClicked = { },
-        onBackToMenuButtonClicked = { }
-    )
+    BattleshipsScreen {
+        GameplayScreen(
+            myTurn = true,
+            myBoard = MyBoard(),
+            opponentBoard = OpponentBoard(),
+            gameConfig = GameConfig(10, 1, 30, 30, ShipType.defaultsMap),
+            gameState = GameState(
+                phase = "",
+                phaseEndTime = Instant.now().plusMillis(30000L).toEpochMilli(),
+                round = 1,
+                turn = "Jesus",
+                winner = null
+            ),
+            playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
+            opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
+            onShootClicked = { },
+            onLeaveGameButtonClicked = { },
+            onPlayAgainButtonClicked = { },
+            onBackToMenuButtonClicked = { }
+        )
+    }
 }
 
 @Preview
 @Composable
 private fun GameplayScreenGameEndedPreview() {
-    GameplayScreen(
-        myTurn = false,
-        myBoard = MyBoard(),
-        opponentBoard = OpponentBoard(),
-        gameConfig = GameConfig(10, 1, 30, 30, ShipType.defaultsMap),
-        gameState = GameState(
-            phase = "",
-            phaseEndTime = Instant.now().plusMillis(30000L).toEpochMilli(),
-            round = 1,
-            turn = "Jesus",
-            winner = "Jesus"
-        ),
-        playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
-        opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
-        onShootClicked = { },
-        onBackButtonClicked = { },
-        onPlayAgainButtonClicked = { },
-        onBackToMenuButtonClicked = { }
-    )
+    BattleshipsScreen {
+        GameplayScreen(
+            myTurn = false,
+            myBoard = MyBoard(),
+            opponentBoard = OpponentBoard(),
+            gameConfig = GameConfig(10, 1, 30, 30, ShipType.defaultsMap),
+            gameState = GameState(
+                phase = "",
+                phaseEndTime = Instant.now().plusMillis(30000L).toEpochMilli(),
+                round = 1,
+                turn = "Jesus",
+                winner = "Jesus"
+            ),
+            playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
+            opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
+            onShootClicked = { },
+            onLeaveGameButtonClicked = { },
+            onPlayAgainButtonClicked = { },
+            onBackToMenuButtonClicked = { }
+        )
+    }
 }

@@ -2,10 +2,11 @@ package pt.isel.pdm.battleships.service.services.users
 
 import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
-import pt.isel.pdm.battleships.service.media.siren.SirenEntity
+import pt.isel.pdm.battleships.service.services.users.models.getUserHome.GetUserHomeOutput
 import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersOutput
 import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersUserModel
 import pt.isel.pdm.battleships.service.services.users.models.login.LoginOutput
+import pt.isel.pdm.battleships.service.services.users.models.logout.LogoutOutput
 import pt.isel.pdm.battleships.service.services.users.models.register.RegisterOutput
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 import java.io.IOException
@@ -29,7 +30,7 @@ class LinkUsersService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun getUserHome(): APIResult<SirenEntity<Unit>> {
+    suspend fun getUserHome(): APIResult<GetUserHomeOutput> {
         val getUserHomeResult = try {
             usersService.getUserHome(
                 userHomeLink = links[Rels.USER_HOME]
@@ -149,7 +150,7 @@ class LinkUsersService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun logout(refreshToken: String): APIResult<SirenEntity<Unit>> =
+    suspend fun logout(refreshToken: String): APIResult<LogoutOutput> =
         usersService.logout(
             logoutLink = links[Rels.LOGOUT]
                 ?: throw IllegalArgumentException("The logout link is missing"),

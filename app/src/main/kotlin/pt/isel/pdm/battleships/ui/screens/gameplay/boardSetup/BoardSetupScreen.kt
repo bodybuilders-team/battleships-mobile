@@ -36,6 +36,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
 import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
 import kotlin.math.roundToInt
 
+private const val DRAGGING_SHIP_BORDER_SIZE = 2
+
 /**
  * Board configuration page. Allows the user to place their ships on the board how they like.
  *
@@ -52,10 +54,8 @@ fun BoardSetupScreen(
     onBackButtonClicked: () -> Unit
 ) {
     var board by remember { mutableStateOf(ConfigurableBoard(boardSize)) }
-
     val tileSize = getTileSize(boardSize)
-
-    val unplacedShips = remember { mutableStateMapOf<ShipType, Int>() }.also { it.putAll(ships) }
+    val unplacedShips = remember { mutableStateMapOf<ShipType, Int>().also { it.putAll(ships) } }
 
     val dragState by remember { mutableStateOf(DragState()) }
     var dragOffset by remember { mutableStateOf(Offset(0f, 0f)) }
@@ -85,13 +85,11 @@ fun BoardSetupScreen(
                             onDragEnd = {
                                 dragState.reset()
 
-                                val currCol =
-                                    ((dragOffset.x - tileSize) / tileSize).roundToInt()
-                                val currRow =
-                                    ((dragOffset.y - tileSize) / tileSize).roundToInt()
-
                                 Coordinate
-                                    .fromPointOrNull(currCol, currRow)
+                                    .fromPointOrNull(
+                                        col = ((dragOffset.x - tileSize) / tileSize).roundToInt(),
+                                        row = ((dragOffset.y - tileSize) / tileSize).roundToInt()
+                                    )
                                     ?.let { coordinate ->
                                         if (
                                             Ship.isValidShipCoordinate(
@@ -101,12 +99,11 @@ fun BoardSetupScreen(
                                                 boardSize
                                             )
                                         ) {
-                                            val newShip =
-                                                Ship(
-                                                    type = draggableShip.type,
-                                                    coordinate = coordinate,
-                                                    orientation = draggableShip.orientation
-                                                )
+                                            val newShip = Ship(
+                                                type = draggableShip.type,
+                                                coordinate = coordinate,
+                                                orientation = draggableShip.orientation
+                                            )
 
                                             if (board
                                                 .removeShip(draggableShip)
@@ -138,8 +135,7 @@ fun BoardSetupScreen(
                                             val newShip = Ship(
                                                 type = draggableShip.type,
                                                 coordinate = coordinate,
-                                                orientation = draggableShip.orientation
-                                                    .opposite()
+                                                orientation = draggableShip.orientation.opposite()
                                             )
 
                                             if (board
@@ -172,11 +168,11 @@ fun BoardSetupScreen(
                     onDragEnd = { ship ->
                         dragState.reset()
 
-                        val currCol = ((dragOffset.x - tileSize) / tileSize).roundToInt()
-                        val currRow = ((dragOffset.y - tileSize) / tileSize).roundToInt()
-
                         Coordinate
-                            .fromPointOrNull(currCol, currRow)
+                            .fromPointOrNull(
+                                col = ((dragOffset.x - tileSize) / tileSize).roundToInt(),
+                                row = ((dragOffset.y - tileSize) / tileSize).roundToInt()
+                            )
                             ?.let { coordinate ->
                                 if (
                                     Ship.isValidShipCoordinate(
@@ -186,13 +182,12 @@ fun BoardSetupScreen(
                                         boardSize = boardSize
                                     )
                                 ) {
-                                    val newShip =
-                                        Ship(ship.type, coordinate, Orientation.VERTICAL)
-                                    val canPlace = board.canPlaceShip(newShip)
+                                    val newShip = Ship(ship.type, coordinate, Orientation.VERTICAL)
 
-                                    if (canPlace) {
+                                    if (board.canPlaceShip(newShip)) {
                                         board = board.placeShip(newShip)
                                         draggableShips = draggableShips + newShip
+
                                         if (unplacedShips[ship.type]!! > 0) {
                                             unplacedShips[ship.type] =
                                                 unplacedShips[ship.type]!! - 1
@@ -230,7 +225,7 @@ fun BoardSetupScreen(
                         tileSize = tileSize,
                         modifier = Modifier
                             .offset(dragOffset.x.dp, dragOffset.y.dp)
-                            .border(2.dp, Color.Red)
+                            .border(DRAGGING_SHIP_BORDER_SIZE.dp, Color.Red)
                     )
                 }
             }

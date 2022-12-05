@@ -1,17 +1,18 @@
 package pt.isel.pdm.battleships.service.services.games
 
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
-import pt.isel.pdm.battleships.service.media.siren.SirenEntity
 import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigModel
 import pt.isel.pdm.battleships.service.services.games.models.games.createGame.CreateGameInput
+import pt.isel.pdm.battleships.service.services.games.models.games.createGame.CreateGameOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.getGame.GetGameOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.getGame.GetGameOutputModel
 import pt.isel.pdm.battleships.service.services.games.models.games.getGameState.GetGameStateOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetGamesOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.joinGame.JoinGameOutput
+import pt.isel.pdm.battleships.service.services.games.models.games.leaveGame.LeaveGameOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.matchmake.MatchmakeOutput
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 import java.io.IOException
 
@@ -70,7 +71,7 @@ class LinkGamesService(
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun createGame(name: String, config: GameConfigModel): APIResult<SirenEntity<Unit>> {
+    suspend fun createGame(name: String, config: GameConfigModel): APIResult<CreateGameOutput> {
         val createGameResult = gamesService.createGame(
             token = token,
             createGameLink = links[Rels.CREATE_GAME]
@@ -117,7 +118,7 @@ class LinkGamesService(
     }
 
     /**
-     * Gets a game by id.
+     * Gets the game information.
      *
      * @return the result of the get game request
      *
@@ -186,14 +187,25 @@ class LinkGamesService(
     /**
      * Leaves a game.
      *
-     * @param gameLink the link to the game
+     * @param leaveGameLink the link to the leave game endpoint
      *
      * @return the API result of the leave game request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun leaveGame(gameLink: String) {
-        // TODO: To be implemented
+    suspend fun leaveGame(leaveGameLink: String): APIResult<LeaveGameOutput> {
+        val leaveGameResult = gamesService.leaveGame(
+            token = token,
+            leaveGameLink = leaveGameLink
+        )
+
+        if (leaveGameResult !is APIResult.Success)
+            return leaveGameResult
+
+        links.remove(Rels.GAME)
+        links.remove(Rels.GAME_STATE)
+
+        return leaveGameResult
     }
 }

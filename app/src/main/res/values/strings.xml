@@ -1,9 +1,9 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">Battleships ⚓</string>
     <string name="logo_content_description" translatable="false">Battleships Logo</string>
 
     <string name="backButton_text">Go Back</string>
-    <string name="defaultLoading_text">Loading...</string>
+    <string name="defaultLoading_text" tools:ignore="TypographyEllipsis">Loading...</string>
 
     <!-- Main Menu -->
 
@@ -117,6 +117,9 @@
 
     <string name="gameplay_resetShotsButton_text">Reset shots</string>
     <string name="gameplay_resetShotsButton_description">Button to reset shots</string>
+
+    <string name="gameplay_leaveGameButton_text">Leave Game</string>
+    <string name="gameplay_leaveGameButton_description">Button to leave game</string>
 
     <!-- EndGame -->
 

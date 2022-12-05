@@ -4,9 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.createGame.CreateGameViewModel.CreateGameState.CREATING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.createGame.CreateGameViewModel.CreateGameState.GAME_CREATED
@@ -90,8 +90,12 @@ class CreateGameViewModel(
     /**
      * The create game state.
      *
+     * @property IDLE the initial state
+     * @property LINKS_LOADED the state when the links are loaded
      * @property CREATING_GAME creating a new game
      * @property GAME_CREATED the game was created
+     * @property WAITING_FOR_OPPONENT waiting for an opponent to join
+     * @property OPPONENT_FOUND when an opponent is found
      */
     enum class CreateGameState {
         IDLE,

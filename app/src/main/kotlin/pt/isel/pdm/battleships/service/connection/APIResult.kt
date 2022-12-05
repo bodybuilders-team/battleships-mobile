@@ -33,7 +33,8 @@ sealed class APIResult<out T> {
  *
  * @receiver the api result to check
  * @return true if the result is a success, false otherwise
- **/
+ */
+@Suppress("unused")
 @OptIn(ExperimentalContracts::class)
 fun <T> APIResult<T>.isSuccess(): Boolean {
     contract {
@@ -48,7 +49,7 @@ fun <T> APIResult<T>.isSuccess(): Boolean {
  *
  * @receiver the api result to check
  * @return true if the result is a failure, false otherwise
- **/
+ */
 @OptIn(ExperimentalContracts::class)
 fun <T> APIResult<T>.isFailure(): Boolean {
     contract {

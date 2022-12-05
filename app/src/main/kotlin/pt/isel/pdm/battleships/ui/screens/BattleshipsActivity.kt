@@ -2,8 +2,8 @@ package pt.isel.pdm.battleships.ui.screens
 
 import androidx.activity.ComponentActivity
 import pt.isel.pdm.battleships.DependenciesContainer
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.shared.viewModelInit
 
 /**

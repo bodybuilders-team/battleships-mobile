@@ -6,9 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
+import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.LOADING
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.NOT_LOADING
@@ -22,6 +23,7 @@ import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.USER_HOME
 import pt.isel.pdm.battleships.ui.screens.shared.Event
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 
 /**
  * View model for the [HomeActivity].
@@ -39,12 +41,16 @@ class HomeViewModel(
 
     private var _loadingState by mutableStateOf(NOT_LOADING)
     private var _state: HomeState by mutableStateOf(IDLE)
+    private var _isLoggedIn: Boolean by mutableStateOf(false)
 
     val loadingState: HomeLoadingState
         get() = _loadingState
 
     val state
         get() = _state
+
+    val isLoggedIn
+        get() = _isLoggedIn
 
     /**
      * Loads the home page.
@@ -59,6 +65,15 @@ class HomeViewModel(
             events = _events,
             onSuccess = {
                 _state = HOME_LOADED
+
+                if (sessionManager.isLoggedIn()) {
+                    val newLinks = getLinks().links
+                        .toMutableMap()
+                        .also { links -> links[Rels.USER_HOME] = sessionManager.userHomeLink!! }
+
+                    updateUserHomeLinks(Links(links = newLinks))
+                    loadUserHome()
+                }
             }
         )
     }
@@ -78,6 +93,7 @@ class HomeViewModel(
             events = _events,
             onSuccess = {
                 _state = USER_HOME_LOADED
+                _isLoggedIn = true
             }
         )
     }
@@ -91,7 +107,10 @@ class HomeViewModel(
         launchAndExecuteRequestThrowing(
             request = { battleshipsService.usersService.logout(sessionManager.refreshToken!!) },
             events = _events,
-            onSuccess = { sessionManager.clearSession() }
+            onSuccess = {
+                sessionManager.clearSession()
+                _isLoggedIn = false
+            }
         )
     }
 
@@ -129,11 +148,9 @@ class HomeViewModel(
 
     /**
      * Updates the home links.
-     *
-     * @param links the new home links
      */
-    fun updateHomeLinks(links: Links) {
-        super.updateLinks(links)
+    fun updateHomeLinks() {
+        super.updateLinks(Links(emptyMap()))
         _state = HOME_LINKS_LOADED
     }
 
@@ -150,8 +167,8 @@ class HomeViewModel(
     /**
      * The state of the [HomeViewModel].
      *
-     * @property IDLE the view model is idle
-     * @property HOME_LINKS_LOADED the home links are loaded
+     * @property IDLE the initial state
+     * @property LINKS_LOADED the state when the links are loaded
      * @property LOADING_HOME the home screen is loading
      * @property HOME_LOADED the home screen is loaded
      * @property USER_HOME_LINKS_LOADED the user home links are loaded
