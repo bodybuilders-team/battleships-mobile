@@ -123,8 +123,8 @@ fun EndGamePopUp(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(CONTENT_WIDTH_FACTOR)
-                        .fillMaxHeight(AVATARS_HEIGHT_FACTOR),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxHeight(AVATARS_HEIGHT_FACTOR)
+                        .padding(top = 10.dp)
                 ) {
                     Column(
                         modifier = Modifier

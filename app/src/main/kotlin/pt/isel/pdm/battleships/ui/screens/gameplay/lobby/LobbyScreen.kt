@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,11 @@ import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetG
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GAMES_LOADED
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GETTING_GAMES
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.JOINED_GAME
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.JOINING_GAME
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
 import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
 import pt.isel.pdm.battleships.ui.screens.shared.components.LoadingSpinner
@@ -55,6 +61,8 @@ fun LobbyScreen(
             ScreenTitle(title = stringResource(R.string.lobby_title))
 
             when (state) {
+                IDLE, LINKS_LOADED, GETTING_GAMES ->
+                    LoadingSpinner(stringResource(id = R.string.lobby_loadingGames_text))
                 GAMES_LOADED ->
                     LazyColumn(
                         verticalArrangement = Arrangement.Top,
@@ -62,21 +70,16 @@ fun LobbyScreen(
                     ) {
                         games
                             ?: throw IllegalStateException(
-                                "Games cannot be null when state is FINISHED"
+                                "Games cannot be null when state is GAMES_LOADED"
                             )
 
-                        @Suppress("UNCHECKED_CAST")
-                        val filteredGames = games.entities
-                            ?.filter { game ->
-                                (game as EmbeddedSubEntity<GetGameOutputModel>)
-                                    .properties?.state?.phase == "WAITING_FOR_PLAYERS"
-                            }
-                            ?: emptyList()
+                        val filteredGames =
+                            games.embeddedSubEntities<GetGameOutputModel>(Rels.ITEM, Rels.GAME)
+                                .filter { game ->
+                                    game.properties?.state?.phase == "WAITING_FOR_PLAYERS"
+                                }
 
-                        items(filteredGames.size) { index ->
-                            @Suppress("UNCHECKED_CAST")
-                            val game = filteredGames[index] as EmbeddedSubEntity<GetGameOutputModel>
-
+                        items(filteredGames) { game ->
                             GameCard(
                                 game = game,
                                 onJoinGameRequest = {
@@ -85,7 +88,8 @@ fun LobbyScreen(
                             )
                         }
                     }
-                else -> LoadingSpinner()
+                JOINING_GAME, JOINED_GAME ->
+                    LoadingSpinner(stringResource(id = R.string.lobby_joiningGame_text))
             }
 
             GoBackButton(onClick = onBackButtonClicked)

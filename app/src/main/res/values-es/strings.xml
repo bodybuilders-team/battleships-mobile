@@ -78,8 +78,8 @@
     <string name="gameConfig_gameNameTextField_label">Nome del Juego</string>
     <string name="gameConfig_gameNameTextField_placeholder">Juego</string>
     <string name="gameConfig_gridSize_text">Tamaño de la Cuadrícula</string>
-    <string name="gameConfig_shotsPerTurn_text">Disparos por Turno</string>
-    <string name="gameConfig_timePerTurn_text">Tiempo por Turno</string>
+    <string name="gameConfig_shotsPerRound_text">Disparos por Ronda</string>
+    <string name="gameConfig_timePerRound_text">Tiempo por Ronda</string>
     <string name="gameConfig_timeForGridLayout_text">Tiempo de configuración del tablero</string>
     <string name="gameConfig_ships_label">Buques</string>
     <string name="gameConfig_manageShipsButton_text">Gestionar Buques</string>
@@ -150,4 +150,11 @@
     <string name="about_repoGithub_text">El código de esta aplicación está disponible aquí:</string>
     <string name="about_githubLogo_contentDescription">Logo de Github</string>
     <string name="about_emailIcon_contentDescription">Ícono de email</string>
+    <string name="gameplay_loadingGame_text">Cargando el Juego...</string>
+    <string name="gameplay_waitingForOpponent_text">Esperando por el Oponente...</string>
+    <string name="lobby_gameConfig_quantity_text">Cantidad</string>
+    <string name="lobby_gameConfig_points_text">Puntos</string>
+    <string name="lobby_gameConfig_size_text">Tamaño</string>
+    <string name="lobby_gameConfig_shipType_text">Tipo de Buque</string>
+    <string name="lobby_loadingGames_text">Cargando Juegos...</string>
 </resources>

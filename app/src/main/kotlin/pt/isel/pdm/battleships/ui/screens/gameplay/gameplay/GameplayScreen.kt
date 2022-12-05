@@ -301,8 +301,14 @@ private fun GameplayScreenPreview() {
                 turn = "Jesus",
                 winner = null
             ),
-            playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
-            opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
+            playerInfo = PlayerInfo(
+                name = "Player",
+                avatarId = R.drawable.ic_round_person_24
+            ),
+            opponentInfo = PlayerInfo(
+                name = "Opponent",
+                avatarId = R.drawable.ic_round_person_24
+            ),
             onShootClicked = { },
             onLeaveGameButtonClicked = { },
             onPlayAgainButtonClicked = { },
@@ -327,8 +333,14 @@ private fun GameplayScreenGameEndedPreview() {
                 turn = "Jesus",
                 winner = "Jesus"
             ),
-            playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
-            opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
+            playerInfo = PlayerInfo(
+                name = "Player",
+                avatarId = R.drawable.ic_round_person_24
+            ),
+            opponentInfo = PlayerInfo(
+                name = "Opponent",
+                avatarId = R.drawable.ic_round_person_24
+            ),
             onShootClicked = { },
             onLeaveGameButtonClicked = { },
             onPlayAgainButtonClicked = { },

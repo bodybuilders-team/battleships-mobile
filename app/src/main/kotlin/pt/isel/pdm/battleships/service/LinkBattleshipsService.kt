@@ -2,6 +2,7 @@ package pt.isel.pdm.battleships.service
 
 import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
+import pt.isel.pdm.battleships.service.services.games.LinkGamesService
 import pt.isel.pdm.battleships.service.services.games.LinkPlayersService
 import pt.isel.pdm.battleships.service.services.home.models.getHome.GetHomeOutput
 import pt.isel.pdm.battleships.service.services.users.LinkUsersService
@@ -33,7 +34,7 @@ class LinkBattleshipsService(
         usersService = battleshipsService.usersService
     )
 
-    val gamesService = pt.isel.pdm.battleships.service.services.games.LinkGamesService(
+    val gamesService = LinkGamesService(
         sessionManager = sessionManager,
         links = this._links,
         gamesService = battleshipsService.gamesService

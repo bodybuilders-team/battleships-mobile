@@ -31,6 +31,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
 private const val SHIP_SLOTS_CORNER_RADIUS = 10
 private const val SHIP_SLOTS_FACTOR = 0.6f
 private const val SHIP_ALPHA_WHEN_ZERO_QUANTITY = 0.5f
+private const val SHIP_ALPHA_WHEN_MORE_THAN_ZERO_QUANTITY = 1f
 
 /**
  * A composable that The ship slots.
@@ -92,7 +93,12 @@ fun ShipSlotsView(
                                 onDragCancel = onDragCancel,
                                 onDrag = onDrag,
                                 modifier = Modifier
-                                    .alpha(if (draggingShip && quantity == 1) 0.5f else 1f),
+                                    .alpha(
+                                        if (draggingShip && quantity == 1)
+                                            SHIP_ALPHA_WHEN_ZERO_QUANTITY
+                                        else
+                                            SHIP_ALPHA_WHEN_MORE_THAN_ZERO_QUANTITY
+                                    ),
                                 onTap = {}
                             )
                         }

@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -21,14 +23,21 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.ConfigurableBoard
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.PlacedDraggableShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.ShipPlacingMenuView
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.PlayerInfo
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
@@ -50,6 +59,7 @@ private const val DRAGGING_SHIP_BORDER_SIZE = 2
 fun BoardSetupScreen(
     boardSize: Int,
     ships: Map<ShipType, Int>,
+    maxTimeForGridLayout: Int,
     onBoardSetupFinished: (ConfigurableBoard) -> Unit,
     onBackButtonClicked: () -> Unit
 ) {
@@ -62,6 +72,22 @@ fun BoardSetupScreen(
     var draggableShips by remember { mutableStateOf(listOf<Ship>()) }
     var boardOffset: Offset by remember { mutableStateOf(Offset.Zero) }
 
+    var timerMinutes by remember { mutableStateOf(maxTimeForGridLayout / 60) }
+    var timerSeconds by remember { mutableStateOf(maxTimeForGridLayout % 60) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)
+
+            if (timerSeconds != 0) {
+                timerSeconds--
+            } else if (timerMinutes != 0) {
+                timerSeconds = 59
+                timerMinutes--
+            }
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
@@ -72,6 +98,8 @@ fun BoardSetupScreen(
                     .width(FULL_BOARD_VIEW_BOX_SIZE.dp)
                     .onGloballyPositioned { boardOffset = it.positionInWindow() }
             ) {
+                Timer(minutes = timerMinutes, seconds = timerSeconds)
+
                 BoardViewWithIdentifiers(board = board) {
                     draggableShips.forEach { draggableShip ->
                         PlacedDraggableShipView(
@@ -88,7 +116,7 @@ fun BoardSetupScreen(
                                 Coordinate
                                     .fromPointOrNull(
                                         col = ((dragOffset.x - tileSize) / tileSize).roundToInt(),
-                                        row = ((dragOffset.y - tileSize) / tileSize).roundToInt()
+                                        row = ((dragOffset.y - tileSize * 2) / tileSize).roundToInt()
                                     )
                                     ?.let { coordinate ->
                                         if (
@@ -171,7 +199,7 @@ fun BoardSetupScreen(
                         Coordinate
                             .fromPointOrNull(
                                 col = ((dragOffset.x - tileSize) / tileSize).roundToInt(),
-                                row = ((dragOffset.y - tileSize) / tileSize).roundToInt()
+                                row = ((dragOffset.y - tileSize * 2) / tileSize).roundToInt()
                             )
                             ?.let { coordinate ->
                                 if (
@@ -205,7 +233,19 @@ fun BoardSetupScreen(
 
                         draggableShips = board.fleet
 
+                        Log.v(
+                            "BoardSetupScreen",
+                            "Unplaced ships: ${
+                            unplacedShips.entries.map { "${it.key} - ${it.value}" }
+                            }"
+                        )
                         unplacedShips.keys.forEach { unplacedShips[it] = 0 }
+                        Log.v(
+                            "BoardSetupScreen",
+                            "Unplaced ships after clear: ${
+                            unplacedShips.entries.map { "${it.key} - ${it.value}" }
+                            }"
+                        )
                     },
                     onConfirmBoardButtonPressed = {
                         if (board.fleet.size == ships.size)
@@ -229,6 +269,23 @@ fun BoardSetupScreen(
                     )
                 }
             }
+
+            if (timerMinutes == 0 && timerSeconds == 0)
+                EndGamePopUp(
+                    won = false,
+                    cause = EndGameCause.DESTRUCTION,
+                    pointsWon = 100,
+                    playerInfo = PlayerInfo(
+                        name = "Player",
+                        avatarId = R.drawable.ic_round_person_24
+                    ),
+                    opponentInfo = PlayerInfo(
+                        name = "Opponent",
+                        avatarId = R.drawable.ic_round_person_24
+                    ),
+                    onPlayAgainButtonClicked = { /* TODO */ },
+                    onBackToMenuButtonClicked = { /* TODO */ }
+                )
         }
 
         GoBackButton(onClick = onBackButtonClicked)
@@ -276,10 +333,13 @@ private fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate
 @Preview
 @Composable
 fun BoardSetupScreenPreview() {
-    BoardSetupScreen(
-        boardSize = 10,
-        ships = ShipType.defaultsMap,
-        onBoardSetupFinished = {},
-        onBackButtonClicked = {}
-    )
+    BattleshipsScreen {
+        BoardSetupScreen(
+            boardSize = 10,
+            ships = ShipType.defaultsMap,
+            maxTimeForGridLayout = 30,
+            onBoardSetupFinished = {},
+            onBackButtonClicked = {}
+        )
+    }
 }

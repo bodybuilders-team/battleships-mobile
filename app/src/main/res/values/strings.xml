@@ -81,8 +81,8 @@
     <string name="gameConfig_gameNameTextField_label">Game Name</string>
     <string name="gameConfig_gameNameTextField_placeholder">Game</string>
     <string name="gameConfig_gridSize_text">Grid Size</string>
-    <string name="gameConfig_shotsPerTurn_text">Shots per Turn</string>
-    <string name="gameConfig_timePerTurn_text">Time per Turn</string>
+    <string name="gameConfig_shotsPerRound_text">Shots per Round</string>
+    <string name="gameConfig_timePerRound_text">Time per Round</string>
     <string name="gameConfig_timeForGridLayout_text">Board Layout Time</string>
     <string name="gameConfig_ships_label">Ships</string>
     <string name="gameConfig_manageShipsButton_text">Manage Ships</string>
@@ -102,6 +102,9 @@
 
     <string name="gameplay_confirmBoardButton_text">Confirm Board</string>
     <string name="gameplay_confirmBoardButton_description">Button to confirm board</string>
+
+    <string name="gameplay_loadingGame_text">Loading Game...</string>
+    <string name="gameplay_waitingForOpponent_text">Waiting for opponent...</string>
 
     <!-- Gameplay -->
 
@@ -145,6 +148,14 @@
     <string name="lobby_title">Lobby</string>
     <string name="lobby_join_iconDescription">Join Icon</string>
     <string name="lobby_info_iconDescription">Info icon</string>
+
+    <string name="lobby_loadingGames_text">Loading Games...</string>
+    <string name="lobby_joiningGame_text">Joining Game...</string>
+
+    <string name="lobby_gameConfig_shipType_text">Ship Type</string>
+    <string name="lobby_gameConfig_size_text">Size</string>
+    <string name="lobby_gameConfig_quantity_text">Quantity</string>
+    <string name="lobby_gameConfig_points_text">Points</string>
 
     <!-- About -->
 

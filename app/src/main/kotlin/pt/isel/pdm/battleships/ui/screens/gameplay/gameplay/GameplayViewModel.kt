@@ -3,7 +3,9 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.gameplay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
@@ -29,6 +31,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.Ga
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.MY_FLEET_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.PLAYING_GAME
 import pt.isel.pdm.battleships.ui.screens.shared.executeRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequest
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
@@ -106,6 +109,8 @@ class GameplayViewModel(
 
                 _state = PLAYING_GAME
 
+                gameStatePolling()
+
                 if (!myTurn) waitForOpponent()
             }
         )
@@ -147,7 +152,7 @@ class GameplayViewModel(
         check(state == PLAYING_GAME) { "The game is not in the playing state" }
         check(_screenState.myTurn == true) { "It's not your turn" }
 
-        launchAndExecuteRequestThrowing(
+        launchAndExecuteRequest(
             request = {
                 battleshipsService.playersService.fireShots(
                     shots = FireShotsInput(
@@ -176,6 +181,16 @@ class GameplayViewModel(
                 _screenState = _screenState.copy(myTurn = false)
 
                 waitForOpponent()
+            },
+            retryOnApiResultFailure = { problem ->
+                // Check if failed because game ended by updating game state
+                if (problem.status == 400) {
+                    viewModelScope.launch { updateGameState() }
+                }
+                if (_state != GameplayState.FINISHED_GAME)
+                    throw IllegalStateException(problem.title)
+
+                false
             }
         )
     }
@@ -188,18 +203,10 @@ class GameplayViewModel(
         check(_screenState.myTurn == false) { "It's not the opponent's turn" }
 
         while (true) {
-            val gameStateData = executeRequestThrowing(
-                request = { battleshipsService.gamesService.getGameState() },
-                events = _events
-            )
+            if (_state == GameplayState.FINISHED_GAME)
+                break
 
-            val properties = gameStateData.properties
-                ?: throw IllegalStateException("Game state properties are null")
-
-            if (properties.phase == FINISHED_PHASE)
-                _state = FINISHED_GAME
-
-            if (properties.turn != sessionManager.username)
+            if (_screenState.gameState?.turn != sessionManager.username)
                 delay(POLLING_DELAY)
             else {
                 getOpponentShots()
@@ -273,6 +280,39 @@ class GameplayViewModel(
                 _state = FINISHED_GAME
             }
         )
+    }
+
+    /**
+     * Gets the game state.
+     * Updates the gameState property in [screenState] and the [state] property to
+     * [GameplayState.FINISHED_GAME] in the case of the game being in [FINISHED_PHASE].
+     */
+    private suspend fun updateGameState() {
+        val gameStateData = executeRequestThrowing(
+            request = { battleshipsService.gamesService.getGameState() },
+            events = _events
+        )
+
+        val properties = gameStateData.properties
+            ?: throw IllegalStateException("Game state properties are null")
+
+        _screenState = _screenState.copy(gameState = GameState(gameStateData.properties))
+
+        if (properties.phase == FINISHED_PHASE)
+            _state = GameplayState.FINISHED_GAME
+    }
+
+    private fun gameStatePolling() {
+        viewModelScope.launch {
+            while (true) {
+                updateGameState()
+
+                if (_state == GameplayState.FINISHED_GAME)
+                    break
+
+                delay(POLLING_DELAY)
+            }
+        }
     }
 
     /**

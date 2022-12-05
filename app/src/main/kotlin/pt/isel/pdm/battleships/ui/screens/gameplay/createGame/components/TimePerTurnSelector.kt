@@ -18,7 +18,7 @@ fun TimePerTurnSelector(timePerTurn: Int, onValueChange: (Int) -> Unit) {
     IntSelector(
         defaultValue = timePerTurn,
         valueRange = MIN_TIME_PER_TURN..MAX_TIME_PER_TURN,
-        label = stringResource(R.string.gameConfig_timePerTurn_text),
+        label = stringResource(R.string.gameConfig_timePerRound_text),
         valueLabel = { "$it s" },
         onValueChange = onValueChange
     )

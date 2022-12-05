@@ -57,8 +57,14 @@ class GameplayActivity : BattleshipsActivity() {
                                 ?: throw IllegalStateException("Game config not found"),
                             gameState = viewModel.screenState.gameState
                                 ?: throw IllegalStateException("Game state not found"),
-                            playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
-                            opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
+                            playerInfo = PlayerInfo(
+                                name = "Player",
+                                avatarId = R.drawable.ic_round_person_24
+                            ),
+                            opponentInfo = PlayerInfo(
+                                name = "Opponent",
+                                avatarId = R.drawable.ic_round_person_24
+                            ),
                             onShootClicked = { coordinates -> viewModel.fireShots(coordinates) },
                             onLeaveGameButtonClicked = {
                                 viewModel.leaveGame()

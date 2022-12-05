@@ -81,8 +81,8 @@
     <string name="gameConfig_gameNameTextField_label">Nome do Jogo</string>
     <string name="gameConfig_gameNameTextField_placeholder">Jogo</string>
     <string name="gameConfig_gridSize_text">Tamanho da grelha</string>
-    <string name="gameConfig_shotsPerTurn_text">Tiros por Turno</string>
-    <string name="gameConfig_timePerTurn_text">Tempo por Turno</string>
+    <string name="gameConfig_shotsPerRound_text">Tiros por Ronda</string>
+    <string name="gameConfig_timePerRound_text">Tempo por Ronda</string>
     <string name="gameConfig_timeForGridLayout_text">Tempo para configuração do tabuleiro</string>
     <string name="gameConfig_ships_label">Navios</string>
     <string name="gameConfig_manageShipsButton_text">Gerir Navios</string>
@@ -139,7 +139,7 @@
 
     <!-- Lobby -->
 
-    <string name="lobby_title" translatable="false">Sala de Espera</string>
+    <string name="lobby_title">Sala de Espera</string>
     <string name="lobby_join_iconDescription">Ícone de juntar-se a um jogo</string>
     <string name="lobby_info_iconDescription">Ícone de informação</string>
 
@@ -150,4 +150,11 @@
     <string name="about_repoGithub_text">"O código desta aplicação está disponível aqui: "</string>
     <string name="about_githubLogo_contentDescription">Logo do Github</string>
     <string name="about_emailIcon_contentDescription">Ícone de email</string>
+    <string name="gameplay_loadingGame_text">Carregando o Jogo...</string>
+    <string name="gameplay_waitingForOpponent_text">Esperando pelo oponente...</string>
+    <string name="lobby_gameConfig_shipType_text">Tipo de Navio</string>
+    <string name="lobby_gameConfig_size_text">Tamanho</string>
+    <string name="lobby_gameConfig_quantity_text">Quantidade</string>
+    <string name="lobby_gameConfig_points_text">Pontos</string>
+    <string name="lobby_loadingGames_text">Carregado Jogos...</string>
 </resources>

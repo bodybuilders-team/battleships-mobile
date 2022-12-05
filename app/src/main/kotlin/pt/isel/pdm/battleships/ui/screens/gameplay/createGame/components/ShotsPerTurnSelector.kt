@@ -18,7 +18,7 @@ fun ShotsPerTurnSelector(shotsPerTurn: Int, onValueChange: (Int) -> Unit) {
     IntSelector(
         defaultValue = shotsPerTurn,
         valueRange = MIN_SHOTS_PER_TURN..MAX_SHOTS_PER_TURN,
-        label = stringResource(R.string.gameConfig_shotsPerTurn_text),
+        label = stringResource(R.string.gameConfig_shotsPerRound_text),
         onValueChange = onValueChange
     )
 }
