@@ -8,6 +8,13 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.authentication.components.AuthenticationTextField
 import pt.isel.pdm.battleships.ui.screens.authentication.validateEmail
 
+/**
+ * The email text field.
+ *
+ * @param email email to show
+ * @param onEmailChangeCallback callback to be invoked when the email text is changed
+ * @param modifier modifier to be applied to the text field
+ */
 @Composable
 fun EmailTextField(
     email: String,
@@ -21,8 +28,7 @@ fun EmailTextField(
         label = stringResource(R.string.register_emailTextField_label),
         value = email,
         onValueChange = onEmailChangeCallback,
-        modifier = Modifier.fillMaxWidth()
-            .then(modifier),
+        modifier = Modifier.fillMaxWidth().then(modifier),
         required = true,
         errorMessage = if (invalidEmail) invalidEmailMessage else null
     )

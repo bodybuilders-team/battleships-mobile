@@ -6,9 +6,9 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.IDLE
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
-import pt.isel.pdm.battleships.ui.utils.showToast
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.screens.shared.showToast
 
 /**
  * Activity for the [RankingScreen].

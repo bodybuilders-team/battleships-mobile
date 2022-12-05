@@ -12,9 +12,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.components.IconButton
-import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
+import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.ScreenTitle
 
 private const val BUTTON_MAX_WIDTH_FACTOR = 0.5f
 

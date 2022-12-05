@@ -55,12 +55,16 @@ data class OpponentBoard(
                 check(!cell.wasHit) { "Cell at ${cell.coordinate} was already hit" }
                 check(cell is WaterCell) { "Opponent cell can only be not hit if it is water cell" }
 
-                sunkCoordinates.findValueByKey { cell.coordinate in it }?.let {
-                    ShipCell(coordinate = cell.coordinate, wasHit = true, ship = it)
-                } ?: when (firedShot.result) {
-                    ShotResult.HIT -> UnknownShipCell(coordinate = cell.coordinate, wasHit = true)
-                    else -> cell.copy(wasHit = true)
-                }
+                sunkCoordinates
+                    .findValueByKey { cell.coordinate in it }
+                    ?.let { ShipCell(coordinate = cell.coordinate, wasHit = true, ship = it) }
+                    ?: when (firedShot.result) {
+                        ShotResult.HIT -> UnknownShipCell(
+                            coordinate = cell.coordinate,
+                            wasHit = true
+                        )
+                        else -> cell.copy(wasHit = true)
+                    }
             }
         )
     }

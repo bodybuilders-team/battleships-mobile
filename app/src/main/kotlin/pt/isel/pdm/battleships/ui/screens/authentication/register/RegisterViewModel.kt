@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships.ui.screens.authentication.register
 
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.BattleshipsService
+import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel
 
 /**

@@ -14,10 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,8 +30,16 @@ import androidx.compose.ui.window.Popup
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.PlayerInfo
-import pt.isel.pdm.battleships.ui.utils.components.IconButton
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.DESTRUCTION
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.RESIGNATION
+import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 
+/**
+ * The cause of the end of the game.
+ *
+ * @property DESTRUCTION the game ended because a player's fleet was destroyed
+ * @property RESIGNATION the game ended because a player resigned
+ */
 enum class EndGameCause {
     DESTRUCTION,
     RESIGNATION
@@ -52,6 +56,17 @@ private const val AVATAR_HEIGHT_FACTOR = 0.5f
 private const val AVATAR_WIDTH_FACTOR = 0.5f
 private const val BETWEEN_AVATAR_PADDING = 10
 
+/**
+ * The end game popup.
+ *
+ * @param won true if the player won the game, false otherwise
+ * @param cause the cause of the end of the game
+ * @param pointsWon the points won by the player
+ * @param playerInfo the player's info
+ * @param opponentInfo the opponent's info
+ * @param onPlayAgainButtonClicked the callback to be invoked when the play again button is clicked
+ * @param onBackToMenuButtonClicked the callback to be invoked when the back to menu button is clicked
+ */
 @Composable
 fun EndGamePopUp(
     won: Boolean,
@@ -92,8 +107,8 @@ fun EndGamePopUp(
                     Text(
                         text = stringResource(
                             when (cause) {
-                                EndGameCause.DESTRUCTION -> R.string.endgame_byFleetDestruction_text
-                                EndGameCause.RESIGNATION -> R.string.endgame_byResignation_text
+                                DESTRUCTION -> R.string.endgame_byFleetDestruction_text
+                                RESIGNATION -> R.string.endgame_byResignation_text
                             }
                         ),
                         style = MaterialTheme.typography.h6,
@@ -119,7 +134,7 @@ fun EndGamePopUp(
                     ) {
                         Image(
                             painter = painterResource(
-                                id = if (won) playerInfo.avatarId
+                                if (won) playerInfo.avatarId
                                 else opponentInfo.avatarId
                             ),
                             contentDescription = stringResource(R.string.endgame_winnersAvatar_description),
@@ -140,7 +155,7 @@ fun EndGamePopUp(
                     ) {
                         Image(
                             painter = painterResource(
-                                id = if (won) opponentInfo.avatarId
+                                if (won) opponentInfo.avatarId
                                 else playerInfo.avatarId
                             ),
                             contentDescription = stringResource(R.string.endgame_losersAvatar_description),
@@ -170,7 +185,7 @@ fun EndGamePopUp(
 
                         IconButton(
                             onClick = onBackToMenuButtonClicked,
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_baseline_home_24),
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_home_24),
                             contentDescription = stringResource(R.string.endgame_mainMenuButton_description),
                             text = stringResource(R.string.endgame_mainMenuButton_text)
                         )
@@ -187,10 +202,10 @@ private fun EndGamePopUpPreview() {
     BattleshipsScreen {
         EndGamePopUp(
             won = true,
-            cause = EndGameCause.DESTRUCTION,
+            cause = DESTRUCTION,
             pointsWon = 100,
-            playerInfo = PlayerInfo("Nyck", R.drawable.nyckollas_brandao),
-            opponentInfo = PlayerInfo("Jesus", R.drawable.andre_jesus),
+            playerInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
+            opponentInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
             onPlayAgainButtonClicked = {},
             onBackToMenuButtonClicked = {}
         )

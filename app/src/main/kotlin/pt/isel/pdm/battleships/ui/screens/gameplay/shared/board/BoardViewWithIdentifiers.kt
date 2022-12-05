@@ -35,10 +35,7 @@ fun BoardViewWithIdentifiers(
             Row {
                 RowsIdentifierView(board.size, tileSizeFactor)
                 Box {
-                    BoardView(
-                        board = board,
-                        tileSizeFactor = tileSizeFactor
-                    )
+                    BoardView(board, tileSizeFactor)
                     content()
                 }
             }

@@ -6,6 +6,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.VisualTransformation
 
+/**
+ * The authentication text field.
+ *
+ * @param label label to show
+ * @param value value to show
+ * @param onValueChange callback to be invoked when the text is changed
+ * @param modifier modifier to be applied to the text field
+ * @param required whether the text field is required or not
+ * @param maxLength maximum length of the text field
+ * @param forbiddenCharacters characters that are not allowed in the text field
+ * @param errorMessage error message to show
+ * @param visualTransformation visual transformation to apply to the text field
+ */
 @Composable
 fun AuthenticationTextField(
     label: String,

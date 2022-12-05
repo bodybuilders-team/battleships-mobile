@@ -1,8 +1,8 @@
 package pt.isel.pdm.battleships.domain.games.game
 
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.services.games.models.ShipTypeModel
-import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.service.services.games.models.ShipTypeModel
+import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigModel
 
 /**
  * A game configuration.

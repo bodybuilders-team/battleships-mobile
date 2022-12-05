@@ -105,7 +105,6 @@
 
     <!-- Gameplay -->
 
-    <string name="gameplay_timer_text">Timer</string>
     <string name="gameplay_timer_iconDescription">Timer Icon</string>
 
     <string name="gameplay_round_text">Round</string>
@@ -139,12 +138,15 @@
     <string name="endgame_mainMenuButton_description">Button to go to the main menu</string>
 
     <!-- Lobby -->
-    <string name="lobby_title" translatable="false">Lobby</string>
+
+    <string name="lobby_title">Lobby</string>
     <string name="lobby_join_iconDescription">Join Icon</string>
     <string name="lobby_info_iconDescription">Info icon</string>
 
     <!-- About -->
+
     <string name="about_title">Authors</string>
+    <string name="about_authorImage_contentDescription">Author Image</string>
     <string name="about_repoGithub_text">"The code for this app is available at: "</string>
     <string name="about_githubLogo_contentDescription">Github Logo</string>
     <string name="about_emailIcon_contentDescription">Email Icon</string>

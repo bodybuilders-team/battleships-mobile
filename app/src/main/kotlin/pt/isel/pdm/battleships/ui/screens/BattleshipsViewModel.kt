@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.LinkBattleshipsService
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.service.LinkBattleshipsService
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 
 /**
  * View model for the [BattleshipsActivity].

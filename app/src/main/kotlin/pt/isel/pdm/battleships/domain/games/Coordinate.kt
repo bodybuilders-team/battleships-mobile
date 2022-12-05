@@ -3,7 +3,7 @@ package pt.isel.pdm.battleships.domain.games
 import pt.isel.pdm.battleships.domain.games.Coordinate.Companion.maxColsRange
 import pt.isel.pdm.battleships.domain.games.Coordinate.Companion.maxRowsRange
 import pt.isel.pdm.battleships.domain.games.board.Board
-import pt.isel.pdm.battleships.services.games.models.CoordinateModel
+import pt.isel.pdm.battleships.service.services.games.models.CoordinateModel
 
 /**
  * Coordinate of each board cell.

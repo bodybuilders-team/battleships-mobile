@@ -8,6 +8,13 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.authentication.MAX_USERNAME_LENGTH
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
 
+/**
+ * The username text field.
+ *
+ * @param username username to show
+ * @param onUsernameChangeCallback callback to be invoked when the username text is changed
+ * @param modifier modifier to be applied to the text field
+ */
 @Composable
 fun UsernameTextField(
     username: String,
@@ -21,8 +28,7 @@ fun UsernameTextField(
         label = stringResource(R.string.authentication_usernameTextField_label),
         value = username,
         onValueChange = onUsernameChangeCallback,
-        modifier = Modifier.fillMaxWidth()
-            .then(modifier),
+        modifier = Modifier.fillMaxWidth().then(modifier),
         required = true,
         maxLength = MAX_USERNAME_LENGTH,
         forbiddenCharacters = listOf('\n'),

@@ -2,7 +2,7 @@ package pt.isel.pdm.battleships.domain.games.ship
 
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.Board
-import pt.isel.pdm.battleships.services.games.models.players.ship.UndeployedShipModel
+import pt.isel.pdm.battleships.service.services.games.models.players.ship.UndeployedShipModel
 
 /**
  * A ship in the game.
@@ -18,7 +18,6 @@ data class Ship(
     val coordinate: Coordinate,
     val orientation: Orientation
 ) {
-
     val coordinates: List<Coordinate> = getCoordinates(type, coordinate, orientation)
 
     /**

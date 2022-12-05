@@ -9,6 +9,12 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.authentication.MAX_PASSWORD_LENGTH
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 
+/**
+ * The password text field.
+ *
+ * @param password password to show
+ * @param onPasswordChangeCallback callback to be invoked when the password text is changed
+ */
 @Composable
 fun PasswordTextField(
     password: String,

@@ -28,19 +28,24 @@ fun ShipImage(
     if (type in ShipType.defaults)
         Image(
             painter = painterResource(
-                id = when (type.shipName) {
-                    ShipType.BATTLESHIP_NAME -> if (orientation.isVertical()) R.drawable.ship_battleship_v
-                    else R.drawable.ship_battleship_h
-                    ShipType.CARRIER_NAME -> if (orientation.isVertical()) R.drawable.ship_carrier_v
-                    else R.drawable.ship_carrier_h
-                    ShipType.CRUISER_NAME -> if (orientation.isVertical()) R.drawable.ship_cruiser_v
-                    else R.drawable.ship_cruiser_h
-                    ShipType.DESTROYER_NAME -> if (orientation.isVertical()) R.drawable.ship_destroyer_v
-                    else R.drawable.ship_destroyer_h
-                    ShipType.SUBMARINE_NAME -> if (orientation.isVertical()) R.drawable.ship_submarine_v
-                    else R.drawable.ship_submarine_h
-                    else -> throw IllegalArgumentException("Invalid ship type")
-                }
+                if (orientation.isVertical())
+                    when (type.shipName) {
+                        ShipType.BATTLESHIP_NAME -> R.drawable.ship_battleship_v
+                        ShipType.CARRIER_NAME -> R.drawable.ship_carrier_v
+                        ShipType.CRUISER_NAME -> R.drawable.ship_cruiser_v
+                        ShipType.DESTROYER_NAME -> R.drawable.ship_destroyer_v
+                        ShipType.SUBMARINE_NAME -> R.drawable.ship_submarine_v
+                        else -> throw IllegalArgumentException("Invalid ship type")
+                    }
+                else
+                    when (type.shipName) {
+                        ShipType.BATTLESHIP_NAME -> R.drawable.ship_battleship_h
+                        ShipType.CARRIER_NAME -> R.drawable.ship_carrier_h
+                        ShipType.CRUISER_NAME -> R.drawable.ship_cruiser_h
+                        ShipType.DESTROYER_NAME -> R.drawable.ship_destroyer_h
+                        ShipType.SUBMARINE_NAME -> R.drawable.ship_submarine_h
+                        else -> throw IllegalArgumentException("Invalid ship type")
+                    }
             ),
             contentDescription = stringResource(R.string.shipImage_contentDescription),
             modifier = Modifier.fillMaxSize()

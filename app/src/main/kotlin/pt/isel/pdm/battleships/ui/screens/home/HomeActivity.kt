@@ -13,13 +13,13 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplayMenu.GameplayMenuActi
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeEvent
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingActivity
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.ToastDuration
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
-import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
-import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
-import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksToForResult
-import pt.isel.pdm.battleships.ui.utils.showToast
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.ToastDuration
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.navigateWithLinksTo
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.navigateWithLinksToForResult
+import pt.isel.pdm.battleships.ui.screens.shared.showToast
 
 /**
  * Activity for the [HomeScreen].
@@ -57,24 +57,12 @@ class HomeActivity : BattleshipsActivity() {
         setContent {
             HomeScreen(
                 loggedIn = sessionManager.isLoggedIn(),
-                onGameplayMenuClick = {
-                    viewModel.navigateTo<GameplayMenuActivity>()
-                },
-                onLoginClick = {
-                    viewModel.navigateTo<LoginActivity>()
-                },
-                onRegisterClick = {
-                    viewModel.navigateTo<RegisterActivity>()
-                },
-                onLogoutClick = {
-                    viewModel.logout()
-                },
-                onRankingClick = {
-                    viewModel.navigateTo<RankingActivity>()
-                },
-                onAboutClick = {
-                    viewModel.navigateTo<AboutActivity>()
-                },
+                onGameplayMenuClick = { viewModel.navigateTo<GameplayMenuActivity>() },
+                onLoginClick = { viewModel.navigateTo<LoginActivity>() },
+                onRegisterClick = { viewModel.navigateTo<RegisterActivity>() },
+                onLogoutClick = { viewModel.logout() },
+                onRankingClick = { viewModel.navigateTo<RankingActivity>() },
+                onAboutClick = { viewModel.navigateTo<AboutActivity>() },
                 loadingState = viewModel.loadingState
             )
         }

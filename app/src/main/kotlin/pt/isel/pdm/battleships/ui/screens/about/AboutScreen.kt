@@ -19,8 +19,8 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.about.components.AuthorInfo
 import pt.isel.pdm.battleships.ui.screens.about.components.AuthorInfoView
-import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
+import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.ScreenTitle
 
 const val IMAGE_PADDING = 8
 private val githubRepoUrl = Uri.parse("https://github.com/isel-leic-daw/2022-daw-leic51d-g03")
@@ -53,9 +53,9 @@ fun AboutScreen(
         ) {
             ScreenTitle(title = stringResource(R.string.about_title))
 
-            authors.forEach { dev ->
+            authors.forEach { author ->
                 AuthorInfoView(
-                    author = dev,
+                    author = author,
                     onSendEmail = onSendEmail,
                     onOpenUrl = onOpenUrl
                 )
@@ -64,11 +64,10 @@ fun AboutScreen(
             Text(text = stringResource(R.string.about_repoGithub_text))
             Image(
                 painter = painterResource(
-                    id = if (isSystemInDarkTheme()) {
+                    if (isSystemInDarkTheme())
                         R.drawable.ic_github_light
-                    } else {
+                    else
                         R.drawable.ic_github_dark
-                    }
                 ),
                 contentDescription = stringResource(R.string.about_githubLogo_contentDescription),
                 modifier = Modifier
@@ -87,21 +86,21 @@ private val authors = listOf(
         name = "André Páscoa",
         githubLink = Uri.parse("https://github.com/devandrepascoa"),
         email = "48089@alunos.isel.pt",
-        imageId = R.drawable.andre_pascoa
+        imageId = R.drawable.author_andre_pascoa
     ),
     AuthorInfo(
         number = "48280",
         name = "André Jesus",
         githubLink = Uri.parse("https://github.com/andre-j3sus"),
         email = "48280@alunos.isel.pt",
-        imageId = R.drawable.andre_jesus
+        imageId = R.drawable.author_andre_jesus
     ),
     AuthorInfo(
         number = "48287",
         name = "Nyckollas Brandão",
         githubLink = Uri.parse("https://github.com/Nyckoka"),
         email = "48287@alunos.isel.pt",
-        imageId = R.drawable.nyckollas_brandao
+        imageId = R.drawable.author_nyckollas_brandao
     )
 )
 

@@ -24,7 +24,7 @@ import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameConfiguration.components.SHIP_VIEW_BOX_HEIGHT_FACTOR
+import pt.isel.pdm.battleships.ui.screens.gameplay.createGame.components.SHIP_VIEW_BOX_HEIGHT_FACTOR
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.DEFAULT_TILE_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
 
@@ -99,8 +99,7 @@ fun ShipSlotsView(
                     }
 
                     Text(
-                        text = (quantity - if (draggingShip && quantity > 0) 1 else 0)
-                            .toString()
+                        text = (quantity - if (draggingShip && quantity > 0) 1 else 0).toString()
                     )
                 }
             }

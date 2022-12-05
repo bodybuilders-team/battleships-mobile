@@ -5,16 +5,17 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
-import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
-import pt.isel.pdm.battleships.ui.utils.navigation.navigateWithLinksTo
-import pt.isel.pdm.battleships.ui.utils.showToast
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.components.LoadingSpinner
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.navigateWithLinksTo
+import pt.isel.pdm.battleships.ui.screens.shared.showToast
 
 /**
  * Activity for the board setup screen.
@@ -40,20 +41,22 @@ class BoardSetupActivity : BattleshipsActivity() {
         }
 
         setContent {
-            when (viewModel.state) {
-                IDLE, LINKS_LOADED, LOADING_GAME -> LoadingSpinner("Loading Game...")
-                WAITING_FOR_OPPONENT -> LoadingSpinner("Waiting for opponent...")
-                else -> {
-                    BoardSetupScreen(
-                        boardSize = viewModel.screenState.gridSize
-                            ?: throw IllegalStateException("No grid size found"),
-                        ships = viewModel.screenState.ships
-                            ?: throw IllegalStateException("No ships found"),
-                        onBoardSetupFinished = { board ->
-                            viewModel.deployFleet(board.fleet)
-                        },
-                        onBackButtonClicked = { finish() }
-                    )
+            BattleshipsScreen {
+                when (viewModel.state) {
+                    IDLE, LINKS_LOADED, LOADING_GAME -> LoadingSpinner("Loading Game...")
+                    WAITING_FOR_OPPONENT -> LoadingSpinner("Waiting for opponent...")
+                    else -> {
+                        BoardSetupScreen(
+                            boardSize = viewModel.screenState.gridSize
+                                ?: throw IllegalStateException("No grid size found"),
+                            ships = viewModel.screenState.ships
+                                ?: throw IllegalStateException("No ships found"),
+                            onBoardSetupFinished = { board ->
+                                viewModel.deployFleet(board.fleet)
+                            },
+                            onBackButtonClicked = { finish() }
+                        )
+                    }
                 }
             }
         }

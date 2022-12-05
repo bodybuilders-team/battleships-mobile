@@ -28,10 +28,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.services.games.models.games.getGame.GetGameOutputModel
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedLink
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedSubEntity
-import pt.isel.pdm.battleships.ui.utils.components.IconButton
+import pt.isel.pdm.battleships.service.media.siren.EmbeddedSubEntity
+import pt.isel.pdm.battleships.service.services.games.models.games.getGame.GetGameOutputModel
+import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 
 private const val BUTTON_SIZE = 38
 private const val SPACER_WIDTH = 100
@@ -45,15 +44,16 @@ private const val CARD_BORDER_WIDTH = 1
  * Composable that displays a game card in the lobby.
  *
  * @param game the game to be displayed
- * @param onGameInfoRequest the callback to be invoked when the info button is clicked
  * @param onJoinGameRequest the callback to be invoked when the join button is clicked
  */
 @Composable
 fun GameCard(
     game: EmbeddedSubEntity<GetGameOutputModel>,
-    onGameInfoRequest: () -> Unit,
     onJoinGameRequest: () -> Unit
 ) {
+    val gameProps = game.properties
+        ?: throw IllegalStateException("The game entity does not have properties")
+
     Column(
         modifier = Modifier
             .fillMaxWidth(CARD_WIDTH_FACTOR)
@@ -76,17 +76,14 @@ fun GameCard(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Text(
-                text = game.properties?.name ?: "Game",
+                text = gameProps.name,
                 style = MaterialTheme.typography.h6
             )
 
             Spacer(modifier = Modifier.width(SPACER_WIDTH.dp))
 
             IconButton(
-                onClick = {
-                    gameInfoExpanded = !gameInfoExpanded
-                    onGameInfoRequest()
-                },
+                onClick = { gameInfoExpanded = !gameInfoExpanded },
                 imageVector = ImageVector.vectorResource(R.drawable.ic_round_info_24),
                 contentDescription = stringResource(R.string.lobby_info_iconDescription),
                 modifier = Modifier.size(BUTTON_SIZE.dp)
@@ -100,8 +97,7 @@ fun GameCard(
             )
         }
 
-        if (gameInfoExpanded) {
-            // GameConfigColumn(gameConfig)
-        }
+        if (gameInfoExpanded)
+            GameConfigColumn(gameProps.config)
     }
 }

@@ -1,7 +1,7 @@
 package pt.isel.pdm.battleships
 
 import com.google.gson.Gson
-import pt.isel.pdm.battleships.services.BattleshipsService
+import pt.isel.pdm.battleships.service.BattleshipsService
 
 /**
  * Provides the dependencies of the application.

@@ -4,16 +4,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.users.models.AuthenticationOutput
-import pt.isel.pdm.battleships.services.utils.APIResult
+import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.service.connection.APIResult
+import pt.isel.pdm.battleships.service.services.users.models.AuthenticationOutput
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.IDLE
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.LOADING
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequest
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequest
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 
 /**
  * View model for both authentication methods (login and register).

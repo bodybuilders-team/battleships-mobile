@@ -55,7 +55,7 @@ fun AuthorInfoView(
     ) {
         Image(
             painter = painterResource(id = author.imageId),
-            contentDescription = null,
+            contentDescription = stringResource(R.string.about_authorImage_contentDescription),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .clip(CircleShape)
@@ -77,11 +77,13 @@ fun AuthorInfoView(
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center
             )
+
             Text(
                 text = author.name,
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center
             )
+
             Row {
                 Image(
                     painter = painterResource(R.drawable.ic_github_dark),
@@ -90,6 +92,7 @@ fun AuthorInfoView(
                         .clickable { onOpenUrl(author.githubLink) }
                         .padding(IMAGE_PADDING.dp)
                 )
+
                 Image(
                     painter = painterResource(R.drawable.ic_email),
                     contentDescription = stringResource(R.string.about_emailIcon_contentDescription),

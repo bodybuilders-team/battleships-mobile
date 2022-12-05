@@ -3,8 +3,8 @@ package pt.isel.pdm.battleships.ui.screens
 import androidx.activity.ComponentActivity
 import pt.isel.pdm.battleships.DependenciesContainer
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.ui.utils.viewModelInit
+import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.ui.screens.shared.viewModelInit
 
 /**
  * Activity for the [BattleshipsScreen].
@@ -21,8 +21,6 @@ open class BattleshipsActivity : ComponentActivity() {
      *
      * @param T the type of the [BattleshipsViewModel] to be initialized
      * @param constructor the constructor for the view model
-     *
-     * // TODO See this crossinline later / Is function viewModelInit needed at all?
      *
      * @return the view model
      */

@@ -14,13 +14,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.users.RankedUser
+import pt.isel.pdm.battleships.ui.screens.shared.components.LabelCell
+import pt.isel.pdm.battleships.ui.screens.shared.components.NormalTableCell
+import pt.isel.pdm.battleships.ui.screens.shared.components.TABLE_CELL_HEIGHT
+import pt.isel.pdm.battleships.ui.screens.shared.components.TABLE_CELL_WIDTH
 import pt.isel.pdm.battleships.ui.theme.Bronze
 import pt.isel.pdm.battleships.ui.theme.Gold
 import pt.isel.pdm.battleships.ui.theme.Silver
-import pt.isel.pdm.battleships.ui.utils.components.LabelCell
-import pt.isel.pdm.battleships.ui.utils.components.NormalTableCell
-import pt.isel.pdm.battleships.ui.utils.components.TABLE_CELL_HEIGHT
-import pt.isel.pdm.battleships.ui.utils.components.TABLE_CELL_WIDTH
 
 private const val TABLE_BORDER_WIDTH = 2
 private const val TABLE_COLUMNS_COUNT = 3

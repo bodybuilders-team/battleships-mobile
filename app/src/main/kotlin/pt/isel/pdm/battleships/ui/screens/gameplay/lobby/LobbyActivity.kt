@@ -5,10 +5,12 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupActivity
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.IDLE
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
-import pt.isel.pdm.battleships.ui.utils.showToast
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.navigateWithLinksTo
+import pt.isel.pdm.battleships.ui.screens.shared.showToast
 
 /**
  * Activity for the [LobbyScreen].
@@ -35,6 +37,7 @@ class LobbyActivity : BattleshipsActivity() {
             LobbyScreen(
                 state = viewModel.state,
                 games = viewModel.games,
+                onJoinGameRequest = { gameLink -> viewModel.joinGame(gameLink) },
                 onBackButtonClicked = { finish() }
             )
         }
@@ -48,6 +51,10 @@ class LobbyActivity : BattleshipsActivity() {
     private suspend fun handleEvent(event: Event) {
         when (event) {
             is Event.Error -> showToast(event.message)
+            is LobbyViewModel.LobbyEvent.NavigateToBoardSetup -> {
+                navigateWithLinksTo<BoardSetupActivity>(links = viewModel.getLinks())
+                finish()
+            }
         }
     }
 }

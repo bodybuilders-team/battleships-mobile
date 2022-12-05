@@ -30,7 +30,7 @@
         <activity android:name=".ui.screens.gameplay.boardSetup.BoardSetupActivity" />
         <activity android:name=".ui.screens.gameplay.gameplay.GameplayActivity" />
         <activity android:name=".ui.screens.gameplay.gameplayMenu.GameplayMenuActivity" />
-        <activity android:name=".ui.screens.gameplay.gameConfiguration.GameConfigurationActivity" />
+        <activity android:name=".ui.screens.gameplay.createGame.CreateGameActivity" />
         <activity android:name=".ui.screens.gameplay.lobby.LobbyActivity" />
         <activity android:name=".ui.screens.gameplay.matchmake.MatchmakeActivity" />
         <activity android:name=".ui.screens.about.AboutActivity" />

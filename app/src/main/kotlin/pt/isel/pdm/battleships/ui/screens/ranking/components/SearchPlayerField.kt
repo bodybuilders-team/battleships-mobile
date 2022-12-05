@@ -37,9 +37,7 @@ fun SearchPlayerField(onPlayerNameChanged: (String) -> Unit) {
                 onPlayerNameChanged(it)
             },
             placeholder = {
-                Text(
-                    stringResource(R.string.ranking_searchPlayerTextField_placeholderText)
-                )
+                Text(stringResource(R.string.ranking_searchPlayerTextField_placeholderText))
             },
             modifier = Modifier.fillMaxWidth(SEARCH_PLAYER_FIELD_WIDTH_FACTOR)
         )

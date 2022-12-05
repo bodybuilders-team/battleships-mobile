@@ -12,12 +12,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
-import pt.isel.pdm.battleships.ui.utils.components.NormalTableCell
+import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.ui.screens.shared.components.NormalTableCell
 
 private const val PADDING = 10
-private const val CONFIG_TITLE_FONT_SIZE = 18
 private const val SHIP_TYPES_TABLE_HEIGHT = 160
 
 /**
@@ -32,12 +30,6 @@ fun GameConfigColumn(gameConfig: GameConfigModel) {
             .fillMaxWidth()
             .padding(horizontal = PADDING.dp)
     ) {
-        Text(
-            text = "Configuration",
-            fontWeight = MaterialTheme.typography.h6.fontWeight,
-            fontSize = CONFIG_TITLE_FONT_SIZE.sp
-        )
-
         Text(
             text = "Grid Size: ${gameConfig.gridSize}",
             fontWeight = MaterialTheme.typography.h6.fontWeight,
@@ -62,11 +54,6 @@ fun GameConfigColumn(gameConfig: GameConfigModel) {
             style = MaterialTheme.typography.body1
         )
 
-        Text(
-            text = "Ships:",
-            fontWeight = MaterialTheme.typography.h6.fontWeight,
-            style = MaterialTheme.typography.body1
-        )
         Row {
             NormalTableCell(text = "Ship Type")
             NormalTableCell(text = "Size")

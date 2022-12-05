@@ -40,10 +40,10 @@ fun Timer(minutes: Int, seconds: Int) {
             .padding(PADDING_SIZE.dp)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_baseline_timer_24),
+            painter = painterResource(id = R.drawable.ic_round_timer_24),
             contentDescription = stringResource(id = R.string.gameplay_timer_iconDescription)
         )
-        Text(text = "${stringResource(id = R.string.gameplay_timer_text)}: ")
+
         Text(
             text = "$minutesString:$secondsString",
             color = if (minutes == 0 && seconds <= 10) Color.Red else Color.Unspecified

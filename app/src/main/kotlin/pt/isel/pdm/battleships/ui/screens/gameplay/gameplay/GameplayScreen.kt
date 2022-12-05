@@ -32,7 +32,6 @@ import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.domain.games.game.GameState
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
@@ -42,8 +41,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIde
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.TileHitView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.PlacedShipView
-import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.components.IconButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 import java.time.Instant
 
 const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
@@ -144,10 +143,7 @@ fun GameplayScreen(
                                     row = Board.FIRST_ROW + rowIdx
                                 )
 
-                                Box(
-                                    modifier = Modifier
-                                        .size(tileSize.dp)
-                                ) {
+                                Box(modifier = Modifier.size(tileSize.dp)) {
                                     val cell = myBoard.getCell(coordinate)
                                     if (cell.wasHit) {
                                         TileHitView(
@@ -188,88 +184,84 @@ fun GameplayScreen(
         }
     }
 
-    BattleshipsScreen {
-        Box {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+    Box {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .padding(top = 2.dp, bottom = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .padding(top = 2.dp, bottom = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Timer(minutes = timerMinutes, seconds = timerSeconds)
-                    Round(
-                        round = gameState.round ?: throw IllegalStateException("Round is null")
-                    )
-                }
+                Timer(minutes = timerMinutes, seconds = timerSeconds)
+                Round(
+                    round = gameState.round
+                        ?: throw IllegalStateException("Round is null")
+                )
+            }
+
+            if (myTurn)
+                opponentBoardComposable()
+            else
+                myBoardComposable()
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                if (myTurn)
+                    myBoardComposable()
+                else
+                    opponentBoardComposable()
 
                 if (myTurn) {
-                    opponentBoardComposable()
-                } else {
-                    myBoardComposable()
-                }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterVertically),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        IconButton(
+                            onClick = {
+                                canFireShots = false
 
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    if (myTurn) {
-                        myBoardComposable()
-                    } else {
-                        opponentBoardComposable()
+                                val shots = selectedCells
+                                selectedCells = emptyList()
+
+                                onShootClicked(shots)
+                            },
+                            enabled = canFireShots,
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_missile_24),
+                            contentDescription = stringResource(
+                                R.string.gameplay_shoot_button_description
+                            ),
+                            text = stringResource(R.string.gameplay_shoot_buttonText)
+                        )
+                        IconButton(
+                            onClick = { selectedCells = emptyList() },
+                            imageVector = ImageVector.vectorResource(
+                                R.drawable.ic_round_refresh_24
+                            ),
+                            contentDescription = stringResource(
+                                R.string.gameplay_resetShotsButton_description
+                            ),
+                            text = stringResource(R.string.gameplay_resetShotsButton_text)
+                        )
                     }
-
-                    if (myTurn) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.CenterVertically),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    canFireShots = false
-
-                                    val shots = selectedCells
-                                    selectedCells = emptyList()
-
-                                    onShootClicked(shots)
-                                },
-                                enabled = canFireShots,
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_missile),
-                                contentDescription = stringResource(
-                                    R.string.gameplay_shoot_button_description
-                                ),
-                                text = stringResource(R.string.gameplay_shoot_buttonText)
-                            )
-                            IconButton(
-                                onClick = { selectedCells = emptyList() },
-                                imageVector = ImageVector.vectorResource(
-                                    R.drawable.ic_round_refresh_24
-                                ),
-                                contentDescription = stringResource(
-                                    R.string.gameplay_resetShotsButton_description
-                                ),
-                                text = stringResource(R.string.gameplay_resetShotsButton_text)
-                            )
-                        }
-                    }
-                }
-
-                GoBackButton(onClick = onBackButtonClicked)
-
-                if (gameState.winner != null) {
-                    EndGamePopUp(
-                        won = !myTurn,
-                        cause = EndGameCause.DESTRUCTION,
-                        pointsWon = 100,
-                        playerInfo = playerInfo,
-                        opponentInfo = opponentInfo,
-                        onPlayAgainButtonClicked = onPlayAgainButtonClicked,
-                        onBackToMenuButtonClicked = onBackToMenuButtonClicked
-                    )
                 }
             }
+
+            GoBackButton(onClick = onBackButtonClicked)
+
+            if (gameState.winner != null)
+                EndGamePopUp(
+                    won = !myTurn,
+                    cause = EndGameCause.DESTRUCTION,
+                    pointsWon = 100,
+                    playerInfo = playerInfo,
+                    opponentInfo = opponentInfo,
+                    onPlayAgainButtonClicked = onPlayAgainButtonClicked,
+                    onBackToMenuButtonClicked = onBackToMenuButtonClicked
+                )
         }
     }
 }
@@ -289,8 +281,8 @@ private fun GameplayScreenPreview() {
             turn = "Jesus",
             winner = null
         ),
-        playerInfo = PlayerInfo("Jesus", R.drawable.andre_jesus),
-        opponentInfo = PlayerInfo("Nyck", R.drawable.nyckollas_brandao),
+        playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
+        opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
         onShootClicked = { },
         onBackButtonClicked = { },
         onPlayAgainButtonClicked = { },
@@ -313,8 +305,8 @@ private fun GameplayScreenGameEndedPreview() {
             turn = "Jesus",
             winner = "Jesus"
         ),
-        playerInfo = PlayerInfo("Jesus", R.drawable.andre_jesus),
-        opponentInfo = PlayerInfo("Nyck", R.drawable.nyckollas_brandao),
+        playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
+        opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
         onShootClicked = { },
         onBackButtonClicked = { },
         onPlayAgainButtonClicked = { },

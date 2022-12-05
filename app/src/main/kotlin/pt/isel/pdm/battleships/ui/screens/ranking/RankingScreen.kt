@@ -21,9 +21,9 @@ import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
 import pt.isel.pdm.battleships.ui.screens.ranking.components.RankingTableView
 import pt.isel.pdm.battleships.ui.screens.ranking.components.SearchPlayerField
-import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
-import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
+import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.LoadingSpinner
+import pt.isel.pdm.battleships.ui.screens.shared.components.ScreenTitle
 
 /**
  * Ranking screen.

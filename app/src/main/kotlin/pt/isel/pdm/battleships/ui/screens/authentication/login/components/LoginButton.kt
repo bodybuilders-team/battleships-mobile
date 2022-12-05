@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.ui.utils.components.IconButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 
 private const val BUTTON_PADDING = 8
 

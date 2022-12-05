@@ -12,7 +12,7 @@ import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
-import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
+import pt.isel.pdm.battleships.ui.screens.shared.components.LoadingSpinner
 
 /**
  * Matchmake screen.

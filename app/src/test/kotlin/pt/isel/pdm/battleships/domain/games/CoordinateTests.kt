@@ -1,6 +1,6 @@
 package pt.isel.pdm.battleships.domain.games
 
-import pt.isel.pdm.battleships.services.games.models.CoordinateModel
+import pt.isel.pdm.battleships.service.services.games.models.CoordinateModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

@@ -7,15 +7,16 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
+import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.FINISHED_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
-import pt.isel.pdm.battleships.ui.utils.navigation.Links.Companion.getLinks
-import pt.isel.pdm.battleships.ui.utils.showToast
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.components.LoadingSpinner
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links.Companion.getLinks
+import pt.isel.pdm.battleships.ui.screens.shared.showToast
 
 /**
  * Activity for the gameplay screen.
@@ -39,37 +40,31 @@ class GameplayActivity : BattleshipsActivity() {
         }
 
         setContent {
-            when (viewModel.state) {
-                IDLE, LINKS_LOADED, LOADING_GAME -> {
-                    LoadingSpinner("Loading Game..")
-                }
-                LOADING_MY_FLEET -> {
-                    LoadingSpinner("Loading Fleet..")
-                }
-                FINISHED_GAME -> {
-                    Text("Game Finished")
-                }
-                else -> {
-                    GameplayScreen(
-                        myTurn = viewModel.screenState.myTurn
-                            ?: throw IllegalStateException("My turn not found"),
-                        myBoard = viewModel.screenState.myBoard
-                            ?: throw IllegalStateException("My board not found"),
-                        opponentBoard = viewModel.screenState.opponentBoard
-                            ?: throw IllegalStateException("Opponent board not found"),
-                        gameConfig = viewModel.screenState.gameConfig
-                            ?: throw IllegalStateException("Game config not found"),
-                        gameState = viewModel.screenState.gameState
-                            ?: throw IllegalStateException("Game state not found"),
-                        playerInfo = PlayerInfo("Jesus", R.drawable.andre_jesus),
-                        opponentInfo = PlayerInfo("Nyck", R.drawable.nyckollas_brandao),
-                        onShootClicked = { coordinates ->
-                            viewModel.fireShots(coordinates)
-                        },
-                        onBackButtonClicked = { finish() },
-                        onPlayAgainButtonClicked = { finish() },
-                        onBackToMenuButtonClicked = { /*TODO*/ }
-                    )
+            BattleshipsScreen {
+                when (viewModel.state) {
+                    IDLE, LINKS_LOADED, LOADING_GAME -> LoadingSpinner("Loading Game...")
+                    LOADING_MY_FLEET -> LoadingSpinner("Loading Fleet...")
+                    FINISHED_GAME -> Text("Game Finished")
+                    else -> {
+                        GameplayScreen(
+                            myTurn = viewModel.screenState.myTurn
+                                ?: throw IllegalStateException("My turn not found"),
+                            myBoard = viewModel.screenState.myBoard
+                                ?: throw IllegalStateException("My board not found"),
+                            opponentBoard = viewModel.screenState.opponentBoard
+                                ?: throw IllegalStateException("Opponent board not found"),
+                            gameConfig = viewModel.screenState.gameConfig
+                                ?: throw IllegalStateException("Game config not found"),
+                            gameState = viewModel.screenState.gameState
+                                ?: throw IllegalStateException("Game state not found"),
+                            playerInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
+                            opponentInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
+                            onShootClicked = { coordinates -> viewModel.fireShots(coordinates) },
+                            onBackButtonClicked = { finish() },
+                            onPlayAgainButtonClicked = { finish() },
+                            onBackToMenuButtonClicked = { /*TODO*/ }
+                        )
+                    }
                 }
             }
         }

@@ -90,27 +90,36 @@ fun TileHitView(
     val density = LocalDensity.current
     val borderOffset = 2 * density.density
 
-    Box(
-        modifier = Modifier
-            .size(tileSize.dp)
-    ) {
-        Canvas(modifier = Modifier.size(tileSize.dp), onDraw = {
-            drawLine(
-                color = if (hitShip) Color.Red else Color.Gray,
-                start = Offset(tileSize * density.density - borderOffset, borderOffset),
-                end = Offset(borderOffset, tileSize * density.density - borderOffset),
-                strokeWidth = 5f
-            )
-            drawLine(
-                color = if (hitShip) Color.Red else Color.Gray,
-                start = Offset(
-                    tileSize * density.density - borderOffset,
-                    tileSize * density.density - borderOffset
-                ),
-                end = Offset(borderOffset, borderOffset),
-                strokeWidth = 5f
-            )
-        })
+    Box(modifier = Modifier.size(tileSize.dp)) {
+        Canvas(
+            modifier = Modifier.size(tileSize.dp),
+            onDraw = {
+                drawLine(
+                    color = if (hitShip) Color.Red else Color.Gray,
+                    start = Offset(
+                        x = tileSize * density.density - borderOffset,
+                        y = borderOffset
+                    ),
+                    end = Offset(
+                        x = borderOffset,
+                        y = tileSize * density.density - borderOffset
+                    ),
+                    strokeWidth = 5f
+                )
+                drawLine(
+                    color = if (hitShip) Color.Red else Color.Gray,
+                    start = Offset(
+                        x = tileSize * density.density - borderOffset,
+                        y = tileSize * density.density - borderOffset
+                    ),
+                    end = Offset(
+                        x = borderOffset,
+                        y = borderOffset
+                    ),
+                    strokeWidth = 5f
+                )
+            }
+        )
     }
 }
 

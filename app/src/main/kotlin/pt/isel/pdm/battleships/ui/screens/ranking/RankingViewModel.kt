@@ -5,16 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.users.User
-import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.users.models.getUsers.GetUsersUserModel
+import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersUserModel
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.FINISHED
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.GETTING_USERS
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.IDLE
 import pt.isel.pdm.battleships.ui.screens.ranking.RankingViewModel.RankingState.LINKS_LOADED
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels
+import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 
 /**
  * View model for the [RankingActivity].
@@ -31,10 +31,11 @@ class RankingViewModel(
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
     private var _users by mutableStateOf(emptyList<User>())
+    private var _state: RankingState by mutableStateOf(IDLE)
+
     val users: List<User>
         get() = _users
 
-    private var _state: RankingState by mutableStateOf(IDLE)
     val state
         get() = _state
 

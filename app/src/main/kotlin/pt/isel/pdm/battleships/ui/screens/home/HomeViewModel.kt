@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.BattleshipsService
+import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeLoadingState.LOADING
@@ -19,9 +19,9 @@ import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING_H
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.LOADING_USER_HOME
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.USER_HOME_LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.home.HomeViewModel.HomeState.USER_HOME_LOADED
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 
 /**
  * View model for the [HomeActivity].
@@ -38,10 +38,11 @@ class HomeViewModel(
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
     private var _loadingState by mutableStateOf(NOT_LOADING)
+    private var _state: HomeState by mutableStateOf(IDLE)
+
     val loadingState: HomeLoadingState
         get() = _loadingState
 
-    private var _state: HomeState by mutableStateOf(IDLE)
     val state
         get() = _state
 
@@ -105,6 +106,7 @@ class HomeViewModel(
         viewModelScope.launch {
             while (state !in listOf(HOME_LOADED, USER_HOME_LOADED))
                 yield()
+
             _events.emit(HomeEvent.Navigate(clazz))
         }
     }

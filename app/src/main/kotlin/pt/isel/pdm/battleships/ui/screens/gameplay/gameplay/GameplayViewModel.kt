@@ -13,18 +13,18 @@ import pt.isel.pdm.battleships.domain.games.game.GameState
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.games.models.games.getGame.GetGameOutput
-import pt.isel.pdm.battleships.services.games.models.players.fireShots.FireShotsInput
-import pt.isel.pdm.battleships.services.games.models.players.ship.GetFleetOutputModel
-import pt.isel.pdm.battleships.services.games.models.players.shot.UnfiredShotModel
+import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.service.services.games.models.games.getGame.GetGameOutput
+import pt.isel.pdm.battleships.service.services.games.models.players.fireShots.FireShotsInput
+import pt.isel.pdm.battleships.service.services.games.models.players.ship.GetFleetOutputModel
+import pt.isel.pdm.battleships.service.services.games.models.players.shot.UnfiredShotModel
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
-import pt.isel.pdm.battleships.ui.utils.executeRequestThrowing
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.screens.shared.executeRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 
 /**
  * View model for the [GameplayActivity].
@@ -41,7 +41,7 @@ class GameplayViewModel(
      * @property myBoard the board of the player, null if the game is not loaded
      * @property opponentBoard the board of the opponent, null if the game is not loaded
      * @property myTurn true if it's the player's turn, false otherwise, null if the game is not loaded
-     */
+     */ // TODO: Put this in a separate file?
     data class GameplayScreenState(
         val gameConfig: GameConfig? = null,
         val gameState: GameState? = null,
@@ -51,10 +51,11 @@ class GameplayViewModel(
     )
 
     private var _screenState by mutableStateOf(GameplayScreenState())
+    private var _state: GameplayState by mutableStateOf(IDLE)
+
     val screenState: GameplayScreenState
         get() = _screenState
 
-    private var _state: GameplayState by mutableStateOf(IDLE)
     val state
         get() = _state
 
@@ -189,9 +190,9 @@ class GameplayViewModel(
             if (properties.phase == FINISHED_PHASE)
                 _state = GameplayState.FINISHED_GAME
 
-            if (properties.turn != sessionManager.username) {
+            if (properties.turn != sessionManager.username)
                 delay(POLLING_DELAY)
-            } else {
+            else {
                 getOpponentShots()
                 delay(TURN_SWITCH_DELAY)
                 _screenState = _screenState.copy(myTurn = true)
@@ -219,11 +220,7 @@ class GameplayViewModel(
             myBoard = MyBoard(
                 size = myBoard.size,
                 initialFleet = myBoard.fleet
-            ).shoot(
-                opponentShots.map {
-                    it.coordinate.toCoordinate()
-                }
-            )
+            ).shoot(opponentShots.map { it.coordinate.toCoordinate() })
         )
     }
 
@@ -241,12 +238,10 @@ class GameplayViewModel(
                 .find { shipType -> shipType.shipName == it.type }
                 ?: throw IllegalStateException("Invalid ship type")
 
-            val orientation = Orientation.valueOf(it.orientation)
-
             Ship(
                 type = shipType,
                 coordinate = it.coordinate.toCoordinate(),
-                orientation = orientation
+                orientation = Orientation.valueOf(it.orientation)
             )
         }
 

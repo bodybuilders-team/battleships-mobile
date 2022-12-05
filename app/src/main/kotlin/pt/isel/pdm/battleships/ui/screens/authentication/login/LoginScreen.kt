@@ -21,8 +21,8 @@ import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginB
 import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginTextFields
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
-import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
+import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.ScreenTitle
 
 /**
  * Login screen.
@@ -40,9 +40,8 @@ fun LoginScreen(
     onBackButtonClicked: () -> Unit
 ) {
     LaunchedEffect(state) {
-        if (state == SUCCESS) {
+        if (state == SUCCESS)
             onLoginSuccessful()
-        }
     }
 
     var username by remember { mutableStateOf("") }
@@ -70,9 +69,7 @@ fun LoginScreen(
                 if (invalidFields)
                     return@LoginButton
 
-                val hashedPassword = hash(password)
-
-                onLogin(username, hashedPassword)
+                onLogin(username, hash(password))
             }
 
             GoBackButton(onClick = onBackButtonClicked)

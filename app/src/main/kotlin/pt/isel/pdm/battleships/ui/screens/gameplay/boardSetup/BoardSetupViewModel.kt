@@ -7,8 +7,8 @@ import kotlinx.coroutines.delay
 import pt.isel.pdm.battleships.SessionManager
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.games.models.players.deployFleet.DeployFleetInput
+import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.service.services.games.models.players.deployFleet.DeployFleetInput
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.DEPLOYING_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FINISHED
@@ -18,10 +18,10 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.executeRequestThrowing
-import pt.isel.pdm.battleships.ui.utils.launchAndExecuteRequestThrowing
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.executeRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 
 /**
  * View model for the [BoardSetupActivity].
@@ -42,10 +42,11 @@ class BoardSetupViewModel(
     )
 
     private var _screenState by mutableStateOf(BoardSetupScreenState())
+    private var _state: BoardSetupState by mutableStateOf(IDLE)
+
     val screenState: BoardSetupScreenState
         get() = _screenState
 
-    private var _state: BoardSetupState by mutableStateOf(IDLE)
     val state
         get() = _state
 
@@ -118,9 +119,9 @@ class BoardSetupViewModel(
             val properties = gameStateData.properties
                 ?: throw IllegalStateException("Game state properties are null")
 
-            if (properties.phase == DEPLOYING_FLEETS_PHASE) {
+            if (properties.phase == DEPLOYING_FLEETS_PHASE)
                 delay(POLLING_DELAY)
-            } else {
+            else {
                 _state = FINISHED
                 _events.emit(BoardSetupEvent.NavigateToGameplay)
                 break
@@ -141,9 +142,13 @@ class BoardSetupViewModel(
     /**
      * The state of the view model.
      *
+     * @property IDLE the view model is idle
+     * @property LINKS_LOADED the links are loaded
      * @property LOADING_GAME the view model is loading the game
+     * @property GAME_LOADED the game is loaded
      * @property DEPLOYING_FLEET the view model is deploying the fleet
-     * @property WAITING_FOR_OPPONENT WAITING_FOR_OPPONENT
+     * @property FLEET_DEPLOYED the fleet is deployed
+     * @property WAITING_FOR_OPPONENT the view model is waiting for the opponent to deploy their fleet
      */
     enum class BoardSetupState {
         IDLE,

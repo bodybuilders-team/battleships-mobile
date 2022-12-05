@@ -22,8 +22,8 @@ import pt.isel.pdm.battleships.ui.screens.authentication.register.components.Reg
 import pt.isel.pdm.battleships.ui.screens.authentication.validateEmail
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
 import pt.isel.pdm.battleships.ui.screens.authentication.validateUsername
-import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
+import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.ScreenTitle
 
 /**
  * Register screen.
@@ -41,9 +41,8 @@ fun RegisterScreen(
     onBackButtonClicked: () -> Unit
 ) {
     LaunchedEffect(state) {
-        if (state == SUCCESS) {
+        if (state == SUCCESS)
             onRegisterSuccessful()
-        }
     }
 
     var email by remember { mutableStateOf("") }
@@ -75,9 +74,7 @@ fun RegisterScreen(
                 if (invalidFields)
                     return@RegisterButton
 
-                val hashedPassword = hash(password)
-
-                onRegister(email, username, hashedPassword)
+                onRegister(email, username, hash(password))
             }
 
             GoBackButton(onClick = onBackButtonClicked)

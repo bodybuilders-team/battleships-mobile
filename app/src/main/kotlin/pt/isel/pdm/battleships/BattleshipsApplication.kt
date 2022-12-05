@@ -4,9 +4,9 @@ import android.app.Application
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
-import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.utils.siren.SubEntity
-import pt.isel.pdm.battleships.services.utils.siren.SubEntityDeserializer
+import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.service.media.siren.SubEntity
+import pt.isel.pdm.battleships.service.media.siren.SubEntityDeserializer
 
 /**
  * The Battleships application.
@@ -31,7 +31,7 @@ class BattleshipsApplication : DependenciesContainer, Application() {
 
     companion object {
         private const val API_ENDPOINT =
-            "https://9543-2001-818-e871-b700-859a-59b-1bef-82df.eu.ngrok.io"
+            "https://1579-95-92-69-229.eu.ngrok.io"
         const val TAG = "BattleshipsApp"
     }
 }

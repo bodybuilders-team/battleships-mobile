@@ -1,6 +1,6 @@
 package pt.isel.pdm.battleships.domain.games.game
 
-import pt.isel.pdm.battleships.services.games.models.games.GameStateModel
+import pt.isel.pdm.battleships.service.services.games.models.games.GameStateModel
 
 /**
  * The Game State.

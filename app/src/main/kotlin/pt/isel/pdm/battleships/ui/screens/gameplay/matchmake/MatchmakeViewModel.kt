@@ -10,16 +10,16 @@ import com.google.gson.stream.JsonReader
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.SessionManager
-import pt.isel.pdm.battleships.services.BattleshipsService
-import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.service.BattleshipsService
+import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigModel
 import pt.isel.pdm.battleships.ui.screens.BattleshipsViewModel
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMADE
 import pt.isel.pdm.battleships.ui.screens.gameplay.matchmake.MatchmakeViewModel.MatchmakeState.MATCHMAKING
-import pt.isel.pdm.battleships.ui.utils.Event
-import pt.isel.pdm.battleships.ui.utils.executeRequestThrowing
-import pt.isel.pdm.battleships.ui.utils.navigation.Links
+import pt.isel.pdm.battleships.ui.screens.shared.Event
+import pt.isel.pdm.battleships.ui.screens.shared.executeRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 
 /**
  * View model for the [MatchmakeActivity].
@@ -38,7 +38,6 @@ class MatchmakeViewModel(
     assetManager: AssetManager
 ) : BattleshipsViewModel(battleshipsService, sessionManager) {
 
-    // TODO should this be attached to viewModel or application data?
     private val gameConfigModel = jsonEncoder.fromJson<GameConfigModel>(
         JsonReader(assetManager.open(DEFAULT_GAME_CONFIG_FILE_PATH).reader()),
         GameConfigModel::class.java

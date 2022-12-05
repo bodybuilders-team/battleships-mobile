@@ -10,23 +10,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.services.games.models.games.GameConfigModel
-import pt.isel.pdm.battleships.services.games.models.games.GameStateModel
-import pt.isel.pdm.battleships.services.games.models.games.PlayerModel
-import pt.isel.pdm.battleships.services.games.models.games.getGame.GetGameOutputModel
-import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutput
-import pt.isel.pdm.battleships.services.games.models.games.getGames.GetGamesOutputModel
-import pt.isel.pdm.battleships.services.utils.siren.Action
-import pt.isel.pdm.battleships.services.utils.siren.EmbeddedSubEntity
-import pt.isel.pdm.battleships.services.utils.siren.Link
+import pt.isel.pdm.battleships.service.media.siren.Action
+import pt.isel.pdm.battleships.service.media.siren.EmbeddedSubEntity
+import pt.isel.pdm.battleships.service.media.siren.Link
+import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigModel
+import pt.isel.pdm.battleships.service.services.games.models.games.GameStateModel
+import pt.isel.pdm.battleships.service.services.games.models.games.PlayerModel
+import pt.isel.pdm.battleships.service.services.games.models.games.getGame.GetGameOutputModel
+import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetGamesOutput
+import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetGamesOutputModel
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.FINISHED
+import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.LobbyViewModel.LobbyState.GAMES_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.lobby.components.GameCard
-import pt.isel.pdm.battleships.ui.utils.components.GoBackButton
-import pt.isel.pdm.battleships.ui.utils.components.LoadingSpinner
-import pt.isel.pdm.battleships.ui.utils.components.ScreenTitle
-import pt.isel.pdm.battleships.ui.utils.navigation.Rels
+import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
+import pt.isel.pdm.battleships.ui.screens.shared.components.LoadingSpinner
+import pt.isel.pdm.battleships.ui.screens.shared.components.ScreenTitle
+import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 import java.net.URI
 
 /**
@@ -34,12 +35,14 @@ import java.net.URI
  *
  * @param state the current state of the lobby
  * @param games the list of games
+ * @param onJoinGameRequest the callback to be invoked when the user requests to join a game
  * @param onBackButtonClicked the callback to be invoked when the back button is clicked.
  */
 @Composable
 fun LobbyScreen(
     state: LobbyState,
     games: GetGamesOutput?,
+    onJoinGameRequest: (String) -> Unit,
     onBackButtonClicked: () -> Unit
 ) {
     BattleshipsScreen {
@@ -51,7 +54,7 @@ fun LobbyScreen(
             ScreenTitle(title = stringResource(R.string.lobby_title))
 
             when (state) {
-                FINISHED ->
+                GAMES_LOADED ->
                     LazyColumn(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.Start
@@ -61,14 +64,23 @@ fun LobbyScreen(
                                 "Games cannot be null when state is FINISHED"
                             )
 
-                        val totalCount = games.properties?.totalCount ?: 0
-                        items(totalCount) { index ->
-                            val game =
-                                games.entities?.get(index) as EmbeddedSubEntity<GetGameOutputModel>
+                        @Suppress("UNCHECKED_CAST")
+                        val filteredGames = games.entities
+                            ?.filter { game ->
+                                (game as EmbeddedSubEntity<GetGameOutputModel>)
+                                    .properties?.state?.phase == "WAITING_FOR_PLAYERS"
+                            }
+                            ?: emptyList()
+
+                        items(filteredGames.size) { index ->
+                            @Suppress("UNCHECKED_CAST")
+                            val game = filteredGames[index] as EmbeddedSubEntity<GetGameOutputModel>
+
                             GameCard(
                                 game = game,
-                                onGameInfoRequest = { /*TODO*/ },
-                                onJoinGameRequest = { /*TODO*/ }
+                                onJoinGameRequest = {
+                                    onJoinGameRequest(game.getAction(Rels.JOIN_GAME).href.path)
+                                }
                             )
                         }
                     }
@@ -127,6 +139,7 @@ private fun LobbyScreenPreview() {
                 )
             )
         ),
+        onJoinGameRequest = {},
         onBackButtonClicked = { }
     )
 }
@@ -140,6 +153,7 @@ private fun EmptyLobbyScreenPreview() {
             properties = GetGamesOutputModel(0),
             entities = listOf()
         ),
+        onJoinGameRequest = {},
         onBackButtonClicked = { }
     )
 }
