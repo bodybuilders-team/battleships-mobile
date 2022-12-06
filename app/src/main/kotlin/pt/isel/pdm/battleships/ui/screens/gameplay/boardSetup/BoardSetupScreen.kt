@@ -75,12 +75,9 @@ fun BoardSetupScreen(
     var draggableShips by remember { mutableStateOf(listOf<Ship>()) }
     var boardOffset: Offset by remember { mutableStateOf(Offset.Zero) }
 
-    LaunchedEffect(Unit) {
-        while (time > 0) {
-            delay(1000)
-
-            onTimeChanged(time - 1)
-        }
+    LaunchedEffect(time) {
+        delay(1000)
+        onTimeChanged(time - 1)
     }
 
     Column(

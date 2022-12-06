@@ -99,12 +99,9 @@ fun GameplayScreen(
 
     var canFireShots by remember { mutableStateOf(myTurn) }
 
-    LaunchedEffect(Unit) {
-        while (time > 0) {
-            delay(1000)
-
-            onTimeChanged(time - 1)
-        }
+    LaunchedEffect(time) {
+        delay(1000)
+        onTimeChanged(time - 1)
     }
 
     LaunchedEffect(myTurn) {
