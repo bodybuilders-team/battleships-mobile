@@ -59,7 +59,8 @@ private const val DRAGGING_SHIP_BORDER_SIZE = 2
 fun BoardSetupScreen(
     boardSize: Int,
     ships: Map<ShipType, Int>,
-    maxTimeForGridLayout: Int,
+    time: Int,
+    onTimeChanged: (Int) -> Unit,
     onBoardSetupFinished: (ConfigurableBoard) -> Unit,
     onBackButtonClicked: () -> Unit,
     onPlayAgainButtonClicked: () -> Unit,
@@ -74,19 +75,11 @@ fun BoardSetupScreen(
     var draggableShips by remember { mutableStateOf(listOf<Ship>()) }
     var boardOffset: Offset by remember { mutableStateOf(Offset.Zero) }
 
-    var timerMinutes by remember { mutableStateOf(maxTimeForGridLayout / 60) }
-    var timerSeconds by remember { mutableStateOf(maxTimeForGridLayout % 60) }
-
     LaunchedEffect(Unit) {
-        while (true) {
+        while (time > 0) {
             delay(1000)
 
-            if (timerSeconds != 0) {
-                timerSeconds--
-            } else if (timerMinutes != 0) {
-                timerSeconds = 59
-                timerMinutes--
-            }
+            onTimeChanged(time - 1)
         }
     }
 
@@ -100,7 +93,7 @@ fun BoardSetupScreen(
                     .width(FULL_BOARD_VIEW_BOX_SIZE.dp)
                     .onGloballyPositioned { boardOffset = it.positionInWindow() }
             ) {
-                Timer(minutes = timerMinutes, seconds = timerSeconds)
+                Timer(minutes = time / 60, seconds = time % 60)
 
                 BoardViewWithIdentifiers(board = board) {
                     draggableShips.forEach { draggableShip ->
@@ -238,7 +231,7 @@ fun BoardSetupScreen(
                         unplacedShips.keys.forEach { unplacedShips[it] = 0 }
                     },
                     onConfirmBoardButtonPressed = {
-                        if (board.fleet.size == ships.size)
+                        if (board.fleet.size == ships.values.sum())
                             onBoardSetupFinished(board)
                     }
                 )
@@ -260,7 +253,7 @@ fun BoardSetupScreen(
                 }
             }
 
-            if (timerMinutes == 0 && timerSeconds == 0)
+            if (time == 0)
                 EndGamePopUp(
                     winningPlayer = WinningPlayer.NONE,
                     cause = EndGameCause.TIMEOUT,
@@ -329,7 +322,8 @@ fun BoardSetupScreenPreview() {
         BoardSetupScreen(
             boardSize = 10,
             ships = ShipType.defaultsMap,
-            maxTimeForGridLayout = 30,
+            time = 30,
+            onTimeChanged = {},
             onBoardSetupFinished = {},
             onBackButtonClicked = {},
             onPlayAgainButtonClicked = {},
@@ -345,7 +339,8 @@ fun BoardSetupScreenEndGamePreview() {
         BoardSetupScreen(
             boardSize = 10,
             ships = ShipType.defaultsMap,
-            maxTimeForGridLayout = 0,
+            time = 0,
+            onTimeChanged = {},
             onBoardSetupFinished = {},
             onBackButtonClicked = {},
             onPlayAgainButtonClicked = {},

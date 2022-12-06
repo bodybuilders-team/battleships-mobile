@@ -55,8 +55,9 @@ class BoardSetupActivity : BattleshipsActivity() {
                                 ?: throw IllegalStateException("No grid size found"),
                             ships = viewModel.screenState.ships
                                 ?: throw IllegalStateException("No ships found"),
-                            maxTimeForGridLayout = viewModel.screenState.maxTimeForGridLayout
+                            time = viewModel.screenState.time
                                 ?: throw IllegalStateException("No max time for grid layout found"),
+                            onTimeChanged = { viewModel.changeTime(it) },
                             onBoardSetupFinished = { board ->
                                 viewModel.deployFleet(board.fleet)
                             },

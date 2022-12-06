@@ -45,7 +45,7 @@ class BoardSetupViewModel(
     data class BoardSetupScreenState(
         val gridSize: Int? = null,
         val ships: Map<ShipType, Int>? = null,
-        val maxTimeForGridLayout: Int? = null
+        val time: Int? = null
     )
 
     private var _screenState by mutableStateOf(BoardSetupScreenState())
@@ -79,7 +79,7 @@ class BoardSetupViewModel(
                     ships = shipTypes.associate {
                         ShipType(size = it.size, shipName = it.shipName) to it.quantity
                     },
-                    maxTimeForGridLayout = properties.config.maxTimeForLayoutPhase
+                    time = properties.config.maxTimeForLayoutPhase
                 )
                 _state = GAME_LOADED
             }
@@ -135,6 +135,15 @@ class BoardSetupViewModel(
                 break
             }
         }
+    }
+
+    /**
+     * Changes screenState time to [time].
+     *
+     * @param time time to change to
+     */
+    fun changeTime(time: Int) {
+        _screenState = _screenState.copy(time = time)
     }
 
     /**

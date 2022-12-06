@@ -89,6 +89,8 @@ fun GameplayScreen(
     playerInfo: PlayerInfo,
     opponentInfo: PlayerInfo,
     onShootClicked: (List<Coordinate>) -> Unit,
+    time: Int,
+    onTimeChanged: (Int) -> Unit,
     onLeaveGameButtonClicked: () -> Unit,
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
@@ -97,19 +99,11 @@ fun GameplayScreen(
 
     var canFireShots by remember { mutableStateOf(myTurn) }
 
-    var timerMinutes by remember { mutableStateOf(gameConfig.maxTimePerRound / 60) }
-    var timerSeconds by remember { mutableStateOf(gameConfig.maxTimePerRound % 60) }
-
     LaunchedEffect(Unit) {
-        while (true) {
+        while (time > 0) {
             delay(1000)
 
-            if (timerSeconds != 0) {
-                timerSeconds--
-            } else if (timerMinutes != 0) {
-                timerSeconds = 59
-                timerMinutes--
-            }
+            onTimeChanged(time - 1)
         }
     }
 
@@ -192,7 +186,7 @@ fun GameplayScreen(
                     .padding(top = 2.dp, bottom = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Timer(minutes = timerMinutes, seconds = timerSeconds)
+                Timer(minutes = time / 60, seconds = time % 60)
                 Round(
                     round = gameState.round
                         ?: throw IllegalStateException("Round is null")
@@ -306,6 +300,8 @@ private fun GameplayScreenPreview() {
                 playerPoints = 100
             ),
             onShootClicked = { },
+            time = 30,
+            onTimeChanged = { },
             onLeaveGameButtonClicked = { },
             onPlayAgainButtonClicked = { },
             onBackToMenuButtonClicked = { }
@@ -340,6 +336,8 @@ private fun GameplayScreenGameEndedPreview() {
                 playerPoints = 150
             ),
             onShootClicked = { },
+            time = 0,
+            onTimeChanged = { },
             onLeaveGameButtonClicked = { },
             onPlayAgainButtonClicked = { },
             onBackToMenuButtonClicked = { }

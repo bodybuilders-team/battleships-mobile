@@ -63,7 +63,8 @@ class GameplayViewModel(
         val playerName: String? = null,
         val opponentName: String? = null,
         val playerPoints: Int? = null,
-        val opponentPoints: Int? = null
+        val opponentPoints: Int? = null,
+        val time: Int? = null
     )
 
     private var _screenState by mutableStateOf(GameplayScreenState())
@@ -107,7 +108,8 @@ class GameplayViewModel(
                     opponentName = opponent.username,
                     playerPoints = player.points,
                     opponentPoints = opponent.points,
-                    myTurn = myTurn
+                    myTurn = myTurn,
+                    time = gameConfig.maxTimePerRound
                 )
                 _state = GAME_LOADED
 
@@ -319,6 +321,10 @@ class GameplayViewModel(
             _state = FINISHED_GAME
     }
 
+    /**
+     * Does the game state polling, calling updateGameState() every [POLLING_DELAY] milliseconds.
+     * Finishes polling when state is [FINISHED_GAME].
+     */
     private fun gameStatePolling() {
         viewModelScope.launch {
             while (true) {
@@ -330,6 +336,15 @@ class GameplayViewModel(
                 delay(POLLING_DELAY)
             }
         }
+    }
+
+    /**
+     * Changes screenState time to [time].
+     *
+     * @param time time to change to
+     */
+    fun changeTime(time: Int) {
+        _screenState = _screenState.copy(time = time)
     }
 
     /**

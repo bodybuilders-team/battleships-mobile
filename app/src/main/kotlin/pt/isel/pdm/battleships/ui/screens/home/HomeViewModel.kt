@@ -105,11 +105,14 @@ class HomeViewModel(
     fun logout() {
         check(sessionManager.isLoggedIn()) { "The user is not logged in." }
 
+        val refreshToken = sessionManager.refreshToken
         sessionManager.clearSession()
         _isLoggedIn = false
 
+        refreshToken ?: return
+
         launchAndExecuteRequest(
-            request = { battleshipsService.usersService.logout(sessionManager.refreshToken!!) },
+            request = { battleshipsService.usersService.logout(refreshToken) },
             events = _events,
             onSuccess = {},
             retryOnApiResultFailure = { false }

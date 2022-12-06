@@ -70,6 +70,9 @@ class GameplayActivity : BattleshipsActivity() {
                                     ?: throw IllegalStateException("Opponent points not found")
                             ),
                             onShootClicked = { coordinates -> viewModel.fireShots(coordinates) },
+                            time = viewModel.screenState.time
+                                ?: throw IllegalStateException("No max time for grid layout found"),
+                            onTimeChanged = { viewModel.changeTime(it) },
                             onLeaveGameButtonClicked = {
                                 viewModel.leaveGame(onGameLeft = { finish() })
                             },
