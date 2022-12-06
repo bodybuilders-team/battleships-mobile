@@ -58,11 +58,13 @@ class GameplayActivity : BattleshipsActivity() {
                             gameState = viewModel.screenState.gameState
                                 ?: throw IllegalStateException("Game state not found"),
                             playerInfo = PlayerInfo(
-                                name = "Player",
+                                name = viewModel.screenState.playerName
+                                    ?: throw IllegalStateException("Player name not found"),
                                 avatarId = R.drawable.ic_round_person_24
                             ),
                             opponentInfo = PlayerInfo(
-                                name = "Opponent",
+                                name = viewModel.screenState.opponentName
+                                    ?: throw IllegalStateException("Opponent name not found"),
                                 avatarId = R.drawable.ic_round_person_24
                             ),
                             onShootClicked = { coordinates -> viewModel.fireShots(coordinates) },
@@ -71,7 +73,7 @@ class GameplayActivity : BattleshipsActivity() {
                                 finish()
                             },
                             onPlayAgainButtonClicked = { finish() },
-                            onBackToMenuButtonClicked = { /*TODO*/ }
+                            onBackToMenuButtonClicked = { }
                         )
                     }
                 }

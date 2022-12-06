@@ -34,7 +34,6 @@ import pt.isel.pdm.battleships.ui.screens.shared.executeRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequest
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
-import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 
 /**
  * View model for the [GameplayActivity].
@@ -48,10 +47,12 @@ class GameplayViewModel(
      * The state of the [GameplayScreen].
      *
      * @property gameConfig the game configuration, null if the game is not loaded
+     * @property gameState the game state, null if the game is not loaded
      * @property myBoard the board of the player, null if the game is not loaded
      * @property opponentBoard the board of the opponent, null if the game is not loaded
      * @property myTurn true if it's the player's turn, false otherwise, null if the game is not loaded
-     * @property leaveGameLink the link to leave the game, null if the game is not loaded
+     * @property playerName the name of the player, null if the game is not loaded or the user is not logged in
+     * @property opponentName  the name of the opponent, null if the game is not loaded
      */
     data class GameplayScreenState(
         val gameConfig: GameConfig? = null,
@@ -59,7 +60,8 @@ class GameplayViewModel(
         val myBoard: MyBoard? = null,
         val opponentBoard: OpponentBoard? = null,
         val myTurn: Boolean? = null,
-        val leaveGameLink: String? = null
+        val playerName: String? = null,
+        val opponentName: String? = null
     )
 
     private var _screenState by mutableStateOf(GameplayScreenState())
@@ -96,8 +98,11 @@ class GameplayViewModel(
                     gameConfig = gameConfig,
                     gameState = gameState,
                     opponentBoard = OpponentBoard(gameConfig.gridSize),
-                    myTurn = myTurn,
-                    leaveGameLink = gameData.getAction(Rels.LEAVE_GAME).href.path
+                    playerName = sessionManager.username,
+                    opponentName = properties.players.single {
+                        it.username != sessionManager.username
+                    }.username,
+                    myTurn = myTurn
                 )
                 _state = GAME_LOADED
 
@@ -187,7 +192,7 @@ class GameplayViewModel(
                 if (problem.status == 400) {
                     viewModelScope.launch { updateGameState() }
                 }
-                if (_state != GameplayState.FINISHED_GAME)
+                if (_state != FINISHED_GAME)
                     throw IllegalStateException(problem.title)
 
                 false
@@ -203,7 +208,7 @@ class GameplayViewModel(
         check(_screenState.myTurn == false) { "It's not the opponent's turn" }
 
         while (true) {
-            if (_state == GameplayState.FINISHED_GAME)
+            if (_state == FINISHED_GAME)
                 break
 
             if (_screenState.gameState?.turn != sessionManager.username)
@@ -269,12 +274,7 @@ class GameplayViewModel(
         _state = LEAVING_GAME
 
         launchAndExecuteRequestThrowing(
-            request = {
-                battleshipsService.gamesService.leaveGame(
-                    screenState.leaveGameLink
-                        ?: throw IllegalStateException("No leave game link found")
-                )
-            },
+            request = { battleshipsService.gamesService.leaveGame() },
             events = _events,
             onSuccess = {
                 _state = FINISHED_GAME
@@ -299,7 +299,7 @@ class GameplayViewModel(
         _screenState = _screenState.copy(gameState = GameState(gameStateData.properties))
 
         if (properties.phase == FINISHED_PHASE)
-            _state = GameplayState.FINISHED_GAME
+            _state = FINISHED_GAME
     }
 
     private fun gameStatePolling() {
@@ -307,7 +307,7 @@ class GameplayViewModel(
             while (true) {
                 updateGameState()
 
-                if (_state == GameplayState.FINISHED_GAME)
+                if (_state == FINISHED_GAME)
                     break
 
                 delay(POLLING_DELAY)

@@ -38,6 +38,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePo
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Round
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.OPPONENT
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.YOU
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.TileHitView
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
@@ -92,24 +94,8 @@ fun GameplayScreen(
 
     var canFireShots by remember { mutableStateOf(myTurn) }
 
-    var timerMinutes by remember {
-        mutableStateOf(
-            (
-                Instant.ofEpochMilli(gameState.phaseEndTime)
-                    .minusMillis(Instant.now().toEpochMilli())
-                    .epochSecond / 60
-                ).toInt()
-        )
-    }
-    var timerSeconds by remember {
-        mutableStateOf(
-            (
-                Instant.ofEpochMilli(gameState.phaseEndTime)
-                    .minusMillis(Instant.now().toEpochMilli())
-                    .epochSecond % 60
-                ).toInt()
-        )
-    }
+    var timerMinutes by remember { mutableStateOf(gameConfig.maxTimePerRound / 60) }
+    var timerSeconds by remember { mutableStateOf(gameConfig.maxTimePerRound % 60) }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -273,8 +259,12 @@ fun GameplayScreen(
 
             if (gameState.winner != null)
                 EndGamePopUp(
-                    won = !myTurn,
-                    cause = EndGameCause.DESTRUCTION,
+                    winningPlayer = if (gameState.winner == playerInfo.name) YOU else OPPONENT,
+                    cause = if (Instant.now().isAfter(Instant.ofEpochMilli(gameState.phaseEndTime)))
+                        EndGameCause.TIMEOUT
+                    else if (myBoard.fleetIsSunk || opponentBoard.fleetIsSunk)
+                        EndGameCause.DESTRUCTION
+                    else EndGameCause.RESIGNATION,
                     pointsWon = 100,
                     playerInfo = playerInfo,
                     opponentInfo = opponentInfo,

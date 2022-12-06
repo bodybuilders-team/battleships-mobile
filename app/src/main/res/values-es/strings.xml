@@ -100,6 +100,9 @@
     <string name="gameplay_confirmBoardButton_text">Confirmar Tablero</string>
     <string name="gameplay_confirmBoardButton_description">Botón para confirmar el tablero</string>
 
+    <string name="gameplay_loadingGame_text">Cargando el Juego...</string>
+    <string name="gameplay_waitingForOpponent_text">Esperando por el Oponente...</string>
+
     <!-- Gameplay -->
 
     <string name="gameplay_timer_iconDescription">Ícono de Temporizador</string>
@@ -122,11 +125,14 @@
 
     <string name="endgame_youWon_text">Tú venceste!</string>
     <string name="endgame_youLost_text">Tú perdeste!</string>
+    <string name="endgame_aborted_text">Juego abortado</string>
 
     <string name="endgame_byFleetDestruction_text">por destrucción de la flota</string>
     <string name="endgame_byResignation_text">por abandono</string>
+    <string name="endgame_byTimeout_text">por tiempo agotado</string>
 
     <string name="endgame_points_text">puntos</string>
+    <string name="endgame_noPointsWon_text">Sin puntos ganados</string>
 
     <string name="endgame_winnersAvatar_description">Avatar del Vencedor</string>
     <string name="endgame_losersAvatar_description">Avatar del Perdedor</string>
@@ -143,6 +149,14 @@
     <string name="lobby_join_iconDescription">Ícono de se juntar a un juego</string>
     <string name="lobby_info_iconDescription">Ícono de información</string>
 
+    <string name="lobby_loadingGames_text">Cargando Juegos...</string>
+    <string name="lobby_joiningGame_text">Juntadose al Juego...</string>
+
+    <string name="lobby_gameConfig_shipType_text">Tipo de Buque</string>
+    <string name="lobby_gameConfig_size_text">Tamaño</string>
+    <string name="lobby_gameConfig_quantity_text">Cantidad</string>
+    <string name="lobby_gameConfig_points_text">Puntos</string>
+
     <!-- About -->
 
     <string name="about_title">Autores</string>
@@ -150,11 +164,4 @@
     <string name="about_repoGithub_text">El código de esta aplicación está disponible aquí:</string>
     <string name="about_githubLogo_contentDescription">Logo de Github</string>
     <string name="about_emailIcon_contentDescription">Ícono de email</string>
-    <string name="gameplay_loadingGame_text">Cargando el Juego...</string>
-    <string name="gameplay_waitingForOpponent_text">Esperando por el Oponente...</string>
-    <string name="lobby_gameConfig_quantity_text">Cantidad</string>
-    <string name="lobby_gameConfig_points_text">Puntos</string>
-    <string name="lobby_gameConfig_size_text">Tamaño</string>
-    <string name="lobby_gameConfig_shipType_text">Tipo de Buque</string>
-    <string name="lobby_loadingGames_text">Cargando Juegos...</string>
 </resources>

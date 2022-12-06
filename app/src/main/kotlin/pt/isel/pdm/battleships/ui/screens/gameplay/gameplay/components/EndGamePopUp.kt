@@ -32,17 +32,35 @@ import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.DESTRUCTION
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.RESIGNATION
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.TIMEOUT
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.NONE
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.OPPONENT
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.YOU
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
+
+/**
+ * The cause of the end of the game.
+ *
+ * @property YOU you won
+ * @property OPPONENT the opponent won
+ */
+enum class WinningPlayer {
+    YOU,
+    OPPONENT,
+    NONE
+}
 
 /**
  * The cause of the end of the game.
  *
  * @property DESTRUCTION the game ended because a player's fleet was destroyed
  * @property RESIGNATION the game ended because a player resigned
+ * @property TIMEOUT the game ended because a player took too long
  */
 enum class EndGameCause {
     DESTRUCTION,
-    RESIGNATION
+    RESIGNATION,
+    TIMEOUT
 }
 
 private const val POPUP_BEHIND_DARKNESS_FACTOR = 0.3f
@@ -59,7 +77,7 @@ private const val BETWEEN_AVATAR_PADDING = 10
 /**
  * The end game popup.
  *
- * @param won true if the player won the game, false otherwise
+ * @param winningPlayer the player who won the game
  * @param cause the cause of the end of the game
  * @param pointsWon the points won by the player
  * @param playerInfo the player's info
@@ -69,7 +87,7 @@ private const val BETWEEN_AVATAR_PADDING = 10
  */
 @Composable
 fun EndGamePopUp(
-    won: Boolean,
+    winningPlayer: WinningPlayer,
     cause: EndGameCause,
     pointsWon: Int,
     playerInfo: PlayerInfo,
@@ -99,8 +117,11 @@ fun EndGamePopUp(
                 ) {
                     Text(
                         text = stringResource(
-                            if (won) R.string.endgame_youWon_text
-                            else R.string.endgame_youLost_text
+                            when (winningPlayer) {
+                                NONE -> R.string.endgame_aborted_text
+                                YOU -> R.string.endgame_youWon_text
+                                OPPONENT -> R.string.endgame_youLost_text
+                            }
                         ),
                         style = MaterialTheme.typography.h5
                     )
@@ -109,13 +130,15 @@ fun EndGamePopUp(
                             when (cause) {
                                 DESTRUCTION -> R.string.endgame_byFleetDestruction_text
                                 RESIGNATION -> R.string.endgame_byResignation_text
+                                TIMEOUT -> R.string.endgame_byTimeout_text
                             }
                         ),
                         style = MaterialTheme.typography.h6,
                         fontSize = CAUSE_TEXT_FONT_SIZE.sp
                     )
                     Text(
-                        text = "+$pointsWon ${stringResource(R.string.endgame_points_text)}",
+                        text = if (winningPlayer == NONE) stringResource(R.string.endgame_noPointsWon_text)
+                        else "+$pointsWon ${stringResource(R.string.endgame_points_text)}",
                         style = MaterialTheme.typography.h6
                     )
                 }
@@ -134,8 +157,10 @@ fun EndGamePopUp(
                     ) {
                         Image(
                             painter = painterResource(
-                                if (won) playerInfo.avatarId
-                                else opponentInfo.avatarId
+                                when (winningPlayer) {
+                                    YOU, NONE -> playerInfo.avatarId
+                                    OPPONENT -> opponentInfo.avatarId
+                                }
                             ),
                             contentDescription = stringResource(R.string.endgame_winnersAvatar_description),
                             contentScale = ContentScale.Crop,
@@ -144,7 +169,10 @@ fun EndGamePopUp(
                                 .border(1.dp, Color.Black)
                         )
                         Text(
-                            text = if (won) playerInfo.name else opponentInfo.name,
+                            text = when (winningPlayer) {
+                                YOU, NONE -> playerInfo.name
+                                OPPONENT -> opponentInfo.name
+                            },
                             style = MaterialTheme.typography.h6
                         )
                     }
@@ -155,8 +183,10 @@ fun EndGamePopUp(
                     ) {
                         Image(
                             painter = painterResource(
-                                if (won) opponentInfo.avatarId
-                                else playerInfo.avatarId
+                                when (winningPlayer) {
+                                    YOU, NONE -> opponentInfo.avatarId
+                                    OPPONENT -> playerInfo.avatarId
+                                }
                             ),
                             contentDescription = stringResource(R.string.endgame_losersAvatar_description),
                             contentScale = ContentScale.Crop,
@@ -165,30 +195,33 @@ fun EndGamePopUp(
                                 .border(1.dp, Color.Black)
                         )
                         Text(
-                            text = if (won) opponentInfo.name else playerInfo.name,
+                            text = when (winningPlayer) {
+                                YOU, NONE -> opponentInfo.name
+                                OPPONENT -> playerInfo.name
+                            },
                             style = MaterialTheme.typography.h6
                         )
                     }
-                }
 
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column {
-                        IconButton(
-                            onClick = onPlayAgainButtonClicked,
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_refresh_24),
-                            contentDescription = stringResource(R.string.endgame_playAgainButton_description),
-                            text = stringResource(R.string.endgame_playAgainButton_text)
-                        )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column {
+                            IconButton(
+                                onClick = onPlayAgainButtonClicked,
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_round_refresh_24),
+                                contentDescription = stringResource(R.string.endgame_playAgainButton_description),
+                                text = stringResource(R.string.endgame_playAgainButton_text)
+                            )
 
-                        IconButton(
-                            onClick = onBackToMenuButtonClicked,
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_home_24),
-                            contentDescription = stringResource(R.string.endgame_mainMenuButton_description),
-                            text = stringResource(R.string.endgame_mainMenuButton_text)
-                        )
+                            IconButton(
+                                onClick = onBackToMenuButtonClicked,
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_round_home_24),
+                                contentDescription = stringResource(R.string.endgame_mainMenuButton_description),
+                                text = stringResource(R.string.endgame_mainMenuButton_text)
+                            )
+                        }
                     }
                 }
             }
@@ -201,7 +234,7 @@ fun EndGamePopUp(
 private fun EndGamePopUpPreview() {
     BattleshipsScreen {
         EndGamePopUp(
-            won = true,
+            winningPlayer = YOU,
             cause = DESTRUCTION,
             pointsWon = 100,
             playerInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),

@@ -2,7 +2,9 @@ package pt.isel.pdm.battleships.domain.games.board
 
 import pt.isel.pdm.battleships.domain.games.Cell
 import pt.isel.pdm.battleships.domain.games.Coordinate
+import pt.isel.pdm.battleships.domain.games.ShipCell
 import pt.isel.pdm.battleships.domain.games.WaterCell
+import pt.isel.pdm.battleships.domain.games.ship.Ship
 
 /**
  * A board in the game.
@@ -28,6 +30,15 @@ abstract class Board(
             "Grid size must be equal to $size * $size"
         }
     }
+
+    val fleet: List<Ship>
+        get() = grid
+            .filterIsInstance<ShipCell>()
+            .map(ShipCell::ship)
+            .distinct()
+
+    val fleetIsSunk: Boolean
+        get() = grid.filterIsInstance<ShipCell>().all { it.wasHit }
 
     /**
      * Returns the cell in [coordinate].

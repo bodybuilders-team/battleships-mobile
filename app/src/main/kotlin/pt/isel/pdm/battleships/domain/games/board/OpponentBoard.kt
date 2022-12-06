@@ -4,7 +4,6 @@ import pt.isel.pdm.battleships.domain.games.Cell
 import pt.isel.pdm.battleships.domain.games.ShipCell
 import pt.isel.pdm.battleships.domain.games.UnknownShipCell
 import pt.isel.pdm.battleships.domain.games.WaterCell
-import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.shot.FiredShot
 import pt.isel.pdm.battleships.domain.games.shot.ShotResult
 import pt.isel.pdm.battleships.domain.utils.findValueByKey
@@ -25,12 +24,6 @@ data class OpponentBoard(
     init {
         isValid()
     }
-
-    val fleet: List<Ship>
-        get() = grid
-            .filterIsInstance<ShipCell>()
-            .map(ShipCell::ship)
-            .distinct()
 
     /**
      * Shoots the [firedShots].

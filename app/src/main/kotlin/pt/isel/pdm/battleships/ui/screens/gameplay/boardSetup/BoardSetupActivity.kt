@@ -60,7 +60,9 @@ class BoardSetupActivity : BattleshipsActivity() {
                             onBoardSetupFinished = { board ->
                                 viewModel.deployFleet(board.fleet)
                             },
-                            onBackButtonClicked = { finish() }
+                            onBackButtonClicked = { finish() },
+                            onPlayAgainButtonClicked = { finish() },
+                            onBackToMenuButtonClicked = { }
                         )
                     }
                 }

@@ -38,6 +38,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
@@ -61,7 +62,9 @@ fun BoardSetupScreen(
     ships: Map<ShipType, Int>,
     maxTimeForGridLayout: Int,
     onBoardSetupFinished: (ConfigurableBoard) -> Unit,
-    onBackButtonClicked: () -> Unit
+    onBackButtonClicked: () -> Unit,
+    onPlayAgainButtonClicked: () -> Unit,
+    onBackToMenuButtonClicked: () -> Unit
 ) {
     var board by remember { mutableStateOf(ConfigurableBoard(boardSize)) }
     val tileSize = getTileSize(boardSize)
@@ -272,9 +275,9 @@ fun BoardSetupScreen(
 
             if (timerMinutes == 0 && timerSeconds == 0)
                 EndGamePopUp(
-                    won = false,
-                    cause = EndGameCause.DESTRUCTION,
-                    pointsWon = 100,
+                    winningPlayer = WinningPlayer.NONE,
+                    cause = EndGameCause.TIMEOUT,
+                    pointsWon = 0,
                     playerInfo = PlayerInfo(
                         name = "Player",
                         avatarId = R.drawable.ic_round_person_24
@@ -283,8 +286,8 @@ fun BoardSetupScreen(
                         name = "Opponent",
                         avatarId = R.drawable.ic_round_person_24
                     ),
-                    onPlayAgainButtonClicked = { /* TODO */ },
-                    onBackToMenuButtonClicked = { /* TODO */ }
+                    onPlayAgainButtonClicked = onPlayAgainButtonClicked,
+                    onBackToMenuButtonClicked = onBackToMenuButtonClicked
                 )
         }
 
@@ -339,7 +342,9 @@ fun BoardSetupScreenPreview() {
             ships = ShipType.defaultsMap,
             maxTimeForGridLayout = 30,
             onBoardSetupFinished = {},
-            onBackButtonClicked = {}
+            onBackButtonClicked = {},
+            onPlayAgainButtonClicked = {},
+            onBackToMenuButtonClicked = {}
         )
     }
 }

@@ -25,11 +25,6 @@ data class MyBoard(
         isValid()
     }
 
-    val fleet: List<Ship> = grid
-        .filterIsInstance<ShipCell>()
-        .map(ShipCell::ship)
-        .distinct()
-
     /**
      * Shoots the [firedCoordinates].
      * If the cell is already hit, the attack is invalid.

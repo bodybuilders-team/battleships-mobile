@@ -187,17 +187,16 @@ class LinkGamesService(
     /**
      * Leaves a game.
      *
-     * @param leaveGameLink the link to the leave game endpoint
-     *
      * @return the API result of the leave game request
      *
      * @throws UnexpectedResponseException if there is an unexpected response from the server
      * @throws IOException if there is an error while sending the request
      */
-    suspend fun leaveGame(leaveGameLink: String): APIResult<LeaveGameOutput> {
+    suspend fun leaveGame(): APIResult<LeaveGameOutput> {
         val leaveGameResult = gamesService.leaveGame(
             token = token,
-            leaveGameLink = leaveGameLink
+            leaveGameLink = links[Rels.LEAVE_GAME]
+                ?: throw IllegalStateException("The leave game link is missing")
         )
 
         if (leaveGameResult !is APIResult.Success)
