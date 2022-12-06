@@ -52,7 +52,7 @@ class GameplayViewModel(
      * @property opponentBoard the board of the opponent, null if the game is not loaded
      * @property myTurn true if it's the player's turn, false otherwise, null if the game is not loaded
      * @property playerName the name of the player, null if the game is not loaded or the user is not logged in
-     * @property opponentName  the name of the opponent, null if the game is not loaded
+     * @property opponentName  the name of the opponent, null if the game is not loaded or the user is not logged in
      */
     data class GameplayScreenState(
         val gameConfig: GameConfig? = null,
@@ -61,7 +61,9 @@ class GameplayViewModel(
         val opponentBoard: OpponentBoard? = null,
         val myTurn: Boolean? = null,
         val playerName: String? = null,
-        val opponentName: String? = null
+        val opponentName: String? = null,
+        val playerPoints: Int? = null,
+        val opponentPoints: Int? = null
     )
 
     private var _screenState by mutableStateOf(GameplayScreenState())
@@ -94,14 +96,17 @@ class GameplayViewModel(
                 val turn = gameState.turn ?: throw IllegalStateException("No turn found")
                 val myTurn = turn == sessionManager.username
 
+                val player = properties.players.single { it.username == sessionManager.username }
+                val opponent = properties.players.single { it.username != sessionManager.username }
+
                 _screenState = _screenState.copy(
                     gameConfig = gameConfig,
                     gameState = gameState,
                     opponentBoard = OpponentBoard(gameConfig.gridSize),
-                    playerName = sessionManager.username,
-                    opponentName = properties.players.single {
-                        it.username != sessionManager.username
-                    }.username,
+                    playerName = player.username,
+                    opponentName = opponent.username,
+                    playerPoints = player.points,
+                    opponentPoints = opponent.points,
                     myTurn = myTurn
                 )
                 _state = GAME_LOADED
@@ -182,6 +187,9 @@ class GameplayViewModel(
                 )
 
                 delay(TURN_SWITCH_DELAY)
+
+                if (state == FINISHED_GAME)
+                    return@launchAndExecuteRequest
 
                 _screenState = _screenState.copy(myTurn = false)
 
@@ -268,16 +276,25 @@ class GameplayViewModel(
 
     /**
      * Leaves the game.
+     * Calls [onGameLeft] when an api response is received, regardless of whether or not is was
+     * successful.
+     *
+     * @param onGameLeft the callback to call when the game is left (api response was received).
      */
-    fun leaveGame() {
+    fun leaveGame(onGameLeft: () -> Unit) {
         check(state == PLAYING_GAME) { "The game is not in the playing state" }
         _state = LEAVING_GAME
 
-        launchAndExecuteRequestThrowing(
+        launchAndExecuteRequest(
             request = { battleshipsService.gamesService.leaveGame() },
             events = _events,
             onSuccess = {
                 _state = FINISHED_GAME
+                onGameLeft()
+            },
+            retryOnApiResultFailure = {
+                onGameLeft()
+                false
             }
         )
     }

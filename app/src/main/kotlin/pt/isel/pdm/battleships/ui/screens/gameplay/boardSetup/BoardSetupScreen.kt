@@ -267,11 +267,13 @@ fun BoardSetupScreen(
                     pointsWon = 0,
                     playerInfo = PlayerInfo(
                         name = "Player",
-                        avatarId = R.drawable.ic_round_person_24
+                        avatarId = R.drawable.ic_round_person_24,
+                        playerPoints = 0
                     ),
                     opponentInfo = PlayerInfo(
                         name = "Opponent",
-                        avatarId = R.drawable.ic_round_person_24
+                        avatarId = R.drawable.ic_round_person_24,
+                        playerPoints = 0
                     ),
                     onPlayAgainButtonClicked = onPlayAgainButtonClicked,
                     onBackToMenuButtonClicked = onBackToMenuButtonClicked

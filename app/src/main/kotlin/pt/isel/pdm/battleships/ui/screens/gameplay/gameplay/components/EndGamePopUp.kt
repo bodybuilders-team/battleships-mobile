@@ -237,8 +237,8 @@ private fun EndGamePopUpPreview() {
             winningPlayer = YOU,
             cause = DESTRUCTION,
             pointsWon = 100,
-            playerInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao),
-            opponentInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus),
+            playerInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao, 0),
+            opponentInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus, 0),
             onPlayAgainButtonClicked = {},
             onBackToMenuButtonClicked = {}
         )

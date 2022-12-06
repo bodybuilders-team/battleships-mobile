@@ -59,7 +59,8 @@ const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
  */
 data class PlayerInfo(
     val name: String,
-    val avatarId: Int
+    val avatarId: Int,
+    val playerPoints: Int
 )
 
 /**
@@ -265,10 +266,10 @@ fun GameplayScreen(
                     winningPlayer = if (gameState.winner == playerInfo.name) YOU else OPPONENT,
                     cause = if (Instant.now().isAfter(Instant.ofEpochMilli(gameState.phaseEndTime)))
                         EndGameCause.TIMEOUT
-                    else if (myBoard.fleetIsSunk || opponentBoard.fleetIsSunk)
+                    else if (myBoard.fleetIsSunk || opponentBoard.fleetIsSunk) // TODO
                         EndGameCause.DESTRUCTION
                     else EndGameCause.RESIGNATION,
-                    pointsWon = 100, // TODO: this is hardcoded?
+                    pointsWon = playerInfo.playerPoints,
                     playerInfo = playerInfo,
                     opponentInfo = opponentInfo,
                     onPlayAgainButtonClicked = onPlayAgainButtonClicked,
@@ -296,11 +297,13 @@ private fun GameplayScreenPreview() {
             ),
             playerInfo = PlayerInfo(
                 name = "Player",
-                avatarId = R.drawable.ic_round_person_24
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 100
             ),
             opponentInfo = PlayerInfo(
                 name = "Opponent",
-                avatarId = R.drawable.ic_round_person_24
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 100
             ),
             onShootClicked = { },
             onLeaveGameButtonClicked = { },
@@ -328,11 +331,13 @@ private fun GameplayScreenGameEndedPreview() {
             ),
             playerInfo = PlayerInfo(
                 name = "Player",
-                avatarId = R.drawable.ic_round_person_24
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 40
             ),
             opponentInfo = PlayerInfo(
                 name = "Opponent",
-                avatarId = R.drawable.ic_round_person_24
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 150
             ),
             onShootClicked = { },
             onLeaveGameButtonClicked = { },

@@ -58,17 +58,20 @@ class GameplayActivity : BattleshipsActivity() {
                             playerInfo = PlayerInfo(
                                 name = viewModel.screenState.playerName
                                     ?: throw IllegalStateException("Player name not found"),
-                                avatarId = R.drawable.ic_round_person_24
+                                avatarId = R.drawable.ic_round_person_24,
+                                playerPoints = viewModel.screenState.playerPoints
+                                    ?: throw IllegalStateException("Player points not found")
                             ),
                             opponentInfo = PlayerInfo(
                                 name = viewModel.screenState.opponentName
                                     ?: throw IllegalStateException("Opponent name not found"),
-                                avatarId = R.drawable.ic_round_person_24
+                                avatarId = R.drawable.ic_round_person_24,
+                                playerPoints = viewModel.screenState.opponentPoints
+                                    ?: throw IllegalStateException("Opponent points not found")
                             ),
                             onShootClicked = { coordinates -> viewModel.fireShots(coordinates) },
                             onLeaveGameButtonClicked = {
-                                viewModel.leaveGame()
-                                finish()
+                                viewModel.leaveGame(onGameLeft = { finish() })
                             },
                             onPlayAgainButtonClicked = { finish() },
                             onBackToMenuButtonClicked = { }
