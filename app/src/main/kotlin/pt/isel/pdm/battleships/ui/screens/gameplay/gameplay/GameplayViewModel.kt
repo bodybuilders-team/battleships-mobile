@@ -189,9 +189,9 @@ class GameplayViewModel(
             },
             retryOnApiResultFailure = { problem ->
                 // Check if failed because game ended by updating game state
-                if (problem.status == 400) {
+                if (problem.status == 400)
                     viewModelScope.launch { updateGameState() }
-                }
+
                 if (_state != FINISHED_GAME)
                     throw IllegalStateException(problem.title)
 

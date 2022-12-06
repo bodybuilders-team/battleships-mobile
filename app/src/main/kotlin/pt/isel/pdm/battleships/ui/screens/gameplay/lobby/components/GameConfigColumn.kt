@@ -42,7 +42,7 @@ fun GameConfigColumn(gameConfig: GameConfigModel) {
         )
 
         Text(
-            text = "${stringResource(R.string.gameConfig_timeForGridLayout_text)}: ${gameConfig.maxTimeForLayoutPhase}",
+            text = "${stringResource(R.string.gameConfig_timeForGridLayout_text)}: ${gameConfig.maxTimeForLayoutPhase}s",
             fontWeight = MaterialTheme.typography.h6.fontWeight,
             style = MaterialTheme.typography.body1
         )
@@ -54,7 +54,7 @@ fun GameConfigColumn(gameConfig: GameConfigModel) {
         )
 
         Text(
-            text = "${stringResource(R.string.gameConfig_timePerRound_text)}: ${gameConfig.maxTimePerRound}",
+            text = "${stringResource(R.string.gameConfig_timePerRound_text)}: ${gameConfig.maxTimePerRound}s",
             fontWeight = MaterialTheme.typography.h6.fontWeight,
             style = MaterialTheme.typography.body1
         )

@@ -103,8 +103,8 @@
     <string name="gameplay_confirmBoardButton_text">Confirm Board</string>
     <string name="gameplay_confirmBoardButton_description">Button to confirm board</string>
 
-    <string name="gameplay_loadingGame_text">Loading Game...</string>
-    <string name="gameplay_waitingForOpponent_text">Waiting for opponent...</string>
+    <string name="gameplay_loadingGame_text" tools:ignore="TypographyEllipsis">Loading Game...</string>
+    <string name="gameplay_waitingForOpponent_text" tools:ignore="TypographyEllipsis">Waiting for opponent...</string>
 
     <!-- Gameplay -->
 
@@ -123,6 +123,11 @@
 
     <string name="gameplay_leaveGameButton_text">Leave Game</string>
     <string name="gameplay_leaveGameButton_description">Button to leave game</string>
+
+    <string name="gameplay_leaveGameDialog_title">Leave Game</string>
+    <string name="gameplay_leaveGameDialog_text">Are you sure you want to leave the game? You will lose if you leave now.</string>
+    <string name="gameplay_leaveGameDialog_dismissButton_text">Keep Playing</string>
+    <string name="gameplay_cancelLeaveGameButton_description">Button to cancel leaving game</string>
 
     <!-- EndGame -->
 
@@ -152,8 +157,8 @@
     <string name="lobby_join_iconDescription">Join Icon</string>
     <string name="lobby_info_iconDescription">Info icon</string>
 
-    <string name="lobby_loadingGames_text">Loading Games...</string>
-    <string name="lobby_joiningGame_text">Joining Game...</string>
+    <string name="lobby_loadingGames_text" tools:ignore="TypographyEllipsis">Loading Games...</string>
+    <string name="lobby_joiningGame_text" tools:ignore="TypographyEllipsis">Joining Game...</string>
 
     <string name="lobby_gameConfig_shipType_text">Ship Type</string>
     <string name="lobby_gameConfig_size_text">Size</string>

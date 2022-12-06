@@ -100,8 +100,8 @@
     <string name="gameplay_confirmBoardButton_text">Confirmar Tablero</string>
     <string name="gameplay_confirmBoardButton_description">Botón para confirmar el tablero</string>
 
-    <string name="gameplay_loadingGame_text">Cargando el Juego...</string>
-    <string name="gameplay_waitingForOpponent_text">Esperando por el Oponente...</string>
+    <string name="gameplay_loadingGame_text" tools:ignore="TypographyEllipsis">Cargando el Juego...</string>
+    <string name="gameplay_waitingForOpponent_text" tools:ignore="TypographyEllipsis">Esperando por el Oponente...</string>
 
     <!-- Gameplay -->
 
@@ -120,6 +120,12 @@
 
     <string name="gameplay_leaveGameButton_text">Abandonar el Juego</string>
     <string name="gameplay_leaveGameButton_description">Botón de salida del juego</string>
+
+    <string name="gameplay_leaveGameDialog_title">Abandonar el Juego</string>
+    <string name="gameplay_leaveGameDialog_text">¿Estás seguro de que quieres abandonar el juego? ¡Tú perderás!</string>
+    <string name="gameplay_leaveGameDialog_dismissButton_text">Continuar Juego</string>
+    <string name="gameplay_cancelLeaveGameButton_description">Botón para cancelar la salida del juego</string>
+
 
     <!-- EndGame -->
 
@@ -149,8 +155,8 @@
     <string name="lobby_join_iconDescription">Ícono de se juntar a un juego</string>
     <string name="lobby_info_iconDescription">Ícono de información</string>
 
-    <string name="lobby_loadingGames_text">Cargando Juegos...</string>
-    <string name="lobby_joiningGame_text">Juntadose al Juego...</string>
+    <string name="lobby_loadingGames_text" tools:ignore="TypographyEllipsis">Cargando Juegos...</string>
+    <string name="lobby_joiningGame_text" tools:ignore="TypographyEllipsis">Juntando al Juego...</string>
 
     <string name="lobby_gameConfig_shipType_text">Tipo de Buque</string>
     <string name="lobby_gameConfig_size_text">Tamaño</string>

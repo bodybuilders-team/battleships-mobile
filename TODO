@@ -5,12 +5,7 @@ TODO: Refresh token mechanism
 TODO: Implement Profile page????
 TODO: Finish EndGamePopUp
 
-Refactoring Tasks:
-TODO: Add documentation
-TODO: Search for "magic constants" and replace them with constants
-
 Random or Probably Never Ending Tasks:
-TODO: Study the need of specific siren entities (to resolve sub entities not having type known) - check GetUsersOutput
 TODO: Add caching
 TODO: Add tests
-TODO: Update gradle dependencies
+TODO: Study the need of specific siren entities (to resolve sub entities not having type known) - check GetUsersOutput

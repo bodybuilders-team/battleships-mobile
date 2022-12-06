@@ -73,11 +73,11 @@ fun LobbyScreen(
                                 "Games cannot be null when state is GAMES_LOADED"
                             )
 
-                        val filteredGames =
-                            games.embeddedSubEntities<GetGameOutputModel>(Rels.ITEM, Rels.GAME)
-                                .filter { game ->
-                                    game.properties?.state?.phase == "WAITING_FOR_PLAYERS"
-                                }
+                        val filteredGames = games
+                            .embeddedSubEntities<GetGameOutputModel>(Rels.ITEM, Rels.GAME)
+                            .filter { game ->
+                                game.properties?.state?.phase == "WAITING_FOR_PLAYERS"
+                            }
 
                         items(filteredGames) { game ->
                             GameCard(

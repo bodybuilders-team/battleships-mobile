@@ -103,9 +103,6 @@
     <string name="gameplay_confirmBoardButton_text">Confirmar Tabuleiro</string>
     <string name="gameplay_confirmBoardButton_description">Botão para confirmar o tabuleiro</string>
 
-    <string name="gameplay_loadingGame_text">Carregando o Jogo...</string>
-    <string name="gameplay_waitingForOpponent_text">Esperando pelo oponente...</string>
-
     <!-- Gameplay -->
 
     <string name="gameplay_timer_iconDescription">Ícone de Temporizador</string>
@@ -120,6 +117,15 @@
 
     <string name="gameplay_resetShotsButton_text">Reiniciar tiros</string>
     <string name="gameplay_resetShotsButton_description">Botão para reiniciar tiros</string>
+
+    <string name="gameplay_loadingGame_text" tools:ignore="TypographyEllipsis">Carregando o Jogo...</string>
+    <string name="gameplay_waitingForOpponent_text" tools:ignore="TypographyEllipsis">Esperando pelo oponente...</string>
+
+    <string name="gameplay_leaveGameDialog_title">Abandonar Jogo</string>
+    <string name="gameplay_leaveGameDialog_text">Tem a certeza que quer abandonar o jogo? Irá perder o jogo.</string>
+    <string name="gameplay_leaveGameDialog_dismissButton_text">Continuar a Jogar</string>
+    <string name="gameplay_cancelLeaveGameButton_description">Botão para cancelar o abandono do jogo</string>
+
 
     <!-- EndGame -->
 
@@ -149,8 +155,8 @@
     <string name="lobby_join_iconDescription">Ícone de juntar-se a um jogo</string>
     <string name="lobby_info_iconDescription">Ícone de informação</string>
 
-    <string name="lobby_loadingGames_text">Carregado Jogos...</string>
-    <string name="lobby_joiningGame_text">Juntado-se ao Jogo...</string>
+    <string name="lobby_loadingGames_text" tools:ignore="TypographyEllipsis">Carregado Jogos...</string>
+    <string name="lobby_joiningGame_text" tools:ignore="TypographyEllipsis">Entrando no Jogo...</string>
 
     <string name="lobby_gameConfig_shipType_text">Tipo de Navio</string>
     <string name="lobby_gameConfig_size_text">Tamanho</string>
@@ -164,5 +170,4 @@
     <string name="about_repoGithub_text">"O código desta aplicação está disponível aqui: "</string>
     <string name="about_githubLogo_contentDescription">Logo do Github</string>
     <string name="about_emailIcon_contentDescription">Ícone de email</string>
-
 </resources>

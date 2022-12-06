@@ -35,6 +35,8 @@ import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameAlert
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameButton
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Round
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
@@ -245,17 +247,18 @@ fun GameplayScreen(
                 }
             }
 
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                IconButton(
-                    onClick = onLeaveGameButtonClicked,
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_exit_to_app_24),
-                    contentDescription = stringResource(R.string.gameplay_leaveGameButton_description),
-                    text = stringResource(R.string.gameplay_leaveGameButton_text)
+            var leavingGame by remember { mutableStateOf(false) }
+
+            LeaveGameButton(onClick = { leavingGame = true })
+
+            if (leavingGame)
+                LeaveGameAlert(
+                    onDismissRequest = { leavingGame = false },
+                    onLeaveGameButtonClicked = {
+                        leavingGame = false
+                        onLeaveGameButtonClicked()
+                    }
                 )
-            }
 
             if (gameState.winner != null)
                 EndGamePopUp(
@@ -265,7 +268,7 @@ fun GameplayScreen(
                     else if (myBoard.fleetIsSunk || opponentBoard.fleetIsSunk)
                         EndGameCause.DESTRUCTION
                     else EndGameCause.RESIGNATION,
-                    pointsWon = 100,
+                    pointsWon = 100, // TODO: this is hardcoded?
                     playerInfo = playerInfo,
                     opponentInfo = opponentInfo,
                     onPlayAgainButtonClicked = onPlayAgainButtonClicked,

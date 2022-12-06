@@ -1,6 +1,5 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -236,19 +235,7 @@ fun BoardSetupScreen(
 
                         draggableShips = board.fleet
 
-                        Log.v(
-                            "BoardSetupScreen",
-                            "Unplaced ships: ${
-                            unplacedShips.entries.map { "${it.key} - ${it.value}" }
-                            }"
-                        )
                         unplacedShips.keys.forEach { unplacedShips[it] = 0 }
-                        Log.v(
-                            "BoardSetupScreen",
-                            "Unplaced ships after clear: ${
-                            unplacedShips.entries.map { "${it.key} - ${it.value}" }
-                            }"
-                        )
                     },
                     onConfirmBoardButtonPressed = {
                         if (board.fleet.size == ships.size)
