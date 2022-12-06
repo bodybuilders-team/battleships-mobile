@@ -202,26 +202,26 @@ fun EndGamePopUp(
                             style = MaterialTheme.typography.h6
                         )
                     }
+                }
 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column {
-                            IconButton(
-                                onClick = onPlayAgainButtonClicked,
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_round_refresh_24),
-                                contentDescription = stringResource(R.string.endgame_playAgainButton_description),
-                                text = stringResource(R.string.endgame_playAgainButton_text)
-                            )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column {
+                        IconButton(
+                            onClick = onPlayAgainButtonClicked,
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_refresh_24),
+                            contentDescription = stringResource(R.string.endgame_playAgainButton_description),
+                            text = stringResource(R.string.endgame_playAgainButton_text)
+                        )
 
-                            IconButton(
-                                onClick = onBackToMenuButtonClicked,
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_round_home_24),
-                                contentDescription = stringResource(R.string.endgame_mainMenuButton_description),
-                                text = stringResource(R.string.endgame_mainMenuButton_text)
-                            )
-                        }
+                        IconButton(
+                            onClick = onBackToMenuButtonClicked,
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_home_24),
+                            contentDescription = stringResource(R.string.endgame_mainMenuButton_description),
+                            text = stringResource(R.string.endgame_mainMenuButton_text)
+                        )
                     }
                 }
             }

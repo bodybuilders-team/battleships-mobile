@@ -315,13 +315,13 @@ private fun GameplayScreenGameEndedPreview() {
             myTurn = false,
             myBoard = MyBoard(),
             opponentBoard = OpponentBoard(),
-            gameConfig = GameConfig(10, 1, 30, 30, ShipType.defaultsMap),
+            gameConfig = GameConfig(10, 1, 5, 30, ShipType.defaultsMap),
             gameState = GameState(
                 phase = "",
-                phaseEndTime = Instant.now().plusMillis(30000L).toEpochMilli(),
+                phaseEndTime = Instant.now().plusMillis(5000L).toEpochMilli(),
                 round = 1,
-                turn = "Jesus",
-                winner = "Jesus"
+                turn = "Opponent",
+                winner = "Opponent"
             ),
             playerInfo = PlayerInfo(
                 name = "Player",

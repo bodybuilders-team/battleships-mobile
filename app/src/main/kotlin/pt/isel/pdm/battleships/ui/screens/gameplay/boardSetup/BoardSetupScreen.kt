@@ -348,3 +348,19 @@ fun BoardSetupScreenPreview() {
         )
     }
 }
+
+@Preview
+@Composable
+fun BoardSetupScreenEndGamePreview() {
+    BattleshipsScreen {
+        BoardSetupScreen(
+            boardSize = 10,
+            ships = ShipType.defaultsMap,
+            maxTimeForGridLayout = 0,
+            onBoardSetupFinished = {},
+            onBackButtonClicked = {},
+            onPlayAgainButtonClicked = {},
+            onBackToMenuButtonClicked = {}
+        )
+    }
+}

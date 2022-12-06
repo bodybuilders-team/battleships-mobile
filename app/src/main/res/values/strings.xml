@@ -132,7 +132,7 @@
 
     <string name="endgame_byFleetDestruction_text">by fleet destruction</string>
     <string name="endgame_byResignation_text">by resignation</string>
-    <string name="endgame_byTimeout_text">by resignation</string>
+    <string name="endgame_byTimeout_text">by timeout</string>
 
     <string name="endgame_points_text">points</string>
     <string name="endgame_noPointsWon_text">No points won</string>
