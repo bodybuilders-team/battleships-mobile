@@ -9,9 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.ship.Ship
@@ -69,14 +68,14 @@ fun ShipPlacingMenuView(
         ) {
             IconButton(
                 onClick = onRandomBoardButtonPressed,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_cycle_24),
+                painter = painterResource(R.drawable.ic_round_cycle_24),
                 contentDescription = stringResource(R.string.gameplay_randomBoardButton_description),
                 text = stringResource(R.string.gameplay_randomBoardButton_text),
                 modifier = Modifier.padding(bottom = BETWEEN_BUTTONS_PADDING.dp)
             )
             IconButton(
                 onClick = onConfirmBoardButtonPressed,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_check_24),
+                painter = painterResource(R.drawable.ic_round_check_24),
                 contentDescription = stringResource(R.string.gameplay_confirmBoardButton_description),
                 text = stringResource(R.string.gameplay_confirmBoardButton_text)
             )

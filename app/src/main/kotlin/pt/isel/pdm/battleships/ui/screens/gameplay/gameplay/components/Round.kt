@@ -31,7 +31,7 @@ fun Round(round: Int) {
             .border(BORDER_WIDTH.dp, Color.Black, RoundedCornerShape(CORNER_CLIP_SIZE.dp))
             .padding(PADDING_SIZE.dp)
     ) {
-        Text(text = "${stringResource(id = R.string.gameplay_round_text)}: ")
+        Text(text = "${stringResource(R.string.gameplay_round_text)}: ")
         Text(text = round.toString())
     }
 }

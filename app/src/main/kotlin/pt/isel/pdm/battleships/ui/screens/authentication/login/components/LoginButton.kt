@@ -3,9 +3,8 @@ package pt.isel.pdm.battleships.ui.screens.authentication.login.components
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
@@ -28,7 +27,7 @@ fun LoginButton(
         enabled = enabled,
         modifier = Modifier.padding(BUTTON_PADDING.dp),
         text = stringResource(R.string.login_loginButton_text),
-        imageVector = ImageVector.vectorResource(R.drawable.ic_round_login_24),
+        painter = painterResource(R.drawable.ic_round_login_24),
         contentDescription = stringResource(R.string.login_loginButton_description)
     )
 }

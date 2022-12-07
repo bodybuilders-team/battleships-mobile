@@ -21,9 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.service.media.siren.EmbeddedSubEntity
@@ -85,14 +84,14 @@ fun GameCard(
 
             IconButton(
                 onClick = { gameInfoExpanded = !gameInfoExpanded },
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_info_24),
+                painter = painterResource(R.drawable.ic_round_info_24),
                 contentDescription = stringResource(R.string.lobby_info_iconDescription),
                 modifier = Modifier.size(BUTTON_SIZE.dp)
             )
 
             IconButton(
                 onClick = onJoinGameRequest,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_play_arrow_24),
+                painter = painterResource(R.drawable.ic_round_play_arrow_24),
                 contentDescription = stringResource(R.string.lobby_join_iconDescription),
                 modifier = Modifier.size(BUTTON_SIZE.dp)
             )

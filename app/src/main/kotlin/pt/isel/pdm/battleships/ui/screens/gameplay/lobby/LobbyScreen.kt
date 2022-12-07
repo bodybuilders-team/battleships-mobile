@@ -62,7 +62,7 @@ fun LobbyScreen(
 
             when (state) {
                 IDLE, LINKS_LOADED, GETTING_GAMES ->
-                    LoadingSpinner(stringResource(id = R.string.lobby_loadingGames_text))
+                    LoadingSpinner(stringResource(R.string.lobby_loadingGames_text))
                 GAMES_LOADED ->
                     LazyColumn(
                         verticalArrangement = Arrangement.Top,
@@ -89,7 +89,7 @@ fun LobbyScreen(
                         }
                     }
                 JOINING_GAME, JOINED_GAME ->
-                    LoadingSpinner(stringResource(id = R.string.lobby_joiningGame_text))
+                    LoadingSpinner(stringResource(R.string.lobby_joiningGame_text))
             }
 
             GoBackButton(onClick = onBackButtonClicked)

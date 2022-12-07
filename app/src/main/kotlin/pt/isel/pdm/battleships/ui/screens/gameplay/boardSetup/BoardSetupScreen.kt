@@ -30,10 +30,10 @@ import pt.isel.pdm.battleships.domain.games.board.ConfigurableBoard
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
+import pt.isel.pdm.battleships.domain.users.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.PlacedDraggableShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.ShipPlacingMenuView
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
@@ -48,12 +48,18 @@ import kotlin.math.roundToInt
 private const val DRAGGING_SHIP_BORDER_SIZE = 2
 
 /**
- * Board configuration page. Allows the user to place their ships on the board how they like.
+ * Board setup screen. Allows the user to place their ships on the board how they like.
  *
  * @param boardSize the size of the board
  * @param ships the list of ships to be placed
- * @param onBoardSetupFinished what to do when the board finished being setup
- * @param onBackButtonClicked Callback to be called when the back button is clicked
+ * @param time the time the player has to place the ships
+ * @param onTimeChanged callback to be called when the time changes
+ * @param playerInfo the player's info
+ * @param opponentInfo the opponent's info
+ * @param onBoardSetupFinished callback to be called when the board finished being setup
+ * @param onBackButtonClicked callback to be called when the back button is clicked
+ * @param onPlayAgainButtonClicked callback to be called when the play again button is clicked
+ * @param onBackToMenuButtonClicked callback to be called when the back to menu button is clicked
  */
 @Composable
 fun BoardSetupScreen(
@@ -61,6 +67,8 @@ fun BoardSetupScreen(
     ships: Map<ShipType, Int>,
     time: Int,
     onTimeChanged: (Int) -> Unit,
+    playerInfo: PlayerInfo,
+    opponentInfo: PlayerInfo,
     onBoardSetupFinished: (ConfigurableBoard) -> Unit,
     onBackButtonClicked: () -> Unit,
     onPlayAgainButtonClicked: () -> Unit,
@@ -77,7 +85,8 @@ fun BoardSetupScreen(
 
     LaunchedEffect(time) {
         delay(1000)
-        onTimeChanged(time - 1)
+        if (time > 0)
+            onTimeChanged(time - 1)
     }
 
     Column(
@@ -255,16 +264,8 @@ fun BoardSetupScreen(
                     winningPlayer = WinningPlayer.NONE,
                     cause = EndGameCause.TIMEOUT,
                     pointsWon = 0,
-                    playerInfo = PlayerInfo(
-                        name = "Player",
-                        avatarId = R.drawable.ic_round_person_24,
-                        playerPoints = 0
-                    ),
-                    opponentInfo = PlayerInfo(
-                        name = "Opponent",
-                        avatarId = R.drawable.ic_round_person_24,
-                        playerPoints = 0
-                    ),
+                    playerInfo = playerInfo,
+                    opponentInfo = opponentInfo,
                     onPlayAgainButtonClicked = onPlayAgainButtonClicked,
                     onBackToMenuButtonClicked = onBackToMenuButtonClicked
                 )
@@ -315,12 +316,24 @@ private fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate
 @Preview
 @Composable
 fun BoardSetupScreenPreview() {
+    var timer by remember { mutableStateOf(30) }
+
     BattleshipsScreen {
         BoardSetupScreen(
             boardSize = 10,
             ships = ShipType.defaultsMap,
-            time = 30,
-            onTimeChanged = {},
+            time = timer,
+            onTimeChanged = { timer -= 1 },
+            playerInfo = PlayerInfo(
+                name = "Player",
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 0
+            ),
+            opponentInfo = PlayerInfo(
+                name = "Opponent",
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 0
+            ),
             onBoardSetupFinished = {},
             onBackButtonClicked = {},
             onPlayAgainButtonClicked = {},
@@ -340,6 +353,16 @@ fun BoardSetupScreenEndGamePreview() {
             onTimeChanged = {},
             onBoardSetupFinished = {},
             onBackButtonClicked = {},
+            playerInfo = PlayerInfo(
+                name = "Player",
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 0
+            ),
+            opponentInfo = PlayerInfo(
+                name = "Opponent",
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 0
+            ),
             onPlayAgainButtonClicked = {},
             onBackToMenuButtonClicked = {}
         )

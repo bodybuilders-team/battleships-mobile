@@ -54,7 +54,7 @@ fun AuthorInfoView(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = author.imageId),
+            painter = painterResource(author.imageId),
             contentDescription = stringResource(R.string.about_authorImage_contentDescription),
             contentScale = ContentScale.Crop,
             modifier = Modifier

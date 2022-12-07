@@ -34,6 +34,7 @@ import pt.isel.pdm.battleships.ui.screens.shared.executeRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequest
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
+import java.lang.Integer.max
 
 /**
  * View model for the [GameplayActivity].
@@ -106,7 +107,7 @@ class GameplayViewModel(
                     opponentBoard = OpponentBoard(gameConfig.gridSize),
                     playerName = player.username,
                     opponentName = opponent.username,
-                    playerPoints = player.points,
+                    playerPoints = player.points, // TODO points not being updated after shots
                     opponentPoints = opponent.points,
                     myTurn = myTurn,
                     time = gameConfig.maxTimePerRound
@@ -256,27 +257,6 @@ class GameplayViewModel(
     }
 
     /**
-     * Parses a fleet into a list of ships.
-     *
-     * @param fleet the fleet to parse
-     *
-     * @return the list of ships
-     * @throws IllegalStateException if the fleet is invalid
-     */
-    private fun parseFleet(fleet: GetFleetOutputModel, shipTypes: Map<ShipType, Int>): List<Ship> =
-        fleet.ships.map {
-            val shipType = shipTypes.keys
-                .find { shipType -> shipType.shipName == it.type }
-                ?: throw IllegalStateException("Invalid ship type")
-
-            Ship(
-                type = shipType,
-                coordinate = it.coordinate.toCoordinate(),
-                orientation = Orientation.valueOf(it.orientation)
-            )
-        }
-
-    /**
      * Leaves the game.
      * Calls [onGameLeft] when an api response is received, regardless of whether or not is was
      * successful.
@@ -312,12 +292,17 @@ class GameplayViewModel(
             events = _events
         )
 
-        val properties = gameStateData.properties
-            ?: throw IllegalStateException("Game state properties are null")
+        val gameState = GameState(
+            gameStateModel = gameStateData.properties
+                ?: throw IllegalStateException("Game state properties are null")
+        )
 
-        _screenState = _screenState.copy(gameState = GameState(gameStateData.properties))
+        _screenState = _screenState.copy(
+            gameState = gameState,
+            time = max((gameState.phaseEndTime - System.currentTimeMillis()).toInt(), 0)
+        )
 
-        if (properties.phase == FINISHED_PHASE)
+        if (gameState.phase == FINISHED_PHASE)
             _state = FINISHED_GAME
     }
 
@@ -339,13 +324,25 @@ class GameplayViewModel(
     }
 
     /**
-     * Changes screenState time to [time].
+     * Parses a fleet into a list of ships.
      *
-     * @param time time to change to
+     * @param fleet the fleet to parse
+     *
+     * @return the list of ships
+     * @throws IllegalStateException if the fleet is invalid
      */
-    fun changeTime(time: Int) {
-        _screenState = _screenState.copy(time = time)
-    }
+    private fun parseFleet(fleet: GetFleetOutputModel, shipTypes: Map<ShipType, Int>): List<Ship> =
+        fleet.ships.map {
+            val shipType = shipTypes.keys
+                .find { shipType -> shipType.shipName == it.type }
+                ?: throw IllegalStateException("Invalid ship type")
+
+            Ship(
+                type = shipType,
+                coordinate = it.coordinate.toCoordinate(),
+                orientation = Orientation.valueOf(it.orientation)
+            )
+        }
 
     /**
      * Updates the links.

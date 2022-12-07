@@ -5,9 +5,8 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 
@@ -31,7 +30,7 @@ fun LeaveGameAlert(
         confirmButton = {
             IconButton(
                 onClick = onLeaveGameButtonClicked,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_exit_to_app_24),
+                painter = painterResource(R.drawable.ic_round_exit_to_app_24),
                 contentDescription = stringResource(R.string.gameplay_leaveGameButton_description),
                 text = stringResource(R.string.gameplay_leaveGameButton_text),
                 modifier = Modifier.fillMaxWidth()
@@ -40,7 +39,7 @@ fun LeaveGameAlert(
         dismissButton = {
             IconButton(
                 onClick = onDismissRequest,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_play_arrow_24),
+                painter = painterResource(R.drawable.ic_round_play_arrow_24),
                 contentDescription = stringResource(R.string.gameplay_cancelLeaveGameButton_description),
                 text = stringResource(R.string.gameplay_leaveGameDialog_dismissButton_text),
                 modifier = Modifier.fillMaxWidth()

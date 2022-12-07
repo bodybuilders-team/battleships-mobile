@@ -5,9 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
@@ -38,7 +37,7 @@ fun GameConfigShipSelector(
                 )
                 IconButton(
                     onClick = { },
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_ship_24),
+                    painter = painterResource(R.drawable.ic_round_ship_24),
                     contentDescription = stringResource(R.string.gameConfig_manageShipsButton_iconDescription),
                     text = stringResource(R.string.gameConfig_manageShipsButton_text)
                 )

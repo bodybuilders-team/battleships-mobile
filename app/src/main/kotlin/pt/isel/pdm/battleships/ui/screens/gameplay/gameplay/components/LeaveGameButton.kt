@@ -5,9 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 
@@ -24,7 +23,7 @@ fun LeaveGameButton(onClick: () -> Unit) {
     ) {
         IconButton(
             onClick = onClick,
-            imageVector = ImageVector.vectorResource(R.drawable.ic_round_exit_to_app_24),
+            painter = painterResource(R.drawable.ic_round_exit_to_app_24),
             contentDescription = stringResource(R.string.gameplay_leaveGameButton_description),
             text = stringResource(R.string.gameplay_leaveGameButton_text)
         )

@@ -3,9 +3,8 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.createGame.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
@@ -51,7 +50,7 @@ fun CreateGameButton(
                 )
             )
         },
-        imageVector = ImageVector.vectorResource(R.drawable.ic_round_add_24),
+        painter = painterResource(R.drawable.ic_round_add_24),
         contentDescription = stringResource(R.string.gameConfig_createGameButton_iconDescription),
         text = stringResource(R.string.gameConfig_createGameButton_text),
         modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)

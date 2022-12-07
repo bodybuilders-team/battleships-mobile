@@ -10,10 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
@@ -77,7 +75,7 @@ fun HomeScreen(
             IconButton(
                 onClick = onGameplayMenuClick,
                 enabled = loadingState != HomeLoadingState.LOADING && loggedIn,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_play_arrow_24),
+                painter = painterResource(R.drawable.ic_round_play_arrow_24),
                 contentDescription = stringResource(R.string.mainMenu_playButton_description),
                 text = stringResource(R.string.mainMenu_playButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
@@ -87,7 +85,7 @@ fun HomeScreen(
                 IconButton(
                     onClick = onLoginClick,
                     enabled = loadingState != HomeLoadingState.LOADING,
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_login_24),
+                    painter = painterResource(R.drawable.ic_round_login_24),
                     contentDescription = stringResource(R.string.mainMenu_loginButton_description),
                     text = stringResource(R.string.mainMenu_loginButton_text),
                     modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
@@ -96,7 +94,7 @@ fun HomeScreen(
                 IconButton(
                     onClick = onRegisterClick,
                     enabled = loadingState != HomeLoadingState.LOADING,
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_person_add_24),
+                    painter = painterResource(R.drawable.ic_round_person_add_24),
                     contentDescription = stringResource(R.string.mainMenu_registerButton_description),
                     text = stringResource(R.string.mainMenu_registerButton_text),
                     modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
@@ -105,7 +103,7 @@ fun HomeScreen(
                 IconButton(
                     onClick = onLogoutClick,
                     enabled = loadingState != HomeLoadingState.LOADING,
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_round_logout_24),
+                    painter = painterResource(R.drawable.ic_round_logout_24),
                     contentDescription = stringResource(R.string.mainMenu_logoutButton_description),
                     text = stringResource(R.string.mainMenu_logoutButton_text),
                     modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
@@ -115,7 +113,7 @@ fun HomeScreen(
             IconButton(
                 onClick = onRankingClick,
                 enabled = loadingState != HomeLoadingState.LOADING,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_table_rows_24),
+                painter = painterResource(R.drawable.ic_round_table_rows_24),
                 contentDescription = stringResource(R.string.mainMenu_rankingButton_description),
                 text = stringResource(R.string.mainMenu_rankingButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
@@ -124,7 +122,7 @@ fun HomeScreen(
             IconButton(
                 onClick = onAboutClick,
                 enabled = loadingState != HomeLoadingState.LOADING,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_info_24),
+                painter = painterResource(R.drawable.ic_round_info_24),
                 contentDescription = stringResource(R.string.mainMenu_aboutButton_description),
                 text = stringResource(R.string.mainMenu_aboutButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)

@@ -6,9 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
@@ -42,7 +41,7 @@ fun GameplayMenuScreen(
 
             IconButton(
                 onClick = onMatchmakeClick,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_play_arrow_24),
+                painter = painterResource(R.drawable.ic_round_play_arrow_24),
                 contentDescription = stringResource(R.string.gameplayMenu_quickPlayButton_description),
                 text = stringResource(R.string.gameplayMenu_quickPlayButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
@@ -50,7 +49,7 @@ fun GameplayMenuScreen(
 
             IconButton(
                 onClick = onCreateGameClick,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_add_24),
+                painter = painterResource(R.drawable.ic_round_add_24),
                 contentDescription = stringResource(R.string.gameplayMenu_newGameButton_description),
                 text = stringResource(R.string.gameplayMenu_newGameButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
@@ -58,10 +57,8 @@ fun GameplayMenuScreen(
 
             IconButton(
                 onClick = onLobbyClick,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_round_search_24),
-                contentDescription = stringResource(
-                    R.string.gameplayMenu_searchGameButton_description
-                ),
+                painter = painterResource(R.drawable.ic_round_search_24),
+                contentDescription = stringResource(R.string.gameplayMenu_searchGameButton_description),
                 text = stringResource(R.string.gameplayMenu_searchGameButton_text),
                 modifier = Modifier.fillMaxWidth(BUTTON_MAX_WIDTH_FACTOR)
             )

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,51 +16,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.Coordinate
-import pt.isel.pdm.battleships.domain.games.ShipCell
-import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
 import pt.isel.pdm.battleships.domain.games.game.GameState
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
+import pt.isel.pdm.battleships.domain.users.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameAlert
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameButton
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.MyBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Round
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.OPPONENT
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.YOU
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.TileHitView
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.PlacedShipView
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 import java.time.Instant
 
 const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
-
-/**
- * Information about a player.
- *
- * @param name the name of the player
- * @param avatarId the id of the avatar of the player
- */
-data class PlayerInfo(
-    val name: String,
-    val avatarId: Int,
-    val playerPoints: Int
-)
 
 /**
  * The gameplay screen.
@@ -73,8 +55,8 @@ data class PlayerInfo(
  * @param gameState the game state
  * @param playerInfo the player's info
  * @param opponentInfo the opponent's info
- *
  * @param onShootClicked the callback to be invoked when the player shoots
+ * @param time the time left to the player
  * @param onLeaveGameButtonClicked the callback to be invoked when the player leaves the game
  * @param onPlayAgainButtonClicked the callback to be invoked when the player wants to play again
  * @param onBackToMenuButtonClicked the callback to be invoked when the player wants to go back to the menu
@@ -90,7 +72,6 @@ fun GameplayScreen(
     opponentInfo: PlayerInfo,
     onShootClicked: (List<Coordinate>) -> Unit,
     time: Int,
-    onTimeChanged: (Int) -> Unit,
     onLeaveGameButtonClicked: () -> Unit,
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
@@ -99,77 +80,29 @@ fun GameplayScreen(
 
     var canFireShots by remember { mutableStateOf(myTurn) }
 
-    LaunchedEffect(time) {
-        delay(1000)
-        onTimeChanged(time - 1)
-    }
-
     LaunchedEffect(myTurn) {
         if (myTurn)
             canFireShots = true
     }
 
-    val myBoardComposable = @Composable {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = stringResource(R.string.gameplay_myBoard_description))
+    val myBoardComposable = @Composable { MyBoardView(myBoard = myBoard, myTurn = myTurn) }
+    val opponentBoardComposable = @Composable {
+        OpponentBoardView(
+            opponentBoard = opponentBoard,
+            myTurn = myTurn,
+            selectedCells = selectedCells,
+            onTileClicked = { coordinate ->
+                if (!canFireShots || opponentBoard.getCell(coordinate).wasHit)
+                    return@OpponentBoardView
 
-            BoardViewWithIdentifiers(
-                board = myBoard,
-                tileSizeFactor = if (!myTurn) 1.0f else SMALLER_BOARD_TILE_SIZE_FACTOR
-            ) {
-                val tileSize = getTileSize(myBoard.size) *
-                    if (!myTurn) 1.0f
-                    else SMALLER_BOARD_TILE_SIZE_FACTOR
-
-                myBoard.fleet.forEach { ship -> PlacedShipView(ship = ship, tileSize = tileSize) }
-
-                Row {
-                    repeat(opponentBoard.size) { colIdx ->
-                        Column {
-                            repeat(opponentBoard.size) { rowIdx ->
-                                val coordinate = Coordinate(
-                                    col = Board.FIRST_COL + colIdx,
-                                    row = Board.FIRST_ROW + rowIdx
-                                )
-
-                                Box(modifier = Modifier.size(tileSize.dp)) {
-                                    val cell = myBoard.getCell(coordinate)
-                                    if (cell.wasHit) {
-                                        TileHitView(
-                                            tileSize = tileSize,
-                                            hitShip = cell is ShipCell
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                selectedCells = when {
+                    coordinate in selectedCells -> selectedCells - coordinate
+                    selectedCells.size < gameConfig.shotsPerTurn -> selectedCells + coordinate
+                    gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
+                    else -> selectedCells
                 }
             }
-        }
-    }
-
-    val opponentBoardComposable = @Composable {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = stringResource(R.string.gameplay_opponentBoard_description))
-
-            OpponentBoardView(
-                opponentBoard = opponentBoard,
-                myTurn = myTurn,
-                selectedCells = selectedCells,
-                onTileClicked = { coordinate ->
-                    if (!canFireShots || opponentBoard.getCell(coordinate).wasHit)
-                        return@OpponentBoardView
-
-                    selectedCells = when {
-                        coordinate in selectedCells -> selectedCells - coordinate
-                        selectedCells.size < gameConfig.shotsPerTurn -> selectedCells + coordinate
-                        gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
-                        else -> selectedCells
-                    }
-                }
-            )
-        }
+        )
     }
 
     Box {
@@ -218,21 +151,16 @@ fun GameplayScreen(
                                 onShootClicked(shots)
                             },
                             enabled = canFireShots,
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_missile_24),
-                            contentDescription = stringResource(
-                                R.string.gameplay_shoot_button_description
-                            ),
+                            painter = painterResource(R.drawable.crosshair_white),
+                            contentDescription = stringResource(R.string.gameplay_shoot_button_description),
+                            iconModifier = Modifier.size(24.dp),
                             text = stringResource(R.string.gameplay_shoot_buttonText)
                         )
                         IconButton(
                             onClick = { selectedCells = emptyList() },
                             enabled = canFireShots,
-                            imageVector = ImageVector.vectorResource(
-                                R.drawable.ic_round_refresh_24
-                            ),
-                            contentDescription = stringResource(
-                                R.string.gameplay_resetShotsButton_description
-                            ),
+                            painter = painterResource(R.drawable.ic_round_refresh_24),
+                            contentDescription = stringResource(R.string.gameplay_resetShotsButton_description),
                             text = stringResource(R.string.gameplay_resetShotsButton_text)
                         )
                     }
@@ -255,11 +183,12 @@ fun GameplayScreen(
             if (gameState.winner != null)
                 EndGamePopUp(
                     winningPlayer = if (gameState.winner == playerInfo.name) YOU else OPPONENT,
-                    cause = if (Instant.now().isAfter(Instant.ofEpochMilli(gameState.phaseEndTime)))
-                        EndGameCause.TIMEOUT
-                    else if (myBoard.fleetIsSunk || opponentBoard.fleetIsSunk) // TODO
-                        EndGameCause.DESTRUCTION
-                    else EndGameCause.RESIGNATION,
+                    cause = when {
+                        time <= 0 -> EndGameCause.TIMEOUT
+                        myBoard.fleetIsSunk || opponentBoard.fleetIsSunk -> // TODO
+                            EndGameCause.DESTRUCTION
+                        else -> EndGameCause.RESIGNATION
+                    },
                     pointsWon = playerInfo.playerPoints,
                     playerInfo = playerInfo,
                     opponentInfo = opponentInfo,
@@ -273,6 +202,16 @@ fun GameplayScreen(
 @Preview
 @Composable
 private fun GameplayScreenPreview() {
+    var timer by remember { mutableStateOf(10) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)
+            if (timer > 0)
+                timer -= 1
+        }
+    }
+
     BattleshipsScreen {
         GameplayScreen(
             myTurn = true,
@@ -281,7 +220,7 @@ private fun GameplayScreenPreview() {
             gameConfig = GameConfig(10, 1, 30, 30, ShipType.defaultsMap),
             gameState = GameState(
                 phase = "",
-                phaseEndTime = Instant.now().plusMillis(30000L).toEpochMilli(),
+                phaseEndTime = Instant.now().plusMillis(10000L).toEpochMilli(),
                 round = 1,
                 turn = "Jesus",
                 winner = null
@@ -297,8 +236,7 @@ private fun GameplayScreenPreview() {
                 playerPoints = 100
             ),
             onShootClicked = { },
-            time = 30,
-            onTimeChanged = { },
+            time = timer,
             onLeaveGameButtonClicked = { },
             onPlayAgainButtonClicked = { },
             onBackToMenuButtonClicked = { }
@@ -334,7 +272,6 @@ private fun GameplayScreenGameEndedPreview() {
             ),
             onShootClicked = { },
             time = 0,
-            onTimeChanged = { },
             onLeaveGameButtonClicked = { },
             onPlayAgainButtonClicked = { },
             onBackToMenuButtonClicked = { }

@@ -40,8 +40,8 @@ fun Timer(minutes: Int, seconds: Int) {
             .padding(PADDING_SIZE.dp)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_round_timer_24),
-            contentDescription = stringResource(id = R.string.gameplay_timer_iconDescription)
+            painter = painterResource(R.drawable.ic_round_timer_24),
+            contentDescription = stringResource(R.string.gameplay_timer_iconDescription)
         )
 
         Text(

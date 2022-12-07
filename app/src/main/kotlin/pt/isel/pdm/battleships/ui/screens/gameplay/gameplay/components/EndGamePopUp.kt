@@ -18,18 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import pt.isel.pdm.battleships.R
+import pt.isel.pdm.battleships.domain.users.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.DESTRUCTION
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.RESIGNATION
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.TIMEOUT
@@ -211,14 +209,14 @@ fun EndGamePopUp(
                     Column {
                         IconButton(
                             onClick = onPlayAgainButtonClicked,
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_refresh_24),
+                            painter = painterResource(R.drawable.ic_round_refresh_24),
                             contentDescription = stringResource(R.string.endgame_playAgainButton_description),
                             text = stringResource(R.string.endgame_playAgainButton_text)
                         )
 
                         IconButton(
                             onClick = onBackToMenuButtonClicked,
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_round_home_24),
+                            painter = painterResource(R.drawable.ic_round_home_24),
                             contentDescription = stringResource(R.string.endgame_mainMenuButton_description),
                             text = stringResource(R.string.endgame_mainMenuButton_text)
                         )

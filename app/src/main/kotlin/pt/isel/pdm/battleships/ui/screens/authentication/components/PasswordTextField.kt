@@ -24,7 +24,7 @@ fun PasswordTextField(
     val invalidPassword = password.isNotEmpty() && !validatePassword(password)
 
     AuthenticationTextField(
-        label = stringResource(id = R.string.authentication_passwordTextField_label),
+        label = stringResource(R.string.authentication_passwordTextField_label),
         value = password,
         onValueChange = onPasswordChangeCallback,
         visualTransformation = PasswordVisualTransformation(),

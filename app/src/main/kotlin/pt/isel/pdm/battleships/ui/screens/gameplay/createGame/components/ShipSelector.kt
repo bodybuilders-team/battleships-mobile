@@ -11,9 +11,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
@@ -66,7 +65,7 @@ fun ShipSelector(
 
                     IconButton(
                         onClick = { onShipAdded(shipType) },
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_round_add_24),
+                        painter = painterResource(R.drawable.ic_round_add_24),
                         contentDescription = stringResource(R.string.gameConfig_incrementShipButtonIcon_contentDescription),
                         modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp),
                         enabled = totalTilesOccupied + shipType.size
@@ -77,7 +76,7 @@ fun ShipSelector(
 
                     IconButton(
                         onClick = { onShipRemoved(shipType) },
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_round_remove_24),
+                        painter = painterResource(R.drawable.ic_round_remove_24),
                         contentDescription = stringResource(R.string.gameConfig_decrementShipButtonIcon_contentDescription),
                         modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
                     )

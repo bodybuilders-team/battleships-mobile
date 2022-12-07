@@ -45,7 +45,9 @@ class BoardSetupViewModel(
     data class BoardSetupScreenState(
         val gridSize: Int? = null,
         val ships: Map<ShipType, Int>? = null,
-        val time: Int? = null
+        val time: Int? = null,
+        val playerName: String? = null,
+        val opponentName: String? = null
     )
 
     private var _screenState by mutableStateOf(BoardSetupScreenState())
@@ -74,12 +76,17 @@ class BoardSetupViewModel(
 
                 val shipTypes = properties.config.shipTypes
 
+                val player = properties.players.single { it.username == sessionManager.username }
+                val opponent = properties.players.single { it.username != sessionManager.username }
+
                 _screenState = _screenState.copy(
                     gridSize = properties.config.gridSize,
                     ships = shipTypes.associate {
                         ShipType(size = it.size, shipName = it.shipName) to it.quantity
                     },
-                    time = properties.config.maxTimeForLayoutPhase
+                    time = properties.config.maxTimeForLayoutPhase,
+                    playerName = player.username,
+                    opponentName = opponent.username
                 )
                 _state = GAME_LOADED
             }

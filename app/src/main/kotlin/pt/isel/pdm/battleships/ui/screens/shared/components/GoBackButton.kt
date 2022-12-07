@@ -2,11 +2,10 @@ package pt.isel.pdm.battleships.ui.screens.shared.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleships.R
 
@@ -24,7 +23,7 @@ fun GoBackButton(onClick: () -> Unit) {
     ) {
         IconButton(
             onClick = onClick,
-            imageVector = Icons.Rounded.ArrowBack,
+            painter = painterResource(R.drawable.ic_round_arrow_back_24),
             contentDescription = stringResource(R.string.backButton_text),
             text = stringResource(R.string.backButton_text)
         )
