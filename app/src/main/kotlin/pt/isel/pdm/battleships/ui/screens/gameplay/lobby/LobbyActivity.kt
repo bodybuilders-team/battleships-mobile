@@ -37,6 +37,8 @@ class LobbyActivity : BattleshipsActivity() {
             LobbyScreen(
                 state = viewModel.state,
                 games = viewModel.games,
+                playerName = viewModel.playerName
+                    ?: throw IllegalStateException("Player name cannot be null"),
                 onJoinGameRequest = { gameLink -> viewModel.joinGame(gameLink) },
                 onBackButtonClicked = { finish() }
             )

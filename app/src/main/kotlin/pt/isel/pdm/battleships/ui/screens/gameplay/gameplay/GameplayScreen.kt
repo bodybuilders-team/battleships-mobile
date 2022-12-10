@@ -45,6 +45,10 @@ import java.time.Instant
 
 const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
 
+private const val TIMER_ROUND_ROW_WIDTH_FACTOR = 0.9f
+private const val TIMER_ROUND_ROW_TOP_PADDING = 2
+private const val TIMER_ROUND_ROW_BOTTOM_PADDING = 10
+
 /**
  * The gameplay screen.
  *
@@ -112,15 +116,15 @@ fun GameplayScreen(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .padding(top = 2.dp, bottom = 10.dp),
+                    .fillMaxWidth(TIMER_ROUND_ROW_WIDTH_FACTOR)
+                    .padding(
+                        top = TIMER_ROUND_ROW_TOP_PADDING.dp,
+                        bottom = TIMER_ROUND_ROW_BOTTOM_PADDING.dp
+                    ),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Timer(minutes = time / 60, seconds = time % 60)
-                Round(
-                    round = gameState.round
-                        ?: throw IllegalStateException("Round is null")
-                )
+                Round(round = gameState.round ?: throw IllegalStateException("Round is null"))
             }
 
             if (myTurn)

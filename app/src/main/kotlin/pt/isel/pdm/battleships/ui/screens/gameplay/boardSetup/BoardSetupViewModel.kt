@@ -15,11 +15,13 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewMode
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.FLEET_DEPLOYED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.GAME_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.IDLE
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LEAVING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.screens.shared.Event
 import pt.isel.pdm.battleships.ui.screens.shared.executeRequestThrowing
+import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequest
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
 
@@ -118,6 +120,31 @@ class BoardSetupViewModel(
     }
 
     /**
+     * Leaves the game.
+     * Calls [onGameLeft] when an api response is received, regardless of whether or not is was
+     * successful.
+     *
+     * @param onGameLeft the callback to call when the game is left (api response was received).
+     */
+    fun leaveGame(onGameLeft: () -> Unit) {
+        check(state == GAME_LOADED) { "The game is not loaded" }
+        _state = LEAVING_GAME
+
+        launchAndExecuteRequest(
+            request = { battleshipsService.gamesService.leaveGame() },
+            events = _events,
+            onSuccess = {
+                _state = FINISHED
+                onGameLeft()
+            },
+            retryOnApiResultFailure = {
+                onGameLeft()
+                false
+            }
+        )
+    }
+
+    /**
      * Waits for the opponent to deploy their fleet.
      */
     private suspend fun waitForOpponent() {
@@ -173,6 +200,8 @@ class BoardSetupViewModel(
      * @property DEPLOYING_FLEET the view model is deploying the fleet
      * @property FLEET_DEPLOYED the fleet is deployed
      * @property WAITING_FOR_OPPONENT the view model is waiting for the opponent to deploy their fleet
+     * @property LEAVING_GAME the view model is leaving the game
+     * @property FINISHED the board setup is finished
      */
     enum class BoardSetupState {
         IDLE,
@@ -182,6 +211,7 @@ class BoardSetupViewModel(
         DEPLOYING_FLEET,
         FLEET_DEPLOYED,
         WAITING_FOR_OPPONENT,
+        LEAVING_GAME,
         FINISHED
     }
 

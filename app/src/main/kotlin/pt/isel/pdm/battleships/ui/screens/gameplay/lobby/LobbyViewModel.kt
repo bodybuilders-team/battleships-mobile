@@ -40,6 +40,9 @@ class LobbyViewModel(
     val state
         get() = _state
 
+    val playerName
+        get() = sessionManager.username
+
     /**
      * Gets the list of games.
      */

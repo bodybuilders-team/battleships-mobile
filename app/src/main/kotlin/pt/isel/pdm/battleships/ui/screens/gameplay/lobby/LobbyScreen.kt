@@ -2,9 +2,13 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.lobby
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,11 +41,14 @@ import pt.isel.pdm.battleships.ui.screens.shared.components.ScreenTitle
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 import java.net.URI
 
+private const val GAMES_COLUMN_HEIGHT_FACTOR = 0.9f
+
 /**
  * Lobby screen.
  *
  * @param state the current state of the lobby
  * @param games the list of games
+ * @param playerName the name of the player
  * @param onJoinGameRequest the callback to be invoked when the user requests to join a game
  * @param onBackButtonClicked the callback to be invoked when the back button is clicked.
  */
@@ -49,6 +56,7 @@ import java.net.URI
 fun LobbyScreen(
     state: LobbyState,
     games: GetGamesOutput?,
+    playerName: String,
     onJoinGameRequest: (String) -> Unit,
     onBackButtonClicked: () -> Unit
 ) {
@@ -66,7 +74,10 @@ fun LobbyScreen(
                 GAMES_LOADED ->
                     LazyColumn(
                         verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.Start
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(GAMES_COLUMN_HEIGHT_FACTOR)
                     ) {
                         games
                             ?: throw IllegalStateException(
@@ -76,17 +87,26 @@ fun LobbyScreen(
                         val filteredGames = games
                             .embeddedSubEntities<GetGameOutputModel>(Rels.ITEM, Rels.GAME)
                             .filter { game ->
-                                game.properties?.state?.phase == "WAITING_FOR_PLAYERS"
+                                game.properties?.state?.phase == "WAITING_FOR_PLAYERS" &&
+                                    game.properties.creator != playerName
                             }
 
-                        items(filteredGames) { game ->
-                            GameCard(
-                                game = game,
-                                onJoinGameRequest = {
-                                    onJoinGameRequest(game.getAction(Rels.JOIN_GAME).href.path)
-                                }
-                            )
-                        }
+                        if (filteredGames.isEmpty()) {
+                            item {
+                                Text(
+                                    text = stringResource(R.string.lobby_noGames_text),
+                                    style = MaterialTheme.typography.body1
+                                )
+                            }
+                        } else
+                            items(filteredGames) { game ->
+                                GameCard(
+                                    game = game,
+                                    onJoinGameRequest = {
+                                        onJoinGameRequest(game.getAction(Rels.JOIN_GAME).href.path)
+                                    }
+                                )
+                            }
                     }
                 JOINING_GAME, JOINED_GAME ->
                     LoadingSpinner(stringResource(R.string.lobby_joiningGame_text))
@@ -145,6 +165,7 @@ private fun LobbyScreenPreview() {
                 )
             }
         ),
+        playerName = "bob",
         onJoinGameRequest = {},
         onBackButtonClicked = { }
     )
@@ -159,6 +180,7 @@ private fun EmptyLobbyScreenPreview() {
             properties = GetGamesOutputModel(0),
             entities = listOf()
         ),
+        playerName = "joe",
         onJoinGameRequest = {},
         onBackButtonClicked = { }
     )

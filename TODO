@@ -1,11 +1,10 @@
 Important Tasks:
-TODO: Timer to board layout phase and fix other timers
 TODO: Load unfinished game
 TODO: Refresh token mechanism
-TODO: Implement Profile page????
 TODO: Finish EndGamePopUp
 
 Random or Probably Never Ending Tasks:
 TODO: Add caching
 TODO: Add tests
+TODO: Implement Profile page
 TODO: Study the need of specific siren entities (to resolve sub entities not having type known) - check GetUsersOutput

@@ -5,23 +5,26 @@
 
     <!-- Main Menu -->
 
-    <string name="mainMenu_playButton_text">Jugar</string>
-    <string name="mainMenu_playButton_description">Botón para la pantalla del menú de juego</string>
+    <string name="home_playButton_text">Jugar</string>
+    <string name="home_playButton_description">Botón para la pantalla del menú de juego</string>
 
-    <string name="mainMenu_loginButton_text">Login</string>
-    <string name="mainMenu_loginButton_description">Botón de la pantalla de inicio de sesión</string>
+    <string name="home_loginButton_text">Login</string>
+    <string name="home_loginButton_description">Botón de la pantalla de inicio de sesión</string>
 
-    <string name="mainMenu_registerButton_text">Registrarse</string>
-    <string name="mainMenu_registerButton_description">Botón para la pantalla de registro</string>
+    <string name="home_registerButton_text">Registrarse</string>
+    <string name="home_registerButton_description">Botón para la pantalla de registro</string>
 
-    <string name="mainMenu_rankingButton_text">Calificaciones</string>
-    <string name="mainMenu_rankingButton_description">Botón para la pantalla de clasificación de jugadores</string>
+    <string name="home_rankingButton_text">Calificaciones</string>
+    <string name="home_rankingButton_description">Botón para la pantalla de clasificación de jugadores</string>
 
-    <string name="mainMenu_aboutButton_text">Sobre</string>
-    <string name="mainMenu_aboutButton_description">Botón de pantalla con información del desarrollador.</string>
+    <string name="home_aboutButton_text">Sobre</string>
+    <string name="home_aboutButton_description">Botón de pantalla con información del desarrollador.</string>
 
-    <string name="mainMenu_logoutButton_description">Botón para cerrar sesión</string>
-    <string name="mainMenu_logoutButton_text">Cerrar sesión</string>
+    <string name="home_logoutButton_description">Botón para cerrar sesión</string>
+    <string name="home_logoutButton_text">Cerrar sesión</string>
+
+    <string name="home_welcome_text">Bienvenido, %s!</string>
+    <string name="home_welcome_guest_text">Bienvenido, ¡necesitas iniciar sesión para jugar!</string>
 
     <!-- Authentication (Both Login and Register) -->
 
@@ -61,6 +64,7 @@
     <!-- Play Menu -->
 
     <string name="gameplayMenu_title">Menú de Juego</string>
+    <string name="gameplayMenu_text">¿Listo para la batalla?\n¡Crea un juego o únete a uno existente:</string>
 
     <string name="gameplayMenu_quickPlayButton_text">Juego Rápido</string>
     <string name="gameplayMenu_quickPlayButton_description">Botón para pantalla de juego rápido</string>
@@ -126,7 +130,6 @@
     <string name="gameplay_leaveGameDialog_dismissButton_text">Continuar Juego</string>
     <string name="gameplay_cancelLeaveGameButton_description">Botón para cancelar la salida del juego</string>
 
-
     <!-- EndGame -->
 
     <string name="endgame_youWon_text">Tú venceste!</string>
@@ -162,6 +165,8 @@
     <string name="lobby_gameConfig_size_text">Tamaño</string>
     <string name="lobby_gameConfig_quantity_text">Cantidad</string>
     <string name="lobby_gameConfig_points_text">Puntos</string>
+
+    <string name="lobby_noGames_text">No hay juegos disponibles</string>
 
     <!-- About -->
 

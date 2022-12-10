@@ -29,6 +29,9 @@ private const val DEFAULT_TIME_FOR_LAYOUT_PHASE = 100 // Seconds
 const val NAME_TEXT_FIELD_HORIZONTAL_PADDING = 32
 const val NAME_TEXT_FIELD_BOTTOM_PADDING = 10
 
+private const val MIN_SHIP_QUANTITY = 0
+private const val MAX_SHIP_QUANTITY = 10
+
 /**
  * Screen that allows the user to configure a new game before starting it.
  *
@@ -71,9 +74,12 @@ fun GameConfigurationScreen(
             GameConfigShipSelector(
                 ships = ships,
                 boardSize = boardSize,
-                onShipAdded = { ships[it] = ships[it]!! + 1 },
+                onShipAdded = {
+                    if (ships[it]!! < MAX_SHIP_QUANTITY)
+                        ships[it] = ships[it]!! + 1
+                },
                 onShipRemoved = {
-                    if (ships[it]!! > 0)
+                    if (ships[it]!! > MIN_SHIP_QUANTITY)
                         ships[it] = ships[it]!! - 1
                 }
             )

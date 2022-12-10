@@ -5,25 +5,28 @@
     <string name="backButton_text">Go Back</string>
     <string name="defaultLoading_text" tools:ignore="TypographyEllipsis">Loading...</string>
 
-    <!-- Main Menu -->
+    <!-- Home -->
 
-    <string name="mainMenu_playButton_text">Play</string>
-    <string name="mainMenu_playButton_description">Button to gameplay menu screen</string>
+    <string name="home_playButton_text">Play</string>
+    <string name="home_playButton_description">Button to gameplay menu screen</string>
 
-    <string name="mainMenu_loginButton_text">Login</string>
-    <string name="mainMenu_loginButton_description">Button to login screen</string>
+    <string name="home_loginButton_text">Login</string>
+    <string name="home_loginButton_description">Button to login screen</string>
 
-    <string name="mainMenu_registerButton_text">Register</string>
-    <string name="mainMenu_registerButton_description">Button to register screen</string>
+    <string name="home_registerButton_text">Register</string>
+    <string name="home_registerButton_description">Button to register screen</string>
 
-    <string name="mainMenu_rankingButton_text">Ranking</string>
-    <string name="mainMenu_rankingButton_description">Button to players\' ranking screen</string>
+    <string name="home_rankingButton_text">Ranking</string>
+    <string name="home_rankingButton_description">Button to players\' ranking screen</string>
 
-    <string name="mainMenu_aboutButton_text">About</string>
-    <string name="mainMenu_aboutButton_description">Button to about screen</string>
+    <string name="home_aboutButton_text">About</string>
+    <string name="home_aboutButton_description">Button to about screen</string>
 
-    <string name="mainMenu_logoutButton_text">Logout</string>
-    <string name="mainMenu_logoutButton_description">Button to logout</string>
+    <string name="home_logoutButton_text">Logout</string>
+    <string name="home_logoutButton_description">Button to logout</string>
+
+    <string name="home_welcome_text">Welcome, %s!</string>
+    <string name="home_welcome_guest_text">Welcome, you need to be logged in to play!</string>
 
     <!-- Authentication (Both Login and Register) -->
 
@@ -64,6 +67,7 @@
     <!-- Play Menu -->
 
     <string name="gameplayMenu_title">Gameplay Menu</string>
+    <string name="gameplayMenu_text">Ready to the battle?\nCreate a game or join an existing one:</string>
 
     <string name="gameplayMenu_quickPlayButton_text">Quick Play</string>
     <string name="gameplayMenu_quickPlayButton_description">Button to quick play screen</string>
@@ -164,6 +168,8 @@
     <string name="lobby_gameConfig_size_text">Size</string>
     <string name="lobby_gameConfig_quantity_text">Quantity</string>
     <string name="lobby_gameConfig_points_text">Points</string>
+
+    <string name="lobby_noGames_text">No games available</string>
 
     <!-- About -->
 

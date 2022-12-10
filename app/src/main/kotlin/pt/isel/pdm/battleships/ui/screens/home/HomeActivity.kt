@@ -54,6 +54,7 @@ class HomeActivity : BattleshipsActivity() {
         setContent {
             HomeScreen(
                 loggedIn = viewModel.isLoggedIn,
+                username = viewModel.username,
                 onGameplayMenuClick = { viewModel.navigateTo<GameplayMenuActivity>() },
                 onLoginClick = { viewModel.navigateTo<LoginActivity>() },
                 onRegisterClick = { viewModel.navigateTo<RegisterActivity>() },

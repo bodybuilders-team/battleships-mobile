@@ -53,6 +53,9 @@ class HomeViewModel(
     val isLoggedIn
         get() = _isLoggedIn
 
+    val username
+        get() = sessionManager.username
+
     /**
      * Loads the home page.
      */

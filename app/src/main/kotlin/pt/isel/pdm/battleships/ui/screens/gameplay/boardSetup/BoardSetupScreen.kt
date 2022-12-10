@@ -36,13 +36,14 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.PlacedD
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.ShipPlacingMenuView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameAlert
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameButton
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
-import pt.isel.pdm.battleships.ui.screens.shared.components.GoBackButton
 import kotlin.math.roundToInt
 
 private const val DRAGGING_SHIP_BORDER_SIZE = 2
@@ -57,7 +58,7 @@ private const val DRAGGING_SHIP_BORDER_SIZE = 2
  * @param playerInfo the player's info
  * @param opponentInfo the opponent's info
  * @param onBoardSetupFinished callback to be called when the board finished being setup
- * @param onBackButtonClicked callback to be called when the back button is clicked
+ * @param onLeaveGameButtonClicked callback to be called when the leave game button is clicked
  * @param onPlayAgainButtonClicked callback to be called when the play again button is clicked
  * @param onBackToMenuButtonClicked callback to be called when the back to menu button is clicked
  */
@@ -70,7 +71,7 @@ fun BoardSetupScreen(
     playerInfo: PlayerInfo,
     opponentInfo: PlayerInfo,
     onBoardSetupFinished: (ConfigurableBoard) -> Unit,
-    onBackButtonClicked: () -> Unit,
+    onLeaveGameButtonClicked: () -> Unit,
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
 ) {
@@ -259,6 +260,19 @@ fun BoardSetupScreen(
                 }
             }
 
+            var leavingGame by remember { mutableStateOf(false) }
+
+            LeaveGameButton(onClick = { leavingGame = true })
+
+            if (leavingGame)
+                LeaveGameAlert(
+                    onDismissRequest = { leavingGame = false },
+                    onLeaveGameButtonClicked = {
+                        leavingGame = false
+                        onLeaveGameButtonClicked()
+                    }
+                )
+
             if (time == 0)
                 EndGamePopUp(
                     winningPlayer = WinningPlayer.NONE,
@@ -270,8 +284,6 @@ fun BoardSetupScreen(
                     onBackToMenuButtonClicked = onBackToMenuButtonClicked
                 )
         }
-
-        GoBackButton(onClick = onBackButtonClicked)
     }
 }
 
@@ -335,7 +347,7 @@ fun BoardSetupScreenPreview() {
                 playerPoints = 0
             ),
             onBoardSetupFinished = {},
-            onBackButtonClicked = {},
+            onLeaveGameButtonClicked = {},
             onPlayAgainButtonClicked = {},
             onBackToMenuButtonClicked = {}
         )
@@ -352,7 +364,7 @@ fun BoardSetupScreenEndGamePreview() {
             time = 0,
             onTimeChanged = {},
             onBoardSetupFinished = {},
-            onBackButtonClicked = {},
+            onLeaveGameButtonClicked = {},
             playerInfo = PlayerInfo(
                 name = "Player",
                 avatarId = R.drawable.ic_round_person_24,

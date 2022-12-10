@@ -47,7 +47,7 @@ class BoardSetupActivity : BattleshipsActivity() {
         setContent {
             BoardSetupActivityScreen(
                 viewModel = viewModel,
-                onBackButtonClicked = { finish() },
+                onLeaveGameButtonClicked = { viewModel.leaveGame(onGameLeft = { finish() }) },
                 onPlayAgainButtonClicked = { finish() },
                 onBackToMenuButtonClicked = { finish() }
             )
@@ -79,14 +79,14 @@ class BoardSetupActivity : BattleshipsActivity() {
  * - [BoardSetupScreen] for the actual board setup.
  *
  * @param viewModel the view model used to handle the board setup screen
- * @param onBackButtonClicked the callback to be invoked when the back button is clicked
+ * @param onLeaveGameButtonClicked the callback to be invoked when the leave game button is clicked
  * @param onPlayAgainButtonClicked the callback to be invoked when the play again button is clicked
  * @param onBackToMenuButtonClicked the callback to be invoked when the back to menu button is clicked
  */
 @Composable
 private fun BoardSetupActivityScreen(
     viewModel: BoardSetupViewModel,
-    onBackButtonClicked: () -> Unit,
+    onLeaveGameButtonClicked: () -> Unit,
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
 ) {
@@ -118,7 +118,7 @@ private fun BoardSetupActivityScreen(
                         playerPoints = 0
                     ),
                     onBoardSetupFinished = { board -> viewModel.deployFleet(board.fleet) },
-                    onBackButtonClicked = onBackButtonClicked,
+                    onLeaveGameButtonClicked = onLeaveGameButtonClicked,
                     onPlayAgainButtonClicked = onPlayAgainButtonClicked,
                     onBackToMenuButtonClicked = onBackToMenuButtonClicked
                 )

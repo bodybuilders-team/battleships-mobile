@@ -28,6 +28,6 @@ fun RegisterButton(
         modifier = Modifier.padding(BUTTON_PADDING.dp),
         text = stringResource(R.string.register_registerButton_text),
         painter = painterResource(R.drawable.ic_round_person_add_24),
-        contentDescription = stringResource(R.string.mainMenu_registerButton_description)
+        contentDescription = stringResource(R.string.home_registerButton_description)
     )
 }

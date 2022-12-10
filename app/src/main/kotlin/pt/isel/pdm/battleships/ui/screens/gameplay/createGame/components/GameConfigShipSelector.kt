@@ -1,16 +1,7 @@
 package pt.isel.pdm.battleships.ui.screens.gameplay.createGame.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 
 /**
  * Selector that allows the user to choose the number of ships of each type.
@@ -27,6 +18,13 @@ fun GameConfigShipSelector(
     onShipAdded: (ShipType) -> Unit,
     onShipRemoved: (ShipType) -> Unit
 ) {
+    ShipSelector(
+        shipTypes = ships,
+        boardSize = boardSize,
+        onShipAdded = onShipAdded,
+        onShipRemoved = onShipRemoved
+    )
+    /* TODO: Implement Manage Ships
     GameConfigSelector(
         leftSideContent = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -51,5 +49,5 @@ fun GameConfigShipSelector(
                 onShipRemoved = onShipRemoved
             )
         }
-    )
+    )*/
 }

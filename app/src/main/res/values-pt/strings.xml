@@ -5,26 +5,26 @@
 
     <!-- Main Menu -->
 
-    <string name="mainMenu_playButton_text">Jogar</string>
-    <string name="mainMenu_playButton_description">Botão para o ecrã do menu de jogabilidade</string>
+    <string name="home_playButton_text">Jogar</string>
+    <string name="home_playButton_description">Botão para o ecrã do menu de jogabilidade</string>
 
-    <string name="mainMenu_loginButton_text">Entrar</string>
-    <string name="mainMenu_loginButton_description">Botão para o ecrã de início de sessão</string>
+    <string name="home_loginButton_text">Entrar</string>
+    <string name="home_loginButton_description">Botão para o ecrã de início de sessão</string>
 
-    <string name="mainMenu_registerButton_text">Registar</string>
-    <string name="mainMenu_registerButton_description">Botão para o ecrã de registo</string>
+    <string name="home_registerButton_text">Registar</string>
+    <string name="home_registerButton_description">Botão para o ecrã de registo</string>
 
-    <string name="mainMenu_rankingButton_text">Classificações</string>
-    <string name="mainMenu_rankingButton_description">Botão para o ecrã da tabela de classificação dos jogadores</string>
+    <string name="home_rankingButton_text">Classificações</string>
+    <string name="home_rankingButton_description">Botão para o ecrã da tabela de classificação dos jogadores</string>
 
-    <string name="mainMenu_aboutButton_text">Sobre</string>
-    <string name="mainMenu_aboutButton_description">Botão para o ecrã com informação dos desenvolvedores</string>
+    <string name="home_aboutButton_text">Sobre</string>
+    <string name="home_aboutButton_description">Botão para o ecrã com informação dos desenvolvedores</string>
 
-    <string name="mainMenu_logoutButton_description">Botão para fechar sessão</string>
-    <string name="mainMenu_logoutButton_text">Fechar sessão</string>
+    <string name="home_logoutButton_description">Botão para fechar sessão</string>
+    <string name="home_logoutButton_text">Fechar sessão</string>
 
-    <string name="gameplay_leaveGameButton_text">Abandonar Jogo</string>
-    <string name="gameplay_leaveGameButton_description">Botão para abandonar o jogo</string>
+    <string name="home_welcome_text">Bem-vindo, %s!</string>
+    <string name="home_welcome_guest_text">Bem-vindo, necessita de iniciar sessão para jogar!</string>
 
     <!-- Authentication (Both Login and Register) -->
 
@@ -64,6 +64,7 @@
     <!-- Play Menu -->
 
     <string name="gameplayMenu_title">Menu de Jogabilidade</string>
+    <string name="gameplayMenu_text">Pronto para a batalha?\nCrie um jogo ou junte-se a um existente:</string>
 
     <string name="gameplayMenu_quickPlayButton_text">Jogo Rápido</string>
     <string name="gameplayMenu_quickPlayButton_description">Botão para o ecrã de jogo rápido</string>
@@ -121,11 +122,13 @@
     <string name="gameplay_loadingGame_text" tools:ignore="TypographyEllipsis">Carregando o Jogo...</string>
     <string name="gameplay_waitingForOpponent_text" tools:ignore="TypographyEllipsis">Esperando pelo oponente...</string>
 
+    <string name="gameplay_leaveGameButton_text">Abandonar Jogo</string>
+    <string name="gameplay_leaveGameButton_description">Botão para abandonar o jogo</string>
+
     <string name="gameplay_leaveGameDialog_title">Abandonar Jogo</string>
     <string name="gameplay_leaveGameDialog_text">Tem a certeza que quer abandonar o jogo? Irá perder o jogo.</string>
     <string name="gameplay_leaveGameDialog_dismissButton_text">Continuar a Jogar</string>
     <string name="gameplay_cancelLeaveGameButton_description">Botão para cancelar o abandono do jogo</string>
-
 
     <!-- EndGame -->
 
@@ -162,6 +165,8 @@
     <string name="lobby_gameConfig_size_text">Tamanho</string>
     <string name="lobby_gameConfig_quantity_text">Quantidade</string>
     <string name="lobby_gameConfig_points_text">Pontos</string>
+
+    <string name="lobby_noGames_text">Não há jogos disponíveis</string>
 
     <!-- About -->
 

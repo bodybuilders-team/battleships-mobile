@@ -299,7 +299,7 @@ class GameplayViewModel(
 
         _screenState = _screenState.copy(
             gameState = gameState,
-            time = max((gameState.phaseEndTime - System.currentTimeMillis()).toInt(), 0)
+            time = max((gameState.phaseEndTime - System.currentTimeMillis()).toInt(), 0) / 1000
         )
 
         if (gameState.phase == FINISHED_PHASE)
