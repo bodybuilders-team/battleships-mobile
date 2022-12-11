@@ -87,8 +87,8 @@ fun TileHitView(
     tileSize: Float,
     hitShip: Boolean
 ) {
-    val density = LocalDensity.current
-    val borderOffset = 2 * density.density
+    val density = LocalDensity.current.density
+    val borderOffset = 2 * density
 
     Box(modifier = Modifier.size(tileSize.dp)) {
         Canvas(
@@ -97,20 +97,20 @@ fun TileHitView(
                 drawLine(
                     color = if (hitShip) Color.Red else Color.Gray,
                     start = Offset(
-                        x = tileSize * density.density - borderOffset,
+                        x = tileSize * density - borderOffset,
                         y = borderOffset
                     ),
                     end = Offset(
                         x = borderOffset,
-                        y = tileSize * density.density - borderOffset
+                        y = tileSize * density - borderOffset
                     ),
                     strokeWidth = 5f
                 )
                 drawLine(
                     color = if (hitShip) Color.Red else Color.Gray,
                     start = Offset(
-                        x = tileSize * density.density - borderOffset,
-                        y = tileSize * density.density - borderOffset
+                        x = tileSize * density - borderOffset,
+                        y = tileSize * density - borderOffset
                     ),
                     end = Offset(
                         x = borderOffset,

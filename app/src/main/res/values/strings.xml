@@ -114,7 +114,7 @@
 
     <string name="gameplay_timer_iconDescription">Timer Icon</string>
 
-    <string name="gameplay_round_text">Round</string>
+    <string name="gameplay_round_text">ROUND</string>
 
     <string name="gameplay_opponentBoard_description">Opponent Board</string>
     <string name="gameplay_myBoard_description">My Board</string>

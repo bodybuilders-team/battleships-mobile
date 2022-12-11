@@ -111,7 +111,7 @@
 
     <string name="gameplay_timer_iconDescription">Ícono de Temporizador</string>
 
-    <string name="gameplay_round_text">Ronda</string>
+    <string name="gameplay_round_text">RONDA</string>
 
     <string name="gameplay_opponentBoard_description">Tablero del Oponente</string>
     <string name="gameplay_myBoard_description">Mi Tablero</string>

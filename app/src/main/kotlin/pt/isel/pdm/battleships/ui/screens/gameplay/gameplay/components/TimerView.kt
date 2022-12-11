@@ -20,13 +20,13 @@ private const val SECONDS_CHARACTER_PADDING_LENGTH = 2
 private const val LAST_SECONDS = 10
 
 /**
- * The timer for the gameplay.
+ * The timer view for the gameplay.
  *
  * @param minutes the minutes to display
  * @param seconds the seconds to display
  */
 @Composable
-fun Timer(minutes: Int, seconds: Int) {
+fun TimerView(minutes: Int, seconds: Int) {
     val minutesString = minutes.toString().padStart(MINUTES_CHARACTER_PADDING_LENGTH, '0')
     val secondsString = seconds.toString().padStart(SECONDS_CHARACTER_PADDING_LENGTH, '0')
 
@@ -49,6 +49,6 @@ fun Timer(minutes: Int, seconds: Int) {
 
 @Preview
 @Composable
-private fun TimerPreview() {
-    Timer(minutes = 10, seconds = 50)
+private fun TimerViewPreview() {
+    TimerView(minutes = 10, seconds = 50)
 }

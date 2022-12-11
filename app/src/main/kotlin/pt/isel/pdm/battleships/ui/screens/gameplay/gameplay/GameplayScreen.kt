@@ -36,8 +36,8 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGame
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameButton
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.MyBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Round
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.RoundView
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.TimerView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.OPPONENT
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.YOU
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
@@ -123,8 +123,8 @@ fun GameplayScreen(
                     ),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Timer(minutes = time / 60, seconds = time % 60)
-                Round(round = gameState.round ?: throw IllegalStateException("Round is null"))
+                TimerView(minutes = time / 60, seconds = time % 60)
+                RoundView(round = gameState.round ?: throw IllegalStateException("Round is null"))
             }
 
             if (myTurn)
@@ -225,7 +225,7 @@ private fun GameplayScreenPreview() {
             gameState = GameState(
                 phase = "",
                 phaseEndTime = Instant.now().plusMillis(10000L).toEpochMilli(),
-                round = 1,
+                round = 16,
                 turn = "Jesus",
                 winner = null
             ),

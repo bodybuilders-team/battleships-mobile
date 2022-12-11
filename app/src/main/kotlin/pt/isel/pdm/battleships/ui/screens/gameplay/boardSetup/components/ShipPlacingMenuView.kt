@@ -25,7 +25,8 @@ private const val BETWEEN_BUTTONS_PADDING = 6
  * It contains the ship slots and some buttons.
  *
  * @param shipTypes the list of ship types to be presented
- * @param dragging the function that returns true if the ship type is being dragged
+ * @param draggingUnplaced the function that returns true if an unplaced ship with the specified ship
+ * type is being dragged
  * @param onDragStart the function that is called when a ship starts being dragged
  * @param onDragEnd the function that is called when a ship is dropped
  * @param onDragCancel the function that is called when a ship drag is canceled
@@ -38,7 +39,7 @@ private const val BETWEEN_BUTTONS_PADDING = 6
 @Composable
 fun ShipPlacingMenuView(
     shipTypes: Map<ShipType, Int>,
-    dragging: (ShipType) -> Boolean,
+    draggingUnplaced: (ShipType) -> Boolean,
     onDragStart: (Ship, Offset) -> Unit,
     onDragEnd: (Ship) -> Unit,
     onDragCancel: () -> Unit,
@@ -54,7 +55,7 @@ fun ShipPlacingMenuView(
     ) {
         ShipSlotsView(
             shipTypes = shipTypes,
-            dragging = dragging,
+            draggingUnplaced = draggingUnplaced,
             onDragStart = onDragStart,
             onDragEnd = onDragEnd,
             onDragCancel = onDragCancel,

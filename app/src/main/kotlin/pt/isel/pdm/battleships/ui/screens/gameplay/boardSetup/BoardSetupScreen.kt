@@ -38,7 +38,7 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCa
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameAlert
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameButton
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.Timer
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.TimerView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.FULL_BOARD_VIEW_BOX_SIZE
@@ -79,9 +79,9 @@ fun BoardSetupScreen(
     val tileSize = getTileSize(boardSize)
     val unplacedShips = remember { mutableStateMapOf<ShipType, Int>().also { it.putAll(ships) } }
 
-    val dragState by remember { mutableStateOf(DragState()) }
+    var dragState by remember { mutableStateOf(DragState()) }
     var dragOffset by remember { mutableStateOf(Offset(0f, 0f)) }
-    var draggableShips by remember { mutableStateOf(listOf<Ship>()) }
+    var placedShips by remember { mutableStateOf(listOf<Ship>()) }
     var boardOffset: Offset by remember { mutableStateOf(Offset.Zero) }
 
     LaunchedEffect(time) {
@@ -100,20 +100,23 @@ fun BoardSetupScreen(
                     .width(FULL_BOARD_VIEW_BOX_SIZE.dp)
                     .onGloballyPositioned { boardOffset = it.positionInWindow() }
             ) {
-                Timer(minutes = time / 60, seconds = time % 60)
+                TimerView(minutes = time / 60, seconds = time % 60)
 
                 BoardViewWithIdentifiers(board = board) {
-                    draggableShips.forEach { draggableShip ->
+                    placedShips.forEach { placedShip ->
                         PlacedDraggableShipView(
-                            ship = draggableShip,
+                            ship = placedShip,
                             tileSize = tileSize,
-                            hide = dragState.ship == draggableShip,
-                            onDragStart = { _, initialPosition ->
-                                dragState.ship = draggableShip
-                                dragState.dragOffset = initialPosition
+                            hide = dragState.ship == placedShip,
+                            onDragStart = { ship, initialPosition ->
+                                dragState = dragState.copy(
+                                    ship = ship,
+                                    isPlaced = true,
+                                    dragOffset = initialPosition
+                                )
                             },
                             onDragEnd = {
-                                dragState.reset()
+                                dragState = dragState.reset()
 
                                 Coordinate
                                     .fromPointOrNull(
@@ -124,63 +127,67 @@ fun BoardSetupScreen(
                                         if (
                                             Ship.isValidShipCoordinate(
                                                 coordinate,
-                                                draggableShip.orientation,
-                                                draggableShip.type.size,
+                                                placedShip.orientation,
+                                                placedShip.type.size,
                                                 boardSize
                                             )
                                         ) {
                                             val newShip = Ship(
-                                                type = draggableShip.type,
+                                                type = placedShip.type,
                                                 coordinate = coordinate,
-                                                orientation = draggableShip.orientation
+                                                orientation = placedShip.orientation
                                             )
 
                                             if (board
-                                                .removeShip(draggableShip)
+                                                .removeShip(placedShip)
                                                 .canPlaceShip(newShip)
                                             ) {
                                                 board = board
-                                                    .removeShip(draggableShip)
+                                                    .removeShip(placedShip)
                                                     .placeShip(newShip)
 
-                                                draggableShips =
-                                                    draggableShips - draggableShip + newShip
+                                                placedShips =
+                                                    placedShips - placedShip + newShip
                                             }
                                         }
                                     }
                             },
-                            onDragCancel = { dragState.reset() },
-                            onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
+                            onDragCancel = { dragState = dragState.reset() },
+                            onDrag = { dragAmount ->
+                                dragState =
+                                    dragState.copy(dragOffset = dragState.dragOffset + dragAmount)
+                            },
                             onTap = {
-                                draggableShip.coordinate
-                                    .let { coordinate ->
-                                        if (
-                                            Ship.isValidShipCoordinate(
-                                                coordinate,
-                                                draggableShip.orientation.opposite(),
-                                                draggableShip.type.size,
-                                                boardSize
-                                            )
+                                placedShip.coordinates.forEach { coordinate ->
+                                    if (
+                                        Ship.isValidShipCoordinate(
+                                            coordinate,
+                                            placedShip.orientation.opposite(),
+                                            placedShip.type.size,
+                                            boardSize
+                                        )
+                                    ) {
+                                        val newShip = Ship(
+                                            type = placedShip.type,
+                                            coordinate = coordinate,
+                                            orientation = placedShip.orientation.opposite()
+                                        )
+
+                                        if (board
+                                            .removeShip(placedShip)
+                                            .canPlaceShip(newShip)
                                         ) {
-                                            val newShip = Ship(
-                                                type = draggableShip.type,
-                                                coordinate = coordinate,
-                                                orientation = draggableShip.orientation.opposite()
-                                            )
+                                            board = board
+                                                .removeShip(placedShip)
+                                                .placeShip(newShip)
 
-                                            if (board
-                                                .removeShip(draggableShip)
-                                                .canPlaceShip(newShip)
-                                            ) {
-                                                board = board
-                                                    .removeShip(draggableShip)
-                                                    .placeShip(newShip)
+                                            placedShips =
+                                                placedShips - placedShip + newShip
 
-                                                draggableShips =
-                                                    draggableShips - draggableShip + newShip
-                                            }
+                                            return@PlacedDraggableShipView
                                         }
                                     }
+                                }
                             }
                         )
                     }
@@ -188,15 +195,18 @@ fun BoardSetupScreen(
 
                 ShipPlacingMenuView(
                     shipTypes = unplacedShips,
-                    dragging = { shipType ->
-                        dragState.ship?.type == shipType && dragState.isDragging
+                    draggingUnplaced = { shipType ->
+                        dragState.ship?.type == shipType && dragState.isDragging && !dragState.isPlaced
                     },
                     onDragStart = { ship, initialPosition ->
-                        dragState.ship = ship
-                        dragState.dragOffset = initialPosition
+                        dragState = dragState.copy(
+                            ship = ship,
+                            isPlaced = false,
+                            dragOffset = initialPosition
+                        )
                     },
                     onDragEnd = { ship ->
-                        dragState.reset()
+                        dragState = dragState.reset()
 
                         Coordinate
                             .fromPointOrNull(
@@ -216,7 +226,7 @@ fun BoardSetupScreen(
 
                                     if (board.canPlaceShip(newShip)) {
                                         board = board.placeShip(newShip)
-                                        draggableShips = draggableShips + newShip
+                                        placedShips = placedShips + newShip
 
                                         if (unplacedShips[ship.type]!! > 0) {
                                             unplacedShips[ship.type] =
@@ -226,14 +236,16 @@ fun BoardSetupScreen(
                                 }
                             }
                     },
-                    onDragCancel = { dragState.reset() },
-                    onDrag = { dragAmount -> dragState.dragOffset += dragAmount },
+                    onDragCancel = { dragState = dragState.reset() },
+                    onDrag = { dragAmount ->
+                        dragState = dragState.copy(dragOffset = dragState.dragOffset + dragAmount)
+                    },
                     onRandomBoardButtonPressed = {
-                        draggableShips = emptyList()
+                        placedShips = emptyList()
 
                         board = ConfigurableBoard.random(size = board.size, ships = ships)
 
-                        draggableShips = board.fleet
+                        placedShips = board.fleet
 
                         unplacedShips.keys.forEach { unplacedShips[it] = 0 }
                     },
@@ -242,6 +254,30 @@ fun BoardSetupScreen(
                             onBoardSetupFinished(board)
                     }
                 )
+
+                var leavingGame by remember { mutableStateOf(false) }
+
+                LeaveGameButton(onClick = { leavingGame = true })
+
+                if (leavingGame)
+                    LeaveGameAlert(
+                        onDismissRequest = { leavingGame = false },
+                        onLeaveGameButtonClicked = {
+                            leavingGame = false
+                            onLeaveGameButtonClicked()
+                        }
+                    )
+
+                if (time == 0)
+                    EndGamePopUp(
+                        winningPlayer = WinningPlayer.NONE,
+                        cause = EndGameCause.TIMEOUT,
+                        pointsWon = 0,
+                        playerInfo = playerInfo,
+                        opponentInfo = opponentInfo,
+                        onPlayAgainButtonClicked = onPlayAgainButtonClicked,
+                        onBackToMenuButtonClicked = onBackToMenuButtonClicked
+                    )
             }
 
             // Dragging composable
@@ -259,30 +295,6 @@ fun BoardSetupScreen(
                     )
                 }
             }
-
-            var leavingGame by remember { mutableStateOf(false) }
-
-            LeaveGameButton(onClick = { leavingGame = true })
-
-            if (leavingGame)
-                LeaveGameAlert(
-                    onDismissRequest = { leavingGame = false },
-                    onLeaveGameButtonClicked = {
-                        leavingGame = false
-                        onLeaveGameButtonClicked()
-                    }
-                )
-
-            if (time == 0)
-                EndGamePopUp(
-                    winningPlayer = WinningPlayer.NONE,
-                    cause = EndGameCause.TIMEOUT,
-                    pointsWon = 0,
-                    playerInfo = playerInfo,
-                    opponentInfo = opponentInfo,
-                    onPlayAgainButtonClicked = onPlayAgainButtonClicked,
-                    onBackToMenuButtonClicked = onBackToMenuButtonClicked
-                )
         }
     }
 }
@@ -296,9 +308,11 @@ fun BoardSetupScreen(
  * @property dragOffset the drag offset
  * @property isDragging whether the ship is being dragged
  */
-private class DragState {
-    var ship by mutableStateOf<Ship?>(null)
-    var dragOffset by mutableStateOf(Offset.Zero)
+private data class DragState(
+    val ship: Ship? = null,
+    val isPlaced: Boolean = false,
+    val dragOffset: Offset = Offset.Zero
+) {
 
     val isDragging: Boolean
         get() = ship != null
@@ -306,10 +320,11 @@ private class DragState {
     /**
      * Resets the dragging state.
      */
-    fun reset() {
-        ship = null
+    fun reset() = copy(
+        ship = null,
+        isPlaced = false,
         dragOffset = Offset.Zero
-    }
+    )
 }
 
 /**
@@ -327,8 +342,8 @@ private fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate
 
 @Preview
 @Composable
-fun BoardSetupScreenPreview() {
-    var timer by remember { mutableStateOf(30) }
+private fun BoardSetupScreenPreview() {
+    var timer by remember { mutableStateOf(1000) }
 
     BattleshipsScreen {
         BoardSetupScreen(
@@ -356,7 +371,7 @@ fun BoardSetupScreenPreview() {
 
 @Preview
 @Composable
-fun BoardSetupScreenEndGamePreview() {
+private fun BoardSetupScreenEndGamePreview() {
     BattleshipsScreen {
         BoardSetupScreen(
             boardSize = 10,
@@ -375,6 +390,38 @@ fun BoardSetupScreenEndGamePreview() {
                 avatarId = R.drawable.ic_round_person_24,
                 playerPoints = 0
             ),
+            onPlayAgainButtonClicked = {},
+            onBackToMenuButtonClicked = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun BoardSetupScreenMultipleQuantitiesPreview() {
+    var timer by remember { mutableStateOf(1000) }
+
+    BattleshipsScreen {
+        BoardSetupScreen(
+            boardSize = 10,
+            ships = ShipType.defaultsMap.toMutableMap().let {
+                it[ShipType.BATTLESHIP] = 2
+                it
+            },
+            time = timer,
+            onTimeChanged = { timer -= 1 },
+            playerInfo = PlayerInfo(
+                name = "Player",
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 0
+            ),
+            opponentInfo = PlayerInfo(
+                name = "Opponent",
+                avatarId = R.drawable.ic_round_person_24,
+                playerPoints = 0
+            ),
+            onBoardSetupFinished = {},
+            onLeaveGameButtonClicked = {},
             onPlayAgainButtonClicked = {},
             onBackToMenuButtonClicked = {}
         )
