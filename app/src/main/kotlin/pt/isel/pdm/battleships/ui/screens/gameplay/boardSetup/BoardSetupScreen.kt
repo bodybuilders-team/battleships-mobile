@@ -34,12 +34,12 @@ import pt.isel.pdm.battleships.domain.users.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.PlacedDraggableShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.ShipPlacingMenuView
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameAlert
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameButton
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.TimerView
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGamePopUp
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.LeaveGameAlert
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.LeaveGameButton
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize

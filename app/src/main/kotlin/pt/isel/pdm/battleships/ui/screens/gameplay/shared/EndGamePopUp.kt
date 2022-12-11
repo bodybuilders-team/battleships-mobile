@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components
+package pt.isel.pdm.battleships.ui.screens.gameplay.shared
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,12 +28,12 @@ import androidx.compose.ui.window.Popup
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.users.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.DESTRUCTION
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.RESIGNATION
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause.TIMEOUT
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.NONE
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.OPPONENT
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.YOU
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause.DESTRUCTION
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause.RESIGNATION
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause.TIMEOUT
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.NONE
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.OPPONENT
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.YOU
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 
 /**

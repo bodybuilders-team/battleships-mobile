@@ -30,16 +30,16 @@ import pt.isel.pdm.battleships.domain.games.game.GameState
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
 import pt.isel.pdm.battleships.domain.users.PlayerInfo
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGameCause
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.EndGamePopUp
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameAlert
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.LeaveGameButton
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.MyBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.RoundView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.TimerView
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.OPPONENT
-import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.WinningPlayer.YOU
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGamePopUp
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.LeaveGameAlert
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.LeaveGameButton
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.OPPONENT
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.YOU
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 import java.time.Instant
 
@@ -101,8 +101,8 @@ fun GameplayScreen(
 
                 selectedCells = when {
                     coordinate in selectedCells -> selectedCells - coordinate
-                    selectedCells.size < gameConfig.shotsPerTurn -> selectedCells + coordinate
-                    gameConfig.shotsPerTurn == 1 -> listOf(coordinate)
+                    selectedCells.size < gameConfig.shotsPerRound -> selectedCells + coordinate
+                    gameConfig.shotsPerRound == 1 -> listOf(coordinate)
                     else -> selectedCells
                 }
             }
@@ -154,7 +154,7 @@ fun GameplayScreen(
 
                                 onShootClicked(shots)
                             },
-                            enabled = canFireShots,
+                            enabled = canFireShots && selectedCells.isNotEmpty(),
                             painter = painterResource(R.drawable.crosshair_white),
                             contentDescription = stringResource(R.string.gameplay_shoot_button_description),
                             iconModifier = Modifier.size(24.dp),

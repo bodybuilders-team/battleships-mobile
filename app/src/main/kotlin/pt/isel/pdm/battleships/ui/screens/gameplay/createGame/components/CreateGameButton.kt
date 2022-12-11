@@ -46,7 +46,7 @@ fun CreateGameButton(
                 gameName.ifEmpty { "Game" },
                 GameConfig(
                     gridSize = gridSize,
-                    shotsPerTurn = shotsPerTurn,
+                    shotsPerRound = shotsPerTurn,
                     maxTimePerRound = maxTimePerRound,
                     maxTimeForLayoutPhase = maxTimeForLayoutPhase,
                     ships = ships

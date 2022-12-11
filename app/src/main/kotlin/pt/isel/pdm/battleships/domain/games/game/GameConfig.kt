@@ -7,15 +7,15 @@ import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigMod
 /**
  * A game configuration.
  *
- * @property gridSize The size of the grid.
- * @property shotsPerTurn The number of shots per turn.
- * @property maxTimePerRound The maximum time per shot.
- * @property maxTimeForLayoutPhase The maximum time for the layout phase.
- * @property ships The ships to be used in the game.
+ * @property gridSize the size of the grid
+ * @property shotsPerRound the number of shots per round
+ * @property maxTimePerRound the maximum time per shot
+ * @property maxTimeForLayoutPhase the maximum time for the layout phase
+ * @property ships the ships to be used in the game
  */
 data class GameConfig(
     val gridSize: Int,
-    val shotsPerTurn: Int,
+    val shotsPerRound: Int,
     val maxTimePerRound: Int,
     val maxTimeForLayoutPhase: Int,
     val ships: Map<ShipType, Int>
@@ -23,7 +23,7 @@ data class GameConfig(
 
     constructor(gameConfigModel: GameConfigModel) : this(
         gridSize = gameConfigModel.gridSize,
-        shotsPerTurn = gameConfigModel.shotsPerRound,
+        shotsPerRound = gameConfigModel.shotsPerRound,
         maxTimePerRound = gameConfigModel.maxTimePerRound,
         maxTimeForLayoutPhase = gameConfigModel.maxTimeForLayoutPhase,
         ships = gameConfigModel.shipTypes.associate {
@@ -38,7 +38,7 @@ data class GameConfig(
      */
     fun toGameConfigModel(): GameConfigModel = GameConfigModel(
         gridSize = gridSize,
-        shotsPerRound = shotsPerTurn,
+        shotsPerRound = shotsPerRound,
         maxTimePerRound = maxTimePerRound,
         maxTimeForLayoutPhase = maxTimeForLayoutPhase,
         shipTypes = ships.map { (shipType, quantity) ->

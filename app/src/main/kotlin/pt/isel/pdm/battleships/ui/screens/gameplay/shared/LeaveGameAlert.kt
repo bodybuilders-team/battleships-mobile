@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components
+package pt.isel.pdm.battleships.ui.screens.gameplay.shared
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.AlertDialog
