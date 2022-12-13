@@ -121,7 +121,6 @@ class BoardSetupViewModel(
             events = _events,
             onSuccess = {
                 _state = FLEET_DEPLOYED
-                waitForOpponent()
             }
         )
     }
@@ -149,35 +148,6 @@ class BoardSetupViewModel(
     }
 
     /**
-     * Waits for the opponent to deploy their fleet.
-     */
-    private suspend fun waitForOpponent() {
-        check(state == FLEET_DEPLOYED) { "The game is not in the fleet deployed state" }
-
-        _state = WAITING_FOR_OPPONENT
-
-        while (true) {
-            val gameStateData = executeRequestThrowing(
-                request = { battleshipsService.gamesService.getGameState() },
-                events = _events
-            )
-
-            val properties = GameState(
-                gameStateData.properties
-                    ?: throw IllegalStateException("Game state properties are null")
-            )
-
-            if (properties.phase == GamePhase.DEPLOYING_FLEETS)
-                delay(POLLING_DELAY)
-            else {
-                _state = FINISHED
-                _events.emit(BoardSetupEvent.NavigateToGameplay)
-                break
-            }
-        }
-    }
-
-    /**
      * Gets the game state.
      * Updates the gameState property in [screenState] and the [state] property to
      * [BoardSetupState.FINISHED] in the case of the game being in [GamePhase.FINISHED].
@@ -195,7 +165,9 @@ class BoardSetupViewModel(
 
         _screenState = _screenState.copy(gameState = gameState)
 
-        if (gameState.phase == GamePhase.FINISHED) {
+        if (_state == WAITING_FOR_OPPONENT && gameState.phase == GamePhase.IN_PROGRESS) {
+            _events.emit(BoardSetupEvent.NavigateToGameplay)
+        } else if (gameState.phase == GamePhase.FINISHED) {
             launchAndExecuteRequestThrowing(
                 request = { battleshipsService.gamesService.getGame() },
                 events = _events,

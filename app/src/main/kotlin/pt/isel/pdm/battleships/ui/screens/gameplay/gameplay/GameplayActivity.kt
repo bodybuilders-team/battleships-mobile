@@ -81,13 +81,6 @@ private fun GameplayActivityScreen(
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
 ) {
-    val gameState = viewModel.screenState.gameState
-        ?: throw IllegalStateException("Game state not found")
-    val player = viewModel.screenState.player
-        ?: throw IllegalStateException("Player not found")
-    val opponent = viewModel.screenState.opponent
-        ?: throw IllegalStateException("Opponent not found")
-
     BattleshipsScreen {
         when (viewModel.state) {
             IDLE, LINKS_LOADED, LOADING_GAME -> LoadingSpinner("Loading Game...")
@@ -101,12 +94,20 @@ private fun GameplayActivityScreen(
                     ?: throw IllegalStateException("Opponent board not found"),
                 gameConfig = viewModel.screenState.gameConfig
                     ?: throw IllegalStateException("Game config not found"),
-                gameState = gameState,
+                gameState = viewModel.screenState.gameState
+                    ?: throw IllegalStateException("Game state not found"),
                 onShootClicked = { coordinates -> viewModel.fireShots(coordinates) },
                 onLeaveGameButtonClicked = { viewModel.leaveGame() }
             )
         }
         if (viewModel.state == GameplayViewModel.GameplayState.FINISHED_GAME) {
+            val gameState = viewModel.screenState.gameState
+                ?: throw IllegalStateException("Game state not found")
+            val player = viewModel.screenState.player
+                ?: throw IllegalStateException("Player not found")
+            val opponent = viewModel.screenState.opponent
+                ?: throw IllegalStateException("Opponent not found")
+
             EndGamePopUp(
                 winningPlayer = if (gameState.winner == player.name) WinningPlayer.YOU
                 else WinningPlayer.OPPONENT,

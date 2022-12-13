@@ -94,13 +94,6 @@ private fun BoardSetupActivityScreen(
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
 ) {
-    val gameState = viewModel.screenState.gameState
-        ?: throw IllegalStateException("No game state found")
-    val player = viewModel.screenState.player
-        ?: throw IllegalStateException("No player found")
-    val opponent = viewModel.screenState.opponent
-        ?: throw IllegalStateException("No opponent found")
-
     BattleshipsScreen {
         when (viewModel.state) {
             IDLE, LINKS_LOADED, LOADING_GAME ->
@@ -113,22 +106,29 @@ private fun BoardSetupActivityScreen(
                         ?: throw IllegalStateException("No grid size found"),
                     ships = viewModel.screenState.ships
                         ?: throw IllegalStateException("No ships found"),
-                    gameState = gameState,
+                    gameState = viewModel.screenState.gameState
+                        ?: throw IllegalStateException("No game state found"),
                     onBoardSetupFinished = { board -> viewModel.deployFleet(board.fleet) },
                     onLeaveGameButtonClicked = onLeaveGameButtonClicked
                 )
             }
         }
 
-        if (viewModel.state == BoardSetupViewModel.BoardSetupState.FINISHED)
+        if (viewModel.state == BoardSetupViewModel.BoardSetupState.FINISHED) {
+            val gameState = viewModel.screenState.gameState
+                ?: throw IllegalStateException("No game state found")
+
             EndGamePopUp(
                 winningPlayer = WinningPlayer.NONE,
                 cause = gameState.endCause
                     ?: throw IllegalStateException("End cause not found but game is finished"),
-                player = player,
-                opponent = opponent,
+                player = viewModel.screenState.player
+                    ?: throw IllegalStateException("No player found"),
+                opponent = viewModel.screenState.opponent
+                    ?: throw IllegalStateException("No opponent found"),
                 onPlayAgainButtonClicked = onPlayAgainButtonClicked,
                 onBackToMenuButtonClicked = onBackToMenuButtonClicked
             )
+        }
     }
 }
