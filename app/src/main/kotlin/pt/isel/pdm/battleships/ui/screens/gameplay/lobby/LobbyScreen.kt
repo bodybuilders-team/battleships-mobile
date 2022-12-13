@@ -145,7 +145,14 @@ private fun LobbyScreenPreview() {
                                 )
                             }
                         ),
-                        state = GameStateModel("WAITING_FOR_PLAYERS", 0, null, null, null),
+                        state = GameStateModel(
+                            "WAITING_FOR_PLAYERS",
+                            0,
+                            null,
+                            null,
+                            null,
+                            endCause = null
+                        ),
                         players = listOf(PlayerModel("joe", 0))
                     ),
                     links = listOf(

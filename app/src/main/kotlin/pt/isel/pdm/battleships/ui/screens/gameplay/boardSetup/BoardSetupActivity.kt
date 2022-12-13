@@ -7,14 +7,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.domain.users.PlayerInfo
+import pt.isel.pdm.battleships.domain.games.game.WinningPlayer
 import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupEvent.Exit
+import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupEvent.NavigateToGameplay
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.BoardSetupViewModel.BoardSetupState.WAITING_FOR_OPPONENT
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayActivity
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.shared.Event
 import pt.isel.pdm.battleships.ui.screens.shared.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links.Companion.getLinks
@@ -47,7 +50,7 @@ class BoardSetupActivity : BattleshipsActivity() {
         setContent {
             BoardSetupActivityScreen(
                 viewModel = viewModel,
-                onLeaveGameButtonClicked = { viewModel.leaveGame(onGameLeft = { finish() }) },
+                onLeaveGameButtonClicked = { viewModel.leaveGame() },
                 onPlayAgainButtonClicked = { finish() },
                 onBackToMenuButtonClicked = { finish() }
             )
@@ -61,10 +64,11 @@ class BoardSetupActivity : BattleshipsActivity() {
      */
     private suspend fun handleEvent(event: Event) {
         when (event) {
-            is BoardSetupViewModel.BoardSetupEvent.NavigateToGameplay -> {
+            is NavigateToGameplay -> {
                 navigateWithLinksTo<GameplayActivity>(viewModel.getLinks())
                 finish()
             }
+            is Exit -> finish()
             is Event.Error -> showToast(event.message)
         }
     }
@@ -90,6 +94,13 @@ private fun BoardSetupActivityScreen(
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
 ) {
+    val gameState = viewModel.screenState.gameState
+        ?: throw IllegalStateException("No game state found")
+    val player = viewModel.screenState.player
+        ?: throw IllegalStateException("No player found")
+    val opponent = viewModel.screenState.opponent
+        ?: throw IllegalStateException("No opponent found")
+
     BattleshipsScreen {
         when (viewModel.state) {
             IDLE, LINKS_LOADED, LOADING_GAME ->
@@ -102,27 +113,22 @@ private fun BoardSetupActivityScreen(
                         ?: throw IllegalStateException("No grid size found"),
                     ships = viewModel.screenState.ships
                         ?: throw IllegalStateException("No ships found"),
-                    time = viewModel.screenState.time
-                        ?: throw IllegalStateException("No max time for grid layout found"),
-                    onTimeChanged = { time -> viewModel.changeTime(time) },
-                    playerInfo = PlayerInfo(
-                        name = viewModel.screenState.playerName
-                            ?: throw IllegalStateException("Player name not found"),
-                        avatarId = R.drawable.ic_round_person_24,
-                        playerPoints = 0
-                    ),
-                    opponentInfo = PlayerInfo(
-                        name = viewModel.screenState.opponentName
-                            ?: throw IllegalStateException("Opponent name not found"),
-                        avatarId = R.drawable.ic_round_person_24,
-                        playerPoints = 0
-                    ),
+                    gameState = gameState,
                     onBoardSetupFinished = { board -> viewModel.deployFleet(board.fleet) },
-                    onLeaveGameButtonClicked = onLeaveGameButtonClicked,
-                    onPlayAgainButtonClicked = onPlayAgainButtonClicked,
-                    onBackToMenuButtonClicked = onBackToMenuButtonClicked
+                    onLeaveGameButtonClicked = onLeaveGameButtonClicked
                 )
             }
         }
+
+        if (viewModel.state == BoardSetupViewModel.BoardSetupState.FINISHED)
+            EndGamePopUp(
+                winningPlayer = WinningPlayer.NONE,
+                cause = gameState.endCause
+                    ?: throw IllegalStateException("End cause not found but game is finished"),
+                player = player,
+                opponent = opponent,
+                onPlayAgainButtonClicked = onPlayAgainButtonClicked,
+                onBackToMenuButtonClicked = onBackToMenuButtonClicked
+            )
     }
 }

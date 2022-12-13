@@ -3,9 +3,14 @@ package pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import pt.isel.pdm.battleships.domain.games.game.GamePhase
+import pt.isel.pdm.battleships.domain.games.game.GameState
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
+import pt.isel.pdm.battleships.domain.users.Player
 import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.service.services.games.models.players.deployFleet.DeployFleetInput
 import pt.isel.pdm.battleships.session.SessionManager
@@ -47,9 +52,9 @@ class BoardSetupViewModel(
     data class BoardSetupScreenState(
         val gridSize: Int? = null,
         val ships: Map<ShipType, Int>? = null,
-        val time: Int? = null,
-        val playerName: String? = null,
-        val opponentName: String? = null
+        val gameState: GameState? = null,
+        val player: Player? = null,
+        val opponent: Player? = null
     )
 
     private var _screenState by mutableStateOf(BoardSetupScreenState())
@@ -86,11 +91,13 @@ class BoardSetupViewModel(
                     ships = shipTypes.associate {
                         ShipType(size = it.size, shipName = it.shipName) to it.quantity
                     },
-                    time = properties.config.maxTimeForLayoutPhase,
-                    playerName = player.username,
-                    opponentName = opponent.username
+                    gameState = GameState(properties.state),
+                    player = Player(player),
+                    opponent = Player(opponent)
                 )
                 _state = GAME_LOADED
+
+                viewModelScope.launch { gameStatePolling() }
             }
         )
     }
@@ -121,12 +128,10 @@ class BoardSetupViewModel(
 
     /**
      * Leaves the game.
-     * Calls [onGameLeft] when an api response is received, regardless of whether or not is was
-     * successful.
-     *
-     * @param onGameLeft the callback to call when the game is left (api response was received).
+     * Sends a [BoardSetupEvent.Exit] event when an api response is received, regardless of whether
+     * or not it was successful.
      */
-    fun leaveGame(onGameLeft: () -> Unit) {
+    fun leaveGame() {
         check(state == GAME_LOADED) { "The game is not loaded" }
         _state = LEAVING_GAME
 
@@ -134,11 +139,10 @@ class BoardSetupViewModel(
             request = { battleshipsService.gamesService.leaveGame() },
             events = _events,
             onSuccess = {
-                _state = FINISHED
-                onGameLeft()
+                _events.emit(BoardSetupEvent.Exit)
             },
             retryOnApiResultFailure = {
-                onGameLeft()
+                _events.emit(BoardSetupEvent.Exit)
                 false
             }
         )
@@ -158,10 +162,12 @@ class BoardSetupViewModel(
                 events = _events
             )
 
-            val properties = gameStateData.properties
-                ?: throw IllegalStateException("Game state properties are null")
+            val properties = GameState(
+                gameStateData.properties
+                    ?: throw IllegalStateException("Game state properties are null")
+            )
 
-            if (properties.phase == DEPLOYING_FLEETS_PHASE)
+            if (properties.phase == GamePhase.DEPLOYING_FLEETS)
                 delay(POLLING_DELAY)
             else {
                 _state = FINISHED
@@ -172,12 +178,69 @@ class BoardSetupViewModel(
     }
 
     /**
-     * Changes screenState time to [time].
-     *
-     * @param time time to change to
+     * Gets the game state.
+     * Updates the gameState property in [screenState] and the [state] property to
+     * [BoardSetupState.FINISHED] in the case of the game being in [GamePhase.FINISHED].
      */
-    fun changeTime(time: Int) {
-        _screenState = _screenState.copy(time = time)
+    private suspend fun updateGameState() {
+        val gameStateData = executeRequestThrowing(
+            request = { battleshipsService.gamesService.getGameState() },
+            events = _events
+        )
+
+        val gameState = GameState(
+            gameStateModel = gameStateData.properties
+                ?: throw IllegalStateException("Game state properties are null")
+        )
+
+        _screenState = _screenState.copy(gameState = gameState)
+
+        if (gameState.phase == GamePhase.FINISHED) {
+            launchAndExecuteRequestThrowing(
+                request = { battleshipsService.gamesService.getGame() },
+                events = _events,
+                onSuccess = { getGameData ->
+                    val properties = getGameData.properties
+                        ?: throw IllegalStateException("No game properties found")
+
+                    val shipTypes = properties.config.shipTypes
+
+                    val player =
+                        properties.players.single { it.username == sessionManager.username }
+                    val opponent =
+                        properties.players.single { it.username != sessionManager.username }
+
+                    _screenState = _screenState.copy(
+                        gridSize = properties.config.gridSize,
+                        ships = shipTypes.associate {
+                            ShipType(size = it.size, shipName = it.shipName) to it.quantity
+                        },
+                        gameState = GameState(properties.state),
+                        player = Player(player),
+                        opponent = Player(opponent)
+                    )
+
+                    _state = FINISHED
+                }
+            )
+        }
+    }
+
+    /**
+     * Does the game state polling, calling updateGameState() every [POLLING_DELAY] milliseconds.
+     * Finishes polling when state is [FINISHED].
+     */
+    private fun gameStatePolling() {
+        viewModelScope.launch {
+            while (true) {
+                updateGameState()
+
+                if (_state == FINISHED)
+                    break
+
+                delay(POLLING_DELAY)
+            }
+        }
     }
 
     /**
@@ -224,10 +287,14 @@ class BoardSetupViewModel(
          * The event of navigating to the gameplay screen.
          */
         object NavigateToGameplay : BoardSetupEvent()
+
+        /**
+         * The event of exiting the board setup screen, going back to the gameplay menu screen.
+         */
+        object Exit : BoardSetupEvent()
     }
 
     companion object {
-        private const val DEPLOYING_FLEETS_PHASE = "DEPLOYING_FLEETS"
-        private const val POLLING_DELAY = 1000L
+        private const val POLLING_DELAY = 500L
     }
 }

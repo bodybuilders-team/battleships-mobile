@@ -27,53 +27,47 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.Board
 import pt.isel.pdm.battleships.domain.games.board.ConfigurableBoard
+import pt.isel.pdm.battleships.domain.games.game.EndGameCause
+import pt.isel.pdm.battleships.domain.games.game.GamePhase
+import pt.isel.pdm.battleships.domain.games.game.GameState
+import pt.isel.pdm.battleships.domain.games.game.WinningPlayer
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.domain.users.PlayerInfo
+import pt.isel.pdm.battleships.domain.users.Player
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.PlacedDraggableShipView
 import pt.isel.pdm.battleships.ui.screens.gameplay.boardSetup.components.ShipPlacingMenuView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.TimerView
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.LeaveGameAlert
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.LeaveGameButton
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIdentifiers
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
+import java.time.Instant
 import kotlin.math.roundToInt
 
 private const val DRAGGING_SHIP_BORDER_SIZE = 2
+private const val TIME_RESYNCHRONIZATION_INTERVAL = 1000L
 
 /**
  * Board setup screen. Allows the user to place their ships on the board how they like.
  *
  * @param boardSize the size of the board
  * @param ships the list of ships to be placed
- * @param time the time the player has to place the ships
- * @param onTimeChanged callback to be called when the time changes
- * @param playerInfo the player's info
- * @param opponentInfo the opponent's info
+ * @param gameState the game state
  * @param onBoardSetupFinished callback to be called when the board finished being setup
  * @param onLeaveGameButtonClicked callback to be called when the leave game button is clicked
- * @param onPlayAgainButtonClicked callback to be called when the play again button is clicked
- * @param onBackToMenuButtonClicked callback to be called when the back to menu button is clicked
  */
 @Composable
 fun BoardSetupScreen(
     boardSize: Int,
     ships: Map<ShipType, Int>,
-    time: Int,
-    onTimeChanged: (Int) -> Unit,
-    playerInfo: PlayerInfo,
-    opponentInfo: PlayerInfo,
+    gameState: GameState,
     onBoardSetupFinished: (ConfigurableBoard) -> Unit,
-    onLeaveGameButtonClicked: () -> Unit,
-    onPlayAgainButtonClicked: () -> Unit,
-    onBackToMenuButtonClicked: () -> Unit
+    onLeaveGameButtonClicked: () -> Unit
 ) {
     var board by remember { mutableStateOf(ConfigurableBoard(boardSize)) }
     val tileSize = getTileSize(boardSize)
@@ -84,10 +78,20 @@ fun BoardSetupScreen(
     var placedShips by remember { mutableStateOf(listOf<Ship>()) }
     var boardOffset: Offset by remember { mutableStateOf(Offset.Zero) }
 
-    LaunchedEffect(time) {
-        delay(1000)
-        if (time > 0)
-            onTimeChanged(time - 1)
+    var time by remember {
+        mutableStateOf(
+            Integer.max(
+                (gameState.phaseEndTime - System.currentTimeMillis()).toInt(),
+                0
+            ) / 1000
+        )
+    }
+    LaunchedEffect(gameState.phaseEndTime) {
+        while (time > 0) {
+            time =
+                Integer.max((gameState.phaseEndTime - System.currentTimeMillis()).toInt(), 0) / 1000
+            delay(TIME_RESYNCHRONIZATION_INTERVAL)
+        }
     }
 
     Column(
@@ -267,17 +271,6 @@ fun BoardSetupScreen(
                             onLeaveGameButtonClicked()
                         }
                     )
-
-                if (time == 0)
-                    EndGamePopUp(
-                        winningPlayer = WinningPlayer.NONE,
-                        cause = EndGameCause.TIMEOUT,
-                        pointsWon = 0,
-                        playerInfo = playerInfo,
-                        opponentInfo = opponentInfo,
-                        onPlayAgainButtonClicked = onPlayAgainButtonClicked,
-                        onBackToMenuButtonClicked = onBackToMenuButtonClicked
-                    )
             }
 
             // Dragging composable
@@ -343,28 +336,20 @@ private fun Coordinate.Companion.fromPointOrNull(col: Int, row: Int): Coordinate
 @Preview
 @Composable
 private fun BoardSetupScreenPreview() {
-    var timer by remember { mutableStateOf(1000) }
-
     BattleshipsScreen {
         BoardSetupScreen(
             boardSize = 10,
             ships = ShipType.defaultsMap,
-            time = timer,
-            onTimeChanged = { timer -= 1 },
-            playerInfo = PlayerInfo(
-                name = "Player",
-                avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 0
-            ),
-            opponentInfo = PlayerInfo(
-                name = "Opponent",
-                avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 0
+            gameState = GameState(
+                phase = GamePhase.DEPLOYING_FLEETS,
+                phaseEndTime = Instant.now().plusMillis(45000L).toEpochMilli(),
+                round = null,
+                turn = null,
+                winner = null,
+                endCause = null
             ),
             onBoardSetupFinished = {},
-            onLeaveGameButtonClicked = {},
-            onPlayAgainButtonClicked = {},
-            onBackToMenuButtonClicked = {}
+            onLeaveGameButtonClicked = {}
         )
     }
 }
@@ -376,19 +361,30 @@ private fun BoardSetupScreenEndGamePreview() {
         BoardSetupScreen(
             boardSize = 10,
             ships = ShipType.defaultsMap,
-            time = 0,
-            onTimeChanged = {},
+            gameState = GameState(
+                phase = GamePhase.FINISHED,
+                phaseEndTime = Instant.now().plusMillis(0L).toEpochMilli(),
+                round = null,
+                turn = null,
+                winner = null,
+                endCause = EndGameCause.TIMEOUT
+            ),
             onBoardSetupFinished = {},
-            onLeaveGameButtonClicked = {},
-            playerInfo = PlayerInfo(
+            onLeaveGameButtonClicked = {}
+        )
+
+        EndGamePopUp(
+            winningPlayer = WinningPlayer.NONE,
+            cause = EndGameCause.TIMEOUT,
+            player = Player(
                 name = "Player",
                 avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 0
+                points = 0
             ),
-            opponentInfo = PlayerInfo(
+            opponent = Player(
                 name = "Opponent",
                 avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 0
+                points = 0
             ),
             onPlayAgainButtonClicked = {},
             onBackToMenuButtonClicked = {}
@@ -399,8 +395,6 @@ private fun BoardSetupScreenEndGamePreview() {
 @Preview
 @Composable
 private fun BoardSetupScreenMultipleQuantitiesPreview() {
-    var timer by remember { mutableStateOf(1000) }
-
     BattleshipsScreen {
         BoardSetupScreen(
             boardSize = 10,
@@ -408,22 +402,16 @@ private fun BoardSetupScreenMultipleQuantitiesPreview() {
                 it[ShipType.BATTLESHIP] = 2
                 it
             },
-            time = timer,
-            onTimeChanged = { timer -= 1 },
-            playerInfo = PlayerInfo(
-                name = "Player",
-                avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 0
-            ),
-            opponentInfo = PlayerInfo(
-                name = "Opponent",
-                avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 0
+            gameState = GameState(
+                phase = GamePhase.DEPLOYING_FLEETS,
+                phaseEndTime = Instant.now().plusMillis(45000L).toEpochMilli(),
+                round = null,
+                turn = null,
+                winner = null,
+                endCause = null
             ),
             onBoardSetupFinished = {},
-            onLeaveGameButtonClicked = {},
-            onPlayAgainButtonClicked = {},
-            onBackToMenuButtonClicked = {}
+            onLeaveGameButtonClicked = {}
         )
     }
 }

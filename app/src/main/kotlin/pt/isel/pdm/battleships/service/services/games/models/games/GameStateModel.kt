@@ -14,5 +14,6 @@ data class GameStateModel(
     val phaseEndTime: Long,
     val round: Int?,
     val turn: String?,
-    val winner: String?
+    val winner: String?,
+    val endCause: String?
 )

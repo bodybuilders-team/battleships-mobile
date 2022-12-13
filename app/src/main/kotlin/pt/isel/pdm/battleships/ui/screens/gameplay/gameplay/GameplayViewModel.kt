@@ -10,10 +10,12 @@ import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
+import pt.isel.pdm.battleships.domain.games.game.GamePhase
 import pt.isel.pdm.battleships.domain.games.game.GameState
 import pt.isel.pdm.battleships.domain.games.ship.Orientation
 import pt.isel.pdm.battleships.domain.games.ship.Ship
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
+import pt.isel.pdm.battleships.domain.users.Player
 import pt.isel.pdm.battleships.service.BattleshipsService
 import pt.isel.pdm.battleships.service.services.games.models.games.getGame.GetGameOutput
 import pt.isel.pdm.battleships.service.services.games.models.players.fireShots.FireShotsInput
@@ -30,11 +32,11 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.Ga
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.MY_FLEET_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.PLAYING_GAME
+import pt.isel.pdm.battleships.ui.screens.shared.Event
 import pt.isel.pdm.battleships.ui.screens.shared.executeRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequest
 import pt.isel.pdm.battleships.ui.screens.shared.launchAndExecuteRequestThrowing
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links
-import java.lang.Integer.max
 
 /**
  * View model for the [GameplayActivity].
@@ -52,8 +54,8 @@ class GameplayViewModel(
      * @property myBoard the board of the player, null if the game is not loaded
      * @property opponentBoard the board of the opponent, null if the game is not loaded
      * @property myTurn true if it's the player's turn, false otherwise, null if the game is not loaded
-     * @property playerName the name of the player, null if the game is not loaded or the user is not logged in
-     * @property opponentName  the name of the opponent, null if the game is not loaded or the user is not logged in
+     * @property player the name of the player, null if the game is not loaded or the user is not logged in
+     * @property opponent  the name of the opponent, null if the game is not loaded or the user is not logged in
      */
     data class GameplayScreenState(
         val gameConfig: GameConfig? = null,
@@ -61,11 +63,10 @@ class GameplayViewModel(
         val myBoard: MyBoard? = null,
         val opponentBoard: OpponentBoard? = null,
         val myTurn: Boolean? = null,
-        val playerName: String? = null,
-        val opponentName: String? = null,
+        val player: Player? = null,
+        val opponent: Player? = null,
         val playerPoints: Int? = null,
-        val opponentPoints: Int? = null,
-        val time: Int? = null
+        val opponentPoints: Int? = null
     )
 
     private var _screenState by mutableStateOf(GameplayScreenState())
@@ -105,12 +106,9 @@ class GameplayViewModel(
                     gameConfig = gameConfig,
                     gameState = gameState,
                     opponentBoard = OpponentBoard(gameConfig.gridSize),
-                    playerName = player.username,
-                    opponentName = opponent.username,
-                    playerPoints = player.points, // TODO points not being updated after shots
-                    opponentPoints = opponent.points,
-                    myTurn = myTurn,
-                    time = gameConfig.maxTimePerRound
+                    player = Player(player),
+                    opponent = Player(opponent),
+                    myTurn = myTurn
                 )
                 _state = GAME_LOADED
 
@@ -258,12 +256,10 @@ class GameplayViewModel(
 
     /**
      * Leaves the game.
-     * Calls [onGameLeft] when an api response is received, regardless of whether or not is was
-     * successful.
-     *
-     * @param onGameLeft the callback to call when the game is left (api response was received).
+     * Sends a [GameplayEvent.Exit] event when an api response is received, regardless of whether
+     * or not it was successful.
      */
-    fun leaveGame(onGameLeft: () -> Unit) {
+    fun leaveGame() {
         check(state == PLAYING_GAME) { "The game is not in the playing state" }
         _state = LEAVING_GAME
 
@@ -271,11 +267,10 @@ class GameplayViewModel(
             request = { battleshipsService.gamesService.leaveGame() },
             events = _events,
             onSuccess = {
-                _state = FINISHED_GAME
-                onGameLeft()
+                _events.emit(GameplayEvent.Exit)
             },
             retryOnApiResultFailure = {
-                onGameLeft()
+                _events.emit(GameplayEvent.Exit)
                 false
             }
         )
@@ -297,13 +292,31 @@ class GameplayViewModel(
                 ?: throw IllegalStateException("Game state properties are null")
         )
 
-        _screenState = _screenState.copy(
-            gameState = gameState,
-            time = max((gameState.phaseEndTime - System.currentTimeMillis()).toInt(), 0) / 1000
-        )
+        _screenState = _screenState.copy(gameState = gameState)
 
-        if (gameState.phase == FINISHED_PHASE)
-            _state = FINISHED_GAME
+        if (gameState.phase == GamePhase.FINISHED) {
+            launchAndExecuteRequestThrowing(
+                request = { battleshipsService.gamesService.getGame() },
+                events = _events,
+                onSuccess = { getGameData ->
+                    val properties = getGameData.properties
+                        ?: throw IllegalStateException("No game properties found")
+
+                    val player =
+                        properties.players.single { it.username == sessionManager.username }
+                    val opponent =
+                        properties.players.single { it.username != sessionManager.username }
+
+                    _screenState = _screenState.copy(
+                        gameState = GameState(properties.state),
+                        player = Player(player),
+                        opponent = Player(opponent)
+                    )
+
+                    _state = FINISHED_GAME
+                }
+            )
+        }
     }
 
     /**
@@ -377,6 +390,17 @@ class GameplayViewModel(
         PLAYING_GAME,
         LEAVING_GAME,
         FINISHED_GAME
+    }
+
+    /**
+     * The events that can be emitted.
+     */
+    sealed class GameplayEvent : Event {
+
+        /**
+         * The event of exiting the gameplay screen, going back to the gameplay menu screen.
+         */
+        object Exit : GameplayEvent()
     }
 
     companion object {

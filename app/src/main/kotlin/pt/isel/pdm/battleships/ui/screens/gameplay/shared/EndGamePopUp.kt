@@ -26,40 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.domain.users.PlayerInfo
+import pt.isel.pdm.battleships.domain.games.game.EndGameCause
+import pt.isel.pdm.battleships.domain.games.game.EndGameCause.DESTRUCTION
+import pt.isel.pdm.battleships.domain.games.game.WinningPlayer
+import pt.isel.pdm.battleships.domain.games.game.WinningPlayer.NONE
+import pt.isel.pdm.battleships.domain.games.game.WinningPlayer.OPPONENT
+import pt.isel.pdm.battleships.domain.games.game.WinningPlayer.YOU
+import pt.isel.pdm.battleships.domain.users.Player
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause.DESTRUCTION
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause.RESIGNATION
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause.TIMEOUT
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.NONE
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.OPPONENT
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.YOU
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
-
-/**
- * The cause of the end of the game.
- *
- * @property YOU you won
- * @property OPPONENT the opponent won
- */
-enum class WinningPlayer {
-    YOU,
-    OPPONENT,
-    NONE
-}
-
-/**
- * The cause of the end of the game.
- *
- * @property DESTRUCTION the game ended because a player's fleet was destroyed
- * @property RESIGNATION the game ended because a player resigned
- * @property TIMEOUT the game ended because a player took too long
- */
-enum class EndGameCause {
-    DESTRUCTION,
-    RESIGNATION,
-    TIMEOUT
-}
 
 private const val POPUP_BEHIND_DARKNESS_FACTOR = 0.3f
 private const val POPUP_SIZE_FACTOR = 0.5f
@@ -77,9 +52,8 @@ private const val BETWEEN_AVATAR_PADDING = 10
  *
  * @param winningPlayer the player who won the game
  * @param cause the cause of the end of the game
- * @param pointsWon the points won by the player
- * @param playerInfo the player's info
- * @param opponentInfo the opponent's info
+ * @param player the player's info
+ * @param opponent the opponent's info
  * @param onPlayAgainButtonClicked the callback to be invoked when the play again button is clicked
  * @param onBackToMenuButtonClicked the callback to be invoked when the back to menu button is clicked
  */
@@ -87,9 +61,8 @@ private const val BETWEEN_AVATAR_PADDING = 10
 fun EndGamePopUp(
     winningPlayer: WinningPlayer,
     cause: EndGameCause,
-    pointsWon: Int,
-    playerInfo: PlayerInfo,
-    opponentInfo: PlayerInfo,
+    player: Player,
+    opponent: Player,
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
 ) {
@@ -127,16 +100,16 @@ fun EndGamePopUp(
                         text = stringResource(
                             when (cause) {
                                 DESTRUCTION -> R.string.endgame_byFleetDestruction_text
-                                RESIGNATION -> R.string.endgame_byResignation_text
-                                TIMEOUT -> R.string.endgame_byTimeout_text
+                                EndGameCause.RESIGNATION -> R.string.endgame_byResignation_text
+                                EndGameCause.TIMEOUT -> R.string.endgame_byTimeout_text
                             }
                         ),
                         style = MaterialTheme.typography.h6,
                         fontSize = CAUSE_TEXT_FONT_SIZE.sp
                     )
                     Text(
-                        text = if (winningPlayer == NONE) stringResource(R.string.endgame_noPointsWon_text)
-                        else "+$pointsWon ${stringResource(R.string.endgame_points_text)}",
+                        text = if (player.points == 0) stringResource(R.string.endgame_noPointsWon_text)
+                        else "+${player.points} ${stringResource(R.string.endgame_points_text)}",
                         style = MaterialTheme.typography.h6
                     )
                 }
@@ -156,8 +129,8 @@ fun EndGamePopUp(
                         Image(
                             painter = painterResource(
                                 when (winningPlayer) {
-                                    YOU, NONE -> playerInfo.avatarId
-                                    OPPONENT -> opponentInfo.avatarId
+                                    YOU, NONE -> player.avatarId
+                                    OPPONENT -> opponent.avatarId
                                 }
                             ),
                             contentDescription = stringResource(R.string.endgame_winnersAvatar_description),
@@ -168,8 +141,8 @@ fun EndGamePopUp(
                         )
                         Text(
                             text = when (winningPlayer) {
-                                YOU, NONE -> playerInfo.name
-                                OPPONENT -> opponentInfo.name
+                                YOU, NONE -> player.name
+                                OPPONENT -> opponent.name
                             },
                             style = MaterialTheme.typography.h6
                         )
@@ -182,8 +155,8 @@ fun EndGamePopUp(
                         Image(
                             painter = painterResource(
                                 when (winningPlayer) {
-                                    YOU, NONE -> opponentInfo.avatarId
-                                    OPPONENT -> playerInfo.avatarId
+                                    YOU, NONE -> opponent.avatarId
+                                    OPPONENT -> player.avatarId
                                 }
                             ),
                             contentDescription = stringResource(R.string.endgame_losersAvatar_description),
@@ -194,8 +167,8 @@ fun EndGamePopUp(
                         )
                         Text(
                             text = when (winningPlayer) {
-                                YOU, NONE -> opponentInfo.name
-                                OPPONENT -> playerInfo.name
+                                YOU, NONE -> opponent.name
+                                OPPONENT -> player.name
                             },
                             style = MaterialTheme.typography.h6
                         )
@@ -234,9 +207,8 @@ private fun EndGamePopUpPreview() {
         EndGamePopUp(
             winningPlayer = YOU,
             cause = DESTRUCTION,
-            pointsWon = 100,
-            playerInfo = PlayerInfo("Nyck", R.drawable.author_nyckollas_brandao, 0),
-            opponentInfo = PlayerInfo("Jesus", R.drawable.author_andre_jesus, 0),
+            player = Player(name = "Nyck", points = 0, R.drawable.author_nyckollas_brandao),
+            opponent = Player(name = "Jesus", points = 0, R.drawable.author_andre_jesus),
             onPlayAgainButtonClicked = {},
             onBackToMenuButtonClicked = {}
         )

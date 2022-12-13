@@ -12,17 +12,19 @@ import pt.isel.pdm.battleships.service.services.games.models.games.GameStateMode
  * @property winner the winner of the game
  */
 data class GameState(
-    val phase: String,
+    val phase: GamePhase,
     val phaseEndTime: Long,
     val round: Int?,
     val turn: String?,
-    val winner: String?
+    val winner: String?,
+    val endCause: EndGameCause?
 ) {
     constructor(gameStateModel: GameStateModel) : this(
-        phase = gameStateModel.phase,
+        phase = GamePhase(gameStateModel.phase),
         phaseEndTime = gameStateModel.phaseEndTime,
         round = gameStateModel.round,
         turn = gameStateModel.turn,
-        winner = gameStateModel.winner
+        winner = gameStateModel.winner,
+        endCause = gameStateModel.endCause?.let { EndGameCause(it) }
     )
 }

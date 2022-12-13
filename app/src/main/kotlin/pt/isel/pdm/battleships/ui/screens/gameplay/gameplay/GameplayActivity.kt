@@ -5,15 +5,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import pt.isel.pdm.battleships.R
-import pt.isel.pdm.battleships.domain.users.PlayerInfo
+import pt.isel.pdm.battleships.domain.games.game.WinningPlayer
 import pt.isel.pdm.battleships.ui.screens.BattleshipsActivity
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
+import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayEvent.Exit
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.GAME_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.IDLE
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LINKS_LOADED
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_GAME
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.GameplayViewModel.GameplayState.LOADING_MY_FLEET
+import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.shared.Event
 import pt.isel.pdm.battleships.ui.screens.shared.components.LoadingSpinner
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Links.Companion.getLinks
@@ -43,7 +44,6 @@ class GameplayActivity : BattleshipsActivity() {
         setContent {
             GameplayActivityScreen(
                 viewModel = viewModel,
-                onGameLeft = { finish() },
                 onPlayAgainButtonClicked = { finish() },
                 onBackToMenuButtonClicked = { finish() }
             )
@@ -57,6 +57,7 @@ class GameplayActivity : BattleshipsActivity() {
      */
     private suspend fun handleEvent(event: Event) {
         when (event) {
+            is Exit -> finish()
             is Event.Error -> showToast(event.message)
         }
     }
@@ -71,17 +72,22 @@ class GameplayActivity : BattleshipsActivity() {
  * - [GameplayScreen] for the actual gameplay.
  *
  * @param viewModel the view model used to handle the board setup screen
- * @param onGameLeft the callback to be invoked when the game is left
  * @param onPlayAgainButtonClicked the callback to be invoked when the play again button is clicked
  * @param onBackToMenuButtonClicked the callback to be invoked when the back to menu button is clicked
  */
 @Composable
 private fun GameplayActivityScreen(
     viewModel: GameplayViewModel,
-    onGameLeft: () -> Unit,
     onPlayAgainButtonClicked: () -> Unit,
     onBackToMenuButtonClicked: () -> Unit
 ) {
+    val gameState = viewModel.screenState.gameState
+        ?: throw IllegalStateException("Game state not found")
+    val player = viewModel.screenState.player
+        ?: throw IllegalStateException("Player not found")
+    val opponent = viewModel.screenState.opponent
+        ?: throw IllegalStateException("Opponent not found")
+
     BattleshipsScreen {
         when (viewModel.state) {
             IDLE, LINKS_LOADED, LOADING_GAME -> LoadingSpinner("Loading Game...")
@@ -95,26 +101,19 @@ private fun GameplayActivityScreen(
                     ?: throw IllegalStateException("Opponent board not found"),
                 gameConfig = viewModel.screenState.gameConfig
                     ?: throw IllegalStateException("Game config not found"),
-                gameState = viewModel.screenState.gameState
-                    ?: throw IllegalStateException("Game state not found"),
-                playerInfo = PlayerInfo(
-                    name = viewModel.screenState.playerName
-                        ?: throw IllegalStateException("Player name not found"),
-                    avatarId = R.drawable.ic_round_person_24,
-                    playerPoints = viewModel.screenState.playerPoints
-                        ?: throw IllegalStateException("Player points not found")
-                ),
-                opponentInfo = PlayerInfo(
-                    name = viewModel.screenState.opponentName
-                        ?: throw IllegalStateException("Opponent name not found"),
-                    avatarId = R.drawable.ic_round_person_24,
-                    playerPoints = viewModel.screenState.opponentPoints
-                        ?: throw IllegalStateException("Opponent points not found")
-                ),
+                gameState = gameState,
                 onShootClicked = { coordinates -> viewModel.fireShots(coordinates) },
-                time = viewModel.screenState.time
-                    ?: throw IllegalStateException("No time found"),
-                onLeaveGameButtonClicked = { viewModel.leaveGame(onGameLeft = onGameLeft) },
+                onLeaveGameButtonClicked = { viewModel.leaveGame() }
+            )
+        }
+        if (viewModel.state == GameplayViewModel.GameplayState.FINISHED_GAME) {
+            EndGamePopUp(
+                winningPlayer = if (gameState.winner == player.name) WinningPlayer.YOU
+                else WinningPlayer.OPPONENT,
+                cause = gameState.endCause
+                    ?: throw IllegalStateException("End cause not found but game is finished"),
+                player = player,
+                opponent = opponent,
                 onPlayAgainButtonClicked = onPlayAgainButtonClicked,
                 onBackToMenuButtonClicked = onBackToMenuButtonClicked
             )

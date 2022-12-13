@@ -25,22 +25,24 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.Coordinate
 import pt.isel.pdm.battleships.domain.games.board.MyBoard
 import pt.isel.pdm.battleships.domain.games.board.OpponentBoard
+import pt.isel.pdm.battleships.domain.games.game.EndGameCause
 import pt.isel.pdm.battleships.domain.games.game.GameConfig
+import pt.isel.pdm.battleships.domain.games.game.GamePhase
+import pt.isel.pdm.battleships.domain.games.game.GamePhase.FINISHED
 import pt.isel.pdm.battleships.domain.games.game.GameState
+import pt.isel.pdm.battleships.domain.games.game.WinningPlayer
 import pt.isel.pdm.battleships.domain.games.ship.ShipType
-import pt.isel.pdm.battleships.domain.users.PlayerInfo
+import pt.isel.pdm.battleships.domain.users.Player
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.MyBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.OpponentBoardView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.RoundView
 import pt.isel.pdm.battleships.ui.screens.gameplay.gameplay.components.TimerView
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGameCause
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.EndGamePopUp
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.LeaveGameAlert
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.LeaveGameButton
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.OPPONENT
-import pt.isel.pdm.battleships.ui.screens.gameplay.shared.WinningPlayer.YOU
 import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
+import java.lang.Integer.max
 import java.time.Instant
 
 const val SMALLER_BOARD_TILE_SIZE_FACTOR = 0.5f
@@ -57,13 +59,8 @@ private const val TIMER_ROUND_ROW_BOTTOM_PADDING = 10
  * @param opponentBoard the opponent's board
  * @param gameConfig the game configuration
  * @param gameState the game state
- * @param playerInfo the player's info
- * @param opponentInfo the opponent's info
  * @param onShootClicked the callback to be invoked when the player shoots
- * @param time the time left to the player
  * @param onLeaveGameButtonClicked the callback to be invoked when the player leaves the game
- * @param onPlayAgainButtonClicked the callback to be invoked when the player wants to play again
- * @param onBackToMenuButtonClicked the callback to be invoked when the player wants to go back to the menu
  */
 @Composable
 fun GameplayScreen(
@@ -72,13 +69,8 @@ fun GameplayScreen(
     opponentBoard: OpponentBoard,
     gameConfig: GameConfig,
     gameState: GameState,
-    playerInfo: PlayerInfo,
-    opponentInfo: PlayerInfo,
     onShootClicked: (List<Coordinate>) -> Unit,
-    time: Int,
-    onLeaveGameButtonClicked: () -> Unit,
-    onPlayAgainButtonClicked: () -> Unit,
-    onBackToMenuButtonClicked: () -> Unit
+    onLeaveGameButtonClicked: () -> Unit
 ) {
     var selectedCells by remember { mutableStateOf(listOf<Coordinate>()) }
 
@@ -87,6 +79,21 @@ fun GameplayScreen(
     LaunchedEffect(myTurn) {
         if (myTurn)
             canFireShots = true
+    }
+
+    var time by remember {
+        mutableStateOf(
+            max(
+                (gameState.phaseEndTime - System.currentTimeMillis()).toInt(),
+                0
+            ) / 1000
+        )
+    }
+    LaunchedEffect(gameState.phaseEndTime) {
+        while (time > 0) {
+            time = max((gameState.phaseEndTime - System.currentTimeMillis()).toInt(), 0) / 1000
+            delay(1000)
+        }
     }
 
     val myBoardComposable = @Composable { MyBoardView(myBoard = myBoard, myTurn = myTurn) }
@@ -183,22 +190,6 @@ fun GameplayScreen(
                         onLeaveGameButtonClicked()
                     }
                 )
-
-            if (gameState.winner != null)
-                EndGamePopUp(
-                    winningPlayer = if (gameState.winner == playerInfo.name) YOU else OPPONENT,
-                    cause = when {
-                        time <= 0 -> EndGameCause.TIMEOUT
-                        myBoard.fleetIsSunk || opponentBoard.fleetIsSunk -> // TODO
-                            EndGameCause.DESTRUCTION
-                        else -> EndGameCause.RESIGNATION
-                    },
-                    pointsWon = playerInfo.playerPoints,
-                    playerInfo = playerInfo,
-                    opponentInfo = opponentInfo,
-                    onPlayAgainButtonClicked = onPlayAgainButtonClicked,
-                    onBackToMenuButtonClicked = onBackToMenuButtonClicked
-                )
         }
     }
 }
@@ -206,16 +197,6 @@ fun GameplayScreen(
 @Preview
 @Composable
 private fun GameplayScreenPreview() {
-    var timer by remember { mutableStateOf(10) }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(1000)
-            if (timer > 0)
-                timer -= 1
-        }
-    }
-
     BattleshipsScreen {
         GameplayScreen(
             myTurn = true,
@@ -223,27 +204,15 @@ private fun GameplayScreenPreview() {
             opponentBoard = OpponentBoard(),
             gameConfig = GameConfig(10, 1, 30, 30, ShipType.defaultsMap),
             gameState = GameState(
-                phase = "",
-                phaseEndTime = Instant.now().plusMillis(10000L).toEpochMilli(),
+                phase = GamePhase.IN_PROGRESS,
+                phaseEndTime = Instant.now().plusMillis(16000L).toEpochMilli(),
                 round = 16,
                 turn = "Jesus",
-                winner = null
-            ),
-            playerInfo = PlayerInfo(
-                name = "Player",
-                avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 100
-            ),
-            opponentInfo = PlayerInfo(
-                name = "Opponent",
-                avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 100
+                winner = null,
+                endCause = null
             ),
             onShootClicked = { },
-            time = timer,
-            onLeaveGameButtonClicked = { },
-            onPlayAgainButtonClicked = { },
-            onBackToMenuButtonClicked = { }
+            onLeaveGameButtonClicked = { }
         )
     }
 }
@@ -258,25 +227,29 @@ private fun GameplayScreenGameEndedPreview() {
             opponentBoard = OpponentBoard(),
             gameConfig = GameConfig(10, 1, 5, 30, ShipType.defaultsMap),
             gameState = GameState(
-                phase = "",
+                phase = FINISHED,
                 phaseEndTime = Instant.now().plusMillis(5000L).toEpochMilli(),
                 round = 1,
                 turn = "Opponent",
-                winner = "Opponent"
-            ),
-            playerInfo = PlayerInfo(
-                name = "Player",
-                avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 40
-            ),
-            opponentInfo = PlayerInfo(
-                name = "Opponent",
-                avatarId = R.drawable.ic_round_person_24,
-                playerPoints = 150
+                winner = "Opponent",
+                endCause = EndGameCause.DESTRUCTION
             ),
             onShootClicked = { },
-            time = 0,
-            onLeaveGameButtonClicked = { },
+            onLeaveGameButtonClicked = { }
+        )
+        EndGamePopUp(
+            winningPlayer = WinningPlayer.YOU,
+            cause = EndGameCause.RESIGNATION,
+            player = Player(
+                name = "Player",
+                avatarId = R.drawable.ic_round_person_24,
+                points = 200
+            ),
+            opponent = Player(
+                name = "Opponent",
+                avatarId = R.drawable.ic_round_person_24,
+                points = 150
+            ),
             onPlayAgainButtonClicked = { },
             onBackToMenuButtonClicked = { }
         )

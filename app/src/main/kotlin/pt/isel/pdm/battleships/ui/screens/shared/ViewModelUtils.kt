@@ -88,8 +88,8 @@ suspend fun <T> executeRequestThrowing(
 suspend fun <T> executeRequest(
     request: suspend () -> APIResult<T>,
     events: MutableSharedFlow<Event>,
-    retryOnHttpResultFailure: (String) -> Boolean = { true },
-    retryOnApiResultFailure: (Problem) -> Boolean = { false }
+    retryOnHttpResultFailure: suspend (String) -> Boolean = { true },
+    retryOnApiResultFailure: suspend (Problem) -> Boolean = { false }
 ): T? {
     while (true) {
         val httpResult = tryExecuteHttpRequest { request() }
@@ -157,8 +157,8 @@ fun <T> ViewModel.launchAndExecuteRequest(
     request: suspend () -> APIResult<T>,
     events: MutableSharedFlow<Event>,
     onSuccess: suspend (T) -> Unit,
-    retryOnHttpResultFailure: (String) -> Boolean = { true },
-    retryOnApiResultFailure: (Problem) -> Boolean = { false }
+    retryOnHttpResultFailure: suspend (String) -> Boolean = { true },
+    retryOnApiResultFailure: suspend (Problem) -> Boolean = { false }
 ) {
     viewModelScope.launch {
         executeRequest(request, events, retryOnHttpResultFailure, retryOnApiResultFailure)
