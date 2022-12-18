@@ -121,6 +121,7 @@ class BoardSetupViewModel(
             events = _events,
             onSuccess = {
                 _state = FLEET_DEPLOYED
+                _state = WAITING_FOR_OPPONENT
             }
         )
     }

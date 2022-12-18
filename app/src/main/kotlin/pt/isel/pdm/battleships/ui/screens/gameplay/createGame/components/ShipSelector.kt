@@ -24,6 +24,8 @@ import pt.isel.pdm.battleships.ui.screens.shared.components.IconButton
 const val SHIP_VIEW_BOX_HEIGHT_FACTOR = 5
 private const val SHIP_SELECTOR_BUTTON_SIZE = DEFAULT_TILE_SIZE * 0.8f
 private const val MAX_BOARD_OCCUPANCY_PERCENTAGE = 0.5f
+const val MIN_SHIP_QUANTITY = 0
+const val MAX_SHIP_QUANTITY = 5
 
 /**
  * A slot that presents the ship types and allows the user to select the quantity of each type in a game.
@@ -68,7 +70,7 @@ fun ShipSelector(
                         painter = painterResource(R.drawable.ic_round_add_24),
                         contentDescription = stringResource(R.string.gameConfig_incrementShipButtonIcon_contentDescription),
                         modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp),
-                        enabled = totalTilesOccupied + shipType.size
+                        enabled = quantity < MAX_SHIP_QUANTITY || totalTilesOccupied + shipType.size
                             < boardSize * boardSize * MAX_BOARD_OCCUPANCY_PERCENTAGE
                     )
 
@@ -78,7 +80,8 @@ fun ShipSelector(
                         onClick = { onShipRemoved(shipType) },
                         painter = painterResource(R.drawable.ic_round_remove_24),
                         contentDescription = stringResource(R.string.gameConfig_decrementShipButtonIcon_contentDescription),
-                        modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp)
+                        modifier = Modifier.size(SHIP_SELECTOR_BUTTON_SIZE.dp),
+                        enabled = quantity > MIN_SHIP_QUANTITY
                     )
                 }
             }
