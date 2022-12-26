@@ -16,7 +16,6 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
-import pt.isel.pdm.battleships.ui.screens.authentication.hash
 import pt.isel.pdm.battleships.ui.screens.authentication.register.components.RegisterButton
 import pt.isel.pdm.battleships.ui.screens.authentication.register.components.RegisterTextFields
 import pt.isel.pdm.battleships.ui.screens.authentication.validateEmail
@@ -74,7 +73,7 @@ fun RegisterScreen(
                 if (invalidFields)
                     return@RegisterButton
 
-                onRegister(email, username, hash(password))
+                onRegister(email, username, password)
             }
 
             GoBackButton(onClick = onBackButtonClicked)

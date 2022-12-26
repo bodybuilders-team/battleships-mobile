@@ -1,8 +1,5 @@
 package pt.isel.pdm.battleships.ui.screens.authentication
 
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
-
 private const val MIN_USERNAME_LENGTH = 3
 const val MAX_USERNAME_LENGTH = 40
 
@@ -37,16 +34,3 @@ fun validateEmail(email: String): Boolean = email.matches(EMAIL_REGEX.toRegex())
  */
 fun validatePassword(password: String): Boolean =
     password.length in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH
-
-/**
- * Hashes a string with sha-256.
- *
- * @param text to hash
- * @return hashed text
- */
-fun hash(text: String): String {
-    val digest = MessageDigest.getInstance(PASSWORD_HASH_ALGORITHM)
-    val encodedHash = digest.digest(text.toByteArray(StandardCharsets.UTF_8))
-
-    return encodedHash.fold("") { str, it -> str + "%02x".format(it) }
-}

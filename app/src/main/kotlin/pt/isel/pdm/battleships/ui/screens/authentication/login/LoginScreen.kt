@@ -16,7 +16,6 @@ import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.ui.screens.BattleshipsScreen
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState
 import pt.isel.pdm.battleships.ui.screens.authentication.AuthenticationViewModel.AuthenticationState.SUCCESS
-import pt.isel.pdm.battleships.ui.screens.authentication.hash
 import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginButton
 import pt.isel.pdm.battleships.ui.screens.authentication.login.components.LoginTextFields
 import pt.isel.pdm.battleships.ui.screens.authentication.validatePassword
@@ -69,7 +68,7 @@ fun LoginScreen(
                 if (invalidFields)
                     return@LoginButton
 
-                onLogin(username, hash(password))
+                onLogin(username, password)
             }
 
             GoBackButton(onClick = onBackButtonClicked)
