@@ -8,6 +8,7 @@ package pt.isel.pdm.battleships.service.services.games.models.games
  * @property round the round of the game
  * @property turn the turn of the game
  * @property winner the winner of the game
+ * @property endCause the cause of the game end
  */
 data class GameStateModel(
     val phase: String,

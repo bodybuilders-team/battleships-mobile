@@ -9,9 +9,12 @@
 This is a simple battleship game for Android. The game is multiplayer and each player plays on a
 different device.
 
-The game is available in three languages: English, Portuguese and Spanish.
+For more information about the application, see the [documentation](docs/README.md).
 
-You need to be logged in to play the game.
+Some information about the application:
+
+* The game is available in three languages: English, Portuguese and Spanish;
+* You need to be logged in to play the game.
 
 The application has the following features:
 

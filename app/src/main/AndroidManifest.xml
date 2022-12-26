@@ -22,42 +22,74 @@
             android:name=".ui.screens.home.HomeActivity"
             android:alwaysRetainTaskState="true"
             android:exported="true"
-            android:theme="@style/Theme.Battleships">
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.Battleships"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.screens.gameplay.boardSetup.BoardSetupActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.gameplay.gameplay.GameplayActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.gameplay.gameplayMenu.GameplayMenuActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.gameplay.createGame.CreateGameActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.gameplay.lobby.LobbyActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.gameplay.matchmake.MatchmakeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.about.AboutActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.authentication.register.RegisterActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.authentication.login.LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".ui.screens.ranking.RankingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorPortrait"
+            tools:ignore="LockedOrientationActivity" />
     </application>
 
 </manifest>

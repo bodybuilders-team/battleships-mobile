@@ -48,6 +48,9 @@ class BoardSetupViewModel(
      *
      * @property gridSize the size of the grid
      * @property ships the ships that are available to be deployed
+     * @property gameState the current state of the game
+     * @property player the player that is deploying the fleet
+     * @property opponent the opponent of the player
      */
     data class BoardSetupScreenState(
         val gridSize: Int? = null,

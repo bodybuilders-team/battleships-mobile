@@ -56,6 +56,8 @@ class GameplayViewModel(
      * @property myTurn true if it's the player's turn, false otherwise, null if the game is not loaded
      * @property player the name of the player, null if the game is not loaded or the user is not logged in
      * @property opponent  the name of the opponent, null if the game is not loaded or the user is not logged in
+     * @property playerPoints the points of the player, null if the game is not loaded or the user is not logged in
+     * @property opponentPoints the points of the opponent, null if the game is not loaded or the user is not logged in
      */
     data class GameplayScreenState(
         val gameConfig: GameConfig? = null,
