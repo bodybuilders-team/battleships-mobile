@@ -12,6 +12,7 @@ import pt.isel.pdm.battleships.service.services.games.models.players.getMyFleet.
 import pt.isel.pdm.battleships.service.services.games.models.players.getMyShots.GetMyShotsOutput
 import pt.isel.pdm.battleships.service.services.games.models.players.getOpponentFleet.GetOpponentFleetOutput
 import pt.isel.pdm.battleships.service.services.games.models.players.getOpponentShots.GetOpponentShotsOutput
+import pt.isel.pdm.battleships.service.services.users.LinkUsersService
 import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 import java.io.IOException
@@ -26,10 +27,16 @@ import java.io.IOException
 class LinkPlayersService(
     private val sessionManager: SessionManager,
     private val links: MutableMap<String, String>,
-    private val playersService: PlayersService
+    private val playersService: PlayersService,
+    private val usersService: LinkUsersService
 ) {
-    private val token
-        get() = sessionManager.accessToken ?: throw IllegalStateException("No token available")
+    private val accessToken
+        get() = sessionManager.accessToken
+            ?: throw IllegalStateException("No access token available")
+
+    private val refreshToken
+        get() = sessionManager.refreshToken
+            ?: throw IllegalStateException("No refresh token available")
 
     /**
      * Gets my fleet.
@@ -40,11 +47,13 @@ class LinkPlayersService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun getMyFleet(): APIResult<GetMyFleetOutput> =
-        playersService.getMyFleet(
-            token = token,
-            getMyFleetLink = links[Rels.GET_MY_FLEET]
-                ?: throw IllegalArgumentException("The get my fleet link is missing")
-        )
+        executeRequestRefreshingToken {
+            playersService.getMyFleet(
+                token = accessToken,
+                getMyFleetLink = links[Rels.GET_MY_FLEET]
+                    ?: throw IllegalArgumentException("The get my fleet link is missing")
+            )
+        }
 
     /**
      * Deploys the fleet.
@@ -57,12 +66,14 @@ class LinkPlayersService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun deployFleet(fleet: DeployFleetInput): APIResult<DeployFleetOutput> =
-        playersService.deployFleet(
-            token = token,
-            deployFleetLink = links[Rels.DEPLOY_FLEET]
-                ?: throw IllegalArgumentException("The deploy fleet link is missing"),
-            fleet = fleet
-        )
+        executeRequestRefreshingToken {
+            playersService.deployFleet(
+                token = accessToken,
+                deployFleetLink = links[Rels.DEPLOY_FLEET]
+                    ?: throw IllegalArgumentException("The deploy fleet link is missing"),
+                fleet = fleet
+            )
+        }
 
     /**
      * Gets the opponent fleet.
@@ -73,11 +84,13 @@ class LinkPlayersService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun getOpponentFleet(): APIResult<GetOpponentFleetOutput> =
-        playersService.getOpponentFleet(
-            token = token,
-            getOpponentFleetLink = links[Rels.GET_OPPONENT_FLEET]
-                ?: throw IllegalArgumentException("The get opponent fleet link is missing")
-        )
+        executeRequestRefreshingToken {
+            playersService.getOpponentFleet(
+                token = accessToken,
+                getOpponentFleetLink = links[Rels.GET_OPPONENT_FLEET]
+                    ?: throw IllegalArgumentException("The get opponent fleet link is missing")
+            )
+        }
 
     /**
      * Gets my shots.
@@ -88,11 +101,13 @@ class LinkPlayersService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun getMyShots(): APIResult<GetMyShotsOutput> =
-        playersService.getMyShots(
-            token = token,
-            getMyShotsLink = links[Rels.GET_MY_SHOTS]
-                ?: throw IllegalArgumentException("The get my shots link is missing")
-        )
+        executeRequestRefreshingToken {
+            playersService.getMyShots(
+                token = accessToken,
+                getMyShotsLink = links[Rels.GET_MY_SHOTS]
+                    ?: throw IllegalArgumentException("The get my shots link is missing")
+            )
+        }
 
     /**
      * Fires a list of shots.
@@ -105,12 +120,14 @@ class LinkPlayersService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun fireShots(shots: FireShotsInput): APIResult<FireShotsOutput> =
-        playersService.fireShots(
-            token = token,
-            fireShotsLink = links[Rels.FIRE_SHOTS]
-                ?: throw IllegalArgumentException("The fire shots link is missing"),
-            shots = shots
-        )
+        executeRequestRefreshingToken {
+            playersService.fireShots(
+                token = accessToken,
+                fireShotsLink = links[Rels.FIRE_SHOTS]
+                    ?: throw IllegalArgumentException("The fire shots link is missing"),
+                shots = shots
+            )
+        }
 
     /**
      * Gets the opponent shots.
@@ -121,9 +138,39 @@ class LinkPlayersService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun getOpponentShots(): APIResult<GetOpponentShotsOutput> =
-        playersService.getOpponentShots(
-            token = token,
-            getOpponentShotsLink = links[Rels.GET_OPPONENT_SHOTS]
-                ?: throw IllegalArgumentException("The get opponent shots link is missing")
+        executeRequestRefreshingToken {
+            playersService.getOpponentShots(
+                token = accessToken,
+                getOpponentShotsLink = links[Rels.GET_OPPONENT_SHOTS]
+                    ?: throw IllegalArgumentException("The get opponent shots link is missing")
+            )
+        }
+
+    /**
+     * Executes a request, refreshing the access token.
+     *
+     * @param T the type of the API result
+     * @param request the request to execute
+     *
+     * @return the result of the request
+     */
+    private suspend fun <T> executeRequestRefreshingToken(request: suspend () -> T): T {
+        val refreshTokenResult = usersService.refreshToken(refreshToken)
+
+        if (refreshTokenResult !is APIResult.Success)
+            throw IllegalStateException("The refresh token request failed")
+
+        val refreshTokenProperties = refreshTokenResult.data.properties
+            ?: throw IllegalStateException("The properties are missing")
+
+        sessionManager.setSession(
+            accessToken = refreshTokenProperties.accessToken,
+            refreshToken = refreshTokenProperties.refreshToken,
+            username = sessionManager.username!!,
+            userHomeLink = links[Rels.USER_HOME]
+                ?: throw IllegalStateException("The user home link is missing")
         )
+
+        return request()
+    }
 }

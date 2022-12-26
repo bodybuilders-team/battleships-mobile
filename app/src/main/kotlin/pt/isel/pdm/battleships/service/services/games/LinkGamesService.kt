@@ -12,6 +12,7 @@ import pt.isel.pdm.battleships.service.services.games.models.games.getGames.GetG
 import pt.isel.pdm.battleships.service.services.games.models.games.joinGame.JoinGameOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.leaveGame.LeaveGameOutput
 import pt.isel.pdm.battleships.service.services.games.models.games.matchmake.MatchmakeOutput
+import pt.isel.pdm.battleships.service.services.users.LinkUsersService
 import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 import java.io.IOException
@@ -26,10 +27,16 @@ import java.io.IOException
 class LinkGamesService(
     private val sessionManager: SessionManager,
     private val links: MutableMap<String, String>,
-    private val gamesService: GamesService
+    private val gamesService: GamesService,
+    private val usersService: LinkUsersService
 ) {
-    private val token
-        get() = sessionManager.accessToken ?: throw IllegalStateException("No token available")
+    private val accessToken
+        get() = sessionManager.accessToken
+            ?: throw IllegalStateException("No access token available")
+
+    private val refreshToken
+        get() = sessionManager.refreshToken
+            ?: throw IllegalStateException("No refresh token available")
 
     /**
      * Gets all the games.
@@ -72,12 +79,14 @@ class LinkGamesService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun createGame(name: String, config: GameConfigModel): APIResult<CreateGameOutput> {
-        val createGameResult = gamesService.createGame(
-            token = token,
-            createGameLink = links[Rels.CREATE_GAME]
-                ?: throw IllegalStateException("The create game link is missing"),
-            createGameInput = CreateGameInput(name = name, config = config)
-        )
+        val createGameResult = executeRequestRefreshingToken {
+            gamesService.createGame(
+                token = accessToken,
+                createGameLink = links[Rels.CREATE_GAME]
+                    ?: throw IllegalStateException("The create game link is missing"),
+                createGameInput = CreateGameInput(name = name, config = config)
+            )
+        }
 
         if (createGameResult !is APIResult.Success)
             return createGameResult
@@ -100,12 +109,14 @@ class LinkGamesService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun matchmake(gameConfig: GameConfigModel): APIResult<MatchmakeOutput> {
-        val matchmakeResult = gamesService.matchmake(
-            token = token,
-            matchmakeLink = links[Rels.MATCHMAKE]
-                ?: throw IllegalStateException("The matchmake link is missing"),
-            gameConfig = gameConfig
-        )
+        val matchmakeResult = executeRequestRefreshingToken {
+            gamesService.matchmake(
+                token = accessToken,
+                matchmakeLink = links[Rels.MATCHMAKE]
+                    ?: throw IllegalStateException("The matchmake link is missing"),
+                gameConfig = gameConfig
+            )
+        }
 
         if (matchmakeResult !is APIResult.Success)
             return matchmakeResult
@@ -126,11 +137,13 @@ class LinkGamesService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun getGame(): APIResult<GetGameOutput> {
-        val getGameResult = gamesService.getGame(
-            token = token,
-            gameLink = links[Rels.GAME]
-                ?: throw IllegalStateException("The game link is missing")
-        )
+        val getGameResult = executeRequestRefreshingToken {
+            gamesService.getGame(
+                token = accessToken,
+                gameLink = links[Rels.GAME]
+                    ?: throw IllegalStateException("The game link is missing")
+            )
+        }
 
         if (getGameResult !is APIResult.Success)
             return getGameResult
@@ -152,11 +165,13 @@ class LinkGamesService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun getGameState(): APIResult<GetGameStateOutput> =
-        gamesService.getGameState(
-            token = token,
-            gameStateLink = links[Rels.GAME_STATE]
-                ?: throw IllegalStateException("The game state link is missing")
-        )
+        executeRequestRefreshingToken {
+            gamesService.getGameState(
+                token = accessToken,
+                gameStateLink = links[Rels.GAME_STATE]
+                    ?: throw IllegalStateException("The game state link is missing")
+            )
+        }
 
     /**
      * Joins a game.
@@ -169,10 +184,12 @@ class LinkGamesService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun joinGame(joinGameLink: String): APIResult<JoinGameOutput> {
-        val joinGameResult = gamesService.joinGame(
-            token = token,
-            joinGameLink = joinGameLink
-        )
+        val joinGameResult = executeRequestRefreshingToken {
+            gamesService.joinGame(
+                token = accessToken,
+                joinGameLink = joinGameLink
+            )
+        }
 
         if (joinGameResult !is APIResult.Success)
             return joinGameResult
@@ -193,11 +210,13 @@ class LinkGamesService(
      * @throws IOException if there is an error while sending the request
      */
     suspend fun leaveGame(): APIResult<LeaveGameOutput> {
-        val leaveGameResult = gamesService.leaveGame(
-            token = token,
-            leaveGameLink = links[Rels.LEAVE_GAME]
-                ?: throw IllegalStateException("The leave game link is missing")
-        )
+        val leaveGameResult = executeRequestRefreshingToken {
+            gamesService.leaveGame(
+                token = accessToken,
+                leaveGameLink = links[Rels.LEAVE_GAME]
+                    ?: throw IllegalStateException("The leave game link is missing")
+            )
+        }
 
         if (leaveGameResult !is APIResult.Success)
             return leaveGameResult
@@ -206,5 +225,33 @@ class LinkGamesService(
         links.remove(Rels.GAME_STATE)
 
         return leaveGameResult
+    }
+
+    /**
+     * Executes a request, refreshing the access token.
+     *
+     * @param T the type of the API result
+     * @param request the request to execute
+     *
+     * @return the result of the request
+     */
+    private suspend fun <T> executeRequestRefreshingToken(request: suspend () -> T): T {
+        val refreshTokenResult = usersService.refreshToken(refreshToken)
+
+        if (refreshTokenResult !is APIResult.Success)
+            throw IllegalStateException("The refresh token request failed")
+
+        val refreshTokenProperties = refreshTokenResult.data.properties
+            ?: throw IllegalStateException("The properties are missing")
+
+        sessionManager.setSession(
+            accessToken = refreshTokenProperties.accessToken,
+            refreshToken = refreshTokenProperties.refreshToken,
+            username = sessionManager.username!!,
+            userHomeLink = links[Rels.USER_HOME]
+                ?: throw IllegalStateException("The user home link is missing")
+        )
+
+        return request()
     }
 }

@@ -7,6 +7,7 @@ import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersOu
 import pt.isel.pdm.battleships.service.services.users.models.getUsers.GetUsersUserModel
 import pt.isel.pdm.battleships.service.services.users.models.login.LoginOutput
 import pt.isel.pdm.battleships.service.services.users.models.logout.LogoutOutput
+import pt.isel.pdm.battleships.service.services.users.models.refreshToken.RefreshTokenOutput
 import pt.isel.pdm.battleships.service.services.users.models.register.RegisterOutput
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
 import java.io.IOException
@@ -156,4 +157,29 @@ class LinkUsersService(
                 ?: throw IllegalArgumentException("The logout link is missing"),
             refreshToken = refreshToken
         )
+
+    /**
+     * Refreshes the access token of the user.
+     *
+     * @param refreshToken the refresh token of the user
+     *
+     * @return the API result of the refresh token request
+     *
+     * @throws UnexpectedResponseException if there is an unexpected response from the server
+     * @throws IOException if there is an error while sending the request
+     */
+    suspend fun refreshToken(refreshToken: String): APIResult<RefreshTokenOutput> {
+        val refreshTokenResult = usersService.refreshToken(
+            refreshTokenLink = links[Rels.REFRESH_TOKEN]
+                ?: throw IllegalArgumentException("The refresh token link is missing"),
+            refreshToken = refreshToken
+        )
+
+        if (refreshTokenResult !is APIResult.Success)
+            return refreshTokenResult
+
+        links[Rels.USER_HOME] = refreshTokenResult.data.getLink(Rels.USER_HOME).href.path
+
+        return refreshTokenResult
+    }
 }

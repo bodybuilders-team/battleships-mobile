@@ -208,7 +208,7 @@ class BoardSetupViewModel(
             while (true) {
                 updateGameState()
 
-                if (_state == FINISHED)
+                if (_state in listOf(LEAVING_GAME, FINISHED))
                     break
 
                 delay(POLLING_DELAY)

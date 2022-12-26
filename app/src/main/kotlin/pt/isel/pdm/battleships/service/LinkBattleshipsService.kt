@@ -37,13 +37,15 @@ class LinkBattleshipsService(
     val gamesService = LinkGamesService(
         sessionManager = sessionManager,
         links = this._links,
-        gamesService = battleshipsService.gamesService
+        gamesService = battleshipsService.gamesService,
+        usersService = usersService
     )
 
     val playersService = LinkPlayersService(
         sessionManager = sessionManager,
         links = this._links,
-        playersService = battleshipsService.playersService
+        playersService = battleshipsService.playersService,
+        usersService = usersService
     )
 
     /**
