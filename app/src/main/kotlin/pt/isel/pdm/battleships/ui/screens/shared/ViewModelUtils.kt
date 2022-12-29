@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import java.io.IOException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -12,7 +13,6 @@ import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
 import pt.isel.pdm.battleships.service.connection.isFailure
 import pt.isel.pdm.battleships.service.media.Problem
-import java.io.IOException
 
 const val RETRY_DELAY = 1000L
 
@@ -175,7 +175,7 @@ fun <T> ViewModel.launchAndExecuteRequest(
  *
  * @return the result of the request
  */
-private suspend fun <T> tryExecuteHttpRequest(request: suspend () -> T): HTTPResult<T> =
+suspend fun <T> tryExecuteHttpRequest(request: suspend () -> T): HTTPResult<T> =
     try {
         HTTPResult.Success(request())
     } catch (e: IOException) {

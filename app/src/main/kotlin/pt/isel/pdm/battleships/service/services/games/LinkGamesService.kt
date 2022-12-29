@@ -1,7 +1,9 @@
 package pt.isel.pdm.battleships.service.services.games
 
+import java.io.IOException
 import pt.isel.pdm.battleships.service.connection.APIResult
 import pt.isel.pdm.battleships.service.connection.UnexpectedResponseException
+import pt.isel.pdm.battleships.service.connection.isFailure
 import pt.isel.pdm.battleships.service.services.games.models.games.GameConfigModel
 import pt.isel.pdm.battleships.service.services.games.models.games.createGame.CreateGameInput
 import pt.isel.pdm.battleships.service.services.games.models.games.createGame.CreateGameOutput
@@ -15,7 +17,6 @@ import pt.isel.pdm.battleships.service.services.games.models.games.matchmake.Mat
 import pt.isel.pdm.battleships.service.services.users.LinkUsersService
 import pt.isel.pdm.battleships.session.SessionManager
 import pt.isel.pdm.battleships.ui.screens.shared.navigation.Rels
-import java.io.IOException
 
 /**
  * The service that handles the games, and keeps track of the links to the endpoints.
@@ -235,23 +236,31 @@ class LinkGamesService(
      *
      * @return the result of the request
      */
-    private suspend fun <T> executeRequestRefreshingToken(request: suspend () -> T): T {
-        val refreshTokenResult = usersService.refreshToken(refreshToken)
+    private suspend fun <T> executeRequestRefreshingToken(
+        request: suspend () -> APIResult<T>
+    ): APIResult<T> {
+        val result = request()
 
-        if (refreshTokenResult !is APIResult.Success)
-            throw IllegalStateException("The refresh token request failed")
+        if (result.isFailure() && result.error.status == 401) {
+            val refreshTokenResult = usersService.refreshToken(refreshToken)
 
-        val refreshTokenProperties = refreshTokenResult.data.properties
-            ?: throw IllegalStateException("The properties are missing")
+            if (refreshTokenResult !is APIResult.Success)
+                throw IllegalStateException("The refresh token request failed")
 
-        sessionManager.setSession(
-            accessToken = refreshTokenProperties.accessToken,
-            refreshToken = refreshTokenProperties.refreshToken,
-            username = sessionManager.username!!,
-            userHomeLink = links[Rels.USER_HOME]
-                ?: throw IllegalStateException("The user home link is missing")
-        )
+            val refreshTokenProperties = refreshTokenResult.data.properties
+                ?: throw IllegalStateException("The properties are missing")
 
-        return request()
+            sessionManager.setSession(
+                accessToken = refreshTokenProperties.accessToken,
+                refreshToken = refreshTokenProperties.refreshToken,
+                username = sessionManager.username!!,
+                userHomeLink = links[Rels.USER_HOME]
+                    ?: throw IllegalStateException("The user home link is missing")
+            )
+
+            return request()
+        }
+
+        return result
     }
 }

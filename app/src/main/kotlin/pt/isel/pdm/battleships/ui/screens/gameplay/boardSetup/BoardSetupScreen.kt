@@ -22,6 +22,8 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import java.time.Instant
+import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import pt.isel.pdm.battleships.R
 import pt.isel.pdm.battleships.domain.games.Coordinate
@@ -46,8 +48,6 @@ import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.BoardViewWithIde
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.FULL_BOARD_VIEW_BOX_SIZE
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.board.getTileSize
 import pt.isel.pdm.battleships.ui.screens.gameplay.shared.ship.ShipView
-import java.time.Instant
-import kotlin.math.roundToInt
 
 private const val DRAGGING_SHIP_BORDER_SIZE = 2
 private const val TIME_RESYNCHRONIZATION_INTERVAL = 1000L
@@ -75,6 +75,7 @@ fun BoardSetupScreen(
 
     var dragState by remember { mutableStateOf(DragState()) }
     var dragOffset by remember { mutableStateOf(Offset(0f, 0f)) }
+    // Remove placed ships because we can just use the board to get them
     var placedShips by remember { mutableStateOf(listOf<Ship>()) }
     var boardOffset: Offset by remember { mutableStateOf(Offset.Zero) }
 
@@ -124,8 +125,10 @@ fun BoardSetupScreen(
 
                                 Coordinate
                                     .fromPointOrNull(
-                                        col = ((dragOffset.x - tileSize) / tileSize).roundToInt(),
-                                        row = ((dragOffset.y - tileSize * 2) / tileSize).roundToInt()
+                                        col = ((dragOffset.x - tileSize) / tileSize)
+                                            .roundToInt(),
+                                        row = ((dragOffset.y - tileSize * 2) / tileSize)
+                                            .roundToInt()
                                     )
                                     ?.let { coordinate ->
                                         if (
@@ -200,7 +203,8 @@ fun BoardSetupScreen(
                 ShipPlacingMenuView(
                     shipTypes = unplacedShips,
                     draggingUnplaced = { shipType ->
-                        dragState.ship?.type == shipType && dragState.isDragging && !dragState.isPlaced
+                        dragState.ship?.type == shipType && dragState.isDragging &&
+                            !dragState.isPlaced
                     },
                     onDragStart = { ship, initialPosition ->
                         dragState = dragState.copy(
