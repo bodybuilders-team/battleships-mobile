@@ -2,6 +2,8 @@
 
 > Battleship game in Android.
 
+The demo of the application can be found [here](https://youtu.be/t4cu2LSxsQI).
+
 <p align="center">
     <img align="center" src="docs/images/logo.png" alt="logo" width="300"/>
 </p>

@@ -53,7 +53,7 @@ files and a folder:
 
 * `<ScreenName>Activity.kt`: contains the activity of the screen;
 * `<ScreenName>ViewModel.kt`: contains the ViewModel of the screen;
-* `<ScreenName>Screens.kt`: contains the screens of the screen;
+* `<ScreenName>Screen.kt`: contains the screen (Jetpack Compose UI);
 * `components`: contains the components of the screen.
 
 This means that there is an **activity for each screen** of the application.
